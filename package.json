@@ -1,0 +1,35 @@
+{
+  "name": "drivedrop-production",
+  "version": "0.8.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "prisma migrate deploy",
+    "db:validate": "prisma validate",
+    "check": "npm run db:validate && npm run typecheck && npm run build",
+    "staging:check": "node scripts/staging-check.mjs",
+    "staging:db": "docker compose -f docker-compose.staging.yml up -d",
+    "staging:db:down": "docker compose -f docker-compose.staging.yml down"
+  },
+  "dependencies": {
+    "@prisma/client": "latest",
+    "bcryptjs": "latest",
+    "jose": "latest",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "prisma": "latest",
+    "typescript": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest"
+  }
+}
