@@ -11,7 +11,7 @@ export async function PATCH(r:Request){
   if(!u||!['TRANSPORTER','ADMIN'].includes(u.role)) return NextResponse.json({error:'Transporter or admin login required'},{status:403});
   const d=S.parse(await r.json());
   try{
-    const result=await prisma.$transaction(async tx=>{
+    const result=await prisma.$transaction(async (tx: any)=>{
       const b=await tx.booking.findUniqueOrThrow({where:{id:d.bookingId}});
       if(u.role==='TRANSPORTER'&&b.transporterId!==u.id) throw new Error('Forbidden');
       if(!allowed[b.status]?.includes(d.status)) throw new Error(`Cannot move booking from ${b.status} to ${d.status}`);
