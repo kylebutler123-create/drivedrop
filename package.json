@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
@@ -17,7 +17,7 @@
     "staging:db:down": "docker compose -f docker-compose.staging.yml down"
   },
   "dependencies": {
-    "@prisma/client": "latest",
+    "@prisma/client": "6.19.2",
     "bcryptjs": "latest",
     "jose": "latest",
     "next": "latest",
@@ -26,7 +26,7 @@
     "zod": "latest"
   },
   "devDependencies": {
-    "prisma": "latest",
+    "prisma": "6.19.2",
     "typescript": "latest",
     "@types/node": "latest",
     "@types/react": "latest",
