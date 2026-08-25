@@ -1,0 +1,3 @@
+import { NextResponse } from 'next/server'; import { prisma } from '@/lib/prisma'; import { createSession } from '@/lib/auth'; import bcrypt from 'bcryptjs'; import { z } from 'zod'
+const S=z.object({email:z.string().email(),password:z.string().min(1)})
+export async function POST(r:Request){const d=S.parse(await r.json());const u=await prisma.user.findUnique({where:{email:d.email.toLowerCase()}});if(!u||!(await bcrypt.compare(d.password,u.passwordHash)))return NextResponse.json({error:'Invalid email or password'},{status:401});await createSession(u.id);return NextResponse.json({id:u.id,name:u.name,role:u.role})}

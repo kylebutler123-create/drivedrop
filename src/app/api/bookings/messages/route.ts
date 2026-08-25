@@ -1,0 +1,4 @@
+import {NextResponse} from 'next/server';import {prisma} from '@/lib/prisma';import {currentUser} from '@/lib/auth';import {z} from 'zod';
+const S=z.object({bookingId:z.string(),body:z.string().trim().min(1).max(2000)});
+async function access(id:string,u:any){return prisma.booking.findFirst({where:{id,...(u.role==='ADMIN'?{}:{OR:[{customerId:u.id},{transporterId:u.id}]})}})}
+export async function POST(r:Request){const u=await currentUser();if(!u)return NextResponse.json({error:'Unauthorized'},{status:401});const x=S.safeParse(await r.json());if(!x.success)return NextResponse.json({error:'Invalid message'},{status:400});if(!await access(x.data.bookingId,u))return NextResponse.json({error:'Forbidden'},{status:403});return NextResponse.json(await prisma.message.create({data:{...x.data,senderId:u.id},include:{sender:{select:{name:true,role:true}}}}))}
