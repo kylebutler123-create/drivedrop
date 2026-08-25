@@ -1,14 +1,70 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+generator client {
+  provider = "prisma-client-js"
+}
 
-enum Role { CUSTOMER TRANSPORTER ADMIN }
-enum JobStatus { OPEN QUOTED BOOKED CANCELLED COMPLETED }
-enum QuoteStatus { PENDING ACCEPTED DECLINED EXPIRED }
-enum BookingStatus { CONFIRMED COLLECTION_SCHEDULED COLLECTED IN_TRANSIT ARRIVING_SOON DELIVERED CANCELLED }
-enum EvidenceType { COLLECTION DELIVERY }
-enum VerificationStatus { NOT_STARTED PENDING APPROVED REJECTED SUSPENDED }
-enum VerificationDocumentType { INSURANCE COMPANY_REGISTRATION IDENTITY OPERATOR_LICENCE OTHER }
-enum VerificationDocumentStatus { PENDING APPROVED REJECTED EXPIRED }
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+}
+
+enum Role {
+  CUSTOMER
+  TRANSPORTER
+  ADMIN
+}
+
+enum JobStatus {
+  OPEN
+  QUOTED
+  BOOKED
+  CANCELLED
+  COMPLETED
+}
+
+enum QuoteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+}
+
+enum BookingStatus {
+  CONFIRMED
+  COLLECTION_SCHEDULED
+  COLLECTED
+  IN_TRANSIT
+  ARRIVING_SOON
+  DELIVERED
+  CANCELLED
+}
+
+enum EvidenceType {
+  COLLECTION
+  DELIVERY
+}
+
+enum VerificationStatus {
+  NOT_STARTED
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum VerificationDocumentType {
+  INSURANCE
+  COMPANY_REGISTRATION
+  IDENTITY
+  OPERATOR_LICENCE
+  OTHER
+}
+
+enum VerificationDocumentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
 
 model User {
   id String @id @default(cuid())
@@ -194,9 +250,31 @@ model VerificationDocument {
   @@index([expiresAt])
 }
 
-enum PaymentStatus { PENDING AUTHORIZED PAID PARTIALLY_REFUNDED REFUNDED FAILED CANCELLED }
-enum PayoutStatus { NOT_READY READY PAID HELD CANCELLED }
-enum FinanceEventType { PAYMENT_CREATED PAYMENT_CAPTURED REFUND_CREATED PAYOUT_READY PAYOUT_PAID }
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  PAID
+  PARTIALLY_REFUNDED
+  REFUNDED
+  FAILED
+  CANCELLED
+}
+
+enum PayoutStatus {
+  NOT_READY
+  READY
+  PAID
+  HELD
+  CANCELLED
+}
+
+enum FinanceEventType {
+  PAYMENT_CREATED
+  PAYMENT_CAPTURED
+  REFUND_CREATED
+  PAYOUT_READY
+  PAYOUT_PAID
+}
 
 model BookingPayment {
   id String @id @default(cuid())
