@@ -1,5 +1,6 @@
 import {NextRequest,NextResponse} from 'next/server';
 
+// Fresh preview trigger after Vercel Preview key configuration was corrected.
 export async function GET(req:NextRequest){
   const q=req.nextUrl.searchParams.get('q')?.trim();
   if(!q||q.length<3)return NextResponse.json({hits:[]});
