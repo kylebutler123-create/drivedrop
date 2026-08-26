@@ -1,31 +1,28 @@
 import Link from 'next/link';
 
 const recent=[
-  {vehicle:'BMW 3 Series',from:'Manchester, M1',to:'Bristol, BS1',price:'£210'},
-  {vehicle:'Ford Transit',from:'Leeds, LS1',to:'London, E16',price:'£295'},
-  {vehicle:'Porsche 911',from:'Birmingham, B1',to:'Edinburgh, EH1',price:'£465'},
+  {vehicle:'BMW 3 Series',from:'Manchester, M1',to:'Bristol, BS1',price:'£210',icon:'🚗'},
+  {vehicle:'Ford Transit',from:'Leeds, LS1',to:'London, E16',price:'£295',icon:'🚐'},
+  {vehicle:'Porsche 911',from:'Birmingham, B1',to:'Edinburgh, EH1',price:'£465',icon:'🏎️'},
 ];
 
 export default function Home(){
   return <main>
-    <section className="marketHero">
-      <div className="marketHeroInner">
+    <section className="visualHero">
+      <div className="heroOverlay"/>
+      <div className="visualHeroInner">
         <div className="marketHeroCopy">
           <span className="eyebrow">UK vehicle transport marketplace</span>
-          <h1>Get vehicle transport quotes in minutes</h1>
-          <p>Tell us what you need moved. Verified transporters compete for your job, so you can compare prices, profiles and reviews before you book.</p>
-          <div className="trustLine"><span>✓ Free to request quotes</span><span>✓ No obligation</span><span>✓ UK-wide transporters</span></div>
+          <h1>Move your vehicle with confidence</h1>
+          <p>Tell us what you need moved. Trusted transporters compete for your job, so you can compare prices, profiles and reviews before you book.</p>
+          <div className="heroBubbles"><span>✓ Free quotes</span><span>✓ No obligation</span><span>✓ UK-wide</span></div>
         </div>
-
-        <div className="quotePanel">
-          <div className="quotePanelHeader"><strong>What vehicle are you moving?</strong><span>Takes about 60 seconds</span></div>
+        <div className="quotePanel floatingPanel">
+          <div className="quotePanelHeader"><strong>Get vehicle transport quotes</strong><span>Takes about 60 seconds</span></div>
           <form action="/register" className="quoteForm">
             <label>VEHICLE TYPE</label>
             <select name="vehicleType" defaultValue="CAR"><option value="CAR">Car</option><option value="VAN">Van</option><option value="MOTORCYCLE">Motorcycle</option><option value="CLASSIC">Classic / prestige vehicle</option><option value="OTHER">Other vehicle</option></select>
-            <div className="quoteGrid">
-              <div><label>COLLECTION POSTCODE</label><input name="collection" placeholder="e.g. M1 1AA" /></div>
-              <div><label>DELIVERY POSTCODE</label><input name="delivery" placeholder="e.g. BS1 1AA" /></div>
-            </div>
+            <div className="quoteGrid"><div><label>COLLECTION POSTCODE</label><input name="collection" placeholder="e.g. M1 1AA" /></div><div><label>DELIVERY POSTCODE</label><input name="delivery" placeholder="e.g. BS1 1AA" /></div></div>
             <button className="btn orange quoteCta">Get My Quotes</button>
             <p className="quoteSmall">No payment required to request quotes.</p>
           </form>
@@ -33,50 +30,43 @@ export default function Home(){
       </div>
     </section>
 
-    <section className="proofStrip">
-      <div><strong>Fast & easy</strong><span>One simple vehicle transport request</span></div>
-      <div><strong>Trusted transporters</strong><span>Profiles, verification and customer feedback</span></div>
-      <div><strong>Competitive quotes</strong><span>Transporters compete for your job</span></div>
-      <div><strong>DriveDrop support</strong><span>A UK-focused marketplace built for vehicles</span></div>
-    </section>
+    <section className="colourBand whiteBand"><div className="bubbleGrid">
+      <div className="featureBubble"><div className="bubbleIcon">⚡</div><strong>Fast & easy</strong><span>One simple transport request</span></div>
+      <div className="featureBubble"><div className="bubbleIcon">🛡️</div><strong>Trusted transporters</strong><span>Verification and customer feedback</span></div>
+      <div className="featureBubble"><div className="bubbleIcon">💷</div><strong>Competitive quotes</strong><span>Compare transporters and prices</span></div>
+      <div className="featureBubble"><div className="bubbleIcon">🤝</div><strong>DriveDrop support</strong><span>A marketplace built for vehicles</span></div>
+    </div></section>
 
-    <section className="sectionWrap centered">
-      <span className="eyebrow dark">Simple, transparent transport</span>
-      <h2>How DriveDrop works</h2>
-      <p className="sectionLead">A straightforward marketplace journey from quote request to completed delivery.</p>
-      <div className="stepsGrid">
-        <article className="stepCard"><div className="stepNo">1</div><h3>Tell us about your vehicle</h3><p>Add collection, delivery and vehicle details in one quick request.</p></article>
-        <article className="stepCard"><div className="stepNo">2</div><h3>Compare transporter quotes</h3><p>Review prices, transporter profiles, verification and feedback before choosing.</p></article>
-        <article className="stepCard"><div className="stepNo">3</div><h3>Book with confidence</h3><p>Choose your transporter, pay the booking deposit and manage the delivery through DriveDrop.</p></article>
+    <section className="colourBand paleBand"><div className="sectionWrap centered">
+      <span className="eyebrow dark">Simple from start to finish</span><h2>How DriveDrop works</h2><p className="sectionLead">Three clear steps from quote request to vehicle delivery.</p>
+      <div className="stepsGrid visualSteps">
+        <article className="stepCard"><div className="stepIcon">📍</div><div className="stepNo">1</div><h3>Tell us the journey</h3><p>Add collection, delivery and vehicle details.</p></article>
+        <article className="stepCard"><div className="stepIcon">💬</div><div className="stepNo">2</div><h3>Compare your quotes</h3><p>Review price, profile, verification and feedback.</p></article>
+        <article className="stepCard"><div className="stepIcon">✅</div><div className="stepNo">3</div><h3>Choose and book</h3><p>Select your transporter and manage the delivery.</p></article>
       </div>
       <Link className="btn orange largeCta" href="/register">Request Vehicle Transport Quotes</Link>
-    </section>
+    </div></section>
 
-    <section className="trustSection">
-      <div className="sectionWrap trustGrid">
-        <div>
-          <span className="eyebrow">Built around trust</span>
-          <h2>Choose the right transporter, not just the cheapest quote</h2>
-          <p>DriveDrop is being built specifically for vehicle movements, with transporter verification, insurance details, ratings, completed-delivery history and clear business profiles.</p>
-          <ul className="checkList"><li>DriveDrop Verified status</li><li>Insurance and business checks</li><li>Customer reviews and ratings</li><li>Vehicle specialisms and coverage areas</li></ul>
-        </div>
-        <div className="verifiedCard">
-          <div className="verifiedTop"><div className="avatarTruck">🚛</div><div><strong>Northline Vehicle Transport</strong><span>DriveDrop Verified</span></div></div>
-          <div className="rating">★★★★★ <b>4.9</b></div>
-          <div className="verifiedStats"><div><b>248</b><span>Deliveries</span></div><div><b>11 yrs</b><span>Operating</span></div><div><b>UK-wide</b><span>Coverage</span></div></div>
-          <div className="verifiedTags"><span>Insured</span><span>Car transport</span><span>Non-runners</span></div>
-        </div>
+    <section className="photoSplit navyBand"><div className="sectionWrap splitGrid">
+      <div className="splitPhoto"><img src="https://images.pexels.com/photos/34539243/pexels-photo-34539243.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Vehicle transporter carrying cars"/></div>
+      <div className="splitCopy"><span className="eyebrow">Built around trust</span><h2>Know who is moving your vehicle</h2><p>DriveDrop is built specifically for vehicle movements, with transporter verification, insurance details, ratings and clear business profiles.</p>
+        <div className="pillList"><span>✓ DriveDrop Verified</span><span>✓ Insurance checks</span><span>✓ Customer reviews</span><span>✓ Vehicle specialisms</span></div>
       </div>
-    </section>
+    </div></section>
 
-    <section className="sectionWrap">
+    <section className="colourBand orangeTint"><div className="sectionWrap trustGrid">
+      <div><span className="eyebrow dark">Choose with confidence</span><h2>More than just a price</h2><p>Compare the transporter behind every quote and choose the service that feels right for your vehicle.</p></div>
+      <div className="verifiedCard liftedCard"><div className="verifiedTop"><div className="avatarTruck">🚛</div><div><strong>Northline Vehicle Transport</strong><span>DriveDrop Verified</span></div></div><div className="rating">★★★★★ <b>4.9</b></div><div className="verifiedStats"><div><b>248</b><span>Deliveries</span></div><div><b>11 yrs</b><span>Operating</span></div><div><b>UK-wide</b><span>Coverage</span></div></div><div className="verifiedTags"><span>Insured</span><span>Car transport</span><span>Non-runners</span></div></div>
+    </div></section>
+
+    <section className="photoBanner"><div className="photoBannerOverlay"/><div className="sectionWrap photoBannerContent"><span className="eyebrow">UK vehicle transport</span><h2>Cars, vans, classics and prestige vehicles</h2><p>From everyday vehicle moves to specialist transport, DriveDrop helps customers find the right transporter for the job.</p><Link className="btn orange largeCta" href="/register">Get Quotes</Link></div></section>
+
+    <section className="colourBand whiteBand"><div className="sectionWrap">
       <div className="sectionHeadingRow"><div><span className="eyebrow dark">Marketplace activity</span><h2>Recent vehicle deliveries</h2></div><Link href="/register">Get quotes →</Link></div>
-      <div className="recentGrid">{recent.map(x=><article className="deliveryCard" key={x.vehicle}><div className="vehicleVisual">🚗</div><h3>{x.vehicle}</h3><div className="deliveryRoute"><span>● {x.from}</span><span>↓</span><span>● {x.to}</span></div><div className="deliveryPrice"><span>Example accepted quote</span><strong>{x.price}</strong></div></article>)}</div>
-    </section>
+      <div className="recentGrid">{recent.map(x=><article className="deliveryCard visualDelivery" key={x.vehicle}><div className="vehicleBubble">{x.icon}</div><h3>{x.vehicle}</h3><div className="deliveryRoute"><span>● {x.from}</span><span>↓</span><span>● {x.to}</span></div><div className="deliveryPrice"><span>Example accepted quote</span><strong>{x.price}</strong></div></article>)}</div>
+    </div></section>
 
-    <section className="reviewSection">
-      <div className="sectionWrap centered"><span className="eyebrow dark">Customer confidence</span><h2>Designed to make vehicle transport feel simple</h2><div className="reviewGrid"><blockquote>“Clear quotes, clear transporter profiles and everything in one place.”<cite>Example customer experience</cite></blockquote><blockquote>“Being able to see verification and reviews before booking makes a huge difference.”<cite>Example customer experience</cite></blockquote><blockquote>“A much easier way to arrange a vehicle movement than ringing around transport companies.”<cite>Example customer experience</cite></blockquote></div></div>
-    </section>
+    <section className="colourBand paleBlueBand"><div className="sectionWrap centered"><span className="eyebrow dark">Customer confidence</span><h2>Vehicle transport should feel straightforward</h2><div className="reviewGrid"><blockquote>“Clear quotes, clear transporter profiles and everything in one place.”<cite>Example customer experience</cite></blockquote><blockquote>“Seeing verification and reviews before booking makes a huge difference.”<cite>Example customer experience</cite></blockquote><blockquote>“Much easier than ringing around transport companies.”<cite>Example customer experience</cite></blockquote></div></div></section>
 
     <section className="transporterCta"><div className="sectionWrap transporterCtaInner"><div><span className="eyebrow">For transport companies</span><h2>Find vehicle transport jobs that fit your routes</h2><p>Create your transporter profile, complete verification and quote on suitable customer jobs.</p></div><div><Link className="btn orange largeCta" href="/register?account=transporter">Join DriveDrop as a Transporter</Link><br/><Link className="textLink" href="/login?account=transporter">Already registered? Sign in</Link></div></div></section>
 
