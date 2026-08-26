@@ -1,14 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import {useSearchParams, useRouter} from 'next/navigation';
-import {useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {useEffect,useState} from 'react';
 
 export default function Login(){
   const router=useRouter();
-  const params=useSearchParams();
-  const account=params.get('account');
+  const [account,setAccount]=useState<string|null>(null);
   const [err,setErr]=useState('');
+
+  useEffect(()=>{
+    setAccount(new URLSearchParams(window.location.search).get('account'));
+  },[]);
+
   const heading=account==='transporter'?'Transporter login':account==='customer'?'Customer login':'Welcome back';
   const intro=account==='transporter'?'Sign in to manage your transporter profile, verification and delivery work.':account==='customer'?'Sign in to manage your vehicle transport requests and quotes.':'Customers and transporters use the same secure DriveDrop sign-in.';
 
