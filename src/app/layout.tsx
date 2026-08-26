@@ -12,7 +12,10 @@ export default async function Layout({children}:{children:React.ReactNode}){
     <header className="top">
       <Link href="/" className="logo">Drive<span>Drop</span></Link>
       <nav className="nav">
-        {user?<Link className="btn orange" href={dashboardHref}>Dashboard</Link>:<>
+        {user?<>
+          <Link className="btn orange" href={dashboardHref}>Dashboard</Link>
+          <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
+        </>:<>
           <Link href="/login?account=customer">Customer login</Link>
           <Link className="btn orange" href="/login?account=transporter">Transporter login</Link>
         </>}
