@@ -1,3 +1,59 @@
-'use client';import {useEffect,useState} from 'react';
-const label=(s:string)=>s.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
-export default function VerificationAdmin(){const[v,setV]=useState<any[]>([]);async function load(){let r=await fetch('/api/admin/verifications');if(r.ok)setV(await r.json())}useEffect(()=>{load()},[]);async function review(id:string,status:string){let reviewNote=prompt(`Reason / admin note for ${label(status)}:`)||undefined;let r=await fetch('/api/admin/verifications',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({verificationId:id,status,reviewNote})});if(r.ok)load();else alert((await r.json()).error)}return <><h2>Transporter Verification</h2>{!v.length&&<div className="card muted">No transporter verification applications yet.</div>}{v.map(x=><div className="card" key={x.id}><span className="badge">{label(x.status)}</span><h3>{x.businessName}</h3><p>{x.transporter.name} · {x.transporter.email}</p><div className="route">{x.businessAddress}<br/>{x.phone}{x.companyNumber&&<> · Company #{x.companyNumber}</>}</div><h4>Documents</h4>{x.documents.map((d:any)=><div className="route" key={d.id}><b>{label(d.type)}</b> · <a href={d.documentUrl} target="_blank">Review document</a>{d.insurer&&<> · {d.insurer}</>}{d.expiresAt&&<> · expires {new Date(d.expiresAt).toLocaleDateString('en-GB')}</>}</div>)}{x.status==='PENDING'&&<><button className="btn orange" onClick={()=>review(x.id,'APPROVED')}>Approve & Verify</button> <button className="btn light" onClick={()=>review(x.id,'REJECTED')}>Reject</button></>}{x.status==='APPROVED'&&<button className="btn light" onClick={()=>review(x.id,'SUSPENDED')}>Suspend verification</button>}{x.reviewNote&&<p className="muted">Admin note: {x.reviewNote}</p>}</div>)}</>}
+'use client';
+
+import { useEffect, useState } from 'react';
+
+const label = (s: string) => s.replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+
+export default function VerificationAdmin() {
+  const [verifications, setVerifications] = useState<any[]>([]);
+
+  async function load() {
+    const response = await fetch('/api/admin/verifications');
+    if (response.ok) setVerifications(await response.json());
+  }
+
+  useEffect(() => { load(); }, []);
+
+  async function review(id: string, status: string) {
+    const reviewNote = prompt(`Reason / admin note for ${label(status)}:`) || undefined;
+    const response = await fetch('/api/admin/verifications', {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ verificationId: id, status, reviewNote }),
+    });
+    if (response.ok) load();
+    else alert((await response.json()).error);
+  }
+
+  return (
+    <>
+      <h2>Transporter Verification</h2>
+      {!verifications.length && <div className="card muted">No transporter verification applications yet.</div>}
+      {verifications.map(verification => (
+        <div className="card" key={verification.id}>
+          <span className="badge">{label(verification.status)}</span>
+          <h3>{verification.businessName}</h3>
+          <p>{verification.transporter.name} · {verification.transporter.email}</p>
+          <div className="route">
+            {verification.businessAddress}<br />
+            {verification.phone}{verification.companyNumber && <> · Company #{verification.companyNumber}</>}
+          </div>
+          <h4>Documents</h4>
+          {verification.documents.map((document: any) => (
+            <div className="route" key={document.id}>
+              <b>{label(document.type)}</b> · <a href={`/api/verification-documents/${document.id}`} target="_blank" rel="noreferrer">Review document</a>
+              {document.insurer && <> · {document.insurer}</>}
+              {document.expiresAt && <> · expires {new Date(document.expiresAt).toLocaleDateString('en-GB')}</>}
+            </div>
+          ))}
+          {verification.status === 'PENDING' && <>
+            <button className="btn orange" onClick={() => review(verification.id, 'APPROVED')}>Approve & Verify</button>{' '}
+            <button className="btn light" onClick={() => review(verification.id, 'REJECTED')}>Reject</button>
+          </>}
+          {verification.status === 'APPROVED' && <button className="btn light" onClick={() => review(verification.id, 'SUSPENDED')}>Suspend verification</button>}
+          {verification.reviewNote && <p className="muted">Admin note: {verification.reviewNote}</p>}
+        </div>
+      ))}
+    </>
+  );
+}
