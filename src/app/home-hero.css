@@ -6,68 +6,46 @@
   background-color:#071a33;
 }
 
-/* Approved middle artwork: match the same framed size and fit as the bottom artwork. */
-.photoSplit{
-  padding:48px 0;
-}
-.photoSplit .splitGrid{
-  grid-template-columns:1fr;
-}
-.photoSplit .splitPhoto{
-  width:100%;
-  aspect-ratio:3/2;
-  height:auto;
-  background-image:url('/31CBCFA0-15FB-495B-924A-A6BDEB69F0A1.png');
-  background-size:contain;
-  background-position:center;
-  background-repeat:no-repeat;
-  border-radius:28px;
+/* Approved DriveDrop header logo. */
+.headerLogo{
+  display:block;
+  width:190px;
+  height:58px;
   overflow:hidden;
-  background-color:#071a33;
+  flex:0 0 auto;
 }
-.photoSplit .splitPhoto img,
-.photoSplit .splitCopy{
-  display:none;
+.headerLogo img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  border-radius:8px;
 }
 
-/* Approved bottom artwork: use the same rounded bubble/frame as the middle artwork. */
+.photoSplit{padding:48px 0;}
+.photoSplit .splitGrid{grid-template-columns:1fr;}
+.photoSplit .splitPhoto{
+  width:100%;aspect-ratio:3/2;height:auto;
+  background-image:url('/31CBCFA0-15FB-495B-924A-A6BDEB69F0A1.png');
+  background-size:contain;background-position:center;background-repeat:no-repeat;
+  border-radius:28px;overflow:hidden;background-color:#071a33;
+}
+.photoSplit .splitPhoto img,.photoSplit .splitCopy{display:none;}
 .photoBanner{
-  width:min(1180px,calc(100% - 48px));
-  margin:48px auto;
+  width:min(1180px,calc(100% - 48px));margin:48px auto;
   background-image:url('/DDD56A74-C705-425F-BBD0-0257D1F3FE7A.png')!important;
-  background-size:contain;
-  background-position:center;
-  background-repeat:no-repeat;
-  aspect-ratio:3/2;
-  min-height:0!important;
-  height:auto;
-  background-color:#071a33;
-  border-radius:28px;
-  overflow:hidden;
+  background-size:contain;background-position:center;background-repeat:no-repeat;
+  aspect-ratio:3/2;min-height:0!important;height:auto;background-color:#071a33;
+  border-radius:28px;overflow:hidden;
 }
-.photoBanner .photoBannerOverlay,
-.photoBanner .photoBannerContent{
-  display:none;
-}
+.photoBanner .photoBannerOverlay,.photoBanner .photoBannerContent{display:none;}
 
 @media(max-width:760px){
-  .visualHero{
-    background-size:auto 125%;
-    background-position:44% 88%;
-  }
-  .photoSplit{
-    padding:28px 0;
-  }
-  .photoSplit .splitPhoto{
-    aspect-ratio:3/2;
-    border-radius:18px;
-  }
-  .photoBanner{
-    width:calc(100% - 32px);
-    margin:28px auto;
-    aspect-ratio:3/2;
-    background-size:contain;
-    background-position:center;
-    border-radius:18px;
-  }
+  .visualHero{background-size:auto 125%;background-position:44% 88%;}
+  .headerLogo{width:128px;height:42px;}
+  .top{padding:10px 14px;gap:10px;}
+  .photoSplit{padding:28px 0;}
+  .photoSplit .splitPhoto{aspect-ratio:3/2;border-radius:18px;}
+  .photoBanner{width:calc(100% - 32px);margin:28px auto;aspect-ratio:3/2;background-size:contain;background-position:center;border-radius:18px;}
 }
