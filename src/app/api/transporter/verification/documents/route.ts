@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid document details' }, { status: 400 });
   }
 
-  const validation = validateVerificationFile(file);
+  const validation = await validateVerificationFile(file);
   if (!validation.ok) {
     return NextResponse.json({ error: validation.error }, { status: 400 });
   }
