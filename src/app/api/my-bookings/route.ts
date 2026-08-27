@@ -8,7 +8,7 @@ export async function GET(){
   customer:{select:{name:true}},transporter:{select:{name:true}},
   trackingEvents:{select:{id:true,status:true,note:true,createdAt:true},orderBy:{createdAt:'asc'}},
   messages:{select:{id:true,body:true,createdAt:true,sender:{select:{name:true,role:true}}},orderBy:{createdAt:'asc'}},
-  evidence:{select:{id:true,type:true,imageUrl:true,note:true,createdAt:true},orderBy:{createdAt:'asc'}},
+  evidence:{select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'asc'}},
   review:{select:{id:true,rating:true,body:true,verified:true,createdAt:true}},
   payment:{select:{status:true,depositPence:true,paidPence:true,refundedPence:true,platformFeePence:true,transporterProceedsPence:true,payoutStatus:true}}
  },orderBy:{createdAt:'desc'}});
