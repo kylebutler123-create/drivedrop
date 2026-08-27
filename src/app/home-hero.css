@@ -31,14 +31,14 @@
 .photoSplit .splitPhoto{
   width:100%;aspect-ratio:3/2;height:auto;
   background-image:url('/31CBCFA0-15FB-495B-924A-A6BDEB69F0A1.png');
-  background-size:contain;background-position:center;background-repeat:no-repeat;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
   border-radius:28px;overflow:hidden;background-color:#071a33;
 }
 .photoSplit .splitPhoto img,.photoSplit .splitCopy{display:none;}
 .photoBanner{
   width:min(1180px,calc(100% - 48px));margin:48px auto;
   background-image:url('/DDD56A74-C705-425F-BBD0-0257D1F3FE7A.png')!important;
-  background-size:contain;background-position:center;background-repeat:no-repeat;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
   aspect-ratio:3/2;min-height:0!important;height:auto;background-color:#071a33;
   border-radius:28px;overflow:hidden;
 }
@@ -52,6 +52,6 @@
   .top .nav > a:not(.btn){font-size:11px;white-space:nowrap;}
   .top .nav .btn{font-size:11px;padding:7px 9px;white-space:nowrap;}
   .photoSplit{padding:28px 0;}
-  .photoSplit .splitPhoto{aspect-ratio:3/2;border-radius:18px;}
-  .photoBanner{width:calc(100% - 32px);margin:28px auto;aspect-ratio:3/2;background-size:contain;background-position:center;border-radius:18px;}
+  .photoSplit .splitPhoto{aspect-ratio:3/2;border-radius:18px;background-size:cover;background-position:center;}
+  .photoBanner{width:calc(100% - 32px);margin:28px auto;aspect-ratio:3/2;background-size:cover;background-position:center;border-radius:18px;}
 }
