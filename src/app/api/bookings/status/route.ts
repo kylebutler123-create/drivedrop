@@ -3,8 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { currentUser } from '@/lib/auth';
 import { z } from 'zod';
 
-const S=z.object({bookingId:z.string(),status:z.enum(['COLLECTION_SCHEDULED','COLLECTED','IN_TRANSIT','ARRIVING_SOON','DELIVERED']),note:z.string().max(500).optional()});
-const allowed:Record<string,string[]>={CONFIRMED:['COLLECTION_SCHEDULED','COLLECTED'],COLLECTION_SCHEDULED:['COLLECTED'],COLLECTED:['IN_TRANSIT'],IN_TRANSIT:['ARRIVING_SOON','DELIVERED'],ARRIVING_SOON:['DELIVERED']};
+const S=z.object({bookingId:z.string(),status:z.enum(['COLLECTION_SCHEDULED','COLLECTED','IN_TRANSIT','ARRIVING_SOON','DELIVERED','CANCELLED']),note:z.string().max(500).optional()});
+const allowed:Record<string,string[]>={CONFIRMED:['COLLECTION_SCHEDULED','COLLECTED','CANCELLED'],COLLECTION_SCHEDULED:['COLLECTED','CANCELLED'],COLLECTED:['IN_TRANSIT'],IN_TRANSIT:['ARRIVING_SOON','DELIVERED'],ARRIVING_SOON:['DELIVERED']};
 
 export async function PATCH(r:Request){
   const u=await currentUser();
@@ -12,12 +12,18 @@ export async function PATCH(r:Request){
   const d=S.parse(await r.json());
   try{
     const result=await prisma.$transaction(async (tx: any)=>{
-      const b=await tx.booking.findUniqueOrThrow({where:{id:d.bookingId}});
+      const b=await tx.booking.findUniqueOrThrow({where:{id:d.bookingId},include:{payment:true}});
       if(u.role==='TRANSPORTER'&&b.transporterId!==u.id) throw new Error('Forbidden');
       if(!allowed[b.status]?.includes(d.status)) throw new Error(`Cannot move booking from ${b.status} to ${d.status}`);
       const booking=await tx.booking.update({where:{id:b.id},data:{status:d.status}});
       const event=await tx.trackingEvent.create({data:{bookingId:b.id,status:d.status,note:d.note,actorId:u.id}});
       if(d.status==='DELIVERED') await tx.transportJob.update({where:{id:b.jobId},data:{status:'COMPLETED'}});
+      if(d.status==='CANCELLED'){
+        await tx.transportJob.update({where:{id:b.jobId},data:{status:'CANCELLED'}});
+        if(b.payment){
+          await tx.bookingPayment.update({where:{id:b.payment.id},data:b.payment.paidPence>0?{payoutStatus:'HELD'}:{status:'CANCELLED',payoutStatus:'CANCELLED'}});
+        }
+      }
       return {booking,event};
     });
     return NextResponse.json(result);
