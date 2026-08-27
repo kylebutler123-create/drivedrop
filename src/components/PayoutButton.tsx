@@ -1,0 +1,4 @@
+'use client';
+import {useState} from 'react';
+import {useRouter} from 'next/navigation';
+export default function PayoutButton({paymentId,amountPence}:{paymentId:string,amountPence:number}){const[busy,setBusy]=useState(false);const router=useRouter();async function release(){if(!confirm(`Release £${(amountPence/100).toFixed(2)} sandbox payout to the transporter?`))return;setBusy(true);try{const r=await fetch('/api/admin/payments/payout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({paymentId})});const d=await r.json().catch(()=>null);if(!r.ok){alert(d?.error||'Unable to release payout');return;}router.refresh();}finally{setBusy(false)}}return <button className="btn orange" disabled={busy} onClick={release}>{busy?'Releasing test payout…':`Release £${(amountPence/100).toFixed(2)} test payout`}</button>}
