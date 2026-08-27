@@ -1,6 +1,6 @@
 export const financeConfig={
- depositPercent:Number(process.env.DRIVEDROP_DEPOSIT_PERCENT||20),
- commissionPercent:Number(process.env.DRIVEDROP_COMMISSION_PERCENT||12),
+ depositPercent:Number(process.env.DRIVEDROP_DEPOSIT_PERCENT||100),
+ commissionPercent:Number(process.env.DRIVEDROP_COMMISSION_PERCENT||5),
 };
 export function calculateFinance(transportValuePence:number){
  const depositPence=Math.round(transportValuePence*financeConfig.depositPercent/100);
