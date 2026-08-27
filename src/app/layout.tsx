@@ -13,7 +13,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
 
   return <html lang="en"><body>
     <header className="top">
-      <Link href="/" className="logo headerLogo" aria-label="DriveDrop home"><img src="/0FC04387-3302-40FE-A7BD-EF957904F4EE.png" alt="DriveDrop" /></Link>
+      <Link href="/" className="logo headerLogo" aria-label="DriveDrop home"><img src="/AC51EBEA-9552-47BB-92A0-E8D611539A71.png" alt="DriveDrop" /></Link>
       <nav className="nav">
         {user?<>
           {manageHref&&manageLabel&&<Link href={manageHref}>{manageLabel}</Link>}
