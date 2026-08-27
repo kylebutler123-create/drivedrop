@@ -1,17 +1,21 @@
 import {NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
+import {disputesEnabled} from '@/lib/features';
 import {z} from 'zod';
 
 const Create=z.object({bookingId:z.string().min(1),reason:z.string().trim().min(3).max(120),details:z.string().trim().max(2000).optional(),evidenceUrl:z.string().url().optional()});
+const disabled=()=>NextResponse.json({error:'Disputes are not enabled in this environment'},{status:404});
 
 export async function GET(){
+  if(!disputesEnabled()) return disabled();
   const u=await currentUser();
   if(!u||!['CUSTOMER','TRANSPORTER'].includes(u.role)) return NextResponse.json({error:'Customer or transporter login required'},{status:403});
   return NextResponse.json(await prisma.dispute.findMany({where:{raisedById:u.id},include:{booking:{include:{job:true}}},orderBy:{createdAt:'desc'}}));
 }
 
 export async function POST(r:Request){
+  if(!disputesEnabled()) return disabled();
   const u=await currentUser();
   if(!u||!['CUSTOMER','TRANSPORTER'].includes(u.role)) return NextResponse.json({error:'Customer or transporter login required'},{status:403});
   const parsed=Create.safeParse(await r.json());
