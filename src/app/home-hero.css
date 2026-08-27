@@ -1,7 +1,7 @@
 .visualHero{
   background-image:url('/6438DE56-039E-404C-AEF3-EA8EF3AD7A41.png')!important;
   background-size:cover;
-  background-position:center center;
+  background-position:center 72%;
   background-repeat:no-repeat;
 }
 
@@ -52,7 +52,7 @@
 @media(max-width:760px){
   .visualHero{
     background-size:cover;
-    background-position:center center;
+    background-position:center 72%;
   }
   .photoSplit{
     padding:28px 0;
