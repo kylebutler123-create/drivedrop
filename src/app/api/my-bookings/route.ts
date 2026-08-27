@@ -12,5 +12,11 @@ export async function GET(){
   review:{select:{id:true,rating:true,body:true,verified:true,createdAt:true}},
   payment:{select:{status:true,transportValuePence:true,depositPence:true,paidPence:true,refundedPence:true,platformFeePence:true,transporterProceedsPence:true,payoutStatus:true}}
  },orderBy:{createdAt:'desc'}});
- return NextResponse.json(bookings)
+ const scoped=bookings.map(({payment,...booking})=>{
+  if(!payment)return{...booking,payment:null};
+  if(u.role==='CUSTOMER')return{...booking,payment:{status:payment.status,transportValuePence:payment.transportValuePence,depositPence:payment.depositPence,paidPence:payment.paidPence,refundedPence:payment.refundedPence,platformFeePence:payment.platformFeePence}};
+  if(u.role==='TRANSPORTER')return{...booking,payment:{status:payment.status,transportValuePence:payment.transportValuePence,platformFeePence:payment.platformFeePence,transporterProceedsPence:payment.transporterProceedsPence,payoutStatus:payment.payoutStatus}};
+  return{...booking,payment};
+ });
+ return NextResponse.json(scoped)
 }
