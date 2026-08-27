@@ -44,6 +44,9 @@
 }
 .photoBanner .photoBannerOverlay,.photoBanner .photoBannerContent{display:none;}
 
+/* Keep the footer legal/disclosure copy understated. */
+.siteFooter .footerLegal p{font-size:12px;line-height:1.5;}
+
 @media(max-width:760px){
   .visualHero{background-size:auto 125%;background-position:44% 88%;}
   .headerLogo{width:190px;height:60px;}
@@ -54,4 +57,5 @@
   .photoSplit{padding:28px 0;}
   .photoSplit .splitPhoto{aspect-ratio:3/2;border-radius:18px;background-size:cover;background-position:center;}
   .photoBanner{width:calc(100% - 32px);margin:28px auto;aspect-ratio:3/2;background-size:cover;background-position:center;border-radius:18px;}
+  .siteFooter .footerLegal p{font-size:11px;}
 }
