@@ -44,6 +44,10 @@
 }
 .photoBanner .photoBannerOverlay,.photoBanner .photoBannerContent{display:none;}
 
+/* Footer branding stays together on one line. */
+.siteFooter .footerLogo{display:inline-block;white-space:nowrap;width:auto;}
+.siteFooter .footerLogo span{display:inline;}
+
 /* Keep the footer legal/disclosure copy understated. */
 .siteFooter .footerLegal p{font-size:12px;line-height:1.5;}
 
