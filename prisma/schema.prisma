@@ -80,6 +80,21 @@ enum VerificationDocumentStatus {
   EXPIRED
 }
 
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED
+  CLOSED
+}
+
+enum DisputeResolution {
+  REFUND_CUSTOMER
+  PARTIAL_REFUND
+  RELEASE_PAYOUT
+  NO_ACTION
+  OTHER
+}
+
 model User {
   id String @id @default(cuid())
   email String @unique
@@ -104,6 +119,8 @@ model User {
   verificationDocuments VerificationDocument[] @relation("VerificationUploader")
   reviewedVerificationDocuments VerificationDocument[] @relation("DocumentReviewer")
   reviewedTransporterVerifications TransporterVerification[] @relation("VerificationAdminReviewer")
+  disputesRaised Dispute[] @relation("DisputeRaisedBy")
+  disputesReviewed Dispute[] @relation("DisputeReviewer")
 }
 
 model TransportJob {
@@ -160,6 +177,7 @@ model Booking {
   evidence Evidence[]
   review Review?
   payment BookingPayment?
+  disputes Dispute[]
   @@index([customerId, status, createdAt])
   @@index([transporterId, status, createdAt])
 }
@@ -198,6 +216,27 @@ model Evidence {
   note String?
   createdAt DateTime @default(now())
   @@index([bookingId, type, createdAt])
+}
+
+model Dispute {
+  id String @id @default(cuid())
+  bookingId String
+  booking Booking @relation(fields:[bookingId], references:[id], onDelete: Cascade)
+  raisedById String
+  raisedBy User @relation("DisputeRaisedBy", fields:[raisedById], references:[id])
+  reason String
+  details String?
+  evidenceUrl String?
+  status DisputeStatus @default(OPEN)
+  resolution DisputeResolution?
+  resolutionNote String?
+  reviewerId String?
+  reviewer User? @relation("DisputeReviewer", fields:[reviewerId], references:[id])
+  reviewedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([bookingId, status, createdAt])
+  @@index([raisedById, createdAt])
 }
 
 model Review {
