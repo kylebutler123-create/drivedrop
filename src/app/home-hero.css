@@ -5,7 +5,7 @@
   background-repeat:no-repeat;
 }
 
-/* Approved middle artwork: show the exact full image without stretching or cropping. */
+/* Approved middle artwork: bottom upload moved here; exact image preserved. */
 .photoSplit .splitGrid{
   grid-template-columns:1fr;
 }
@@ -13,7 +13,7 @@
   width:100%;
   aspect-ratio:3/2;
   height:auto;
-  background-image:url('/DDD56A74-C705-425F-BBD0-0257D1F3FE7A.png');
+  background-image:url('/31CBCFA0-15FB-495B-924A-A6BDEB69F0A1.png');
   background-size:contain;
   background-position:center;
   background-repeat:no-repeat;
@@ -27,9 +27,9 @@
   display:none;
 }
 
-/* Approved bottom artwork: preserve its native 3:2 composition and embedded right-hand copy. */
+/* Approved bottom artwork: previous middle upload moved here; exact image preserved. */
 .photoBanner{
-  background-image:url('/31CBCFA0-15FB-495B-924A-A6BDEB69F0A1.png')!important;
+  background-image:url('/DDD56A74-C705-425F-BBD0-0257D1F3FE7A.png')!important;
   background-size:contain;
   background-position:center;
   background-repeat:no-repeat;
