@@ -1,17 +1,21 @@
 import {NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
+import {disputesEnabled} from '@/lib/features';
 import {z} from 'zod';
 
 const Review=z.object({disputeId:z.string().min(1),status:z.enum(['UNDER_REVIEW','RESOLVED','CLOSED']),resolution:z.enum(['REFUND_CUSTOMER','PARTIAL_REFUND','RELEASE_PAYOUT','NO_ACTION','OTHER']).optional(),resolutionNote:z.string().trim().max(2000).optional()});
+const disabled=()=>NextResponse.json({error:'Disputes are not enabled in this environment'},{status:404});
 
 export async function GET(){
+  if(!disputesEnabled()) return disabled();
   const u=await currentUser();
   if(!u||u.role!=='ADMIN') return NextResponse.json({error:'Admin access required'},{status:403});
   return NextResponse.json(await prisma.dispute.findMany({include:{raisedBy:{select:{id:true,name:true,email:true,role:true}},booking:{include:{job:true,customer:{select:{name:true,email:true}},transporter:{select:{name:true,email:true}},payment:true}}},orderBy:[{status:'asc'},{createdAt:'desc'}]}));
 }
 
 export async function PATCH(r:Request){
+  if(!disputesEnabled()) return disabled();
   const u=await currentUser();
   if(!u||u.role!=='ADMIN') return NextResponse.json({error:'Admin access required'},{status:403});
   const parsed=Review.safeParse(await r.json());
