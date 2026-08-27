@@ -6,11 +6,11 @@
   background-color:#071a33;
 }
 
-/* Approved DriveDrop header logo — same artwork, larger display size. */
+/* Approved DriveDrop header logo — same artwork, slightly larger display size. */
 .headerLogo{
   display:block;
-  width:250px;
-  height:76px;
+  width:285px;
+  height:86px;
   overflow:hidden;
   flex:0 0 auto;
 }
@@ -21,6 +21,10 @@
   object-fit:contain;
   object-position:left center;
 }
+
+/* Slightly smaller public login controls so the larger logo remains balanced. */
+.top .nav > a:not(.btn){font-size:14px;}
+.top .nav .btn{font-size:14px;padding:10px 15px;}
 
 .photoSplit{padding:48px 0;}
 .photoSplit .splitGrid{grid-template-columns:1fr;}
@@ -42,8 +46,11 @@
 
 @media(max-width:760px){
   .visualHero{background-size:auto 125%;background-position:44% 88%;}
-  .headerLogo{width:170px;height:54px;}
-  .top{padding:10px 14px;gap:10px;}
+  .headerLogo{width:190px;height:60px;}
+  .top{padding:9px 12px;gap:8px;}
+  .top .nav{gap:7px;}
+  .top .nav > a:not(.btn){font-size:11px;white-space:nowrap;}
+  .top .nav .btn{font-size:11px;padding:7px 9px;white-space:nowrap;}
   .photoSplit{padding:28px 0;}
   .photoSplit .splitPhoto{aspect-ratio:3/2;border-radius:18px;}
   .photoBanner{width:calc(100% - 32px);margin:28px auto;aspect-ratio:3/2;background-size:contain;background-position:center;border-radius:18px;}
