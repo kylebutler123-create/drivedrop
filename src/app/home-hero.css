@@ -1,18 +1,63 @@
 .visualHero{
-  background-image:url('/drivedrop-uk-transporter.jpg')!important;
+  background-image:url('/6438DE56-039E-404C-AEF3-EA8EF3AD7A41.png')!important;
   background-size:cover;
-  background-position:72% center;
+  background-position:center center;
   background-repeat:no-repeat;
 }
 
-.photoBanner{
-  background-image:url('/drivedrop-uk-transporter.jpg')!important;
-  background-size:cover;
+/* Approved middle artwork: show the exact full image without stretching or cropping. */
+.photoSplit .splitGrid{
+  grid-template-columns:1fr;
+}
+.photoSplit .splitPhoto{
+  width:100%;
+  aspect-ratio:3/2;
+  height:auto;
+  background-image:url('/DDD56A74-C705-425F-BBD0-0257D1F3FE7A.png');
+  background-size:contain;
   background-position:center;
   background-repeat:no-repeat;
+  border-radius:28px;
+  overflow:hidden;
+}
+.photoSplit .splitPhoto img{
+  display:none;
+}
+.photoSplit .splitCopy{
+  display:none;
+}
+
+/* Approved bottom artwork: preserve its native 3:2 composition and embedded right-hand copy. */
+.photoBanner{
+  background-image:url('/31CBCFA0-15FB-495B-924A-A6BDEB69F0A1.png')!important;
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
+  aspect-ratio:3/2;
+  min-height:0!important;
+  height:auto;
+  background-color:#071a33;
+}
+.photoBanner .photoBannerOverlay,
+.photoBanner .photoBannerContent{
+  display:none;
 }
 
 @media(max-width:760px){
-  .visualHero{background-position:70% center;}
-  .photoBanner{background-position:68% center;}
+  .visualHero{
+    background-size:cover;
+    background-position:center center;
+  }
+  .photoSplit{
+    padding:28px 0;
+  }
+  .photoSplit .splitPhoto{
+    aspect-ratio:3/2;
+    border-radius:18px;
+  }
+  .photoBanner{
+    aspect-ratio:3/2;
+    background-size:contain;
+    background-position:center;
+  }
 }
