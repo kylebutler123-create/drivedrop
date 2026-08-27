@@ -1,10 +1,18 @@
 .visualHero{
-  background-image:url('/drivedrop-uk-transporter.jpeg')!important;
+  background-image:url('/drivedrop-uk-transporter.jpg')!important;
   background-size:cover;
   background-position:72% center;
   background-repeat:no-repeat;
 }
 
+.photoBanner{
+  background-image:url('/drivedrop-uk-transporter.jpg')!important;
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+
 @media(max-width:760px){
-  .visualHero{background-position:74% center;}
+  .visualHero{background-position:70% center;}
+  .photoBanner{background-position:68% center;}
 }
