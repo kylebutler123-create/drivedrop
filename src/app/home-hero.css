@@ -1,8 +1,9 @@
 .visualHero{
   background-image:url('/6438DE56-039E-404C-AEF3-EA8EF3AD7A41.png')!important;
-  background-size:cover;
-  background-position:center 72%;
+  background-size:115% auto;
+  background-position:center 82%;
   background-repeat:no-repeat;
+  background-color:#071a33;
 }
 
 /* Approved middle artwork: match the same framed size and fit as the bottom artwork. */
@@ -51,8 +52,8 @@
 
 @media(max-width:760px){
   .visualHero{
-    background-size:cover;
-    background-position:center 72%;
+    background-size:auto 125%;
+    background-position:44% 88%;
   }
   .photoSplit{
     padding:28px 0;
