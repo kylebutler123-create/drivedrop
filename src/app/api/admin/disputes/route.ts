@@ -2,10 +2,12 @@ import {NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
 import {disputesEnabled} from '@/lib/features';
+import {sendTransactionalEmailSafely} from '@/lib/email';
 import {z} from 'zod';
 
 const Review=z.object({disputeId:z.string().min(1),status:z.enum(['UNDER_REVIEW','RESOLVED','CLOSED']),resolution:z.enum(['REFUND_CUSTOMER','PARTIAL_REFUND','RELEASE_PAYOUT','NO_ACTION','OTHER']).optional(),resolutionNote:z.string().trim().max(2000).optional()});
 const disabled=()=>NextResponse.json({error:'Disputes are not enabled in this environment'},{status:404});
+const resolutionLabel=(r?:string)=>({REFUND_CUSTOMER:'Refund customer',PARTIAL_REFUND:'Partial refund',RELEASE_PAYOUT:'Release transporter payout',NO_ACTION:'No action',OTHER:'Other resolution'}[r||'']||'Resolved');
 
 export async function GET(){
   if(!disputesEnabled()) return disabled();
@@ -24,7 +26,7 @@ export async function PATCH(r:Request){
   if(d.status==='RESOLVED'&&!d.resolution) return NextResponse.json({error:'A resolution is required when resolving a dispute'},{status:400});
   try{
     const result=await prisma.$transaction(async(tx:any)=>{
-      const dispute=await tx.dispute.findUniqueOrThrow({where:{id:d.disputeId},include:{booking:{include:{payment:true}}}});
+      const dispute=await tx.dispute.findUniqueOrThrow({where:{id:d.disputeId},include:{booking:{include:{payment:true,job:true,customer:{select:{name:true,email:true}},transporter:{select:{name:true,email:true}}}}}});
       const payment=dispute.booking.payment;
       if(d.status==='UNDER_REVIEW'&&payment&&payment.payoutStatus!=='PAID'&&payment.payoutStatus!=='CANCELLED'&&payment.payoutStatus!=='HELD') await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:'HELD'}});
       if(d.status==='RESOLVED'&&d.resolution==='RELEASE_PAYOUT'&&payment){
@@ -34,8 +36,19 @@ export async function PATCH(r:Request){
         await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:'READY'}});
       }
       if(d.status==='RESOLVED'&&['REFUND_CUSTOMER','PARTIAL_REFUND'].includes(d.resolution||'')&&payment&&payment.payoutStatus!=='PAID') await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:'HELD'}});
-      return tx.dispute.update({where:{id:d.disputeId},data:{status:d.status,resolution:d.resolution,resolutionNote:d.resolutionNote,reviewerId:u.id,reviewedAt:new Date()}});
+      const updated=await tx.dispute.update({where:{id:d.disputeId},data:{status:d.status,resolution:d.resolution,resolutionNote:d.resolutionNote,reviewerId:u.id,reviewedAt:new Date()}});
+      return {updated,booking:dispute.booking,wasResolved:dispute.status==='RESOLVED'};
     });
-    return NextResponse.json(result);
+    if(d.status==='RESOLVED'&&!result.wasResolved){
+      const b=result.booking;
+      const vehicle=[b.job.vehicleYear,b.job.vehicleMake,b.job.vehicleModel].filter(Boolean).join(' ').replace(/\s+/g,' ').trim()||'vehicle';
+      const outcome=resolutionLabel(d.resolution);
+      const note=d.resolutionNote?.trim()?`\n\nDriveDrop review note: ${d.resolutionNote.trim()}`:'';
+      await Promise.all([
+        sendTransactionalEmailSafely({to:b.customer.email,subject:`DriveDrop dispute resolved — ${vehicle}`,heading:'Dispute resolved',preheader:`DriveDrop has resolved the dispute for your ${vehicle} booking.`,body:`Hi ${b.customer.name?.trim()||'there'},\n\nDriveDrop has completed its review of the dispute regarding the ${vehicle}.\n\nResolution: ${outcome}${note}\n\nYou can view the latest booking and dispute status in your DriveDrop account.`,ctaLabel:'View booking',ctaPath:'/customer'}),
+        sendTransactionalEmailSafely({to:b.transporter.email,subject:`DriveDrop dispute resolved — ${vehicle}`,heading:'Dispute resolved',preheader:`DriveDrop has resolved the dispute for the ${vehicle} booking.`,body:`Hi ${b.transporter.name?.trim()||'there'},\n\nDriveDrop has completed its review of the dispute regarding the ${vehicle}.\n\nResolution: ${outcome}${note}\n\nYou can view the latest booking, dispute and payout status in your DriveDrop account.`,ctaLabel:'View delivery',ctaPath:'/transporter'})
+      ]);
+    }
+    return NextResponse.json(result.updated);
   }catch(e:any){return NextResponse.json({error:e.message||'Unable to review dispute'},{status:400})}
 }
