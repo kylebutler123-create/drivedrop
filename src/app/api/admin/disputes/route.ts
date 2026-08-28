@@ -35,6 +35,10 @@ export async function PATCH(r:Request){
         if(payment.payoutStatus==='PAID') throw new Error('Payout has already been released');
         await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:'READY'}});
       }
+      if(d.status==='RESOLVED'&&d.resolution==='NO_ACTION'&&payment&&payment.payoutStatus==='HELD'){
+        const eligibleForPayout=payment.status==='PAID'&&dispute.booking.status==='DELIVERED'&&!!dispute.booking.customerConfirmedAt;
+        await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:eligibleForPayout?'READY':'NOT_READY'}});
+      }
       if(d.status==='RESOLVED'&&['REFUND_CUSTOMER','PARTIAL_REFUND'].includes(d.resolution||'')&&payment&&payment.payoutStatus!=='PAID') await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:'HELD'}});
       const updated=await tx.dispute.update({where:{id:d.disputeId},data:{status:d.status,resolution:d.resolution,resolutionNote:d.resolutionNote,reviewerId:u.id,reviewedAt:new Date()}});
       return {updated,booking:dispute.booking,wasResolved:dispute.status==='RESOLVED'};
