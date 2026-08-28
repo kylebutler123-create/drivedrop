@@ -33,11 +33,14 @@ export async function PATCH(r:Request){
       }
       return {booking,event,before:b};
     });
+    const b=result.before;
+    const vehicle=[b.job.vehicleYear,b.job.vehicleMake,b.job.vehicleModel].filter(Boolean).join(' ').replace(/\s+/g,' ').trim()||'vehicle';
+    const transporter=b.transporter?.name?.trim()||'your transporter';
     if(d.status==='COLLECTED'){
-      const b=result.before;
-      const vehicle=[b.job.vehicleYear,b.job.vehicleMake,b.job.vehicleModel].filter(Boolean).join(' ').replace(/\s+/g,' ').trim()||'vehicle';
-      const transporter=b.transporter?.name?.trim()||'your transporter';
       await sendTransactionalEmailSafely({to:b.customer.email,subject:`Your ${vehicle} has been collected`,heading:'Vehicle collected',preheader:`Your DriveDrop transporter has collected your ${vehicle}.`,body:`Hi ${b.customer.name?.trim()||'there'},\n\n${transporter} has marked your ${vehicle} as collected.\n\nYou can follow the latest delivery status from your DriveDrop dashboard.`,ctaLabel:'Track your delivery',ctaPath:'/customer'});
+    }
+    if(d.status==='DELIVERED'){
+      await sendTransactionalEmailSafely({to:b.customer.email,subject:`Your ${vehicle} has been delivered`,heading:'Vehicle delivered',preheader:`Your DriveDrop delivery has been completed.`,body:`Hi ${b.customer.name?.trim()||'there'},\n\n${transporter} has marked your ${vehicle} as delivered.\n\nYour transport job is now complete. You can review the completed booking and delivery history in your DriveDrop account.`,ctaLabel:'View completed booking',ctaPath:'/customer'});
     }
     return NextResponse.json({booking:result.booking,event:result.event});
   }catch(e:any){return NextResponse.json({error:e.message||'Unable to update delivery'},{status:400})}
