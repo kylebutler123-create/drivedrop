@@ -9,7 +9,7 @@ export async function GET(){
  const u=await currentUser();
  if(!u||u.role!=='CUSTOMER')return NextResponse.json({error:'Forbidden'},{status:403,headers:{'Cache-Control':'no-store, max-age=0'}});
  const jobs=await prisma.transportJob.findMany({
-  where:{customerId:u.id},
+  where:{customerId:u.id,status:{in:['OPEN','QUOTED']}},
   include:{
    quotes:{include:{transporter:{select:{
     name:true,
