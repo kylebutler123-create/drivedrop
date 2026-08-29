@@ -46,6 +46,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
             <NotificationNavLink/>
             {reviewHref&&reviewLabel&&<Link href={reviewHref}>{reviewLabel}</Link>}
           </>}
+          <Link className="btn light accountNavBtn" href="/account">Account</Link>
           <Link className="btn orange" href={dashboardHref}>Dashboard</Link>
           <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
         </>:<>
