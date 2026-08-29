@@ -123,6 +123,7 @@
   .transporterTop .transporterCommsNav {
     order: 2;
     display: flex;
+    justify-content: flex-end;
     gap: 8px;
     margin-top: -3px;
   }
