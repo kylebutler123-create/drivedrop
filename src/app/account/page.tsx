@@ -5,6 +5,7 @@ import {prisma} from '@/lib/prisma';
 import AccountEditor from './AccountEditor';
 import PasswordEditor from './PasswordEditor';
 import EmailEditor from './EmailEditor';
+import CloseAccount from './CloseAccount';
 
 const label=(s:string)=>s.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
 
@@ -24,6 +25,7 @@ export default async function AccountPage(){
     <AccountEditor name={user.name} email={user.email} role={user.role} business={verification?{businessName:verification.businessName||'',companyNumber:verification.companyNumber||'',businessAddress:verification.businessAddress||'',phone:verification.phone||'',yearsOperating:verification.yearsOperating,website:verification.website||''}:null}/>
     <EmailEditor email={user.email}/>
     <PasswordEditor/>
+    <CloseAccount/>
 
     <div className="accountGrid">
       <section className="dashboardCard accountCard"><div className="panelHeading"><div><span className="panelIcon">👤</span><div><h2>Personal details</h2><p>Your main DriveDrop identity and login information.</p></div></div></div><div className="infoPanel accountInfoPanel"><div className="infoRow"><span>Name</span><b>{user.name}</b></div><div className="infoRow"><span>Email address</span><b>{user.email}</b></div><div className="infoRow"><span>Account type</span><b>{label(user.role)}</b></div><div className="infoRow"><span>Account status</span><b>{label(user.accountStatus)}</b></div><div className="infoRow"><span>Member since</span><b>{user.createdAt.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}</b></div>{user.role==='TRANSPORTER'&&<div className="infoRow"><span>Transport work</span><b>{user.workRestricted?'Restricted':'Permitted'}</b></div>}</div></section>
