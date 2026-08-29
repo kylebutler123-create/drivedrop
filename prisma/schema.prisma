@@ -287,25 +287,25 @@ model Dispute {
 }
 
 model Review {
-  id                 String   @id @default(cuid())
-  bookingId          String   @unique
-  booking            Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  customerId         String
-  customer           User     @relation("ReviewCustomer", fields: [customerId], references: [id])
-  transporterId      String
-  transporter        User     @relation("ReviewTransporter", fields: [transporterId], references: [id])
-  rating             Int
-  body               String?
-  verified           Boolean  @default(true)
-  transporterReply   String?
-  transporterReplyAt DateTime?
-  disputeReason      String?
-  disputeDetails     String?
-  disputedAt         DateTime?
-  moderationStatus   String   @default("ACTIVE")
-  moderationNote     String?
-  moderatedAt        DateTime?
-  createdAt          DateTime @default(now())
+  id                       String   @id @default(cuid())
+  bookingId                String   @unique
+  booking                  Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  customerId               String
+  customer                 User     @relation("ReviewCustomer", fields: [customerId], references: [id])
+  transporterId            String
+  transporter              User     @relation("ReviewTransporter", fields: [transporterId], references: [id])
+  rating                   Int
+  body                     String?
+  verified                 Boolean  @default(true)
+  transporterResponse      String?
+  transporterRespondedAt   DateTime?
+  moderationStatus         String   @default("VISIBLE")
+  disputeReason            String?
+  disputeDetails           String?
+  disputedAt               DateTime?
+  moderationNote           String?
+  moderatedAt              DateTime?
+  createdAt                DateTime @default(now())
 
   @@index([transporterId, createdAt])
   @@index([moderationStatus, createdAt])
@@ -320,6 +320,7 @@ model Session {
   createdAt DateTime @default(now())
 
   @@index([userId, expiresAt])
+  @@index([expiresAt])
 }
 
 model TransporterVerification {
