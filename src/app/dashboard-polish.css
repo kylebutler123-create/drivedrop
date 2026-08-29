@@ -56,6 +56,31 @@
   background: #fff3e8;
 }
 
+.agreedCollectionDate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 14px 0 -4px;
+  padding: 11px 14px;
+  border: 1px solid #f0d9c5;
+  border-radius: 14px;
+  background: #fff8f1;
+}
+
+.agreedCollectionDate span {
+  color: #7d624d;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.agreedCollectionDate strong {
+  color: #9b4d13;
+  font-size: 13px;
+}
+
 @media (max-width: 760px) {
   .dashboardSummary > [role="button"]:hover,
   .adminReviewNavCard:hover {
@@ -65,5 +90,11 @@
   .dashboardFilterBar {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .agreedCollectionDate {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
   }
 }
