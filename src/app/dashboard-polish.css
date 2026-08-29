@@ -365,6 +365,88 @@
   margin-top: 14px;
 }
 
+/* Account information hub. */
+.accountGrid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 18px;
+}
+
+.accountCard {
+  margin: 0;
+}
+
+.accountDocumentsCard {
+  grid-column: 1 / -1;
+}
+
+.accountInfoPanel {
+  margin-top: 16px;
+  border: 1px solid #e1e8ef;
+}
+
+.accountInfoPanel .infoRow {
+  gap: 20px;
+}
+
+.accountInfoPanel .infoRow b {
+  max-width: 62%;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.accountStatusBadge {
+  display: flex;
+  min-width: 165px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 18px 24px;
+  border: 1px solid rgba(255,255,255,.34);
+  border-radius: 18px;
+  background: rgba(255,255,255,.10);
+}
+
+.accountStatusBadge strong {
+  font-size: 19px;
+}
+
+.accountDocumentList {
+  display: grid;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.accountDocumentRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 13px 14px;
+  border: 1px solid #e1e8ef;
+  border-radius: 14px;
+  background: #fbfcfe;
+}
+
+.accountDocumentRow > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.accountDocumentRow > div:last-child {
+  align-items: flex-end;
+}
+
+.accountDocumentRow small {
+  color: #697a90;
+}
+
+.accountActions {
+  margin-top: 14px;
+}
+
 .agreedCollectionDate {
   display: flex;
   align-items: center;
@@ -480,8 +562,33 @@
     min-width: 0;
   }
 
-  .quoteHistoryGrid {
+  .quoteHistoryGrid,
+  .accountGrid {
     grid-template-columns: 1fr;
+  }
+
+  .accountDocumentsCard {
+    grid-column: auto;
+  }
+
+  .accountInfoPanel .infoRow {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .accountInfoPanel .infoRow b {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .accountDocumentRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .accountDocumentRow > div:last-child {
+    align-items: flex-start;
   }
 
   .quoteHistoryCard > .actionButtons {
