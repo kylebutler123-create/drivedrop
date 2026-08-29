@@ -3,10 +3,12 @@ import { prisma } from '@/lib/prisma';
 import { currentUser } from '@/lib/auth';
 import { z } from 'zod';
 import { sendTransactionalEmailSafely } from '@/lib/email';
+import {createNotificationSafely} from '@/lib/notifications';
 
 const S=z.object({bookingId:z.string(),status:z.enum(['COLLECTION_SCHEDULED','COLLECTED','IN_TRANSIT','ARRIVING_SOON','DELIVERED','CANCELLED']),note:z.string().max(500).optional()});
 const allowed:Record<string,string[]>={CONFIRMED:['COLLECTION_SCHEDULED','COLLECTED','CANCELLED'],COLLECTION_SCHEDULED:['COLLECTED','CANCELLED'],COLLECTED:['IN_TRANSIT'],IN_TRANSIT:['ARRIVING_SOON','DELIVERED'],ARRIVING_SOON:['DELIVERED']};
 const paymentRequiredStatuses=new Set(['COLLECTED','IN_TRANSIT','ARRIVING_SOON','DELIVERED']);
+const statusTitle:Record<string,string>={COLLECTION_SCHEDULED:'Collection scheduled',COLLECTED:'Vehicle collected',IN_TRANSIT:'Vehicle in transit',ARRIVING_SOON:'Vehicle arriving soon',DELIVERED:'Vehicle delivered',CANCELLED:'Delivery cancelled'};
 
 export async function PATCH(r:Request){
   const u=await currentUser();
@@ -36,6 +38,7 @@ export async function PATCH(r:Request){
     const b=result.before;
     const vehicle=[b.job.vehicleYear,b.job.vehicleMake,b.job.vehicleModel].filter(Boolean).join(' ').replace(/\s+/g,' ').trim()||'vehicle';
     const transporter=b.transporter?.name?.trim()||'your transporter';
+    await createNotificationSafely({userId:b.customerId,type:'DELIVERY',title:statusTitle[d.status]||'Delivery updated',body:`${vehicle}: ${statusTitle[d.status]||d.status.toLowerCase().replaceAll('_',' ')}.${d.note?` ${d.note}`:''}`,href:'/customer'});
     if(d.status==='COLLECTED'){
       await sendTransactionalEmailSafely({to:b.customer.email,subject:`Your ${vehicle} has been collected`,heading:'Vehicle collected',preheader:`Your DriveDrop transporter has collected your ${vehicle}.`,body:`Hi ${b.customer.name?.trim()||'there'},\n\n${transporter} has marked your ${vehicle} as collected.\n\nYou can follow the latest delivery status from your DriveDrop dashboard.`,ctaLabel:'Track your delivery',ctaPath:'/customer'});
     }
