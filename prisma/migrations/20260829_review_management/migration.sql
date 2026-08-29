@@ -1,11 +1,9 @@
-ALTER TABLE "Review"
-ADD COLUMN "transporterReply" TEXT,
-ADD COLUMN "transporterReplyAt" TIMESTAMP(3),
-ADD COLUMN "disputeReason" TEXT,
-ADD COLUMN "disputeDetails" TEXT,
-ADD COLUMN "disputedAt" TIMESTAMP(3),
-ADD COLUMN "moderationStatus" TEXT NOT NULL DEFAULT 'ACTIVE',
-ADD COLUMN "moderationNote" TEXT,
-ADD COLUMN "moderatedAt" TIMESTAMP(3);
-
-CREATE INDEX "Review_moderationStatus_createdAt_idx" ON "Review"("moderationStatus", "createdAt");
+ALTER TABLE "Review" ADD COLUMN IF NOT EXISTS "transporterResponse" TEXT;
+ALTER TABLE "Review" ADD COLUMN IF NOT EXISTS "transporterRespondedAt" TIMESTAMPTZ;
+ALTER TABLE "Review" ADD COLUMN IF NOT EXISTS "moderationStatus" TEXT NOT NULL DEFAULT 'VISIBLE';
+ALTER TABLE "Review" ADD COLUMN IF NOT EXISTS "disputeReason" TEXT;
+ALTER TABLE "Review" ADD COLUMN IF NOT EXISTS "disputeDetails" TEXT;
+ALTER TABLE "Review" ADD COLUMN IF NOT EXISTS "disputedAt" TIMESTAMPTZ;
+ALTER TABLE "Review" ADD COLUMN IF NOT EXISTS "moderationNote" TEXT;
+ALTER TABLE "Review" ADD COLUMN IF NOT EXISTS "moderatedAt" TIMESTAMPTZ;
+CREATE INDEX IF NOT EXISTS "Review_moderationStatus_createdAt_idx" ON "Review"("moderationStatus", "createdAt");
