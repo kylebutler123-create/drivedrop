@@ -328,6 +328,43 @@
   border: 1px solid #dfe7ef;
 }
 
+/* Transporter submitted quotes history. */
+.quoteHistoryCard {
+  border-color: #dbe4ed;
+}
+
+.quoteHistoryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.quoteHistoryGrid .infoPanel {
+  border: 1px solid #e1e8ef;
+  min-height: 100%;
+}
+
+.quoteHistoryMessageLabel {
+  display: block;
+  margin-bottom: 7px;
+  color: #697a90;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.quoteHistoryGrid p {
+  margin: 0;
+  line-height: 1.55;
+  color: #52667e;
+}
+
+.quoteHistoryCard > .actionButtons {
+  margin-top: 14px;
+}
+
 .agreedCollectionDate {
   display: flex;
   align-items: center;
@@ -384,7 +421,8 @@
   }
 
   .quoteRequestCard,
-  .jobOpportunity {
+  .jobOpportunity,
+  .quoteHistoryCard {
     padding: 20px;
   }
 
@@ -440,6 +478,19 @@
   .quoteSubmitPanel .quoteSubmitBtn {
     width: 100%;
     min-width: 0;
+  }
+
+  .quoteHistoryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .quoteHistoryCard > .actionButtons {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .quoteHistoryCard > .actionButtons .btn {
+    width: 100%;
   }
 
   .agreedCollectionDate {
