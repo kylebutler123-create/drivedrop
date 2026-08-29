@@ -25,7 +25,10 @@ export async function GET(){
   const reviewCount=ratings.length;
   const averageRating=reviewCount?ratings.reduce((sum,r)=>sum+r,0)/reviewCount:null;
   const {reviewsReceived,...transporter}=q.transporter;
-  return {...q,transporter:{...transporter,reviewCount,averageRating}};
+  const businessName=transporter.transporterVerification?.businessName?.trim();
+  const ratingText=averageRating!==null?`★ ${averageRating.toFixed(1)} (${reviewCount} review${reviewCount===1?'':'s'})`:'★ New transporter';
+  const displayName=[businessName,transporter.name,ratingText].filter(Boolean).join(' · ');
+  return {...q,transporter:{...transporter,name:displayName,personName:transporter.name,businessName:businessName||null,reviewCount,averageRating}};
  })}));
  return NextResponse.json(result,{headers:{'Cache-Control':'no-store, max-age=0'}});
 }
