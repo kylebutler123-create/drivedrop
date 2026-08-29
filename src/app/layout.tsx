@@ -31,6 +31,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
       <nav className="nav">
         {user?<>
           {manageHref&&manageLabel&&<Link href={manageHref}>{manageLabel}</Link>}
+          {user.role==='TRANSPORTER'&&<Link href="/transporter/quotes">My quotes</Link>}
           {showMessages&&<MessagesNavLink/>}
           <NotificationNavLink/>
           {reviewHref&&reviewLabel&&<Link href={reviewHref}>{reviewLabel}</Link>}
