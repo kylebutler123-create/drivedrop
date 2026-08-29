@@ -15,7 +15,8 @@ export async function GET(){
    quotes:{include:{transporter:{select:{
     id:true,
     name:true,
-    transporterVerification:{select:{status:true,businessName:true}},
+    createdAt:true,
+    transporterVerification:{select:{status:true,businessName:true,companyNumber:true,yearsOperating:true,website:true}},
     reviewsReceived:{where:{verified:true,moderationStatus:{not:'HIDDEN'}},select:{rating:true}}
    }}}},
    booking:true
@@ -30,10 +31,11 @@ export async function GET(){
   const reviewCount=ratings.length;
   const averageRating=reviewCount?ratings.reduce((sum,r)=>sum+r,0)/reviewCount:null;
   const {reviewsReceived,...transporter}=q.transporter;
+  const verification=transporter.transporterVerification;
   const ratingText=averageRating!==null?`★ ${averageRating.toFixed(1)} (${reviewCount} review${reviewCount===1?'':'s'})`:'★ New transporter';
-  const businessName=transporter.transporterVerification?.businessName||transporter.name;
+  const businessName=verification?.businessName||transporter.name;
   const displayName=`${businessName} · ${ratingText}`;
-  return {...q,transporter:{...transporter,name:displayName,personName:transporter.name,businessName,reviewCount,averageRating,profileImageUrl:profileImageUrl(profilePaths.get(transporter.id)||null)}};
+  return {...q,transporter:{...transporter,name:displayName,personName:transporter.name,businessName,companyNumber:verification?.companyNumber||null,yearsOperating:verification?.yearsOperating??null,website:verification?.website||null,verificationStatus:verification?.status||'NOT_STARTED',reviewCount,averageRating,profileImageUrl:profileImageUrl(profilePaths.get(transporter.id)||null)}};
  })}));
  return NextResponse.json(result,{headers:{'Cache-Control':'no-store, max-age=0'}});
 }
