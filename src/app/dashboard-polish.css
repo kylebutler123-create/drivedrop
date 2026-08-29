@@ -218,6 +218,116 @@
   gap: 8px;
 }
 
+/* Transporter job opportunities. */
+.jobOpportunity {
+  border-color: #dbe4ed;
+  overflow: hidden;
+}
+
+.jobOpportunity .opportunityPill {
+  background: #fff0e4;
+  color: #a84d0c;
+  border-color: #f3d4bb;
+}
+
+.jobOpportunity .vehicleState {
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 13px;
+  border: 1px solid #dfe7ef;
+  border-radius: 14px;
+  background: #f7f9fb;
+  color: #102d52;
+}
+
+.jobOpportunity .vehicleState span {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #e8f7ef;
+  color: #14794c;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.jobOpportunity .vehicleState b {
+  font-size: 11px;
+}
+
+.jobOpportunity .compactRoute {
+  margin-bottom: 16px;
+  background: #fbfcfe;
+}
+
+.quoteSubmitPanel {
+  display: grid;
+  grid-template-columns: .75fr 1fr;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid #dde6ef;
+  border-radius: 18px;
+  background: #fbfcfe;
+  box-shadow: 0 6px 18px rgba(16,35,63,.045);
+}
+
+.quoteSubmitPanel > div {
+  min-width: 0;
+}
+
+.quoteSubmitPanel label {
+  display: block;
+  margin-bottom: 6px;
+  color: #52667e;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .05em;
+}
+
+.quoteSubmitPanel input,
+.quoteSubmitPanel textarea {
+  width: 100%;
+  border: 1px solid #d8e1ea;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.quoteSubmitPanel input {
+  min-height: 44px;
+  padding: 11px 12px;
+}
+
+.quoteSubmitPanel textarea {
+  min-height: 92px;
+  padding: 12px;
+  resize: vertical;
+}
+
+.quoteSubmitPanel .quoteMessageField {
+  grid-column: 1 / -1;
+}
+
+.quoteSubmitPanel .formNotice {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.quoteSubmitPanel .quoteSubmitBtn {
+  grid-column: 1 / -1;
+  justify-self: start;
+  min-width: 170px;
+}
+
+.jobOpportunity > .infoPanel {
+  margin-top: 16px;
+  border: 1px solid #dfe7ef;
+}
+
 .agreedCollectionDate {
   display: flex;
   align-items: center;
@@ -273,7 +383,8 @@
     padding: 14px;
   }
 
-  .quoteRequestCard {
+  .quoteRequestCard,
+  .jobOpportunity {
     padding: 20px;
   }
 
@@ -306,6 +417,29 @@
   .quoteOffer .actionButtons .btn,
   .quoteOffer .actionButtons .textAction {
     width: 100%;
+  }
+
+  .jobOpportunity .vehicleState {
+    width: 100%;
+    min-width: 0;
+    justify-content: flex-start;
+    margin-top: 4px;
+  }
+
+  .quoteSubmitPanel {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+
+  .quoteSubmitPanel .quoteMessageField,
+  .quoteSubmitPanel .formNotice,
+  .quoteSubmitPanel .quoteSubmitBtn {
+    grid-column: auto;
+  }
+
+  .quoteSubmitPanel .quoteSubmitBtn {
+    width: 100%;
+    min-width: 0;
   }
 
   .agreedCollectionDate {
