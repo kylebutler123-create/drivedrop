@@ -20,13 +20,12 @@ export default async function Layout({children}:{children:React.ReactNode}){
   const manageLabel=user?.role==='CUSTOMER'?'Manage requests':user?.role==='TRANSPORTER'?'Manage deliveries':null;
   const reviewHref=user?.role==='TRANSPORTER'?'/transporter/reviews':user?.role==='ADMIN'?'/admin/review-disputes':null;
   const reviewLabel=user?.role==='TRANSPORTER'?'Customer reviews':user?.role==='ADMIN'?'Review moderation':null;
-  const showMessages=user&&user.role!=='ADMIN';
 
   return <html lang="en"><body>
     <CustomerQuoteRequestNavigator/>
     <AgreedCollectionDateEnhancer/>
     <TransporterRequoteEnhancer/>
-    <header className={`top${user?.role==='TRANSPORTER'?' transporterTop':''}`}>
+    <header className={`top${user?.role==='TRANSPORTER'?' transporterTop':user?.role==='CUSTOMER'?' customerTop':''}`}>
       <Link href="/" className="logo headerLogo" aria-label="DriveDrop home"><img src="/AC51EBEA-9552-47BB-92A0-E8D611539A71.png" alt="DriveDrop" /></Link>
       <nav className="nav">
         {user?<>
@@ -43,9 +42,16 @@ export default async function Layout({children}:{children:React.ReactNode}){
             </span>
             <Link className="btn light accountNavBtn" href="/account">Account</Link>
             <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
+          </>:user.role==='CUSTOMER'?<>
+            <span className="customerSecondaryNav">
+              <Link href="/customer/manage-requests">Manage requests</Link>
+              <MessagesNavLink/>
+              <NotificationNavLink/>
+            </span>
+            <Link className="btn light accountNavBtn" href="/account">Account</Link>
+            <Link className="btn orange customerDashboardBtn" href={dashboardHref}>Dashboard</Link>
+            <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
           </>:<>
-            {manageHref&&manageLabel&&<Link href={manageHref}>{manageLabel}</Link>}
-            {showMessages&&<MessagesNavLink/>}
             <NotificationNavLink/>
             {reviewHref&&reviewLabel&&<Link href={reviewHref}>{reviewLabel}</Link>}
             <Link className="btn light accountNavBtn" href="/account">Account</Link>
