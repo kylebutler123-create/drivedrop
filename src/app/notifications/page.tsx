@@ -1,0 +1,16 @@
+'use client';
+import {useEffect,useState} from 'react';
+import Link from 'next/link';
+
+type Notification={id:string;type:string;title:string;body:string;href:string|null;readAt:string|null;createdAt:string};
+const icon=(type:string)=>type==='QUOTE'?'£':type==='BOOKING'?'✓':type==='PAYMENT'?'£':type==='DELIVERY'?'🚗':type==='MESSAGE'?'💬':type==='DISPUTE'?'!':type==='REVIEW'?'★':'🔔';
+
+export default function NotificationsPage(){
+ const[items,setItems]=useState<Notification[]>([]),[loading,setLoading]=useState(true);
+ async function load(){const r=await fetch('/api/notifications',{cache:'no-store'});if(r.ok){const d=await r.json();setItems(d.notifications||[])}setLoading(false)}
+ useEffect(()=>{load();const t=setInterval(load,5000);return()=>clearInterval(t)},[]);
+ async function mark(id:string){await fetch('/api/notifications',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({id})});setItems(x=>x.map(n=>n.id===id?{...n,readAt:new Date().toISOString()}:n));window.dispatchEvent(new Event('drivedrop:notifications-read'))}
+ async function markAll(){await fetch('/api/notifications',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({all:true})});setItems(x=>x.map(n=>({...n,readAt:n.readAt||new Date().toISOString()})));window.dispatchEvent(new Event('drivedrop:notifications-read'))}
+ const unread=items.filter(n=>!n.readAt).length;
+ return <main className="shell dashboardShell"><Link className="backLink" href="/">← Back</Link><header className="dashboardHero"><div><span className="dashboardEyebrow">Account activity</span><h1>Notifications</h1><p>Important DriveDrop updates about quotes, bookings, payments, deliveries and messages.</p></div><div className="adminHeroBadge"><span>Unread</span><strong>{unread}</strong><small>Notification{unread===1?'':'s'}</small></div></header><div className="dashboardSectionHeading"><div><h2>Recent activity</h2></div>{unread>0&&<button className="btn light" onClick={markAll}>Mark all as read</button>}</div>{loading?<div className="dashboardCard">Loading notifications…</div>:items.length===0?<div className="dashboardCard emptyState"><div>🔔</div><h3>No notifications yet</h3><p>Important marketplace activity will appear here.</p></div>:items.map(n=><article key={n.id} className="dashboardCard" style={{border:!n.readAt?'2px solid #ff7a18':undefined,background:!n.readAt?'#fff8f2':undefined,padding:18,marginBottom:12}}><div style={{display:'flex',gap:14,alignItems:'flex-start'}}><div style={{width:38,height:38,borderRadius:12,background:'#f3f6fa',display:'flex',alignItems:'center',justifyContent:'center',fontWeight:800}}>{icon(n.type)}</div><div style={{flex:1,minWidth:0}}><div style={{display:'flex',justifyContent:'space-between',gap:12,alignItems:'start'}}><div><h3 style={{margin:'0 0 5px',fontWeight:!n.readAt?800:700}}>{n.title}</h3><p style={{margin:0}}>{n.body}</p></div>{!n.readAt&&<span className="statusPill">New</span>}</div><small className="muted" style={{display:'block',marginTop:8}}>{new Date(n.createdAt).toLocaleString('en-GB')}</small><div className="actionButtons" style={{marginTop:10}}>{n.href&&<Link className="btn light" href={n.href} onClick={()=>mark(n.id)}>View</Link>}{!n.readAt&&<button className="textAction" onClick={()=>mark(n.id)}>Mark as read</button>}</div></div></div></article>)}</main>;
+}
