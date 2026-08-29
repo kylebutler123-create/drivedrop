@@ -98,6 +98,126 @@
   line-height: 1.35;
 }
 
+/* Customer quote comparison cards. */
+.quoteRequestCard {
+  border-color: #dbe4ed;
+}
+
+.quoteCount {
+  min-width: 84px;
+  padding: 11px 13px;
+  border: 1px solid #e2e9f0;
+  border-radius: 14px;
+  background: #f7f9fb;
+  text-align: center;
+}
+
+.quoteCount strong,
+.quoteCount span {
+  display: block;
+}
+
+.quoteCount strong {
+  font-size: 22px;
+  color: #102d52;
+}
+
+.quoteCount span {
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: #697a90;
+}
+
+.quoteOffer {
+  margin-top: 14px;
+  padding: 18px;
+  border: 1px solid #dde6ef;
+  border-radius: 18px;
+  background: #fbfcfe;
+  box-shadow: 0 6px 18px rgba(16,35,63,.045);
+}
+
+.quoteTransporter {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+.transporterAvatar {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  background: #eef4fb;
+}
+
+.quoteTransporter > div:last-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.quoteTransporter b {
+  font-size: 15px;
+  color: #10233f;
+}
+
+.quoteTransporter p {
+  margin: 7px 0 0;
+  line-height: 1.5;
+  color: #5f7187;
+}
+
+.verifiedMini {
+  display: inline-flex;
+  margin-left: 8px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: #e8f7ef;
+  color: #14794c;
+  font-size: 10px;
+  font-weight: 800;
+  vertical-align: middle;
+}
+
+.quotePrice {
+  min-width: 112px;
+  padding: 12px 14px;
+  border: 1px solid #f0d9c5;
+  border-radius: 15px;
+  background: #fff8f1;
+  text-align: right;
+}
+
+.quotePrice strong {
+  display: block;
+  font-size: 24px;
+  line-height: 1;
+  color: #9b4d13;
+}
+
+.quotePrice span,
+.quotePrice small {
+  display: block;
+  margin-top: 4px;
+  color: #7d624d;
+  font-size: 10px;
+}
+
+.quoteOffer .infoPanel {
+  margin-top: 12px;
+  border: 1px solid #e4eaf0;
+}
+
+.quoteOffer .actionButtons {
+  margin-top: 12px;
+  gap: 8px;
+}
+
 .agreedCollectionDate {
   display: flex;
   align-items: center;
@@ -151,6 +271,41 @@
   .routeVisual {
     margin: 16px 0;
     padding: 14px;
+  }
+
+  .quoteRequestCard {
+    padding: 20px;
+  }
+
+  .quoteCount {
+    width: 100%;
+    min-width: 0;
+    margin-top: 4px;
+  }
+
+  .quoteOffer {
+    padding: 15px;
+  }
+
+  .quoteTransporter {
+    gap: 10px;
+  }
+
+  .quotePrice {
+    width: 100%;
+    min-width: 0;
+    margin-top: 10px;
+    text-align: left;
+  }
+
+  .quoteOffer .actionButtons {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .quoteOffer .actionButtons .btn,
+  .quoteOffer .actionButtons .textAction {
+    width: 100%;
   }
 
   .agreedCollectionDate {
