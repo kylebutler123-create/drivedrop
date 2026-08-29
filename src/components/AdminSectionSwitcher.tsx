@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import {ReactNode,useState} from 'react';
 
 type View='ALL'|'USERS'|'VERIFICATION'|'DISPUTES';
@@ -17,6 +18,7 @@ export default function AdminSectionSwitcher({userCount,transporterCount,dispute
    <div role="button" tabIndex={0} aria-pressed={view==='USERS'} onClick={()=>toggle('USERS')} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle('USERS')}}} style={cardStyle(view==='USERS')}><strong>{userCount}</strong><span style={labelStyle(view==='USERS')}>User manager</span></div>
    <div role="button" tabIndex={0} aria-pressed={view==='VERIFICATION'} onClick={()=>toggle('VERIFICATION')} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle('VERIFICATION')}}} style={cardStyle(view==='VERIFICATION')}><strong>{transporterCount}</strong><span style={labelStyle(view==='VERIFICATION')}>Transporter verification</span></div>
    <div role="button" tabIndex={0} aria-pressed={view==='DISPUTES'} onClick={()=>toggle('DISPUTES')} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle('DISPUTES')}}} style={cardStyle(view==='DISPUTES')}><strong>{disputeCount}</strong><span style={labelStyle(view==='DISPUTES')}>Dispute management</span></div>
+   <Link href="/admin/review-disputes" className="adminReviewNavCard" style={{...cardStyle(false),textDecoration:'none',display:'flex',flexDirection:'column',justifyContent:'center'}}><strong>★</strong><span style={labelStyle(false)}>Review moderation</span></Link>
   </div>
   {view!=='ALL'&&<div className="dashboardFilterBar"><span>Showing {view==='USERS'?'user manager':view==='VERIFICATION'?'transporter verification':'dispute management'} only</span><button className="textAction" onClick={()=>setView('ALL')}>Show everything</button></div>}
   {showUsers&&userSection}
