@@ -30,11 +30,22 @@ export default async function Layout({children}:{children:React.ReactNode}){
       <Link href="/" className="logo headerLogo" aria-label="DriveDrop home"><img src="/AC51EBEA-9552-47BB-92A0-E8D611539A71.png" alt="DriveDrop" /></Link>
       <nav className="nav">
         {user?<>
-          {manageHref&&manageLabel&&<Link href={manageHref}>{manageLabel}</Link>}
-          {user.role==='TRANSPORTER'&&<Link href="/transporter/quotes">My quotes</Link>}
-          {showMessages&&<MessagesNavLink/>}
-          <NotificationNavLink/>
-          {reviewHref&&reviewLabel&&<Link href={reviewHref}>{reviewLabel}</Link>}
+          {user.role==='TRANSPORTER'?<>
+            <span className="transporterCommsNav">
+              <MessagesNavLink/>
+              <NotificationNavLink/>
+            </span>
+            <span className="transporterManageNav">
+              <Link href="/transporter/manage-deliveries">Manage deliveries</Link>
+              <Link href="/transporter/quotes">My quotes</Link>
+              <Link href="/transporter/reviews">Customer reviews</Link>
+            </span>
+          </>:<>
+            {manageHref&&manageLabel&&<Link href={manageHref}>{manageLabel}</Link>}
+            {showMessages&&<MessagesNavLink/>}
+            <NotificationNavLink/>
+            {reviewHref&&reviewLabel&&<Link href={reviewHref}>{reviewLabel}</Link>}
+          </>}
           <Link className="btn orange" href={dashboardHref}>Dashboard</Link>
           <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
         </>:<>
