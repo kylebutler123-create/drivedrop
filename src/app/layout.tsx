@@ -26,7 +26,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
     <CustomerQuoteRequestNavigator/>
     <AgreedCollectionDateEnhancer/>
     <TransporterRequoteEnhancer/>
-    <header className="top">
+    <header className={`top${user?.role==='TRANSPORTER'?' transporterTop':''}`}>
       <Link href="/" className="logo headerLogo" aria-label="DriveDrop home"><img src="/AC51EBEA-9552-47BB-92A0-E8D611539A71.png" alt="DriveDrop" /></Link>
       <nav className="nav">
         {user?<>
