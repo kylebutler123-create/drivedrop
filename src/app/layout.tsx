@@ -30,7 +30,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
     <header className={`top${user?.role==='TRANSPORTER'?' transporterTop':user?.role==='CUSTOMER'?' customerTop':!user?' guestTop':''}`}>
       {user?.role==='CUSTOMER'?<div className="customerPrimaryNav">
         <Link href="/" className="logo headerLogo" aria-label="DriveDrop home"><img src="/AC51EBEA-9552-47BB-92A0-E8D611539A71.png" alt="DriveDrop" /></Link>
-        <Link className="btn light accountNavBtn" href="/account">Account</Link>
+        <Link className="accountNavBtn" href="/account">Account</Link>
         <Link className="btn orange customerDashboardBtn" href={dashboardHref}>Dashboard</Link>
         <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
       </div>:!user?<div className="guestPrimaryNav">
