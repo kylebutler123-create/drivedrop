@@ -1,0 +1,69 @@
+.dashboardSummary > [role="button"],
+.adminReviewNavCard {
+  position: relative;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.dashboardSummary > [role="button"]:hover,
+.adminReviewNavCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(7,26,51,.16);
+}
+
+.dashboardSummary > [role="button"]:focus-visible,
+.adminReviewNavCard:focus-visible {
+  outline: 3px solid rgba(255,122,24,.38);
+  outline-offset: 3px;
+}
+
+.dashboardHero .dashboardSummary > [role="button"][aria-pressed="true"] {
+  border-color: #ff9a50;
+  background: rgba(255,122,24,.18);
+  box-shadow: 0 0 0 2px rgba(255,122,24,.20), 0 12px 28px rgba(0,0,0,.16);
+}
+
+.dashboardHero .dashboardSummary > [role="button"][aria-pressed="true"]::after {
+  content: '';
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 7px;
+  height: 2px;
+  border-radius: 999px;
+  background: #ff9a50;
+}
+
+.dashboardFilterBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 4px 0 18px;
+  padding: 12px 15px;
+  border: 1px solid #dfe7ef;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(16,35,63,.055);
+  color: #52667e;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.dashboardFilterBar .textAction {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #fff3e8;
+}
+
+@media (max-width: 760px) {
+  .dashboardSummary > [role="button"]:hover,
+  .adminReviewNavCard:hover {
+    transform: none;
+  }
+
+  .dashboardFilterBar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
