@@ -8,15 +8,16 @@ export default function CustomerQuoteRequestNavigator(){
  useEffect(()=>{
   if(pathname!=='/customer'||searchParams.get('view')!=='quotes')return;
   let attempts=0;
-  const findAndScroll=()=>{
-   const el=document.getElementById('quote-requests');
-   if(el){el.scrollIntoView({behavior:'smooth',block:'start'});return true;}
+  const activate=()=>{
+   const quoteButton=document.querySelector('.dashboardSummary [role="button"]:first-child') as HTMLElement|null;
+   const quoteSection=document.getElementById('quote-requests');
+   if(quoteButton){quoteButton.click();setTimeout(()=>document.getElementById('quote-requests')?.scrollIntoView({behavior:'smooth',block:'start'}),180);return true;}
+   if(quoteSection){quoteSection.scrollIntoView({behavior:'smooth',block:'start'});return true;}
    attempts+=1;
-   return attempts>20;
+   return attempts>30;
   };
-  if(findAndScroll())return;
-  const t=setInterval(()=>{if(findAndScroll())clearInterval(t)},150);
-  return()=>clearInterval(t);
+  const first=setTimeout(()=>{if(activate())return;const t=setInterval(()=>{if(activate())clearInterval(t)},150);},350);
+  return()=>clearTimeout(first);
  },[pathname,searchParams]);
  return null;
 }
