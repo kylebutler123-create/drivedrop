@@ -10,6 +10,8 @@ export default async function Layout({children}:{children:React.ReactNode}){
   const dashboardHref=user?.role==='CUSTOMER'?'/customer':user?.role==='TRANSPORTER'?'/transporter':user?.role==='ADMIN'?'/admin':'/login';
   const manageHref=user?.role==='CUSTOMER'?'/customer/manage-requests':user?.role==='TRANSPORTER'?'/transporter/manage-deliveries':null;
   const manageLabel=user?.role==='CUSTOMER'?'Manage requests':user?.role==='TRANSPORTER'?'Manage deliveries':null;
+  const reviewHref=user?.role==='TRANSPORTER'?'/transporter/reviews':user?.role==='ADMIN'?'/admin/review-disputes':null;
+  const reviewLabel=user?.role==='TRANSPORTER'?'Customer reviews':user?.role==='ADMIN'?'Review moderation':null;
 
   return <html lang="en"><body>
     <header className="top">
@@ -17,6 +19,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
       <nav className="nav">
         {user?<>
           {manageHref&&manageLabel&&<Link href={manageHref}>{manageLabel}</Link>}
+          {reviewHref&&reviewLabel&&<Link href={reviewHref}>{reviewLabel}</Link>}
           <Link className="btn orange" href={dashboardHref}>Dashboard</Link>
           <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
         </>:<>
