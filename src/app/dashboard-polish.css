@@ -56,6 +56,48 @@
   background: #fff3e8;
 }
 
+/* Booking cards: make the key operational information easy to scan. */
+.dashboardCard:has(.bookingTop) {
+  border-color: #dce5ee;
+  box-shadow: 0 10px 32px rgba(16,35,63,.07);
+}
+
+.bookingTop {
+  padding-bottom: 3px;
+}
+
+.bookingTop h2 {
+  letter-spacing: -.02em;
+  line-height: 1.15;
+}
+
+.bookingTop .statusGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.bookingTop .statusPill {
+  border: 1px solid rgba(23,79,128,.10);
+}
+
+.paymentMini {
+  border: 1px solid #e2e9f0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+}
+
+.paymentMini strong {
+  color: #102d52;
+}
+
+.routeVisual {
+  border: 1px solid #e7edf3;
+}
+
+.routeVisual b {
+  line-height: 1.35;
+}
+
 .agreedCollectionDate {
   display: flex;
   align-items: center;
@@ -90,6 +132,25 @@
   .dashboardFilterBar {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .dashboardCard:has(.bookingTop) {
+    padding: 20px;
+  }
+
+  .bookingTop h2 {
+    font-size: 22px;
+    margin-top: 9px;
+  }
+
+  .paymentMini {
+    margin-top: 4px;
+    padding: 12px 14px;
+  }
+
+  .routeVisual {
+    margin: 16px 0;
+    padding: 14px;
   }
 
   .agreedCollectionDate {
