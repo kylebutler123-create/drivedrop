@@ -14,7 +14,7 @@ export async function GET(){
    quotes:{include:{transporter:{select:{
     name:true,
     transporterVerification:{select:{status:true}},
-    reviewsReceived:{where:{verified:true},select:{rating:true}}
+    reviewsReceived:{where:{verified:true,moderationStatus:{not:'HIDDEN'}},select:{rating:true}}
    }}}},
    booking:true
   },
