@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 type Booking={id:string;status:string;customer:{name:string};transporter:{name:string};job:{vehicleMake:string;vehicleModel:string;collection:string;delivery:string};messages:{id:string;body:string;createdAt:string;sender:{name:string;role:string}}[]};
 type Me={id:string;name:string;role:'CUSTOMER'|'TRANSPORTER'|'ADMIN'};
-type Message={id:string;body:string;createdAt:string;senderId?:string;sender:{name:string;role:string}};
+type Message={id:string;body:string;createdAt:string;readAt?:string|null;senderId?:string;sender:{name:string;role:string}};
 const label=(s:string)=>s.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
 
 export default function MessagesPage(){
@@ -23,9 +23,13 @@ export default function MessagesPage(){
   if(b.ok){const rows=await b.json();setBookings(rows);setSelectedId(x=>x&&rows.some((r:Booking)=>r.id===x)?x:(rows[0]?.id||null));}
   setLoading(false);
  }
+ async function markRead(bookingId:string){
+  const r=await fetch('/api/bookings/messages',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({bookingId})});
+  if(r.ok)window.dispatchEvent(new Event('drivedrop:messages-read'));
+ }
  async function loadMessages(bookingId:string){
   const r=await fetch(`/api/bookings/messages?bookingId=${encodeURIComponent(bookingId)}`,{cache:'no-store'});
-  if(r.ok)setMessages(await r.json());
+  if(r.ok){setMessages(await r.json());await markRead(bookingId)}
  }
  function selectBooking(id:string){
   setSelectedId(id);
