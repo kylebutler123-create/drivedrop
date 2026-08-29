@@ -109,6 +109,20 @@
     margin-top: -6px;
   }
 
+  .transporterTop .headerLogo {
+    order: 0;
+  }
+
+  .transporterTop .accountNavBtn,
+  .transporterTop .nav > form {
+    order: 0;
+  }
+
+  .transporterTop .nav::before {
+    order: 1;
+    margin-top: 0;
+  }
+
   .transporterTop .transporterCommsNav,
   .transporterTop .transporterManageNav {
     flex-basis: 100%;
@@ -148,6 +162,14 @@
     font-size: 12px;
     font-weight: 700;
     white-space: nowrap;
+  }
+
+  .transporterTop .transporterCommsNav > * {
+    flex: 0 0 auto;
+  }
+
+  .transporterTop .transporterCommsNav .transporterDashboardBtn {
+    margin-left: 0;
   }
 
   .transporterTop .transporterManageNav > * {
