@@ -170,6 +170,9 @@
 
   .transporterTop .transporterCommsNav .transporterDashboardBtn {
     margin-left: 0;
+    background: #ff7a18;
+    border-color: #ff7a18;
+    color: #fff;
   }
 
   .transporterTop .transporterManageNav > * {
