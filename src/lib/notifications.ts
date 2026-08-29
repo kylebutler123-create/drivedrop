@@ -18,6 +18,10 @@ export async function createNotification(input:NotificationInput){
  return id;
 }
 
-export async function createNotifications(inputs:NotificationInput[]){
- for(const input of inputs)await createNotification(input);
+export async function createNotificationSafely(input:NotificationInput){
+ try{return await createNotification(input)}catch(error){console.error('Notification creation failed',error);return null}
+}
+
+export async function createNotificationsSafely(inputs:NotificationInput[]){
+ await Promise.all(inputs.map(input=>createNotificationSafely(input)));
 }
