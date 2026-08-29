@@ -2,10 +2,11 @@ import {NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
 import {z} from 'zod';
+import {createNotificationSafely} from '@/lib/notifications';
 
 const S=z.object({bookingId:z.string().min(1),body:z.string().trim().min(1).max(2000)});
 const R=z.object({bookingId:z.string().min(1)});
-async function access(id:string,u:any){return prisma.booking.findFirst({where:{id,...(u.role==='ADMIN'?{}:{OR:[{customerId:u.id},{transporterId:u.id}]})},select:{id:true}})}
+async function access(id:string,u:any){return prisma.booking.findFirst({where:{id,...(u.role==='ADMIN'?{}:{OR:[{customerId:u.id},{transporterId:u.id}]})},select:{id:true,customerId:true,transporterId:true,job:{select:{vehicleMake:true,vehicleModel:true}}}})}
 
 export async function GET(r:Request){
  const u=await currentUser();
@@ -22,8 +23,11 @@ export async function POST(r:Request){
  if(!u)return NextResponse.json({error:'Unauthorized'},{status:401});
  const x=S.safeParse(await r.json());
  if(!x.success)return NextResponse.json({error:'Invalid message'},{status:400});
- if(!await access(x.data.bookingId,u))return NextResponse.json({error:'Forbidden'},{status:403});
+ const booking=await access(x.data.bookingId,u);
+ if(!booking)return NextResponse.json({error:'Forbidden'},{status:403});
  const message=await prisma.message.create({data:{...x.data,senderId:u.id},select:{id:true,body:true,createdAt:true,readAt:true,senderId:true,sender:{select:{name:true,role:true}}}});
+ const recipientId=u.id===booking.customerId?booking.transporterId:u.id===booking.transporterId?booking.customerId:null;
+ if(recipientId){const vehicle=`${booking.job.vehicleMake} ${booking.job.vehicleModel}`.trim();await createNotificationSafely({userId:recipientId,type:'MESSAGE',title:'New booking message',body:`${u.name} sent you a message about the ${vehicle}.`,href:'/messages'})}
  return NextResponse.json(message,{status:201,headers:{'Cache-Control':'no-store, max-age=0'}});
 }
 
