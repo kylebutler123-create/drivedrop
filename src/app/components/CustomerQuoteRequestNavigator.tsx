@@ -11,9 +11,7 @@ export default function CustomerQuoteRequestNavigator(){
    ?{button:'.dashboardSummary [role="button"]:first-child',target:'#quote-requests'}
    :pathname==='/customer'&&view==='bookings'
     ?{button:'.dashboardSummary [role="button"]:nth-child(2)',target:'.bookingCard'}
-    :pathname==='/transporter'&&view==='deliveries'
-     ?{button:'.dashboardSummary [role="button"]:first-child',target:'.bookingCard'}
-     :null;
+    :null;
   if(!route)return;
   let attempts=0;
   let interval:ReturnType<typeof setInterval>|undefined;
