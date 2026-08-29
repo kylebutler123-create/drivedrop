@@ -41,7 +41,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
               <Link href="/transporter/quotes">My quotes</Link>
               <Link href="/transporter/reviews">Customer reviews</Link>
             </span>
-            <Link className="btn orange accountNavBtn" href="/account">Account</Link>
+            <Link className="btn light accountNavBtn" href="/account">Account</Link>
             <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
           </>:<>
             {manageHref&&manageLabel&&<Link href={manageHref}>{manageLabel}</Link>}
