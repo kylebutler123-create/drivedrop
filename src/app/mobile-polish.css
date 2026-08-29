@@ -1,0 +1,37 @@
+@media (max-width: 760px) {
+  .dashboardHero > .adminHeroBadge,
+  .dashboardHero > .verificationStatusCard {
+    width: 100%;
+    min-width: 0 !important;
+    margin-top: 18px;
+  }
+
+  .dashboardSectionHeading {
+    align-items: flex-start;
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .dashboardSectionHeading > span {
+    line-height: 1.4;
+  }
+
+  .bookingTop {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .paymentMini {
+    width: 100%;
+    text-align: left;
+  }
+
+  .actionButtons {
+    width: 100%;
+  }
+
+  .actionButtons .btn,
+  .actionButtons .textAction {
+    min-height: 42px;
+  }
+}
