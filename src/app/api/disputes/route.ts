@@ -3,6 +3,7 @@ import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
 import {disputesEnabled} from '@/lib/features';
 import {sendTransactionalEmailSafely} from '@/lib/email';
+import {createNotificationSafely} from '@/lib/notifications';
 import {z} from 'zod';
 
 const Create=z.object({bookingId:z.string().min(1),reason:z.string().trim().min(3).max(120),details:z.string().trim().max(2000).optional(),evidenceUrl:z.string().url().optional()});
@@ -39,10 +40,12 @@ export async function POST(r:Request){
     const raisedByCustomer=booking.customerId===u.id;
     const raiser=raisedByCustomer?booking.customer:booking.transporter;
     const otherParty=raisedByCustomer?booking.transporter:booking.customer;
-    const raiserPath=raisedByCustomer?'/customer':'/transporter';
-    const otherPath=raisedByCustomer?'/transporter':'/customer';
+    const raiserPath=raisedByCustomer?'/customer?view=bookings':'/transporter?view=deliveries';
+    const otherPath=raisedByCustomer?'/transporter?view=deliveries':'/customer?view=bookings';
 
     await Promise.all([
+      createNotificationSafely({userId:raiser.id,type:'DISPUTE',title:'Dispute opened',body:`Your dispute for the ${vehicle} has been opened. DriveDrop will review the booking and any submitted evidence.`,href:raiserPath}),
+      createNotificationSafely({userId:otherParty.id,type:'DISPUTE',title:'Dispute opened on your booking',body:`A dispute has been opened regarding the ${vehicle}. Reason: ${d.reason}`,href:otherPath}),
       sendTransactionalEmailSafely({to:raiser.email,subject:`DriveDrop dispute opened — ${vehicle}`,heading:'Dispute opened',preheader:`Your dispute for the ${vehicle} has been opened.`,body:`Hi ${raiser.name?.trim()||'there'},\n\nWe have received your dispute regarding the ${vehicle}.\n\nReason: ${d.reason}\n\nDriveDrop will review the booking and any submitted evidence. Any unreleased transporter payout will remain protected while the dispute is active.`,ctaLabel:'View dispute status',ctaPath:raiserPath}),
       sendTransactionalEmailSafely({to:otherParty.email,subject:`DriveDrop dispute opened on your booking — ${vehicle}`,heading:'A dispute has been opened',preheader:`A dispute has been opened for the ${vehicle} booking.`,body:`Hi ${otherParty.name?.trim()||'there'},\n\nA dispute has been opened regarding the ${vehicle} booking.\n\nReason: ${d.reason}\n\nDriveDrop will review the booking and any submitted evidence. Any unreleased transporter payout will remain protected while the dispute is active.`,ctaLabel:'View booking',ctaPath:otherPath})
     ]);
