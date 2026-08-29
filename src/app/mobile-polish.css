@@ -109,10 +109,51 @@
     margin-top: -6px;
   }
 
-  /* The transporter has enough account links to wrap onto a third line.
-     Give that final wrapped item a touch more breathing room without
-     changing the tighter two-line customer navigation. */
-  .transporterTop .nav > a:not(.btn):nth-of-type(5) {
-    margin-top: 4px;
+  .transporterTop .transporterCommsNav,
+  .transporterTop .transporterManageNav {
+    flex-basis: 100%;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    transform: none;
+  }
+
+  .transporterTop .transporterCommsNav {
+    order: 2;
+    display: flex;
+    gap: 8px;
+    margin-top: -3px;
+  }
+
+  .transporterTop .transporterManageNav {
+    order: 3;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 7px;
+    margin-top: 5px;
+  }
+
+  .transporterTop .transporterCommsNav > *,
+  .transporterTop .transporterManageNav > * {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.10);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .transporterTop .transporterManageNav > * {
+    flex: 1 1 0;
+    justify-content: center;
+    padding-left: 7px;
+    padding-right: 7px;
+    font-size: 11px;
   }
 }
