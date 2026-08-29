@@ -34,21 +34,24 @@ export default async function Layout({children}:{children:React.ReactNode}){
             <span className="transporterCommsNav">
               <MessagesNavLink/>
               <NotificationNavLink/>
+              <Link className="btn orange transporterDashboardBtn" href={dashboardHref}>Dashboard</Link>
             </span>
             <span className="transporterManageNav">
               <Link href="/transporter/manage-deliveries">Manage deliveries</Link>
               <Link href="/transporter/quotes">My quotes</Link>
               <Link href="/transporter/reviews">Customer reviews</Link>
             </span>
+            <Link className="btn light accountNavBtn" href="/account">Account</Link>
+            <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
           </>:<>
             {manageHref&&manageLabel&&<Link href={manageHref}>{manageLabel}</Link>}
             {showMessages&&<MessagesNavLink/>}
             <NotificationNavLink/>
             {reviewHref&&reviewLabel&&<Link href={reviewHref}>{reviewLabel}</Link>}
+            <Link className="btn light accountNavBtn" href="/account">Account</Link>
+            <Link className="btn orange" href={dashboardHref}>Dashboard</Link>
+            <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
           </>}
-          <Link className="btn light accountNavBtn" href="/account">Account</Link>
-          <Link className="btn orange" href={dashboardHref}>Dashboard</Link>
-          <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
         </>:<>
           <Link href="/login?account=customer">Customer login</Link>
           <Link className="btn orange" href="/login?account=transporter">Transporter login</Link>
