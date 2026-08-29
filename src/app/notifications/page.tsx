@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 type Notification={id:string;type:string;title:string;body:string;href:string|null;readAt:string|null;createdAt:string};
 const icon=(type:string)=>type==='QUOTE'?'£':type==='BOOKING'?'✓':type==='PAYMENT'?'£':type==='DELIVERY'?'🚗':type==='MESSAGE'?'💬':type==='DISPUTE'?'!':type==='REVIEW'?'★':'🔔';
-const destination=(n:Notification)=>n.type==='QUOTE'?'/customer?view=quotes#quote-requests':n.href;
+const destination=(n:Notification)=>n.type==='QUOTE'?'/customer?view=quotes#quote-requests':n.type==='BOOKING'?'/transporter?view=deliveries':n.type==='PAYMENT'?'/transporter?view=deliveries':n.type==='DELIVERY'?'/customer?view=bookings':n.type==='MESSAGE'?'/messages':n.href;
 
 export default function NotificationsPage(){
  const[items,setItems]=useState<Notification[]>([]),[loading,setLoading]=useState(true);
