@@ -3,6 +3,7 @@ import './home-hero.css';
 import Link from 'next/link';
 import {currentUser} from '@/lib/auth';
 import MessagesNavLink from '@/app/components/MessagesNavLink';
+import NotificationNavLink from '@/app/components/NotificationNavLink';
 
 export const metadata={title:'DriveDrop',description:'UK vehicle transport marketplace'};
 
@@ -22,6 +23,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
         {user?<>
           {manageHref&&manageLabel&&<Link href={manageHref}>{manageLabel}</Link>}
           {showMessages&&<MessagesNavLink/>}
+          <NotificationNavLink/>
           {reviewHref&&reviewLabel&&<Link href={reviewHref}>{reviewLabel}</Link>}
           <Link className="btn orange" href={dashboardHref}>Dashboard</Link>
           <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
