@@ -109,6 +109,47 @@
     margin-top: -6px;
   }
 
+  .customerTop .headerLogo,
+  .customerTop .accountNavBtn,
+  .customerTop .customerDashboardBtn,
+  .customerTop .nav > form {
+    order: 0;
+  }
+
+  .customerTop .nav::before {
+    order: 1;
+    margin-top: 0;
+  }
+
+  .customerTop .customerSecondaryNav {
+    order: 2;
+    flex-basis: 100%;
+    width: 100%;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    transform: none;
+    margin-top: -3px;
+  }
+
+  .customerTop .customerSecondaryNav > * {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.10);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
   .transporterTop .headerLogo {
     order: 0;
   }
