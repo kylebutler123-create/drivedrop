@@ -2,6 +2,7 @@ import './globals.css';
 import './home-hero.css';
 import './mobile-polish.css';
 import './dashboard-polish.css';
+import './requote.css';
 import Link from 'next/link';
 import {currentUser} from '@/lib/auth';
 import MessagesNavLink from '@/app/components/MessagesNavLink';
