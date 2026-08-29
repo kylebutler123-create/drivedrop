@@ -1,5 +1,6 @@
 import './globals.css';
 import './home-hero.css';
+import './mobile-polish.css';
 import Link from 'next/link';
 import {currentUser} from '@/lib/auth';
 import MessagesNavLink from '@/app/components/MessagesNavLink';
