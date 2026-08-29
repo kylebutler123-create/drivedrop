@@ -108,4 +108,11 @@
     height: 0;
     margin-top: -6px;
   }
+
+  /* The transporter has enough account links to wrap onto a third line.
+     Give that final wrapped item a touch more breathing room without
+     changing the tighter two-line customer navigation. */
+  .transporterTop .nav > a:not(.btn):nth-of-type(5) {
+    margin-top: 4px;
+  }
 }
