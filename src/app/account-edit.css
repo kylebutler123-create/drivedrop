@@ -79,6 +79,43 @@
   margin-top: 16px;
 }
 
+.dangerPanel {
+  border-color: #f1d0d0;
+  background: #fffafa;
+}
+
+.dangerPanel strong,
+.dangerCard h2 {
+  color: #8d2020;
+}
+
+.dangerButton,
+.dangerConfirm {
+  border-color: #d87a7a !important;
+  color: #9a2525 !important;
+}
+
+.dangerConfirm {
+  background: #fff0f0 !important;
+}
+
+.closeBlockerList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.closeBlockerList span {
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #efcaca;
+  color: #8d2020;
+  font-size: 11px;
+  font-weight: 800;
+}
+
 @media (max-width: 760px) {
   .accountEditPanel {
     align-items: stretch;
