@@ -4,6 +4,7 @@ import {currentUser} from '@/lib/auth';
 import {prisma} from '@/lib/prisma';
 import AccountEditor from './AccountEditor';
 import PasswordEditor from './PasswordEditor';
+import EmailEditor from './EmailEditor';
 
 const label=(s:string)=>s.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
 
@@ -21,6 +22,7 @@ export default async function AccountPage(){
     <header className="dashboardHero accountHero"><div><span className="dashboardEyebrow">Account</span><h1>Your account information</h1><p>View and maintain the details DriveDrop currently holds for your account in one place.</p></div><div className="adminHeroBadge accountStatusBadge"><span>Account status</span><strong>{label(user.accountStatus)}</strong><small>{label(user.role)}</small></div></header>
 
     <AccountEditor name={user.name} email={user.email} role={user.role} business={verification?{businessName:verification.businessName||'',companyNumber:verification.companyNumber||'',businessAddress:verification.businessAddress||'',phone:verification.phone||'',yearsOperating:verification.yearsOperating,website:verification.website||''}:null}/>
+    <EmailEditor email={user.email}/>
     <PasswordEditor/>
 
     <div className="accountGrid">
