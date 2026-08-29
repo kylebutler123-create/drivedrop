@@ -1,6 +1,8 @@
 import {NextResponse} from 'next/server';import {prisma} from '@/lib/prisma';import {currentUser} from '@/lib/auth';
+export const dynamic='force-dynamic';
+export const revalidate=0;
 export async function GET(){
- const u=await currentUser();if(!u)return NextResponse.json({error:'Unauthorized'},{status:401});
+ const u=await currentUser();if(!u)return NextResponse.json({error:'Unauthorized'},{status:401,headers:{'Cache-Control':'no-store, max-age=0'}});
  const where=u.role==='CUSTOMER'?{customerId:u.id}:u.role==='TRANSPORTER'?{transporterId:u.id}:u.role==='ADMIN'?{}:{id:'__none__'};
  const bookings=await prisma.booking.findMany({where,select:{
   id:true,status:true,agreedPricePence:true,customerConfirmedAt:true,createdAt:true,
@@ -18,5 +20,5 @@ export async function GET(){
   if(u.role==='TRANSPORTER')return{...booking,payment:{status:payment.status,transportValuePence:payment.transportValuePence,depositPence:payment.depositPence,paidPence:payment.paidPence,refundedPence:payment.refundedPence,platformFeePence:payment.platformFeePence,transporterProceedsPence:payment.transporterProceedsPence,payoutStatus:payment.payoutStatus}};
   return{...booking,payment};
  });
- return NextResponse.json(scoped)
+ return NextResponse.json(scoped,{headers:{'Cache-Control':'no-store, max-age=0'}})
 }
