@@ -13,7 +13,7 @@ export default function Verification() {
   const [uploading, setUploading] = useState(false);
 
   async function load() {
-    const response = await fetch('/api/transporter/verification');
+    const response = await fetch('/api/transporter/verification', { cache: 'no-store' });
     if (response.ok) setVerification(await response.json());
   }
   useEffect(() => { load(); }, []);
@@ -24,12 +24,14 @@ export default function Verification() {
     const data: any = Object.fromEntries(form);
     if (data.yearsOperating) data.yearsOperating = Number(data.yearsOperating);
     const response = await fetch('/api/transporter/verification', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) });
-    setMessage(response.ok ? 'Business details saved' : (await response.json()).error); load();
+    setMessage(response.ok ? 'Business details saved' : (await response.json()).error);
+    if (response.ok) setVerification(await response.json()); else await load();
   }
 
   async function addDocument(event: any) {
     event.preventDefault(); setMessage('');
-    const form = new FormData(event.currentTarget); const file = form.get('file');
+    const formElement = event.currentTarget as HTMLFormElement;
+    const form = new FormData(formElement); const file = form.get('file');
     if (!(file instanceof File) || !file.size) return setMessage('Choose a document to upload');
     if (!ALLOWED_TYPES.includes(file.type)) return setMessage('Only PDF, JPG/JPEG and PNG files are allowed');
     if (file.size > MAX_FILE_SIZE) return setMessage('File must be 4 MB or smaller');
@@ -38,13 +40,20 @@ export default function Verification() {
       const response = await fetch('/api/transporter/verification/documents', { method: 'POST', body: form });
       const body = await response.json().catch(() => ({}));
       setMessage(response.ok ? 'Document uploaded securely' : body.error || 'Unable to upload document');
-      if (response.ok) event.currentTarget.reset(); await load();
+      if (response.ok) {
+        formElement.reset();
+        setVerification((current:any)=>current?{...current,documents:[body,...(current.documents||[])]}:current);
+        await load();
+      }
     } finally { setUploading(false); }
   }
 
   async function submit() {
     setMessage(''); const response = await fetch('/api/transporter/verification', { method: 'POST' });
-    setMessage(response.ok ? 'Verification submitted for DriveDrop review' : (await response.json()).error); load();
+    const body = await response.json().catch(() => ({}));
+    setMessage(response.ok ? 'Verification submitted for DriveDrop review' : body.error || 'Unable to submit verification');
+    if (response.ok) setVerification((current:any)=>current?{...current,...body,documents:current.documents}:current);
+    else await load();
   }
 
   const docs = verification?.documents || [];
