@@ -3,6 +3,7 @@ import './home-hero.css';
 import './mobile-polish.css';
 import './dashboard-polish.css';
 import './account-edit.css';
+import './transporter-profile.css';
 import './requote.css';
 import Link from 'next/link';
 import {currentUser} from '@/lib/auth';
@@ -11,6 +12,7 @@ import NotificationNavLink from '@/app/components/NotificationNavLink';
 import CustomerQuoteRequestNavigator from '@/app/components/CustomerQuoteRequestNavigator';
 import AgreedCollectionDateEnhancer from '@/app/components/AgreedCollectionDateEnhancer';
 import TransporterRequoteEnhancer from '@/app/components/TransporterRequoteEnhancer';
+import TransporterProfileEnhancer from '@/app/components/TransporterProfileEnhancer';
 
 export const metadata={title:'DriveDrop',description:'UK vehicle transport marketplace'};
 
@@ -24,6 +26,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
     <CustomerQuoteRequestNavigator/>
     <AgreedCollectionDateEnhancer/>
     <TransporterRequoteEnhancer/>
+    {user?.role==='CUSTOMER'&&<TransporterProfileEnhancer/>}
     <header className={`top${user?.role==='TRANSPORTER'?' transporterTop':user?.role==='CUSTOMER'?' customerTop':!user?' guestTop':''}`}>
       {user?.role==='CUSTOMER'?<div className="customerPrimaryNav">
         <Link href="/" className="logo headerLogo" aria-label="DriveDrop home"><img src="/AC51EBEA-9552-47BB-92A0-E8D611539A71.png" alt="DriveDrop" /></Link>
