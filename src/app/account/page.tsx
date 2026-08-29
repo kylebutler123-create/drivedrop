@@ -2,10 +2,12 @@ import Link from 'next/link';
 import {redirect} from 'next/navigation';
 import {currentUser} from '@/lib/auth';
 import {prisma} from '@/lib/prisma';
+import {profileImageUrl} from '@/lib/supabase-storage';
 import AccountEditor from './AccountEditor';
 import PasswordEditor from './PasswordEditor';
 import EmailEditor from './EmailEditor';
 import CloseAccount from './CloseAccount';
+import ProfileImageEditor from './ProfileImageEditor';
 
 const label=(s:string)=>s.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
 
@@ -13,16 +15,22 @@ export default async function AccountPage(){
   const sessionUser=await currentUser();
   if(!sessionUser)redirect('/login');
 
-  const user=await prisma.user.findUnique({where:{id:sessionUser.id},select:{name:true,email:true,role:true,accountStatus:true,workRestricted:true,createdAt:true,transporterVerification:{select:{businessName:true,companyNumber:true,businessAddress:true,phone:true,yearsOperating:true,website:true,status:true,submittedAt:true,reviewedAt:true,reviewNote:true,documents:{select:{id:true,type:true,status:true,expiresAt:true,insurer:true,policyNumber:true},orderBy:{createdAt:'desc'}}}}}});
+  const user=await prisma.user.findUnique({where:{id:sessionUser.id},select:{name:true,email:true,role:true,accountStatus:true,workRestricted:true,createdAt:true,transporterVerification:{select:{id:true,businessName:true,companyNumber:true,businessAddress:true,phone:true,yearsOperating:true,website:true,status:true,submittedAt:true,reviewedAt:true,reviewNote:true,documents:{select:{id:true,type:true,status:true,expiresAt:true,insurer:true,policyNumber:true},orderBy:{createdAt:'desc'}}}}}});
   if(!user)redirect('/login');
   const dashboardHref=user.role==='CUSTOMER'?'/customer':user.role==='TRANSPORTER'?'/transporter':'/admin';
   const verification=user.transporterVerification;
+  let transporterProfileImage:string|null=null;
+  if(user.role==='TRANSPORTER'&&verification){
+    const rows=await prisma.$queryRaw<Array<{profileImagePath:string|null}>>`SELECT "profileImagePath" FROM "TransporterVerification" WHERE id=${verification.id} LIMIT 1`;
+    transporterProfileImage=profileImageUrl(rows[0]?.profileImagePath||null);
+  }
 
   return <main className="shell dashboardShell accountPage">
     <Link className="backLink" href={dashboardHref}>← Back to dashboard</Link>
     <header className="dashboardHero accountHero"><div><span className="dashboardEyebrow">Account</span><h1>Your account information</h1><p>View and maintain the details DriveDrop currently holds for your account in one place.</p></div><div className="adminHeroBadge accountStatusBadge"><span>Account status</span><strong>{label(user.accountStatus)}</strong><small>{label(user.role)}</small></div></header>
 
     <AccountEditor name={user.name} email={user.email} role={user.role} business={verification?{businessName:verification.businessName||'',companyNumber:verification.companyNumber||'',businessAddress:verification.businessAddress||'',phone:verification.phone||'',yearsOperating:verification.yearsOperating,website:verification.website||''}:null}/>
+    {user.role==='TRANSPORTER'&&verification&&<ProfileImageEditor initialUrl={transporterProfileImage} businessName={verification.businessName||user.name}/>} 
     <EmailEditor email={user.email}/>
     <PasswordEditor/>
     <CloseAccount/>
