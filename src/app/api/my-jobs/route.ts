@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { currentUser } from '@/lib/auth';
 import {profileImageUrl} from '@/lib/supabase-storage';
 import {calculateCustomerPrice} from '@/lib/finance';
+import {quoteRequestExpiryCutoff} from '@/lib/job-expiry';
 
 export const dynamic='force-dynamic';
 export const revalidate=0;
@@ -11,7 +12,7 @@ export async function GET(){
  const u=await currentUser();
  if(!u||u.role!=='CUSTOMER')return NextResponse.json({error:'Forbidden'},{status:403,headers:{'Cache-Control':'no-store, max-age=0'}});
  const jobs=await prisma.transportJob.findMany({
-  where:{customerId:u.id,status:{in:['OPEN','QUOTED']}},
+  where:{customerId:u.id,status:{in:['OPEN','QUOTED']},createdAt:{gte:quoteRequestExpiryCutoff()}},
   include:{
    quotes:{include:{transporter:{select:{
     id:true,
