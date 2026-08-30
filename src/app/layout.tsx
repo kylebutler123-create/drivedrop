@@ -14,6 +14,7 @@ import AgreedCollectionDateEnhancer from '@/app/components/AgreedCollectionDateE
 import TransporterRequoteEnhancer from '@/app/components/TransporterRequoteEnhancer';
 import TransporterProfileEnhancer from '@/app/components/TransporterProfileEnhancer';
 import TransporterDeliveredSummary from '@/app/components/TransporterDeliveredSummary';
+import TransporterCancelDeliveryEnhancer from '@/app/components/TransporterCancelDeliveryEnhancer';
 
 export const metadata={title:'DriveDrop',description:'UK vehicle transport marketplace'};
 
@@ -28,7 +29,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
     <AgreedCollectionDateEnhancer/>
     <TransporterRequoteEnhancer/>
     {user?.role==='CUSTOMER'&&<TransporterProfileEnhancer/>}
-    {user?.role==='TRANSPORTER'&&<TransporterDeliveredSummary/>}
+    {user?.role==='TRANSPORTER'&&<><TransporterDeliveredSummary/><TransporterCancelDeliveryEnhancer/></>}
     <header className={`top${user?.role==='TRANSPORTER'?' transporterTop':user?.role==='CUSTOMER'?' customerTop':!user?' guestTop':''}`}>
       {user?.role==='CUSTOMER'?<div className="customerPrimaryNav">
         <Link href="/" className="logo headerLogo" aria-label="DriveDrop home"><img src="/AC51EBEA-9552-47BB-92A0-E8D611539A71.png" alt="DriveDrop" /></Link>
@@ -49,7 +50,6 @@ export default async function Layout({children}:{children:React.ReactNode}){
               <Link className="btn orange transporterDashboardBtn" href={dashboardHref}>Dashboard</Link>
             </span>
             <span className="transporterManageNav">
-              <Link href="/transporter/manage-deliveries">Manage deliveries</Link>
               <Link href="/transporter/reviews">Customer reviews</Link>
             </span>
             <Link className="btn light accountNavBtn" href="/account">Account</Link>
