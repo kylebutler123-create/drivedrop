@@ -1,6 +1,6 @@
 export const financeConfig={
  depositPercent:Number(process.env.DRIVEDROP_DEPOSIT_PERCENT||100),
- commissionPercent:Number(process.env.DRIVEDROP_COMMISSION_PERCENT||5),
+ commissionPercent:Number(process.env.DRIVEDROP_COMMISSION_PERCENT||10),
 };
 
 export function calculateCustomerPrice(transporterQuotePence:number){
