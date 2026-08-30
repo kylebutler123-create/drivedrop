@@ -9,6 +9,7 @@ import './proof-of-delivery.css';
 import './legacy-evidence-cleanup.css';
 import './payment-secured-polish.css';
 import './customer-booking-polish.css';
+import './completed-booking-polish.css';
 import Link from 'next/link';
 import {currentUser} from '@/lib/auth';
 import MessagesNavLink from '@/app/components/MessagesNavLink';
