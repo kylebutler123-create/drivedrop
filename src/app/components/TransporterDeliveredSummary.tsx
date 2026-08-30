@@ -25,11 +25,23 @@ export default function TransporterDeliveredSummary(){
   hero?.insertAdjacentElement('afterend',list);
   setTarget(mount);
   setListTarget(list);
-  const toggle=()=>setShow(v=>!v);
-  const key=(e:KeyboardEvent)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}};
-  mount.addEventListener('click',toggle);
+
+  const standardBoxes=Array.from(summary.children).filter(child=>child!==mount&&child.getAttribute('role')==='button') as HTMLElement[];
+  const clearStandardSelection=()=>standardBoxes.forEach(box=>box.setAttribute('aria-pressed','false'));
+  const selectDelivered=()=>{clearStandardSelection();setShow(true)};
+  const toggleDelivered=()=>setShow(current=>{if(!current){clearStandardSelection();return true}return false});
+  const key=(e:KeyboardEvent)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleDelivered()}};
+  const clearDelivered=()=>setShow(false);
+
+  mount.addEventListener('click',toggleDelivered);
   mount.addEventListener('keydown',key);
-  return()=>{mount.removeEventListener('click',toggle);mount.removeEventListener('keydown',key);mount.remove();list.remove()};
+  standardBoxes.forEach(box=>box.addEventListener('click',clearDelivered));
+  return()=>{
+   mount.removeEventListener('click',toggleDelivered);
+   mount.removeEventListener('keydown',key);
+   standardBoxes.forEach(box=>box.removeEventListener('click',clearDelivered));
+   mount.remove();list.remove();
+  };
  },[]);
  useEffect(()=>{
   let cancelled=false;
