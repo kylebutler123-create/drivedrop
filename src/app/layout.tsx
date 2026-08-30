@@ -7,6 +7,7 @@ import './transporter-profile.css';
 import './requote.css';
 import './proof-of-delivery.css';
 import './legacy-evidence-cleanup.css';
+import './payment-secured-polish.css';
 import Link from 'next/link';
 import {currentUser} from '@/lib/auth';
 import MessagesNavLink from '@/app/components/MessagesNavLink';
