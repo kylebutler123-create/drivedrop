@@ -19,5 +19,6 @@ export async function GET(){
   },
   orderBy:{createdAt:'desc'}
  });
- return NextResponse.json(bookings,{headers:{'Cache-Control':'no-store, max-age=0'}});
+ const deliveredProceedsPence=bookings.reduce((total,booking)=>total+(booking.payment?.transporterProceedsPence||0),0);
+ return NextResponse.json({bookings,deliveredProceedsPence},{headers:{'Cache-Control':'no-store, max-age=0'}});
 }
