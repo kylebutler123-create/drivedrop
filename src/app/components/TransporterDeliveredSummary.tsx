@@ -1,49 +1,79 @@
 'use client';
 import {useEffect,useState} from 'react';
 import {createPortal} from 'react-dom';
+import {usePathname} from 'next/navigation';
 
 const money=(pence:number)=>`£${(pence/100).toFixed(2)}`;
 
 export default function TransporterDeliveredSummary(){
+ const pathname=usePathname();
  const[target,setTarget]=useState<HTMLElement|null>(null);
  const[listTarget,setListTarget]=useState<HTMLElement|null>(null);
  const[bookings,setBookings]=useState<any[]>([]);
  const[show,setShow]=useState(false);
  useEffect(()=>{
-  const summary=document.querySelector<HTMLElement>('.transporterHero .dashboardSummary');
-  if(!summary)return;
-  const mount=document.createElement('div');
-  mount.dataset.deliveredSummary='true';
-  mount.setAttribute('role','button');
-  mount.setAttribute('tabindex','0');
-  mount.style.cursor='pointer';
-  const jobsBox=Array.from(summary.children).find(child=>child.textContent?.includes('Jobs available'));
-  if(jobsBox?.nextSibling)summary.insertBefore(mount,jobsBox.nextSibling);else summary.appendChild(mount);
-  const list=document.createElement('div');
-  list.dataset.deliveredList='true';
-  const hero=document.querySelector('.transporterHero');
-  hero?.insertAdjacentElement('afterend',list);
-  setTarget(mount);
-  setListTarget(list);
+  setTarget(null);
+  setListTarget(null);
+  setShow(false);
+  if(pathname!=='/transporter')return;
 
-  const standardBoxes=Array.from(summary.children).filter(child=>child!==mount&&child.getAttribute('role')==='button') as HTMLElement[];
-  const clearStandardSelection=()=>standardBoxes.forEach(box=>box.setAttribute('aria-pressed','false'));
-  const selectDelivered=()=>{clearStandardSelection();setShow(true)};
-  const toggleDelivered=()=>setShow(current=>{if(!current){clearStandardSelection();return true}return false});
-  const key=(e:KeyboardEvent)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleDelivered()}};
-  const clearDelivered=()=>setShow(false);
+  let cancelled=false;
+  let cleanup:(()=>void)|undefined;
+  let attempts=0;
 
-  mount.addEventListener('click',toggleDelivered);
-  mount.addEventListener('keydown',key);
-  standardBoxes.forEach(box=>box.addEventListener('click',clearDelivered));
-  return()=>{
-   mount.removeEventListener('click',toggleDelivered);
-   mount.removeEventListener('keydown',key);
-   standardBoxes.forEach(box=>box.removeEventListener('click',clearDelivered));
-   mount.remove();list.remove();
+  const initialise=()=>{
+   if(cancelled)return;
+   const summary=document.querySelector<HTMLElement>('.transporterHero .dashboardSummary');
+   const hero=document.querySelector<HTMLElement>('.transporterHero');
+   if(!summary||!hero){
+    attempts+=1;
+    if(attempts<20)window.setTimeout(initialise,50);
+    return;
+   }
+
+   const oldMount=summary.querySelector<HTMLElement>('[data-delivered-summary]');
+   oldMount?.remove();
+   document.querySelector<HTMLElement>('[data-delivered-list]')?.remove();
+
+   const mount=document.createElement('div');
+   mount.dataset.deliveredSummary='true';
+   mount.setAttribute('role','button');
+   mount.setAttribute('tabindex','0');
+   mount.style.cursor='pointer';
+   const jobsBox=Array.from(summary.children).find(child=>child.textContent?.includes('Jobs available'));
+   if(jobsBox?.nextSibling)summary.insertBefore(mount,jobsBox.nextSibling);else summary.appendChild(mount);
+
+   const list=document.createElement('div');
+   list.dataset.deliveredList='true';
+   hero.insertAdjacentElement('afterend',list);
+   setTarget(mount);
+   setListTarget(list);
+
+   const standardBoxes=Array.from(summary.children).filter(child=>child!==mount&&child.getAttribute('role')==='button') as HTMLElement[];
+   const clearStandardSelection=()=>standardBoxes.forEach(box=>box.setAttribute('aria-pressed','false'));
+   const toggleDelivered=()=>setShow(current=>{if(!current){clearStandardSelection();return true}return false});
+   const key=(e:KeyboardEvent)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleDelivered()}};
+   const clearDelivered=()=>setShow(false);
+
+   mount.addEventListener('click',toggleDelivered);
+   mount.addEventListener('keydown',key);
+   standardBoxes.forEach(box=>box.addEventListener('click',clearDelivered));
+
+   cleanup=()=>{
+    mount.removeEventListener('click',toggleDelivered);
+    mount.removeEventListener('keydown',key);
+    standardBoxes.forEach(box=>box.removeEventListener('click',clearDelivered));
+    mount.remove();
+    list.remove();
+   };
   };
- },[]);
+
+  initialise();
+  return()=>{cancelled=true;cleanup?.()};
+ },[pathname]);
+
  useEffect(()=>{
+  if(pathname!=='/transporter')return;
   let cancelled=false;
   async function load(){
    try{
@@ -67,7 +97,8 @@ export default function TransporterDeliveredSummary(){
   load();
   const timer=window.setInterval(load,10000);
   return()=>{cancelled=true;window.clearInterval(timer)};
- },[]);
+ },[pathname]);
+
  useEffect(()=>{if(target)target.setAttribute('aria-pressed',show?'true':'false')},[target,show]);
  if(!target)return null;
  return <>
