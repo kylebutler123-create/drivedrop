@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';import { prisma } from '@/lib/prisma';import { currentUser } from '@/lib/auth';import { z } from 'zod';import {apiError,parseJson} from '@/lib/api';import {sendTransactionalEmailSafely} from '@/lib/email';import {createNotificationSafely} from '@/lib/notifications'
+import { NextResponse } from 'next/server';import { prisma } from '@/lib/prisma';import { currentUser } from '@/lib/auth';import { z } from 'zod';import {apiError,parseJson} from '@/lib/api';import {sendTransactionalEmailSafely} from '@/lib/email';import {createNotificationSafely} from '@/lib/notifications';import {calculateCustomerPrice} from '@/lib/finance'
 const S=z.object({jobId:z.string().min(1),pricePence:z.number().int().min(1000).max(10_000_000),message:z.string().trim().max(1000).optional(),proposedCollectionDate:z.string().optional()})
 export async function POST(r:Request){
  try{
@@ -21,8 +21,10 @@ export async function POST(r:Request){
    if(job.status==='OPEN')await tx.transportJob.update({where:{id:d.jobId},data:{status:'QUOTED'}});
    return {quote:q,customer:job.customer,vehicleMake:job.vehicleMake,vehicleModel:job.vehicleModel,collection:job.collection,delivery:job.delivery,revised:!!existing}
   });
-  await createNotificationSafely({userId:result.customer.id,type:'QUOTE',title:result.revised?'Transport quote updated':'New transport quote received',body:`A verified transporter ${result.revised?'updated their quote to':'quoted'} £${(result.quote.pricePence/100).toFixed(2)} for your ${result.vehicleMake} ${result.vehicleModel}.`,href:'/customer?view=quotes#quote-requests'});
-  await sendTransactionalEmailSafely({to:result.customer.email,subject:`${result.revised?'Updated':'New'} quote for your ${result.vehicleMake} ${result.vehicleModel}`,heading:result.revised?'A transporter updated their quote':'You have a new transport quote',body:`A verified DriveDrop transporter has ${result.revised?'updated their quote to':'quoted'} £${(result.quote.pricePence/100).toFixed(2)} to move your ${result.vehicleMake} ${result.vehicleModel}.\n\n${result.collection} → ${result.delivery}\n\nSign in to review the quote, transporter details and any proposed collection date.`,ctaLabel:'Review your quote',ctaPath:'/customer',preheader:`DriveDrop quote: £${(result.quote.pricePence/100).toFixed(2)}`});
-  return NextResponse.json(result.quote,{status:result.revised?200:201})
+  const pricing=calculateCustomerPrice(result.quote.pricePence);
+  const customerTotal=`£${(pricing.customerTotalPence/100).toFixed(2)}`;
+  await createNotificationSafely({userId:result.customer.id,type:'QUOTE',title:result.revised?'Transport quote updated':'New transport quote received',body:`A verified transporter ${result.revised?'updated their quote to':'quoted'} ${customerTotal} including the DriveDrop fee for your ${result.vehicleMake} ${result.vehicleModel}.`,href:'/customer?view=quotes#quote-requests'});
+  await sendTransactionalEmailSafely({to:result.customer.email,subject:`${result.revised?'Updated':'New'} quote for your ${result.vehicleMake} ${result.vehicleModel}`,heading:result.revised?'A transporter updated their quote':'You have a new transport quote',body:`A verified DriveDrop transporter has ${result.revised?'updated their quote to':'quoted'} ${customerTotal} including the DriveDrop fee to move your ${result.vehicleMake} ${result.vehicleModel}.\n\n${result.collection} → ${result.delivery}\n\nSign in to review the quote, transporter details and any proposed collection date.`,ctaLabel:'Review your quote',ctaPath:'/customer',preheader:`DriveDrop quote: ${customerTotal}`});
+  return NextResponse.json({...result.quote,transporterBasePricePence:result.quote.pricePence,platformFeePence:pricing.platformFeePence,customerTotalPence:pricing.customerTotalPence},{status:result.revised?200:201})
  }catch(e){return apiError(e,'Unable to submit quote')}
 }
