@@ -1,10 +1,12 @@
 'use client';
 import {useEffect,useState} from 'react';
 import {createPortal} from 'react-dom';
+import {useRouter} from 'next/navigation';
 
 export default function TransporterDeliveredSummary(){
  const[target,setTarget]=useState<HTMLElement|null>(null);
  const[count,setCount]=useState(0);
+ const router=useRouter();
  useEffect(()=>{
   const summary=document.querySelector<HTMLElement>('.transporterHero .dashboardSummary');
   if(!summary)return;
@@ -28,5 +30,5 @@ export default function TransporterDeliveredSummary(){
   return()=>{cancelled=true;window.clearInterval(timer)};
  },[]);
  if(!target)return null;
- return createPortal(<><strong>{count}</strong><span>Delivered</span></>,target);
+ return createPortal(<div role="button" tabIndex={0} aria-label={`View ${count} delivered deliveries`} onClick={()=>router.push('/transporter/delivered')} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();router.push('/transporter/delivered')}}} style={{cursor:'pointer',height:'100%'}}><strong>{count}</strong><span>Delivered</span></div>,target);
 }
