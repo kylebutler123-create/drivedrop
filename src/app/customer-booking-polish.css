@@ -1,0 +1,164 @@
+/* Customer active-booking journey */
+.bookingCard:not(.transporterBooking) {
+  position: relative;
+  overflow: hidden;
+}
+
+.bookingCard:not(.transporterBooking)::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: #d9e4ef;
+}
+
+.bookingCard:not(.transporterBooking):has(.paymentMini small) .bookingTop {
+  align-items: center;
+}
+
+.bookingCard:not(.transporterBooking) .statusPill:first-child {
+  padding: 7px 11px;
+  border: 1px solid #cdddeb;
+  background: #eef5fb;
+  color: #174f80;
+  letter-spacing: .02em;
+}
+
+.bookingCard:not(.transporterBooking) .bookingPartner {
+  margin-top: 5px;
+}
+
+.bookingCard:not(.transporterBooking) .paymentMini {
+  background: linear-gradient(145deg,#f7fbf9,#edf8f2);
+  border-color: #cfe8da;
+}
+
+.bookingCard:not(.transporterBooking) .paymentMini span {
+  color: #527465;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.bookingCard:not(.transporterBooking) .paymentMini strong {
+  color: #146944;
+}
+
+.bookingCard:not(.transporterBooking) .paymentMini small {
+  color: #168554;
+  font-weight: 800;
+}
+
+.bookingCard:not(.transporterBooking) .routeVisual {
+  position: relative;
+  background: #fbfcfe;
+  border-color: #e1e9f1;
+}
+
+.bookingCard:not(.transporterBooking) .routeVisual i {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff0e4;
+}
+
+.bookingCard:not(.transporterBooking) .bookingColumns {
+  gap: 20px;
+}
+
+.bookingCard:not(.transporterBooking) .bookingColumns > section {
+  min-width: 0;
+}
+
+.bookingCard:not(.transporterBooking) .bookingColumns h3 {
+  margin-bottom: 12px;
+  color: #102d52;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: -.01em;
+}
+
+.bookingCard:not(.transporterBooking) .polishedTimeline {
+  position: relative;
+  margin-left: 4px;
+  border-left: 2px solid #dbe5ee;
+}
+
+.bookingCard:not(.transporterBooking) .polishedTimeline .event {
+  position: relative;
+  padding: 9px 0 12px 17px;
+  border-bottom: 0;
+}
+
+.bookingCard:not(.transporterBooking) .polishedTimeline .event::before {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 13px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #ff7a18;
+  box-shadow: 0 0 0 1px #f1c59f;
+}
+
+.bookingCard:not(.transporterBooking) .polishedTimeline .event:first-child::before {
+  background: #168554;
+  box-shadow: 0 0 0 1px #b9dfcc;
+}
+
+.bookingCard:not(.transporterBooking) .polishedTimeline .event b {
+  color: #19314d;
+  font-size: 12px;
+}
+
+.bookingCard:not(.transporterBooking) .polishedTimeline .event small {
+  margin-top: 2px;
+}
+
+.bookingCard:not(.transporterBooking) .bookingColumns > section:nth-child(2) > .infoPanel {
+  border: 1px solid #dfe8ef;
+  background: #fbfcfe;
+}
+
+.bookingCard:not(.transporterBooking) .bookingColumns > section:nth-child(2) > .infoPanel .infoRow b {
+  color: #173451;
+}
+
+.bookingCard:not(.transporterBooking) .bookingColumns > section:nth-child(2) > .infoPanel .infoRow:first-child b {
+  color: #168554;
+}
+
+.bookingCard:not(.transporterBooking) .fullBtn {
+  min-height: 45px;
+}
+
+@media (max-width:760px) {
+  .bookingCard:not(.transporterBooking)::before {
+    width: 3px;
+  }
+
+  .bookingCard:not(.transporterBooking) .bookingTop {
+    align-items: stretch !important;
+  }
+
+  .bookingCard:not(.transporterBooking) .paymentMini {
+    width: 100%;
+    text-align: left;
+  }
+
+  .bookingCard:not(.transporterBooking) .routeVisual {
+    gap: 8px;
+  }
+
+  .bookingCard:not(.transporterBooking) .bookingColumns {
+    gap: 18px;
+  }
+
+  .bookingCard:not(.transporterBooking) .polishedTimeline {
+    margin-bottom: 3px;
+  }
+}
