@@ -42,8 +42,10 @@ export async function POST(r:Request){
 
  const booking=await prisma.booking.findFirst({where:{id:bookingId,transporterId:u.id},include:{payment:true,job:true,customer:{select:{name:true,email:true}}}});
  if(!booking)return NextResponse.json({error:'Booking not found'},{status:404});
+ const existing=await prisma.$queryRaw<Array<{podSubmittedAt:Date|null}>>`SELECT "podSubmittedAt" FROM "Booking" WHERE "id"=${booking.id}`;
+ if(booking.status==='DELIVERED'&&existing[0]?.podSubmittedAt)return NextResponse.json({ok:true,submittedAt:existing[0].podSubmittedAt,alreadyCompleted:true});
  if(!['IN_TRANSIT','ARRIVING_SOON'].includes(booking.status))return NextResponse.json({error:'Proof of delivery can only be submitted when the vehicle is in transit or arriving soon'},{status:400});
- if(!booking.payment||booking.payment.status!=='PAID'||booking.payment.paidPence<booking.payment.depositPence)return NextResponse.json({error:'Customer payment must be secured before delivery can be completed'},{status:400});
+ if(!booking.payment||booking.payment.status!=='PAID'||booking.payment.paidPence<booking.payment.transportValuePence)return NextResponse.json({error:'Customer payment must be secured before delivery can be completed'},{status:400});
 
  const signatureValidation=await validateEvidenceFile(signature);
  if(!signatureValidation.ok)return NextResponse.json({error:`Signature: ${signatureValidation.error}`},{status:400});
@@ -59,9 +61,9 @@ export async function POST(r:Request){
    for(const path of uploadedPhotos)await tx.evidence.create({data:{bookingId:booking.id,uploaderId:u.id,type:'DELIVERY',imageUrl:path,note:'Proof of delivery photo'}});
    await tx.evidence.create({data:{bookingId:booking.id,uploaderId:u.id,type:'DELIVERY',imageUrl:signaturePath,note:SIGNATURE_MARKER}});
    await tx.$executeRaw`UPDATE "Booking" SET "podRecipientName"=${recipientName}, "podNotes"=${notes||null}, "podSubmittedAt"=${submittedAt}, "status"='DELIVERED'::"BookingStatus" WHERE "id"=${booking.id}`;
-   await tx.transportJob.update({where:{id:booking.jobId},data:{status:'COMPLETED'}});
    await tx.trackingEvent.create({data:{bookingId:booking.id,status:'DELIVERED',note:notes||`Proof of delivery signed by ${recipientName}`,actorId:u.id}});
   });
+  try{await prisma.transportJob.update({where:{id:booking.jobId},data:{status:'COMPLETED'}})}catch(e){console.error('Transport job completion sync failed',e)}
   const vehicle=[(booking.job as any).vehicleYear,booking.job.vehicleMake,booking.job.vehicleModel].filter(Boolean).join(' ').replace(/\s+/g,' ').trim()||'vehicle';
   await createNotificationSafely({userId:booking.customerId,type:'DELIVERY',title:'Vehicle delivered',body:`${vehicle}: proof of delivery has been submitted and the delivery is complete.`,href:'/customer'});
   await sendTransactionalEmailSafely({to:booking.customer.email,subject:`Your ${vehicle} has been delivered`,heading:'Vehicle delivered',preheader:'Proof of delivery is now available in your DriveDrop account.',body:`Hi ${booking.customer.name?.trim()||'there'},\n\nYour transporter has completed the delivery of your ${vehicle}. Proof of delivery, including the recipient signature and delivery photos, is securely stored with the booking.`,ctaLabel:'View delivery',ctaPath:'/customer'});
