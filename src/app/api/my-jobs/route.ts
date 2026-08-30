@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { currentUser } from '@/lib/auth';
 import {profileImageUrl} from '@/lib/supabase-storage';
+import {calculateCustomerPrice} from '@/lib/finance';
 
 export const dynamic='force-dynamic';
 export const revalidate=0;
@@ -35,7 +36,8 @@ export async function GET(){
   const ratingText=averageRating!==null?`★ ${averageRating.toFixed(1)} (${reviewCount} review${reviewCount===1?'':'s'})`:'★ New transporter';
   const businessName=verification?.businessName||transporter.name;
   const displayName=`${businessName} · ${ratingText}`;
-  return {...q,transporter:{...transporter,name:displayName,personName:transporter.name,businessName,companyNumber:verification?.companyNumber||null,yearsOperating:verification?.yearsOperating??null,website:verification?.website||null,verificationStatus:verification?.status||'NOT_STARTED',reviewCount,averageRating,profileImageUrl:profileImageUrl(profilePaths.get(transporter.id)||null)}};
+  const pricing=calculateCustomerPrice(q.pricePence);
+  return {...q,transporterBasePricePence:q.pricePence,platformFeePence:pricing.platformFeePence,pricePence:pricing.customerTotalPence,transporter:{...transporter,name:displayName,personName:transporter.name,businessName,companyNumber:verification?.companyNumber||null,yearsOperating:verification?.yearsOperating??null,website:verification?.website||null,verificationStatus:verification?.status||'NOT_STARTED',reviewCount,averageRating,profileImageUrl:profileImageUrl(profilePaths.get(transporter.id)||null)}};
  })}));
  return NextResponse.json(result,{headers:{'Cache-Control':'no-store, max-age=0'}});
 }
