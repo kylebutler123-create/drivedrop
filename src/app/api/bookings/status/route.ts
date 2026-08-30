@@ -28,7 +28,8 @@ export async function PATCH(r:Request){
       const event=await tx.trackingEvent.create({data:{bookingId:b.id,status:d.status,note:d.note,actorId:u.id}});
       if(d.status==='DELIVERED') await tx.transportJob.update({where:{id:b.jobId},data:{status:'COMPLETED'}});
       if(d.status==='CANCELLED'){
-        await tx.transportJob.update({where:{id:b.jobId},data:{status:'CANCELLED'}});
+        await tx.transportJob.update({where:{id:b.jobId},data:{status:'OPEN'}});
+        await tx.quote.updateMany({where:{jobId:b.jobId},data:{status:'PENDING'}});
         if(b.payment){
           await tx.bookingPayment.update({where:{id:b.payment.id},data:b.payment.paidPence>0?{payoutStatus:'HELD'}:{status:'CANCELLED',payoutStatus:'CANCELLED'}});
         }
@@ -44,6 +45,9 @@ export async function PATCH(r:Request){
     }
     if(d.status==='DELIVERED'){
       await sendTransactionalEmailSafely({to:b.customer.email,subject:`Your ${vehicle} has been delivered`,heading:'Vehicle delivered',preheader:`Your DriveDrop delivery has been completed.`,body:`Hi ${b.customer.name?.trim()||'there'},\n\n${transporter} has marked your ${vehicle} as delivered.\n\nYour transport job is now complete. You can review the completed booking and delivery history in your DriveDrop account.`,ctaLabel:'View completed booking',ctaPath:'/customer'});
+    }
+    if(d.status==='CANCELLED'){
+      await sendTransactionalEmailSafely({to:b.customer.email,subject:`Your ${vehicle} delivery has been reopened`,heading:'Transporter cancelled — your request is open again',preheader:`Your DriveDrop transport request is available for new quotes again.`,body:`Hi ${b.customer.name?.trim()||'there'},\n\n${transporter} has cancelled the booking for your ${vehicle}.\n\nYour transport request has automatically been reopened so verified transporters can quote again.${d.note?`\n\nCancellation reason: ${d.note}`:''}`,ctaLabel:'View your request',ctaPath:'/customer',});
     }
     return NextResponse.json({booking:result.booking,event:result.event});
   }catch(e:any){return NextResponse.json({error:e.message||'Unable to update delivery'},{status:400})}
