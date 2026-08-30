@@ -280,8 +280,6 @@
 .quoteSubmitPanel input,
 .quoteSubmitPanel textarea {
   width: 100%;
-  max-width: 100%;
-  min-width: 0;
   box-sizing: border-box;
   border: 1px solid #d8e1ea;
   border-radius: 12px;
@@ -290,14 +288,22 @@
 
 .quoteSubmitPanel input[type="date"] {
   display: block;
-  inline-size: 100%;
-  min-inline-size: 0;
-  max-inline-size: 100%;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  overflow: hidden;
 }
 
 .quoteSubmitPanel input {
   min-height: 44px;
   padding: 11px 12px;
+}
+
+.quoteSubmitPanel input[type="date"] {
+  padding-right: 8px;
+  font-size: 16px;
 }
 
 .quoteSubmitPanel textarea {
@@ -540,20 +546,19 @@
   }
 
   .quoteSubmitPanel {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-    grid-template-columns: minmax(0,1fr);
+    grid-template-columns: 1fr;
     padding: 15px;
+  }
+
+  .quoteSubmitPanel > div {
+    min-width: 0;
     overflow: hidden;
   }
 
-  .quoteSubmitPanel > div,
-  .quoteSubmitPanel input,
-  .quoteSubmitPanel textarea {
-    min-width: 0;
+  .quoteSubmitPanel input[type="date"] {
+    width: 100%;
     max-width: 100%;
+    min-width: 0;
   }
 
   .quoteSubmitPanel .quoteMessageField,
