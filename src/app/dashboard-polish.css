@@ -34,19 +34,7 @@
 }
 
 .dashboardFilterBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  margin: 4px 0 18px;
-  padding: 12px 15px;
-  border: 1px solid #dfe7ef;
-  border-radius: 14px;
-  background: #fff;
-  box-shadow: 0 6px 20px rgba(16,35,63,.055);
-  color: #52667e;
-  font-size: 12px;
-  font-weight: 700;
+  display: none !important;
 }
 
 .dashboardFilterBar .textAction {
@@ -476,11 +464,6 @@
   .dashboardSummary > [role="button"]:hover,
   .adminReviewNavCard:hover {
     transform: none;
-  }
-
-  .dashboardFilterBar {
-    align-items: flex-start;
-    flex-direction: column;
   }
 
   .dashboardCard:has(.bookingTop) {
