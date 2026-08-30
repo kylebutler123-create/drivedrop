@@ -16,6 +16,8 @@ import TransporterRequoteEnhancer from '@/app/components/TransporterRequoteEnhan
 import TransporterProfileEnhancer from '@/app/components/TransporterProfileEnhancer';
 import TransporterDeliveredSummary from '@/app/components/TransporterDeliveredSummary';
 import TransporterCancelDeliveryEnhancer from '@/app/components/TransporterCancelDeliveryEnhancer';
+import TransporterProofOfDeliveryEnhancer from '@/app/components/TransporterProofOfDeliveryEnhancer';
+import CustomerProofOfDeliveryEnhancer from '@/app/components/CustomerProofOfDeliveryEnhancer';
 
 export const metadata={title:'DriveDrop',description:'UK vehicle transport marketplace'};
 
@@ -29,8 +31,8 @@ export default async function Layout({children}:{children:React.ReactNode}){
     <CustomerQuoteRequestNavigator/>
     <AgreedCollectionDateEnhancer/>
     <TransporterRequoteEnhancer/>
-    {user?.role==='CUSTOMER'&&<><TransporterProfileEnhancer/><CustomerVehicleTypeEnhancer/></>}
-    {user?.role==='TRANSPORTER'&&<><TransporterDeliveredSummary/><TransporterCancelDeliveryEnhancer/></>}
+    {user?.role==='CUSTOMER'&&<><TransporterProfileEnhancer/><CustomerVehicleTypeEnhancer/><CustomerProofOfDeliveryEnhancer/></>}
+    {user?.role==='TRANSPORTER'&&<><TransporterDeliveredSummary/><TransporterCancelDeliveryEnhancer/><TransporterProofOfDeliveryEnhancer/></>}
     <header className={`top${user?.role==='TRANSPORTER'?' transporterTop':user?.role==='CUSTOMER'?' customerTop':!user?' guestTop':''}`}>
       {user?.role==='CUSTOMER'?<div className="customerPrimaryNav">
         <Link href="/" className="logo headerLogo" aria-label="DriveDrop home"><img src="/AC51EBEA-9552-47BB-92A0-E8D611539A71.png" alt="DriveDrop" /></Link>
