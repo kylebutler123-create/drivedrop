@@ -19,8 +19,12 @@ export default function TransporterCancelDeliveryEnhancer(){
     const cards=Array.from(document.querySelectorAll<HTMLElement>('article.transporterBooking'));
     cards.forEach((card,index)=>{
       const booking=bookings[index];
-      if(!booking||!['CONFIRMED','COLLECTION_SCHEDULED'].includes(booking.status))return;
-      if(card.querySelector('[data-cancel-delivery]'))return;
+      const existing=card.querySelector<HTMLButtonElement>('[data-cancel-delivery]');
+      if(!booking||!['CONFIRMED','COLLECTION_SCHEDULED'].includes(booking.status)){
+        existing?.remove();
+        return;
+      }
+      if(existing)return;
       const actions=card.querySelector<HTMLElement>('.actionButtons');
       if(!actions)return;
       const button=document.createElement('button');
@@ -50,7 +54,7 @@ export default function TransporterCancelDeliveryEnhancer(){
    }catch{}finally{busy=false}
   }
   enhance();
-  const timer=window.setInterval(enhance,1500);
+  const timer=window.setInterval(enhance,500);
   return()=>{cancelled=true;window.clearInterval(timer)};
  },[pathname]);
  return null;
