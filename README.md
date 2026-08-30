@@ -67,5 +67,7 @@ Adds persistent booking payment records, configurable deposit and commission per
 - Added `SECURITY.md` launch checklist.
 
 ### Recommended verification
-`npm ci` (or `npm install` if no lockfile), `npm run db:generate`, `npm run db:validate`, `npm run typecheck`, `npm run build`.
+`npm ci` (or `npm install` if no lockfile), `npm run db:generate`, `npm run db:validate`, `npm run typecheck`, and `npm run build`.
 Use `prisma migrate deploy` against a staging PostgreSQL database before production.
+
+<!-- Stable transporter dashboard redeploy marker: 2026-08-30 -->
