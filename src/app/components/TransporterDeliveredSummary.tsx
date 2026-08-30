@@ -35,19 +35,21 @@ export default function TransporterDeliveredSummary(){
   let cancelled=false;
   async function load(){
    try{
-    const response=await fetch('/api/transporter/delivered',{cache:'no-store'});
-    if(!response.ok||cancelled)return;
-    const data=await response.json();
+    const [deliveredResponse,activeResponse]=await Promise.all([
+      fetch('/api/transporter/delivered',{cache:'no-store'}),
+      fetch('/api/my-bookings',{cache:'no-store'})
+    ]);
+    if(!deliveredResponse.ok||!activeResponse.ok||cancelled)return;
+    const data=await deliveredResponse.json();
+    const activeBookings=await activeResponse.json();
     const delivered=Array.isArray(data?.bookings)?data.bookings:[];
     setBookings(delivered);
+    const activeProceedsPence=Array.isArray(activeBookings)?activeBookings.reduce((total:number,booking:any)=>total+(booking.payment?.transporterProceedsPence||0),0):0;
+    const totalProceedsPence=activeProceedsPence+(Number(data?.deliveredProceedsPence)||0);
     const summary=document.querySelector('.transporterHero .dashboardSummary');
     const proceedsBox=summary?Array.from(summary.children).find(child=>child.textContent?.includes('Booked proceeds')):null;
     const proceedsStrong=proceedsBox?.querySelector('strong');
-    if(proceedsStrong){
-      const activeText=(proceedsStrong.textContent||'').replace(/[^0-9.-]/g,'');
-      const activePence=Math.round((Number(activeText)||0)*100);
-      proceedsStrong.textContent=money(activePence+(Number(data?.deliveredProceedsPence)||0));
-    }
+    if(proceedsStrong)proceedsStrong.textContent=money(totalProceedsPence);
    }catch{}
   }
   load();
