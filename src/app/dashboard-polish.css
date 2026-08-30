@@ -78,6 +78,11 @@
   color: #102d52;
 }
 
+/* Customer booking cards show only payment status and total payment. */
+.bookingCard:not(.transporterBooking) .bookingColumns > section:nth-child(2) > .infoPanel > .infoRow:last-of-type {
+  display: none;
+}
+
 .routeVisual {
   border: 1px solid #e7edf3;
 }
