@@ -6,6 +6,15 @@ import {createNotificationSafely} from '@/lib/notifications';
 
 const SIGNATURE_MARKER='__POC_SIGNATURE__';
 
+export async function GET(r:Request){
+ const u=await currentUser();if(!u)return NextResponse.json({error:'Authentication required'},{status:401});
+ const bookingId=new URL(r.url).searchParams.get('bookingId')||'';if(!bookingId)return NextResponse.json({error:'Booking is required'},{status:400});
+ const booking=await prisma.booking.findUnique({where:{id:bookingId},select:{id:true,customerId:true,transporterId:true,status:true}});if(!booking)return NextResponse.json({error:'Booking not found'},{status:404});if(u.role!=='ADMIN'&&u.id!==booking.customerId&&u.id!==booking.transporterId)return NextResponse.json({error:'Access denied'},{status:403});
+ const rows=await prisma.$queryRaw<Array<{pocReleasedByName:string|null,pocCondition:string|null,pocDamageNotes:string|null,pocSubmittedAt:Date|null}>>`SELECT "pocReleasedByName","pocCondition","pocDamageNotes","pocSubmittedAt" FROM "Booking" WHERE "id"=${bookingId}`;
+ const evidence=await prisma.evidence.findMany({where:{bookingId,type:'COLLECTION'},orderBy:{createdAt:'asc'},select:{id:true,note:true,createdAt:true}});const signature=evidence.find(e=>e.note===SIGNATURE_MARKER)||null;const photos=evidence.filter(e=>e.note!==SIGNATURE_MARKER);const poc=rows[0]||{pocReleasedByName:null,pocCondition:null,pocDamageNotes:null,pocSubmittedAt:null};
+ return NextResponse.json({bookingId,status:booking.status,releasedByName:poc.pocReleasedByName,condition:poc.pocCondition,damageNotes:poc.pocDamageNotes,submittedAt:poc.pocSubmittedAt,signature,photos});
+}
+
 export async function POST(r:Request){
  const u=await currentUser();if(!u||u.role!=='TRANSPORTER')return NextResponse.json({error:'Transporter access required'},{status:403});
  const form=await r.formData();const bookingId=String(form.get('bookingId')||'');const releasedBy=String(form.get('releasedBy')||'').trim();const condition=String(form.get('condition')||'').trim();const damageNotes=String(form.get('damageNotes')||'').trim();const confirmed=String(form.get('confirmed')||'')==='true';const signature=form.get('signature');const photos=form.getAll('photos').filter((x):x is File=>x instanceof File&&x.size>0);
