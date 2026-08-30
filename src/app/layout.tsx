@@ -22,7 +22,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
   const user=await currentUser();
   const dashboardHref=user?.role==='CUSTOMER'?'/customer':user?.role==='TRANSPORTER'?'/transporter':user?.role==='ADMIN'?'/admin':'/login';
   const reviewHref=user?.role==='TRANSPORTER'?'/transporter/reviews':user?.role==='ADMIN'?'/admin/review-disputes':null;
-  const reviewLabel=user?.role==='TRANSPORTER'?'Customer reviews':user?.role==='ADMIN'?'Review moderation':null;
+  const reviewLabel=user?.role==='TRANSPORTER'?'Reviews':user?.role==='ADMIN'?'Review moderation':null;
 
   return <html lang="en"><body>
     <CustomerQuoteRequestNavigator/>
@@ -50,7 +50,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
               <Link className="btn orange transporterDashboardBtn" href={dashboardHref}>Dashboard</Link>
             </span>
             <span className="transporterManageNav">
-              <Link href="/transporter/reviews">Customer reviews</Link>
+              <Link href="/transporter/reviews">Reviews</Link>
             </span>
             <Link className="btn light accountNavBtn" href="/account">Account</Link>
             <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
