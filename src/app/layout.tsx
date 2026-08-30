@@ -36,6 +36,11 @@ export default async function Layout({children}:{children:React.ReactNode}){
         <Link className="accountNavBtn" href="/account">Account</Link>
         <Link className="btn orange customerDashboardBtn" href={dashboardHref}>Dashboard</Link>
         <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
+      </div>:user?.role==='TRANSPORTER'?<div className="transporterPrimaryNav">
+        <Link href="/" className="logo headerLogo" aria-label="DriveDrop home"><img src="/AC51EBEA-9552-47BB-92A0-E8D611539A71.png" alt="DriveDrop" /></Link>
+        <Link className="btn light accountNavBtn" href="/account">Account</Link>
+        <Link className="btn orange transporterDashboardBtn" href={dashboardHref}>Dashboard</Link>
+        <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
       </div>:!user?<div className="guestPrimaryNav">
         <Link href="/" className="logo headerLogo" aria-label="DriveDrop home"><img src="/AC51EBEA-9552-47BB-92A0-E8D611539A71.png" alt="DriveDrop" /></Link>
         <Link className="btn light" href="/login?account=customer">Customer login</Link>
@@ -43,18 +48,11 @@ export default async function Layout({children}:{children:React.ReactNode}){
       </div>:<Link href="/" className="logo headerLogo" aria-label="DriveDrop home"><img src="/AC51EBEA-9552-47BB-92A0-E8D611539A71.png" alt="DriveDrop" /></Link>}
       <nav className="nav">
         {user?<>
-          {user.role==='TRANSPORTER'?<>
-            <span className="transporterCommsNav">
-              <MessagesNavLink/>
-              <NotificationNavLink/>
-              <Link className="btn orange transporterDashboardBtn" href={dashboardHref}>Dashboard</Link>
-            </span>
-            <span className="transporterManageNav">
-              <Link href="/transporter/reviews">Reviews</Link>
-            </span>
-            <Link className="btn light accountNavBtn" href="/account">Account</Link>
-            <form action="/api/auth/logout" method="post"><button className="btn light" type="submit">Sign out</button></form>
-          </>:user.role==='CUSTOMER'?<>
+          {user.role==='TRANSPORTER'?<span className="transporterSecondaryNav">
+            <Link href="/transporter/reviews">Reviews</Link>
+            <MessagesNavLink/>
+            <NotificationNavLink/>
+          </span>:user.role==='CUSTOMER'?<>
             <span className="customerSecondaryNav">
               <Link href="/customer/manage-requests">Manage requests</Link>
               <MessagesNavLink/>
