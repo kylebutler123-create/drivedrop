@@ -18,7 +18,11 @@ export async function GET(){
  const scoped=visibleBookings.map(({payment,...booking})=>{
   if(!payment)return{...booking,payment:null};
   if(u.role==='CUSTOMER')return{...booking,payment:{status:payment.status,transportValuePence:payment.transportValuePence,depositPence:payment.depositPence,paidPence:payment.paidPence,refundedPence:payment.refundedPence,platformFeePence:payment.platformFeePence}};
-  if(u.role==='TRANSPORTER')return{...booking,payment:{status:payment.status,transportValuePence:payment.transportValuePence,depositPence:payment.depositPence,paidPence:payment.paidPence,refundedPence:payment.refundedPence,platformFeePence:payment.platformFeePence,transporterProceedsPence:payment.transporterProceedsPence,payoutStatus:payment.payoutStatus}};
+  if(u.role==='TRANSPORTER'){
+   const proceeds=payment.transporterProceedsPence;
+   const paidForTransporter=payment.status==='PENDING'?0:Math.min(proceeds,payment.paidPence);
+   return{...booking,payment:{status:payment.status,transportValuePence:proceeds,depositPence:proceeds,paidPence:paidForTransporter,refundedPence:payment.refundedPence,platformFeePence:0,transporterProceedsPence:proceeds,payoutStatus:payment.payoutStatus}};
+  }
   return{...booking,payment};
  });
  return NextResponse.json(scoped,{headers:{'Cache-Control':'no-store, max-age=0'}})
