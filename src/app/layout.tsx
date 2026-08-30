@@ -13,6 +13,7 @@ import CustomerQuoteRequestNavigator from '@/app/components/CustomerQuoteRequest
 import AgreedCollectionDateEnhancer from '@/app/components/AgreedCollectionDateEnhancer';
 import TransporterRequoteEnhancer from '@/app/components/TransporterRequoteEnhancer';
 import TransporterProfileEnhancer from '@/app/components/TransporterProfileEnhancer';
+import TransporterDeliveredSummary from '@/app/components/TransporterDeliveredSummary';
 
 export const metadata={title:'DriveDrop',description:'UK vehicle transport marketplace'};
 
@@ -27,6 +28,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
     <AgreedCollectionDateEnhancer/>
     <TransporterRequoteEnhancer/>
     {user?.role==='CUSTOMER'&&<TransporterProfileEnhancer/>}
+    {user?.role==='TRANSPORTER'&&<TransporterDeliveredSummary/>}
     <header className={`top${user?.role==='TRANSPORTER'?' transporterTop':user?.role==='CUSTOMER'?' customerTop':!user?' guestTop':''}`}>
       {user?.role==='CUSTOMER'?<div className="customerPrimaryNav">
         <Link href="/" className="logo headerLogo" aria-label="DriveDrop home"><img src="/AC51EBEA-9552-47BB-92A0-E8D611539A71.png" alt="DriveDrop" /></Link>
