@@ -280,9 +280,19 @@
 .quoteSubmitPanel input,
 .quoteSubmitPanel textarea {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   border: 1px solid #d8e1ea;
   border-radius: 12px;
   background: #fff;
+}
+
+.quoteSubmitPanel input[type="date"] {
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 100%;
 }
 
 .quoteSubmitPanel input {
@@ -530,8 +540,20 @@
   }
 
   .quoteSubmitPanel {
-    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    grid-template-columns: minmax(0,1fr);
     padding: 15px;
+    overflow: hidden;
+  }
+
+  .quoteSubmitPanel > div,
+  .quoteSubmitPanel input,
+  .quoteSubmitPanel textarea {
+    min-width: 0;
+    max-width: 100%;
   }
 
   .quoteSubmitPanel .quoteMessageField,
