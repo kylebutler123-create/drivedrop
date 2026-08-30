@@ -1,12 +1,14 @@
 'use client';
 
 import {useEffect} from 'react';
+import {usePathname} from 'next/navigation';
 
 type Job={id:string;quotes?:Array<{id:string;pricePence:number;status:string;message?:string|null;proposedCollectionDate?:string|null}>};
 
 export default function TransporterRequoteEnhancer(){
+ const pathname=usePathname();
  useEffect(()=>{
-  if(window.location.pathname!=='/transporter')return;
+  if(pathname!=='/transporter')return;
   let stopped=false;
 
   async function enhance(){
@@ -27,7 +29,7 @@ export default function TransporterRequoteEnhancer(){
     const button=document.createElement('button');
     button.type='button';
     button.className='btn light requoteButton';
-    button.textContent='Revise quote';
+    button.textContent='Adjust quote';
     wrap.appendChild(button);
     panel.appendChild(wrap);
 
@@ -36,11 +38,13 @@ export default function TransporterRequoteEnhancer(){
      const form=document.createElement('form');
      form.className='requoteForm';
      const current=(quote.pricePence/100).toFixed(2);
+     const currentDate=quote.proposedCollectionDate?new Date(quote.proposedCollectionDate).toISOString().slice(0,10):'';
+     const currentMessage=(quote.message||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
      form.innerHTML=`
-      <div class="requoteHeading"><strong>Send a revised quote</strong><small>Your new offer replaces your current pending quote.</small></div>
+      <div class="requoteHeading"><strong>Adjust your quote</strong><small>Your updated offer replaces your current pending quote.</small></div>
       <label>NEW PRICE (£)<input name="price" type="number" min="10" step="0.01" value="${current}" required></label>
-      <label>ALTERNATIVE COLLECTION DATE<input name="date" type="date"></label>
-      <label>MESSAGE TO CUSTOMER<textarea name="message" maxlength="1000" rows="3" placeholder="Explain your updated offer if useful."></textarea></label>
+      <label>ALTERNATIVE COLLECTION DATE<input name="date" type="date" value="${currentDate}"></label>
+      <label>MESSAGE TO CUSTOMER<textarea name="message" maxlength="1000" rows="3" placeholder="Explain your updated offer if useful.">${currentMessage}</textarea></label>
       <div class="requoteActions"><button class="btn orange" type="submit">Update quote</button><button class="btn light" type="button" data-cancel>Cancel</button></div>
       <div class="requoteNotice" aria-live="polite"></div>`;
      wrap.appendChild(form);
@@ -66,8 +70,8 @@ export default function TransporterRequoteEnhancer(){
   }
 
   enhance();
-  const timer=window.setInterval(enhance,5000);
+  const timer=window.setInterval(enhance,3000);
   return()=>{stopped=true;window.clearInterval(timer)};
- },[]);
+ },[pathname]);
  return null;
 }
