@@ -50,7 +50,6 @@ export default async function Layout({children}:{children:React.ReactNode}){
             </span>
             <span className="transporterManageNav">
               <Link href="/transporter/manage-deliveries">Manage deliveries</Link>
-              <Link href="/transporter/quotes">My quotes</Link>
               <Link href="/transporter/reviews">Customer reviews</Link>
             </span>
             <Link className="btn light accountNavBtn" href="/account">Account</Link>
