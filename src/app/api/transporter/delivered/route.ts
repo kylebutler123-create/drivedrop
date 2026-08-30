@@ -15,7 +15,8 @@ export async function GET(){
    job:{select:{collection:true,delivery:true,vehicleMake:true,vehicleModel:true,registration:true,collectionDate:true}},
    customer:{select:{name:true}},
    trackingEvents:{where:{status:'DELIVERED'},select:{createdAt:true,note:true},orderBy:{createdAt:'desc'},take:1},
-   payment:{select:{transporterProceedsPence:true,payoutStatus:true}}
+   evidence:{select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'asc'}},
+   payment:{select:{transporterProceedsPence:true,payoutStatus:true,status:true}}
   },
   orderBy:{createdAt:'desc'}
  });
