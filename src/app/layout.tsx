@@ -10,6 +10,7 @@ import {currentUser} from '@/lib/auth';
 import MessagesNavLink from '@/app/components/MessagesNavLink';
 import NotificationNavLink from '@/app/components/NotificationNavLink';
 import CustomerQuoteRequestNavigator from '@/app/components/CustomerQuoteRequestNavigator';
+import CustomerVehicleTypeEnhancer from '@/app/components/CustomerVehicleTypeEnhancer';
 import AgreedCollectionDateEnhancer from '@/app/components/AgreedCollectionDateEnhancer';
 import TransporterRequoteEnhancer from '@/app/components/TransporterRequoteEnhancer';
 import TransporterProfileEnhancer from '@/app/components/TransporterProfileEnhancer';
@@ -28,7 +29,7 @@ export default async function Layout({children}:{children:React.ReactNode}){
     <CustomerQuoteRequestNavigator/>
     <AgreedCollectionDateEnhancer/>
     <TransporterRequoteEnhancer/>
-    {user?.role==='CUSTOMER'&&<TransporterProfileEnhancer/>}
+    {user?.role==='CUSTOMER'&&<><TransporterProfileEnhancer/><CustomerVehicleTypeEnhancer/></>}
     {user?.role==='TRANSPORTER'&&<><TransporterDeliveredSummary/><TransporterCancelDeliveryEnhancer/></>}
     <header className={`top${user?.role==='TRANSPORTER'?' transporterTop':user?.role==='CUSTOMER'?' customerTop':!user?' guestTop':''}`}>
       {user?.role==='CUSTOMER'?<div className="customerPrimaryNav">
