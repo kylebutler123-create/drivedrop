@@ -5,6 +5,7 @@ import './dashboard-polish.css';
 import './account-edit.css';
 import './transporter-profile.css';
 import './requote.css';
+import './proof-of-delivery.css';
 import Link from 'next/link';
 import {currentUser} from '@/lib/auth';
 import MessagesNavLink from '@/app/components/MessagesNavLink';
