@@ -12,7 +12,8 @@ export async function GET(){
  const rows=await prisma.$queryRaw<any[]>`
   SELECT r.id,r.rating,r.body,r.verified,r."createdAt",r."transporterResponse",r."moderationStatus",
          r."disputeReason",r."disputeDetails",r."disputedAt",r."moderationNote",r."moderatedAt",
-         c.name AS "customerName",t.name AS "transporterName",j."vehicleMake",j."vehicleModel"
+         c.name AS "customerName",t.name AS "transporterName",j."vehicleMake",j."vehicleModel",
+         j."vehicleType",j.registration,j.collection,j.delivery,j.running
   FROM "Review" r
   JOIN "User" c ON c.id=r."customerId"
   JOIN "User" t ON t.id=r."transporterId"
