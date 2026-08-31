@@ -10,8 +10,8 @@ function databaseUrl(){
   if(pattern.test(value))return value.replace(pattern,`$1${key}=${next}`)
   return `${value}${value.includes('?')?'&':'?'}${key}=${next}`
  }
- let value=setParam(raw,'connection_limit','1')
- value=setParam(value,'pool_timeout','20')
+ let value=setParam(raw,'connection_limit','3')
+ value=setParam(value,'pool_timeout','10')
  return value
 }
 
