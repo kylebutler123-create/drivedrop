@@ -2,6 +2,7 @@ import './globals.css';
 import './home-hero.css';
 import './mobile-polish.css';
 import './dashboard-polish.css';
+import './admin-dashboard-polish.css';
 import './account-edit.css';
 import './transporter-profile.css';
 import './requote.css';
