@@ -2,6 +2,8 @@
 import {useEffect,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {usePathname} from 'next/navigation';
+import {getSharedBookings} from './shared-bookings-client';
+function norm(v:any){return String(v??'').replace(/\s+/g,' ').trim().toLowerCase()}
 
 export default function CustomerProofOfDeliveryEnhancer(){
  const pathname=usePathname();
@@ -12,19 +14,18 @@ export default function CustomerProofOfDeliveryEnhancer(){
   let cancelled=false;let retries=0;
   async function sync(){
    try{
-    const r=await fetch('/api/my-bookings',{cache:'no-store'});if(!r.ok||cancelled)return;
-    const bookings=await r.json();
+    const bookings=await getSharedBookings();if(cancelled)return;
     const cards=Array.from(document.querySelectorAll<HTMLElement>('.bookingCard'));
     if(cards.length===0&&retries++<20){setTimeout(sync,100);return}
     document.querySelectorAll('[data-customer-pod]').forEach(n=>n.remove());
-    const next:{el:HTMLElement,bookingId:string}[]=[];
-    const delivered=bookings.filter((b:any)=>b.status==='DELIVERED'||b.customerConfirmedAt);
+    const next:{el:HTMLElement,bookingId:string}[]=[];const nextData:Record<string,any>={};
     cards.forEach((card,i)=>{
-      const b=bookings[i]||delivered[i];if(!b||!(b.status==='DELIVERED'||b.customerConfirmedAt))return;
-      const el=document.createElement('div');el.dataset.customerPod='true';card.appendChild(el);next.push({el,bookingId:b.id});
+      const title=norm(card.querySelector('.bookingTop h2')?.textContent);const stops=Array.from(card.querySelectorAll('.routeVisual b')).slice(0,2).map(x=>norm(x.textContent));
+      const b=bookings.find((x:any)=>norm(`${x.job?.vehicleMake||''} ${x.job?.vehicleModel||''}`)===title&&stops.length>=2&&norm(x.job?.collection)===stops[0]&&norm(x.job?.delivery)===stops[1])||bookings.find((x:any)=>stops.length>=2&&norm(x.job?.collection)===stops[0]&&norm(x.job?.delivery)===stops[1])||bookings[i];
+      if(!b?.proofOfDelivery?.submittedAt)return;
+      const el=document.createElement('div');el.dataset.customerPod='true';card.appendChild(el);next.push({el,bookingId:b.id});nextData[b.id]=b.proofOfDelivery;
     });
-    setMounts(next);
-    for(const m of next){const pr=await fetch(`/api/bookings/proof-of-delivery?bookingId=${encodeURIComponent(m.bookingId)}`,{cache:'no-store'});if(pr.ok){const d=await pr.json();if(!cancelled)setData(v=>({...v,[m.bookingId]:d}))}}
+    setMounts(next);setData(nextData);
    }catch{}
   }
   sync();
