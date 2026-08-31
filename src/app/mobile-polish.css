@@ -32,29 +32,38 @@
   .guestTop .guestPrimaryNav .btn {min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}
   .guestTop .nav {display:none}
 
-  .customerTop {display:block;padding:12px 16px 10px}
-  .customerTop .customerPrimaryNav {width:100%;display:grid;grid-template-columns:minmax(105px,1fr) auto auto auto;align-items:center;gap:8px}
-  .customerTop .customerPrimaryNav .headerLogo {min-width:0}
+  .customerTop {display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 8px;padding:9px 12px 10px}
+  .customerTop .customerPrimaryNav {display:contents!important}
+  .customerTop .customerPrimaryNav .headerLogo {grid-column:1;grid-row:1;min-width:0;display:flex;align-items:center}
   .customerTop .customerPrimaryNav .headerLogo img {max-width:125px}
-  .customerTop .customerPrimaryNav .btn,.customerTop .customerPrimaryNav form .btn {min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}
-  .customerTop .customerPrimaryNav .accountNavBtn {min-height:38px;display:inline-flex;align-items:center;justify-content:center;padding:9px 10px;border-radius:999px;background:#e9eef4;border:0;color:#10233f;font-size:11px;font-weight:800;white-space:nowrap}
-  .customerTop .customerPrimaryNav form {display:flex}
-  .customerTop .nav {display:block}
+  .customerTop .customerPrimaryNav form {grid-column:2;grid-row:1;display:flex;justify-content:flex-end}
+  .customerTop .customerPrimaryNav form .btn {width:auto;min-width:82px;min-height:36px;padding:0 12px;font-size:10px;white-space:nowrap}
+  .customerTop .customerPrimaryNav .accountNavBtn {grid-column:1;grid-row:2;width:100%;min-height:38px;display:inline-flex;align-items:center;justify-content:center;padding:9px 10px;border-radius:999px;background:#e9eef4;border:0;color:#10233f;font-size:11px;font-weight:800;white-space:nowrap}
+  .customerTop .customerPrimaryNav .customerDashboardBtn {grid-column:2;grid-row:2;width:100%;min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}
+  .customerTop .nav {display:contents!important}
   .customerTop .nav::before {display:none}
-  .customerTop .customerSecondaryNav {width:100%;min-height:0;display:flex;justify-content:center;gap:8px;padding:0;border:0;border-radius:0;background:transparent;transform:none;margin-top:4px}
-  .customerTop .customerSecondaryNav > * {min-height:38px;display:inline-flex;align-items:center;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);font-size:12px;font-weight:700;white-space:nowrap}
+  .customerTop .customerSecondaryNav {display:contents!important}
+  .customerTop .customerSecondaryNav > * {width:100%;min-width:0;min-height:38px;display:inline-flex;align-items:center;justify-content:center;padding:8px 9px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);font-size:11px;font-weight:700;white-space:nowrap;transform:none}
+  .customerTop .customerSecondaryNav > *:nth-child(1){grid-column:1;grid-row:3}
+  .customerTop .customerSecondaryNav > *:nth-child(2){grid-column:2;grid-row:3}
+  .customerTop .customerSecondaryNav > *:nth-child(3){grid-column:1/3;grid-row:4;justify-self:center;max-width:50%}
 
   .requestPanel .grid > .field {min-width:0}
   .requestPanel input[type="date"][name="collectionDate"] {display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;-webkit-appearance:none;appearance:none}
 
-  .transporterTop {display:block;padding:12px 16px 10px}
-  .transporterTop .transporterPrimaryNav {width:100%;display:grid;grid-template-columns:minmax(105px,1fr) auto auto auto;align-items:center;gap:8px}
-  .transporterTop .transporterPrimaryNav .headerLogo {min-width:0}
+  .transporterTop {display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 8px;padding:9px 12px 10px}
+  .transporterTop .transporterPrimaryNav {display:contents!important}
+  .transporterTop .transporterPrimaryNav .headerLogo {grid-column:1;grid-row:1;min-width:0;display:flex;align-items:center}
   .transporterTop .transporterPrimaryNav .headerLogo img {max-width:125px}
-  .transporterTop .transporterPrimaryNav .btn,.transporterTop .transporterPrimaryNav form .btn {min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}
-  .transporterTop .transporterPrimaryNav form {display:flex}
-  .transporterTop .nav {display:block}
+  .transporterTop .transporterPrimaryNav form {grid-column:2;grid-row:1;display:flex;justify-content:flex-end}
+  .transporterTop .transporterPrimaryNav form .btn {width:auto;min-width:82px;min-height:36px;padding:0 12px;font-size:10px;white-space:nowrap}
+  .transporterTop .transporterPrimaryNav .accountNavBtn {grid-column:1;grid-row:2;width:100%;min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}
+  .transporterTop .transporterPrimaryNav .transporterDashboardBtn {grid-column:2;grid-row:2;width:100%;min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}
+  .transporterTop .nav {display:contents!important}
   .transporterTop .nav::before {display:none}
-  .transporterTop .transporterSecondaryNav {width:100%;min-height:0;display:flex;justify-content:center;gap:8px;padding:0;border:0;border-radius:0;background:transparent;transform:none;margin-top:4px}
-  .transporterTop .transporterSecondaryNav > * {min-height:38px;display:inline-flex;align-items:center;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);font-size:12px;font-weight:700;white-space:nowrap}
+  .transporterTop .transporterSecondaryNav {display:contents!important}
+  .transporterTop .transporterSecondaryNav > * {width:100%;min-width:0;min-height:38px;display:inline-flex;align-items:center;justify-content:center;padding:8px 9px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);font-size:11px;font-weight:700;white-space:nowrap;transform:none}
+  .transporterTop .transporterSecondaryNav > *:nth-child(1){grid-column:1;grid-row:3}
+  .transporterTop .transporterSecondaryNav > *:nth-child(2){grid-column:2;grid-row:3}
+  .transporterTop .transporterSecondaryNav > *:nth-child(3){grid-column:1/3;grid-row:4;justify-self:center;max-width:50%}
 }
