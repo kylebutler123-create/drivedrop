@@ -17,10 +17,10 @@ function enhance(card:HTMLElement){
  const paymentLabel=text(card.querySelector('.paymentMini span'));
  const paymentValue=text(card.querySelector('.paymentMini strong'));
  const quoteCount=text(card.querySelector('.quoteCount strong'));
- const kind=card.classList.contains('requestPanel')?'request':card.classList.contains('quoteRequestCard')?'quote':'booking';
- const meta=kind==='request'?'Enter vehicle and route details to request quotes.':routeStops.length>=2?`${routeStops[0]} → ${routeStops[1]}`:partner;
+ const kind=card.classList.contains('quoteRequestCard')?'quote':'booking';
+ const meta=routeStops.length>=2?`${routeStops[0]} → ${routeStops[1]}`:partner;
  const stat=quoteCount?`${quoteCount} quote${quoteCount==='1'?'':'s'}`:paymentValue?`${paymentLabel||'Payment'} · ${paymentValue}`:partner;
- btn.innerHTML=`<span class="customerCardSummaryMain"><span class="customerCardSummaryStatus">${status||(kind==='request'?'New request':'')}</span><strong>${title}</strong><small>${meta}</small></span><span class="customerCardSummarySide"><b>${stat||'View details'}</b><span class="customerCardChevron">+</span></span>`;
+ btn.innerHTML=`<span class="customerCardSummaryMain"><span class="customerCardSummaryStatus">${status}</span><strong>${title}</strong><small>${meta}</small></span><span class="customerCardSummarySide"><b>${stat||'View details'}</b><span class="customerCardChevron">+</span></span>`;
  const toggle=()=>{const collapsed=card.classList.toggle('isCollapsed');btn.setAttribute('aria-expanded',collapsed?'false':'true');const chevron=btn.querySelector('.customerCardChevron');if(chevron)chevron.textContent=collapsed?'+':'−'};
  btn.addEventListener('click',toggle);
  card.insertBefore(btn,card.firstChild);
@@ -30,7 +30,7 @@ export default function CustomerCardExpander(){
  const pathname=usePathname();
  useEffect(()=>{
   if(pathname!=='/customer')return;
-  const scan=()=>document.querySelectorAll<HTMLElement>('main.dashboardShell .requestPanel, main.dashboardShell .bookingCard, main.dashboardShell .quoteRequestCard').forEach(enhance);
+  const scan=()=>document.querySelectorAll<HTMLElement>('main.dashboardShell .bookingCard, main.dashboardShell .quoteRequestCard').forEach(enhance);
   scan();
   const observer=new MutationObserver(scan);observer.observe(document.body,{childList:true,subtree:true});
   return()=>observer.disconnect();
