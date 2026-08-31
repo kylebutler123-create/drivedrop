@@ -3,6 +3,7 @@ import './home-hero.css';
 import './mobile-polish.css';
 import './dashboard-polish.css';
 import './admin-dashboard-polish.css';
+import './admin-header-colors.css';
 import './admin-verification-expander.css';
 import './account-edit.css';
 import './transporter-profile.css';
