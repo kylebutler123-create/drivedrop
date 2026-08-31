@@ -20,6 +20,7 @@ import './messages-polish.css';
 import './notifications-polish.css';
 import './manage-requests-polish.css';
 import './transporter-reviews-polish.css';
+import './transporter-verification-polish.css';
 import Link from 'next/link';
 import {currentUser} from '@/lib/auth';
 import MessagesNavLink from '@/app/components/MessagesNavLink';
