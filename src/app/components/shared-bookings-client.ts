@@ -3,12 +3,15 @@
 let cached:any[]|null=null;
 let cachedAt=0;
 let inflight:Promise<any[]>|null=null;
-const TTL=5000;
+const TTL=15000;
 
 export async function getSharedBookings(force=false){
  const now=Date.now();
+ // Always share an in-flight request, including forced retry calls. Previously
+ // force=true bypassed this guard, so several page enhancers could retry the
+ // same heavy endpoint simultaneously when the database was already slow.
+ if(inflight)return inflight;
  if(!force&&cached&&now-cachedAt<TTL)return cached;
- if(!force&&inflight)return inflight;
  inflight=fetch('/api/my-bookings',{cache:'no-store'}).then(async r=>{
   if(!r.ok)throw new Error('Unable to load bookings');
   const data=await r.json();
@@ -19,4 +22,4 @@ export async function getSharedBookings(force=false){
  return inflight;
 }
 
-export function clearSharedBookings(){cached=null;cachedAt=0;inflight=null;}
+export function clearSharedBookings(){cached=null;cachedAt=0;}
