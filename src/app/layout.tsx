@@ -18,6 +18,7 @@ import './transporter-completed-polish.css';
 import './admin-payouts.css';
 import './messages-polish.css';
 import './notifications-polish.css';
+import './manage-requests-polish.css';
 import Link from 'next/link';
 import {currentUser} from '@/lib/auth';
 import MessagesNavLink from '@/app/components/MessagesNavLink';
