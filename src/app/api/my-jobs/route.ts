@@ -25,10 +25,13 @@ export async function GET(){
   },
   orderBy:{createdAt:'desc'}
  });
+ const jobIds=jobs.map(job=>job.id);
+ const vehicleTypeRows=jobIds.length?await prisma.$queryRawUnsafe<Array<{id:string;vehicleType:string|null}>>(`SELECT "id", "vehicleType" FROM "TransportJob" WHERE "id" IN (${jobIds.map((_,i)=>`$${i+1}`).join(',')})`,...jobIds):[];
+ const vehicleTypes=new Map(vehicleTypeRows.map(row=>[row.id,row.vehicleType]));
  const transporterIds=[...new Set(jobs.flatMap(job=>job.quotes.map(q=>q.transporter.id)))];
  const profileRows=transporterIds.length?await prisma.$queryRawUnsafe<Array<{transporterId:string;profileImagePath:string|null}>>(`SELECT "transporterId", "profileImagePath" FROM "TransporterVerification" WHERE "transporterId" IN (${transporterIds.map((_,i)=>`$${i+1}`).join(',')})`,...transporterIds):[];
  const profilePaths=new Map(profileRows.map(row=>[row.transporterId,row.profileImagePath]));
- const result=jobs.map(job=>({...job,quotes:job.quotes.map(q=>{
+ const result=jobs.map(job=>({...job,vehicleType:vehicleTypes.get(job.id)||null,quotes:job.quotes.map(q=>{
   const ratings=q.transporter.reviewsReceived.map(r=>r.rating);
   const reviewCount=ratings.length;
   const averageRating=reviewCount?ratings.reduce((sum,r)=>sum+r,0)/reviewCount:null;
