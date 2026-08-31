@@ -50,10 +50,9 @@ export default function CustomerCompletedCardSummary(){
   }
 
   load();
-  const interval=window.setInterval(load,10000);
   const observer=new MutationObserver(()=>{window.clearTimeout(timer);timer=window.setTimeout(render,80)});
   observer.observe(document.body,{childList:true,subtree:true});
-  return()=>{cancelled=true;window.clearInterval(interval);observer.disconnect();if(timer)window.clearTimeout(timer)};
+  return()=>{cancelled=true;observer.disconnect();if(timer)window.clearTimeout(timer)};
  },[pathname]);
  return null;
 }
