@@ -1,6 +1,7 @@
 'use client';
 import {useEffect} from 'react';
 import {usePathname} from 'next/navigation';
+import {getSharedBookings} from './shared-bookings-client';
 
 type Booking={id:string;job:{vehicleMake:string;vehicleModel:string;collection:string;delivery:string;collectionDate:string}};
 
@@ -11,11 +12,10 @@ export default function AgreedCollectionDateEnhancer(){
   let cancelled=false;
   let timer:ReturnType<typeof setTimeout>|null=null;
   let observer:MutationObserver|null=null;
+  let bookings:Booking[]=[];
 
-  async function apply(){
-   const r=await fetch('/api/my-bookings',{cache:'no-store'});
-   if(!r.ok||cancelled)return;
-   const bookings:Booking[]=await r.json();
+  function apply(){
+   if(cancelled||!bookings.length)return;
    document.querySelectorAll<HTMLElement>('.bookingCard').forEach(card=>{
     const heading=card.querySelector('h2')?.textContent?.trim()||'';
     const route=Array.from(card.querySelectorAll('.routeVisual b')).map(x=>x.textContent?.trim()||'');
@@ -23,22 +23,24 @@ export default function AgreedCollectionDateEnhancer(){
     if(!match)return;
     const existing=card.querySelector<HTMLElement>('.agreedCollectionDate');
     const date=new Date(match.job.collectionDate).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-    if(existing){existing.querySelector('strong')!.textContent=date;return;}
+    if(existing){const strong=existing.querySelector('strong');if(strong)strong.textContent=date;return;}
     const row=document.createElement('div');
     row.className='agreedCollectionDate';
     row.innerHTML='<span>Agreed collection date</span><strong></strong>';
-    row.querySelector('strong')!.textContent=date;
+    const strong=row.querySelector('strong');if(strong)strong.textContent=date;
     const bookingTop=card.querySelector('.bookingTop');
     bookingTop?.insertAdjacentElement('afterend',row);
    });
   }
 
-  const schedule=()=>{if(timer)clearTimeout(timer);timer=setTimeout(()=>void apply(),80)};
-  void apply();
+  async function load(){
+   try{bookings=await getSharedBookings();if(!cancelled)apply()}catch{}
+  }
+  const schedule=()=>{if(timer)clearTimeout(timer);timer=setTimeout(apply,80)};
+  void load();
   observer=new MutationObserver(schedule);
   observer.observe(document.body,{childList:true,subtree:true});
-  const interval=setInterval(()=>void apply(),5000);
-  return()=>{cancelled=true;if(timer)clearTimeout(timer);observer?.disconnect();clearInterval(interval)};
+  return()=>{cancelled=true;if(timer)clearTimeout(timer);observer?.disconnect()};
  },[pathname]);
  return null;
 }
