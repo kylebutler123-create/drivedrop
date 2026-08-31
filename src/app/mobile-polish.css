@@ -1,71 +1,12 @@
 @media (max-width: 760px) {
   .dashboardHero > .adminHeroBadge,
-  .dashboardHero > .verificationStatusCard {
-    width: 100%;
-    min-width: 0 !important;
-    margin-top: 18px;
-  }
-
-  .dashboardSectionHeading {align-items:flex-start;gap:10px;flex-direction:column}
-  .dashboardSectionHeading > span {line-height:1.4}
-  .bookingTop {flex-direction:column;align-items:stretch}
-  .paymentMini {width:100%;text-align:left}
-  .actionButtons {width:100%}
-  .actionButtons .btn,.actionButtons .textAction {min-height:42px}
-
-  .top {display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;column-gap:10px;row-gap:1px;padding:12px 16px 10px;position:relative;z-index:100;isolation:isolate}
-  .top a,.top button,.top form,.top span{position:relative;z-index:2;pointer-events:auto;touch-action:manipulation}
-  .top::before,.top::after,.top *::before,.top *::after{pointer-events:none}
-  .headerLogo {flex:1 1 auto;min-width:110px}
-  .headerLogo img {display:block;max-width:135px;height:auto;pointer-events:none}
-  .nav {display:contents}
-  .nav > .btn {order:0;flex:0 0 auto}
-  .nav > form {order:0;display:flex;flex:0 0 auto}
-  .nav > form .btn {white-space:nowrap}
-  .nav > a:not(.btn),.nav > span,.nav > div {order:2;min-height:38px;display:inline-flex;align-items:center;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);font-size:12px;font-weight:700;transform:translateY(-3px)}
-  .nav > a:not(.btn):first-of-type {margin-left:0}
-  .nav .btn {min-height:38px;padding:9px 12px;font-size:11px}
-  .nav::before {content:'';order:1;flex-basis:100%;height:0;margin-top:-6px}
-
-  .guestTop {display:block;padding:12px 16px}
-  .guestTop .guestPrimaryNav {width:100%;display:grid;grid-template-columns:minmax(105px,1fr) auto auto;align-items:center;gap:8px}
-  .guestTop .guestPrimaryNav .headerLogo {min-width:0}
-  .guestTop .guestPrimaryNav .headerLogo img {max-width:125px}
-  .guestTop .guestPrimaryNav .btn {min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}
-  .guestTop .nav {display:none}
-
-  .customerTop {display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 8px;padding:9px 12px 10px}
-  .customerTop .customerPrimaryNav {display:contents!important}
-  .customerTop .customerPrimaryNav .headerLogo {grid-column:1;grid-row:1;min-width:0;display:flex;align-items:center}
-  .customerTop .customerPrimaryNav .headerLogo img {max-width:125px}
-  .customerTop .customerPrimaryNav form {grid-column:2;grid-row:1;display:flex;justify-content:flex-end}
-  .customerTop .customerPrimaryNav form .btn {width:auto;min-width:82px;min-height:36px;padding:0 12px;font-size:10px;white-space:nowrap}
-  .customerTop .customerPrimaryNav .accountNavBtn {grid-column:1;grid-row:2;width:100%;min-height:38px;display:inline-flex;align-items:center;justify-content:center;padding:9px 10px;border-radius:999px;background:#e9eef4;border:0;color:#10233f;font-size:11px;font-weight:800;white-space:nowrap}
-  .customerTop .customerPrimaryNav .customerDashboardBtn {grid-column:2;grid-row:2;width:100%;min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}
-  .customerTop .nav {display:contents!important}
-  .customerTop .nav::before {display:none}
-  .customerTop .customerSecondaryNav {display:contents!important}
-  .customerTop .customerSecondaryNav > * {width:100%;min-width:0;min-height:38px;display:inline-flex;align-items:center;justify-content:center;padding:8px 9px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);font-size:11px;font-weight:700;white-space:nowrap;transform:none}
-  .customerTop .customerSecondaryNav > *:nth-child(1){grid-column:1;grid-row:3}
-  .customerTop .customerSecondaryNav > *:nth-child(2){grid-column:2;grid-row:3}
-  .customerTop .customerSecondaryNav > *:nth-child(3){grid-column:1/3;grid-row:4;justify-self:center;max-width:50%}
-
-  .requestPanel .grid > .field {min-width:0}
-  .requestPanel input[type="date"][name="collectionDate"] {display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;-webkit-appearance:none;appearance:none}
-
-  .transporterTop {display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 8px;padding:9px 12px 10px}
-  .transporterTop .transporterPrimaryNav {display:contents!important}
-  .transporterTop .transporterPrimaryNav .headerLogo {grid-column:1;grid-row:1;min-width:0;display:flex;align-items:center}
-  .transporterTop .transporterPrimaryNav .headerLogo img {max-width:125px}
-  .transporterTop .transporterPrimaryNav form {grid-column:2;grid-row:1;display:flex;justify-content:flex-end}
-  .transporterTop .transporterPrimaryNav form .btn {width:auto;min-width:82px;min-height:36px;padding:0 12px;font-size:10px;white-space:nowrap}
-  .transporterTop .transporterPrimaryNav .accountNavBtn {grid-column:1;grid-row:2;width:100%;min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}
-  .transporterTop .transporterPrimaryNav .transporterDashboardBtn {grid-column:2;grid-row:2;width:100%;min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}
-  .transporterTop .nav {display:contents!important}
-  .transporterTop .nav::before {display:none}
-  .transporterTop .transporterSecondaryNav {display:contents!important}
-  .transporterTop .transporterSecondaryNav > * {width:100%;min-width:0;min-height:38px;display:inline-flex;align-items:center;justify-content:center;padding:8px 9px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);font-size:11px;font-weight:700;white-space:nowrap;transform:none}
-  .transporterTop .transporterSecondaryNav > *:nth-child(1){grid-column:1;grid-row:3}
-  .transporterTop .transporterSecondaryNav > *:nth-child(2){grid-column:2;grid-row:3}
-  .transporterTop .transporterSecondaryNav > *:nth-child(3){grid-column:1/3;grid-row:4;justify-self:center;max-width:50%}
+  .dashboardHero > .verificationStatusCard {width:100%;min-width:0!important;margin-top:18px}
+  .dashboardSectionHeading{align-items:flex-start;gap:10px;flex-direction:column}.dashboardSectionHeading>span{line-height:1.4}.bookingTop{flex-direction:column;align-items:stretch}.paymentMini{width:100%;text-align:left}.actionButtons{width:100%}.actionButtons .btn,.actionButtons .textAction{min-height:42px}
+  .top{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;column-gap:10px;row-gap:1px;padding:12px 16px 10px;position:relative;z-index:100;isolation:isolate}.top a,.top button,.top form,.top span{position:relative;z-index:2;pointer-events:auto;touch-action:manipulation}.top::before,.top::after,.top *::before,.top *::after{pointer-events:none}.headerLogo{flex:1 1 auto;min-width:110px}.headerLogo img{display:block;max-width:135px;height:auto;pointer-events:none}.nav{display:contents}.nav>.btn{order:0;flex:0 0 auto}.nav>form{order:0;display:flex;flex:0 0 auto}.nav>form .btn{white-space:nowrap}.nav>a:not(.btn),.nav>span,.nav>div{order:2;min-height:38px;display:inline-flex;align-items:center;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);font-size:12px;font-weight:700;transform:translateY(-3px)}.nav>a:not(.btn):first-of-type{margin-left:0}.nav .btn{min-height:38px;padding:9px 12px;font-size:11px}.nav::before{content:'';order:1;flex-basis:100%;height:0;margin-top:-6px}
+  .guestTop{display:block;padding:12px 16px}.guestTop .guestPrimaryNav{width:100%;display:grid;grid-template-columns:minmax(105px,1fr) auto auto;align-items:center;gap:8px}.guestTop .guestPrimaryNav .headerLogo{min-width:0}.guestTop .guestPrimaryNav .headerLogo img{max-width:125px}.guestTop .guestPrimaryNav .btn{min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}.guestTop .nav{display:none}
+  .customerTop{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 8px;padding:9px 12px 10px}.customerTop .customerPrimaryNav{display:contents!important}.customerTop .customerPrimaryNav .headerLogo{grid-column:1;grid-row:1;min-width:0;display:flex;align-items:center}.customerTop .customerPrimaryNav .headerLogo img{max-width:125px}.customerTop .customerPrimaryNav form{grid-column:2;grid-row:1;display:flex;justify-content:flex-end}.customerTop .customerPrimaryNav form .btn{width:auto;min-width:82px;min-height:36px;padding:0 12px;font-size:10px;white-space:nowrap}.customerTop .customerPrimaryNav .accountNavBtn{grid-column:1;grid-row:2;width:100%;min-height:38px;display:inline-flex;align-items:center;justify-content:center;padding:9px 10px;border-radius:999px;background:#e9eef4;border:0;color:#10233f;font-size:11px;font-weight:800;white-space:nowrap}.customerTop .customerPrimaryNav .customerDashboardBtn{grid-column:2;grid-row:2;width:100%;min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}.customerTop .nav{display:contents!important}.customerTop .nav::before{display:none}.customerTop .customerSecondaryNav{display:contents!important}.customerTop .customerSecondaryNav>*{width:100%;min-width:0;min-height:38px;display:inline-flex;align-items:center;justify-content:center;padding:8px 9px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);font-size:11px;font-weight:700;white-space:nowrap;transform:none}.customerTop .customerSecondaryNav>*:nth-child(1){grid-column:1;grid-row:3}.customerTop .customerSecondaryNav>*:nth-child(2){grid-column:2;grid-row:3}.customerTop .customerSecondaryNav>*:nth-child(3){grid-column:1/3;grid-row:4;justify-self:center;max-width:50%}
+  .requestPanel .grid>.field{min-width:0}.requestPanel input[type="date"][name="collectionDate"]{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;-webkit-appearance:none;appearance:none}
+  .transporterTop{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 8px;padding:9px 12px 10px}.transporterTop .transporterPrimaryNav{display:contents!important}.transporterTop .transporterPrimaryNav .headerLogo{grid-column:1;grid-row:1;min-width:0;display:flex;align-items:center}.transporterTop .transporterPrimaryNav .headerLogo img{max-width:125px}.transporterTop .transporterPrimaryNav form{grid-column:2;grid-row:1;display:flex;justify-content:flex-end}.transporterTop .transporterPrimaryNav form .btn{width:auto;min-width:82px;min-height:36px;padding:0 12px;font-size:10px;white-space:nowrap}.transporterTop .transporterPrimaryNav .accountNavBtn{grid-column:1;grid-row:2;width:100%;min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}.transporterTop .transporterPrimaryNav .transporterDashboardBtn{grid-column:2;grid-row:2;width:100%;min-height:38px;padding:9px 10px;font-size:11px;white-space:nowrap}.transporterTop .nav{display:contents!important}.transporterTop .nav::before{display:none}.transporterTop .transporterSecondaryNav{display:contents!important}.transporterTop .transporterSecondaryNav>*{width:100%;min-width:0;min-height:38px;display:inline-flex;align-items:center;justify-content:center;padding:8px 9px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);font-size:11px;font-weight:700;white-space:nowrap;transform:none}.transporterTop .transporterSecondaryNav>*:nth-child(1){grid-column:1;grid-row:3}.transporterTop .transporterSecondaryNav>*:nth-child(2){grid-column:2;grid-row:3}.transporterTop .transporterSecondaryNav>*:nth-child(3){grid-column:1/3;grid-row:4;justify-self:center;max-width:50%}
+  /* Customer + transporter dashboard mobile content rhythm. */
+  .customerTop+main,.transporterTop+main{padding-top:18px!important}.customerTop+main.shell,.transporterTop+main.shell{padding-left:14px!important;padding-right:14px!important;padding-bottom:30px!important}.customerTop+main .dashboardHero,.transporterTop+main .dashboardHero{margin-bottom:18px!important;border-radius:18px!important}.customerTop+main .dashboardHero h1,.transporterTop+main .dashboardHero h1{line-height:1.08}.customerTop+main .dashboardSummary,.transporterTop+main .dashboardSummary{gap:8px!important}.customerTop+main .dashboardSectionHeading,.transporterTop+main .dashboardSectionHeading{margin:22px 0 11px!important}.customerTop+main .dashboardSectionHeading h2,.transporterTop+main .dashboardSectionHeading h2{margin:0!important;line-height:1.15}.customerTop+main .dashboardCard,.transporterTop+main .dashboardCard{margin-bottom:12px}.customerTop+main .dashboardCard+.dashboardCard,.transporterTop+main .dashboardCard+.dashboardCard{margin-top:12px}.customerTop+main .bookingColumns,.transporterTop+main .bookingColumns{gap:12px!important}.customerTop+main .infoPanel,.transporterTop+main .infoPanel{border-radius:13px}.customerTop+main .infoRow,.transporterTop+main .infoRow{gap:8px;padding-top:8px;padding-bottom:8px}.customerTop+main .actionButtons,.transporterTop+main .actionButtons{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;margin-top:14px!important}.customerTop+main .actionButtons>.btn,.customerTop+main .actionButtons>.textAction,.transporterTop+main .actionButtons>.btn,.transporterTop+main .actionButtons>.textAction{width:100%!important;min-width:0!important;box-sizing:border-box!important;justify-content:center!important}.customerTop+main input,.customerTop+main select,.customerTop+main textarea,.transporterTop+main input,.transporterTop+main select,.transporterTop+main textarea{max-width:100%;box-sizing:border-box}.customerTop+main .formNotice,.transporterTop+main .formNotice{margin-left:0!important;margin-right:0!important}.customerTop+main .routeVisual,.transporterTop+main .routeVisual{overflow:hidden}.customerTop+main .routeVisual b,.transporterTop+main .routeVisual b{overflow-wrap:anywhere}.customerTop+main [class*="Expanded"],.transporterTop+main [class*="Expanded"]{scroll-margin-top:16px}
 }
