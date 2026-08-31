@@ -3,13 +3,16 @@ import { randomUUID } from 'crypto';
 export const VERIFICATION_BUCKET = 'transporter-verification';
 export const EVIDENCE_BUCKET = 'delivery-evidence';
 export const PROFILE_BUCKET = 'transporter-profiles';
+export const MESSAGE_BUCKET = 'message-attachments';
 export const MAX_VERIFICATION_FILE_SIZE = 4 * 1024 * 1024;
 export const MAX_EVIDENCE_FILE_SIZE = 8 * 1024 * 1024;
 export const MAX_PROFILE_FILE_SIZE = 2 * 1024 * 1024;
+export const MAX_MESSAGE_FILE_SIZE = 8 * 1024 * 1024;
 
 const verificationTypes: Record<string, string> = {'application/pdf':'pdf','image/jpeg':'jpg','image/png':'png'};
 const evidenceTypes: Record<string, string> = {'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
 const profileTypes: Record<string, string> = {'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
+const messageTypes: Record<string, string> = {'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
 
 function config(){const url=process.env.SUPABASE_URL;const serviceRoleKey=process.env.SUPABASE_SERVICE_ROLE_KEY;if(!url||!serviceRoleKey)throw new Error('Supabase storage environment is not configured');return{url:url.replace(/\/$/,''),serviceRoleKey}}
 function validate(file:File,types:Record<string,string>,max:number,label:string){const extension=types[file.type];if(!extension)return{ok:false as const,error:`Only ${label} files are allowed`};if(file.size<=0)return{ok:false as const,error:'The selected file is empty'};if(file.size>max)return{ok:false as const,error:`File must be ${Math.round(max/1024/1024)} MB or smaller`};return{ok:true as const,extension}}
@@ -29,6 +32,11 @@ export function validateEvidenceFile(file:File){return validateWithSignature(fil
 export function createEvidenceStoragePath(bookingId:string,userId:string,extension:string){return `${bookingId}/${userId}/${randomUUID()}.${extension}`}
 export async function uploadEvidenceFile(path:string,file:File){return upload(EVIDENCE_BUCKET,path,file)}
 export async function downloadEvidenceFile(path:string){return download(EVIDENCE_BUCKET,path)}
+
+export function validateMessageImage(file:File){return validateWithSignature(file,messageTypes,MAX_MESSAGE_FILE_SIZE,'JPG/JPEG, PNG and WebP image')}
+export function createMessageStoragePath(bookingId:string,userId:string,extension:string){return `${bookingId}/${userId}/${randomUUID()}.${extension}`}
+export async function uploadMessageImage(path:string,file:File){return upload(MESSAGE_BUCKET,path,file)}
+export async function downloadMessageImage(path:string){return download(MESSAGE_BUCKET,path)}
 
 export function validateProfileImage(file:File){return validateWithSignature(file,profileTypes,MAX_PROFILE_FILE_SIZE,'JPG/JPEG, PNG and WebP image')}
 export function createProfileStoragePath(userId:string,extension:string){return `${userId}/${randomUUID()}.${extension}`}
