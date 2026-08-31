@@ -69,9 +69,10 @@ export default function TransporterRequoteEnhancer(){
    });
   }
 
-  enhance();
-  const timer=window.setInterval(enhance,3000);
-  return()=>{stopped=true;window.clearInterval(timer)};
+  void enhance();
+  const onQuoteUpdated=()=>{document.querySelectorAll<HTMLElement>('.jobOpportunity').forEach(card=>delete card.dataset.requoteEnhanced);void enhance()};
+  window.addEventListener('drivedrop:quote-updated',onQuoteUpdated);
+  return()=>{stopped=true;window.removeEventListener('drivedrop:quote-updated',onQuoteUpdated)};
  },[pathname]);
  return null;
 }
