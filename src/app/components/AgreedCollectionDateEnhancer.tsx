@@ -21,15 +21,16 @@ export default function AgreedCollectionDateEnhancer(){
     const route=Array.from(card.querySelectorAll('.routeVisual b')).map(x=>x.textContent?.trim()||'');
     const match=bookings.find(b=>`${b.job.vehicleMake} ${b.job.vehicleModel}`.trim()===heading&&(!route[0]||b.job.collection===route[0])&&(!route[1]||b.job.delivery===route[1]));
     if(!match)return;
-    const existing=card.querySelector<HTMLElement>('.agreedCollectionDate');
     const date=new Date(match.job.collectionDate).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-    if(existing){const strong=existing.querySelector('strong');if(strong)strong.textContent=date;return;}
+    const existing=card.querySelector<HTMLElement>('.agreedCollectionDate');
+    if(existing){const strong=existing.querySelector('strong');if(strong)strong.textContent=date;if(pathname==='/transporter')card.dispatchEvent(new CustomEvent('drivedrop:agreed-date-ready',{bubbles:false}));return;}
     const row=document.createElement('div');
     row.className='agreedCollectionDate';
     row.innerHTML='<span>Agreed collection date</span><strong></strong>';
     const strong=row.querySelector('strong');if(strong)strong.textContent=date;
     const bookingTop=card.querySelector('.bookingTop');
     bookingTop?.insertAdjacentElement('afterend',row);
+    if(pathname==='/transporter')card.dispatchEvent(new CustomEvent('drivedrop:agreed-date-ready',{bubbles:false}));
    });
   }
 
