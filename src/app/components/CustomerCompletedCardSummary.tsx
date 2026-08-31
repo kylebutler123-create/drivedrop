@@ -1,6 +1,7 @@
 'use client';
 import {useEffect} from 'react';
 import {usePathname} from 'next/navigation';
+import {getSharedBookings} from './shared-bookings-client';
 
 function esc(value:any){return String(value??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]||c))}
 function norm(value:any){return String(value??'').replace(/\s+/g,' ').trim().toLowerCase()}
@@ -44,9 +45,7 @@ export default function CustomerCompletedCardSummary(){
   };
 
   async function load(){
-   const r=await fetch('/api/my-bookings',{cache:'no-store'});if(!r.ok||cancelled)return;
-   bookings=await r.json();if(cancelled)return;
-   render();
+   try{bookings=await getSharedBookings();if(!cancelled)render()}catch{}
   }
 
   load();
