@@ -52,9 +52,6 @@ export default function CustomerRequestActions({jobId, vehicle, status, hasBooki
   if (locked) return null;
   return <div className="customerRequestActions" aria-busy={pending !== null}>
     <div className="actionButtons manageRequestActions">
-      {quoteCount === 0 && <button type="button" className="btn light" disabled={pending !== null} onClick={() => void act('DELETE')}>
-        {pending === 'DELETE' ? 'Deleting…' : 'Delete request'}
-      </button>}
       <button type="button" className="btn navy" disabled={pending !== null} onClick={() => void act('CANCEL')}>
         {pending === 'CANCEL' ? 'Cancelling…' : 'Cancel request'}
       </button>
