@@ -18,3 +18,7 @@
 .customerCollapsedDeliveryIdentity span{display:block;color:#62778b;font-size:10px;font-weight:700}
 .customerCollapsedDeliveryIdentity strong{display:block;margin-top:4px;color:#183654;font-size:12px;line-height:1.35;overflow-wrap:anywhere}
 .customerExpandableCard:not(.isCollapsed) .customerCollapsedDeliveryIdentity{display:none}
+
+.customerRequestActions{margin-top:14px;padding-top:12px;border-top:1px solid #e1e8ef;min-width:0}
+.customerRequestActions>.actionButtons{display:flex;flex-wrap:wrap;gap:8px}
+.customerRequestActions .btn{min-height:44px;max-width:100%;white-space:normal}
