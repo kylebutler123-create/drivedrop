@@ -1,78 +1,96 @@
 'use client';
 
-import {useEffect} from 'react';
-import {usePathname} from 'next/navigation';
+import {useRef,useState} from 'react';
 
-type Job={id:string;quotes?:Array<{id:string;pricePence:number;status:string;message?:string|null;proposedCollectionDate?:string|null}>};
+type Quote={
+  id:string;
+  pricePence:number;
+  status:string;
+  message?:string|null;
+  proposedCollectionDate?:string|null;
+};
+type Draft={price:string;message:string;date:string};
+type Props={jobId:string;quote:Quote;onUpdated:(quote:Quote)=>void};
 
-export default function TransporterRequoteEnhancer(){
- const pathname=usePathname();
- useEffect(()=>{
-  if(pathname!=='/transporter')return;
-  let stopped=false;
+function quoteDraft(quote:Quote):Draft{
+  return {
+    price:(quote.pricePence/100).toFixed(2),
+    message:quote.message||'',
+    date:quote.proposedCollectionDate?.slice(0,10)||''
+  };
+}
 
-  async function enhance(){
-   const r=await fetch('/api/jobs',{cache:'no-store'});
-   if(!r.ok||stopped)return;
-   const jobs:Job[]=await r.json();
-   const cards=Array.from(document.querySelectorAll<HTMLElement>('.jobOpportunity'));
-   cards.forEach((card,index)=>{
-    const job=jobs[index];
-    const quote=job?.quotes?.[0];
-    if(!job||!quote||quote.status!=='PENDING'||card.dataset.requoteEnhanced==='true')return;
-    const panel=card.querySelector<HTMLElement>('.infoPanel');
-    if(!panel)return;
-    card.dataset.requoteEnhanced='true';
+async function saveQuoteRevision(jobId:string,quoteId:string,draft:Draft):Promise<Quote>{
+  const pricePence=Math.round(Number(draft.price)*100);
+  if(!Number.isFinite(pricePence)||pricePence<1000||pricePence>10_000_000){
+    throw new Error('Enter a price between £10 and £100,000.');
+  }
+  const response=await fetch('/api/quotes',{
+    method:'POST',
+    headers:{'content-type':'application/json'},
+    body:JSON.stringify({
+      jobId,
+      pricePence,
+      message:draft.message,
+      proposedCollectionDate:draft.date
+    })
+  });
+  const result=await response.json().catch(()=>null);
+  if(!response.ok)throw new Error(result?.error||'Unable to update your quote. Please try again.');
+  if(result?.id!==quoteId||typeof result.pricePence!=='number'){
+    throw new Error('We could not confirm the update. Check your quote before trying again.');
+  }
+  return result;
+}
 
-    const wrap=document.createElement('div');
-    wrap.className='requoteWrap';
-    const button=document.createElement('button');
-    button.type='button';
-    button.className='btn light requoteButton';
-    button.textContent='Adjust quote';
-    wrap.appendChild(button);
-    panel.appendChild(wrap);
+export default function TransporterRequoteEnhancer({jobId,quote,onUpdated}:Props){
+  const [editing,setEditing]=useState(false);
+  const [draft,setDraft]=useState<Draft>(()=>quoteDraft(quote));
+  const [saving,setSaving]=useState(false);
+  const [notice,setNotice]=useState<{type:'success'|'error';text:string}|null>(null);
+  const submitting=useRef(false);
 
-    button.addEventListener('click',()=>{
-     if(wrap.querySelector('form'))return;
-     const form=document.createElement('form');
-     form.className='requoteForm';
-     const current=(quote.pricePence/100).toFixed(2);
-     const currentDate=quote.proposedCollectionDate?new Date(quote.proposedCollectionDate).toISOString().slice(0,10):'';
-     const currentMessage=(quote.message||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-     form.innerHTML=`
-      <div class="requoteHeading"><strong>Adjust your quote</strong><small>Your updated offer replaces your current pending quote.</small></div>
-      <label>NEW PRICE (£)<input name="price" type="number" min="10" step="0.01" value="${current}" required></label>
-      <label>ALTERNATIVE COLLECTION DATE<input name="date" type="date" value="${currentDate}"></label>
-      <label>MESSAGE TO CUSTOMER<textarea name="message" maxlength="1000" rows="3" placeholder="Explain your updated offer if useful.">${currentMessage}</textarea></label>
-      <div class="requoteActions"><button class="btn orange" type="submit">Update quote</button><button class="btn light" type="button" data-cancel>Cancel</button></div>
-      <div class="requoteNotice" aria-live="polite"></div>`;
-     wrap.appendChild(form);
-     form.querySelector<HTMLButtonElement>('[data-cancel]')?.addEventListener('click',()=>form.remove());
-     form.addEventListener('submit',async(e)=>{
-      e.preventDefault();
-      const submit=form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
-      const notice=form.querySelector<HTMLElement>('.requoteNotice')!;
-      const data=new FormData(form);
-      submit.disabled=true;submit.textContent='Updating…';notice.textContent='';
-      const pricePence=Math.round(Number(data.get('price'))*100);
-      const response=await fetch('/api/quotes',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jobId:job.id,pricePence,message:String(data.get('message')||'')||undefined,proposedCollectionDate:String(data.get('date')||'')||undefined})});
-      const result=await response.json().catch(()=>null);
-      if(!response.ok){notice.textContent=result?.error||'Unable to update quote';notice.className='requoteNotice error';submit.disabled=false;submit.textContent='Update quote';return;}
-      notice.textContent='Quote updated successfully — the customer can now review your revised offer.';notice.className='requoteNotice success';
-      const firstValue=panel.querySelector<HTMLElement>('.infoRow b');
-      if(firstValue)firstValue.textContent=`£${(result.pricePence/100).toFixed(2)}`;
-      window.dispatchEvent(new Event('drivedrop:quote-updated'));
-      setTimeout(()=>form.remove(),1200);
-     });
-    });
-   });
+  function openEditor(){
+    setDraft(quoteDraft(quote));
+    setNotice(null);
+    setEditing(true);
+  }
+  function cancel(){
+    if(submitting.current)return;
+    setEditing(false);
+    setNotice(null);
+  }
+  async function submit(event:React.FormEvent<HTMLFormElement>){
+    event.preventDefault();
+    if(submitting.current||quote.status!=='PENDING')return;
+    submitting.current=true;
+    setSaving(true);
+    setNotice(null);
+    try{
+      const updated=await saveQuoteRevision(jobId,quote.id,draft);
+      onUpdated(updated);
+      setEditing(false);
+      setNotice({type:'success',text:'Quote updated successfully — the customer can now review your revised offer.'});
+    }catch(error){
+      setNotice({type:'error',text:error instanceof Error?error.message:'Unable to update your quote. Check your connection and try again.'});
+    }finally{
+      submitting.current=false;
+      setSaving(false);
+    }
   }
 
-  void enhance();
-  const onQuoteUpdated=()=>{document.querySelectorAll<HTMLElement>('.jobOpportunity').forEach(card=>delete card.dataset.requoteEnhanced);void enhance()};
-  window.addEventListener('drivedrop:quote-updated',onQuoteUpdated);
-  return()=>{stopped=true;window.removeEventListener('drivedrop:quote-updated',onQuoteUpdated)};
- },[pathname]);
- return null;
+  if(quote.status!=='PENDING')return null;
+  return <div className="requoteWrap">
+    {!editing?<button type="button" className="btn light requoteButton" onClick={openEditor}>Adjust quote</button>:<form className="requoteForm" onSubmit={submit} aria-busy={saving}>
+      <div className="requoteHeading"><strong>Adjust your quote</strong><small>Your updated offer replaces your current pending quote.</small></div>
+      <label>NEW PRICE (£)<input name="price" type="number" min="10" max="100000" step="0.01" required value={draft.price} disabled={saving} onChange={event=>setDraft({...draft,price:event.target.value})}/></label>
+      <label>ALTERNATIVE COLLECTION DATE<input name="date" type="date" value={draft.date} disabled={saving} onChange={event=>setDraft({...draft,date:event.target.value})}/></label>
+      <label>MESSAGE TO CUSTOMER<textarea name="message" maxLength={1000} rows={3} value={draft.message} disabled={saving} onChange={event=>setDraft({...draft,message:event.target.value})}/></label>
+      <div className="requoteActions">
+        <button className="btn orange" type="submit" disabled={saving}>{saving?'Updating…':'Update quote'}</button>
+        <button className="btn light" type="button" disabled={saving} onClick={cancel}>Cancel</button>
+      </div>
+    </form>}
+    {notice&&<div className={`requoteNotice ${notice.type}`} role={notice.type==='error'?'alert':'status'}>{notice.text}</div>}
+  </div>;
 }
