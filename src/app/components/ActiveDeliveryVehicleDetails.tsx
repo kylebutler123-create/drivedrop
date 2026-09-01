@@ -27,7 +27,7 @@ export default function ActiveDeliveryVehicleDetails(){
    return titleMatch||list[index]||null;
   };
 
-  const renderCards=(selector:string,list:any[])=>{if(cancelled||!list.length)return;const cards=Array.from(document.querySelectorAll<HTMLElement>(selector));cards.forEach((card,index)=>{if(card.querySelector('[data-active-vehicle-details]'))return;const booking=findBooking(card,index,list);if(!booking?.job)return;const route=card.querySelector('.routeVisual');if(route)route.insertAdjacentHTML('afterend',details(booking.job))})};
+  const renderCards=(selector:string,list:any[])=>{if(cancelled||!list.length)return;const cards=Array.from(document.querySelectorAll<HTMLElement>(selector));cards.forEach((card,index)=>{if(card.querySelector('[data-active-vehicle-details]')){card.dispatchEvent(new Event('drivedrop:vehicle-details-ready'));return}const booking=findBooking(card,index,list);if(!booking?.job)return;const route=card.querySelector('.routeVisual');if(route){route.insertAdjacentHTML('afterend',details(booking.job));card.dispatchEvent(new Event('drivedrop:vehicle-details-ready'))}})};
   const render=()=>{renderCards('main.dashboardShell .bookingCard',bookings);if(pathname==='/transporter')renderCards('.transporterCompletedCard',completedBookings)};
 
   async function load(){
