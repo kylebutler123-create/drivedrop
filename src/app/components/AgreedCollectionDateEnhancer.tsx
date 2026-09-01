@@ -8,7 +8,8 @@ type Booking={id:string;job:{vehicleMake:string;vehicleModel:string;collection:s
 export default function AgreedCollectionDateEnhancer(){
  const pathname=usePathname();
  useEffect(()=>{
-  if(pathname!=='/customer'&&pathname!=='/transporter')return;
+  // Customer dates are rendered directly from the page's current booking state.
+  if(pathname!=='/transporter')return;
   let cancelled=false;
   let timer:ReturnType<typeof setTimeout>|null=null;
   let observer:MutationObserver|null=null;

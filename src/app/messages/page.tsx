@@ -10,13 +10,22 @@ const label=(s:string)=>s.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c
 
 export default function MessagesPage(){
  const[me,setMe]=useState<Me|null>(null),[bookings,setBookings]=useState<Booking[]>([]),[selectedId,setSelectedId]=useState<string|null>(null),[messages,setMessages]=useState<Message[]>([]),[unreadByBooking,setUnreadByBooking]=useState<Record<string,number>>({});
- const[loading,setLoading]=useState(true),[sending,setSending]=useState(false),[body,setBody]=useState(''),[notice,setNotice]=useState(''),[images,setImages]=useState<File[]>([]);const fileRef=useRef<HTMLInputElement>(null);
- async function loadBookings(){const[m,b]=await Promise.all([fetch('/api/me',{cache:'no-store'}),fetch('/api/my-bookings',{cache:'no-store'})]);if(m.ok)setMe(await m.json());if(b.ok){const rows=await b.json();setBookings(rows);setSelectedId(x=>x&&rows.some((r:Booking)=>r.id===x)?x:null)}setLoading(false)}
+ const[loading,setLoading]=useState(true),[sending,setSending]=useState(false),[body,setBody]=useState(''),[notice,setNotice]=useState(''),[images,setImages]=useState<File[]>([]);const fileRef=useRef<HTMLInputElement>(null);const linkedBookingId=useRef<string|null>(null);
+ async function loadBookings(preferredId?:string|null){const[m,b]=await Promise.all([fetch('/api/me',{cache:'no-store'}),fetch('/api/my-bookings',{cache:'no-store'})]);if(m.ok)setMe(await m.json());if(b.ok){const rows=await b.json();setBookings(rows);setSelectedId(x=>x&&rows.some((r:Booking)=>r.id===x)?x:preferredId&&rows.some((r:Booking)=>r.id===preferredId)?preferredId:null)}setLoading(false)}
  async function loadUnread(){const r=await fetch('/api/messages/unread-count',{cache:'no-store'});if(r.ok){const d=await r.json();setUnreadByBooking(d.byBooking||{})}}
  async function markRead(bookingId:string){const r=await fetch('/api/bookings/messages',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({bookingId})});if(r.ok){setUnreadByBooking(x=>({...x,[bookingId]:0}));window.dispatchEvent(new Event('drivedrop:messages-read'))}}
  async function loadMessages(bookingId:string){const r=await fetch(`/api/bookings/messages?bookingId=${encodeURIComponent(bookingId)}`,{cache:'no-store'});if(r.ok){setMessages(await r.json());await markRead(bookingId)}}
  function selectBooking(id:string){setSelectedId(id);setNotice('');setImages([]);setTimeout(()=>document.getElementById('selected-conversation')?.scrollIntoView({behavior:'smooth',block:'start'}),50)}
- useEffect(()=>{loadBookings();loadUnread();const t=setInterval(()=>{loadBookings();loadUnread()},5000);return()=>clearInterval(t)},[]);useEffect(()=>{if(!selectedId){setMessages([]);return}loadMessages(selectedId);const t=setInterval(()=>loadMessages(selectedId),3000);return()=>clearInterval(t)},[selectedId]);
+ useEffect(()=>{linkedBookingId.current=new URLSearchParams(window.location.search).get('bookingId');loadBookings(linkedBookingId.current);loadUnread();const t=setInterval(()=>{loadBookings();loadUnread()},5000);return()=>clearInterval(t)},[]);
+ useEffect(()=>{
+  if(loading||!selectedId||selectedId!==linkedBookingId.current)return;
+  const frame=window.requestAnimationFrame(()=>{
+   document.getElementById('selected-conversation')?.scrollIntoView({behavior:'smooth',block:'start'});
+   linkedBookingId.current=null;
+  });
+  return()=>window.cancelAnimationFrame(frame);
+ },[loading,selectedId]);
+ useEffect(()=>{if(!selectedId){setMessages([]);return}loadMessages(selectedId);const t=setInterval(()=>loadMessages(selectedId),3000);return()=>clearInterval(t)},[selectedId]);
  const selected=useMemo(()=>bookings.find(b=>b.id===selectedId)||null,[bookings,selectedId]);
  async function send(e:FormEvent){e.preventDefault();if(!selectedId||(!body.trim()&&!images.length))return;setSending(true);setNotice('');try{const f=new FormData();f.set('bookingId',selectedId);f.set('body',body);images.forEach(img=>f.append('images',img));const r=await fetch('/api/bookings/messages',{method:'POST',body:f});const d=await r.json().catch(()=>({}));if(!r.ok){setNotice(d.error||'Unable to send message');return}setBody('');setImages([]);if(fileRef.current)fileRef.current.value='';setMessages(x=>[...x,d]);await loadMessages(selectedId)}finally{setSending(false)}}
  if(loading)return <main className="shell dashboardShell"><div className="dashboardCard">Loading conversations…</div></main>;
