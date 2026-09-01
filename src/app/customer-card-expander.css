@@ -12,3 +12,9 @@
  .customerExpandableCard.bookingCard.isCollapsed>.customerActiveDeliveryDetails{margin:0 13px 13px}
  .customerDeliveryDetails>.customerMessageTransporter{width:100%;box-sizing:border-box}
 }
+
+.customerCollapsedDeliveryIdentity{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:12px;flex-basis:100%;min-width:0}
+.customerCollapsedDeliveryIdentity>div{min-width:0}
+.customerCollapsedDeliveryIdentity span{display:block;color:#62778b;font-size:10px;font-weight:700}
+.customerCollapsedDeliveryIdentity strong{display:block;margin-top:4px;color:#183654;font-size:12px;line-height:1.35;overflow-wrap:anywhere}
+.customerExpandableCard:not(.isCollapsed) .customerCollapsedDeliveryIdentity{display:none}
