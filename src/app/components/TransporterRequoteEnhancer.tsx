@@ -81,7 +81,7 @@ export default function TransporterRequoteEnhancer({jobId,quote,onUpdated}:Props
 
   if(quote.status!=='PENDING')return null;
   return <div className="requoteWrap">
-    {!editing?<button type="button" className="btn light requoteButton" onClick={openEditor}>Adjust quote</button>:<form className="requoteForm" onSubmit={submit} aria-busy={saving}>
+    {!editing?<button type="button" className="btn orange requoteButton" onClick={openEditor}>Adjust quote</button>:<form className="requoteForm" onSubmit={submit} aria-busy={saving}>
       <div className="requoteHeading"><strong>Adjust your quote</strong><small>Your updated offer replaces your current pending quote.</small></div>
       <label>NEW PRICE (£)<input name="price" type="number" min="10" max="100000" step="0.01" required value={draft.price} disabled={saving} onChange={event=>setDraft({...draft,price:event.target.value})}/></label>
       <label>ALTERNATIVE COLLECTION DATE<input name="date" type="date" value={draft.date} disabled={saving} onChange={event=>setDraft({...draft,date:event.target.value})}/></label>
