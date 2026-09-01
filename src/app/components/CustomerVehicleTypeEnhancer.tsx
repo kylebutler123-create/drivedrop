@@ -13,37 +13,46 @@ export default function CustomerVehicleTypeEnhancer(){
   setTarget(null);setRegistrationTarget(null);
   if(pathname!=='/customer')return;
   let cancelled=false;
-  let attempts=0;
+  let scheduled=false;
   const initialise=()=>{
+   scheduled=false;
    if(cancelled)return;
    const panel=document.querySelector<HTMLElement>('.requestPanel');
    const grid=panel?.querySelector<HTMLElement>('form .grid');
-   if(!grid){
-    attempts+=1;
-    if(attempts<30)window.setTimeout(initialise,50);
-    return;
+   if(!grid){setTarget(null);setRegistrationTarget(null);return;}
+   let mount=grid.querySelector<HTMLElement>('[data-vehicle-type-field]');
+   let registrationMount=grid.querySelector<HTMLElement>('[data-registration-field]');
+   if(!mount){
+    mount=document.createElement('div');
+    mount.dataset.vehicleTypeField='true';
+    mount.className='field';
+    const makeField=Array.from(grid.children).find(child=>child.textContent?.includes('MAKE'));
+    if(makeField)grid.insertBefore(mount,makeField);else grid.appendChild(mount);
    }
-   grid.querySelector('[data-vehicle-type-field]')?.remove();
-   grid.querySelector('[data-registration-field]')?.remove();
-   const mount=document.createElement('div');
-   mount.dataset.vehicleTypeField='true';
-   mount.className='field';
-   const registrationMount=document.createElement('div');
-   registrationMount.dataset.registrationField='true';
-   registrationMount.className='field';
-   const makeField=Array.from(grid.children).find(child=>child.textContent?.includes('MAKE'));
-   if(makeField){
-    grid.insertBefore(mount,makeField);
+   if(!registrationMount){
+    registrationMount=document.createElement('div');
+    registrationMount.dataset.registrationField='true';
+    registrationMount.className='field';
     const modelField=Array.from(grid.children).find(child=>child.textContent?.includes('MODEL'));
     if(modelField?.nextSibling)grid.insertBefore(registrationMount,modelField.nextSibling);else grid.appendChild(registrationMount);
-   }else{
-    grid.appendChild(mount);
-    grid.appendChild(registrationMount);
    }
-   setTarget(mount);setRegistrationTarget(registrationMount);
+   setTarget(current=>current===mount?current:mount!);
+   setRegistrationTarget(current=>current===registrationMount?current:registrationMount!);
   };
-  initialise();
-  return()=>{cancelled=true;document.querySelector('[data-vehicle-type-field]')?.remove();document.querySelector('[data-registration-field]')?.remove()};
+  const scheduleInitialise=()=>{
+   if(cancelled||scheduled)return;
+   scheduled=true;
+   window.requestAnimationFrame(initialise);
+  };
+  const observer=new MutationObserver(scheduleInitialise);
+  observer.observe(document.body,{childList:true,subtree:true});
+  scheduleInitialise();
+  return()=>{
+   cancelled=true;
+   observer.disconnect();
+   document.querySelector('[data-vehicle-type-field]')?.remove();
+   document.querySelector('[data-registration-field]')?.remove();
+  };
  },[pathname]);
  return <>{target&&createPortal(<><label>VEHICLE TYPE</label><select name="vehicleType" required defaultValue=""><option value="" disabled>Select vehicle type</option>{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select></>,target)}{registrationTarget&&createPortal(<><label>REGISTRATION</label><input name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters"/></>,registrationTarget)}</>;
 }
