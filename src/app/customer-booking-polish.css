@@ -162,3 +162,18 @@
     margin-bottom: 3px;
   }
 }
+
+/* Inline verified-review form. */
+.customerReviewForm{margin-top:12px;min-width:0;max-width:100%;box-sizing:border-box}
+.customerReviewRating{border:0;margin:0 0 12px;padding:0;min-width:0}
+.customerReviewRating legend{margin-bottom:8px;color:#52667e;font-size:12px;font-weight:800}
+.customerReviewStars{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;max-width:300px}
+.customerReviewStar{position:relative;display:flex;align-items:center;justify-content:center;min-height:44px;margin:0;border:1px solid #d8e1ea;border-radius:8px;background:#fff;color:#8798a8;font-size:25px;cursor:pointer}
+.customerReviewStar.isSelected{border-color:#f0b477;background:#fff2e5;color:#a84d0c}
+.customerReviewStar:focus-within{outline:2px solid #174f80;outline-offset:2px}
+.customerReviewRating:disabled .customerReviewStar{opacity:.65;cursor:default}
+.customerReviewStar input,.customerReviewSrOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.customerReviewRatingValue{margin:7px 0 0;color:#52667e;font-size:12px}
+.customerReviewForm textarea{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+.customerReviewForm .actionButtons{display:flex;flex-wrap:wrap;gap:8px}
+.customerReviewForm .btn{min-height:44px;max-width:100%;white-space:normal}
