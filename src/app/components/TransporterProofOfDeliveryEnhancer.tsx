@@ -1,7 +1,7 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
-import {createPortal} from 'react-dom';
-import {usePathname} from 'next/navigation';
+
+
 
 function SignaturePad({onChange}:{onChange:(file:File|null)=>void}){
  const canvasRef=useRef<HTMLCanvasElement>(null);
@@ -13,15 +13,28 @@ function SignaturePad({onChange}:{onChange:(file:File|null)=>void}){
 }
 
 function PodForm({booking,onDone}:{booking:any,onDone:()=>void|Promise<void>}){
- const[open,setOpen]=useState(false);const[recipient,setRecipient]=useState('');const[notes,setNotes]=useState('');const[photos,setPhotos]=useState<File[]>([]);const[signature,setSignature]=useState<File|null>(null);const[confirmed,setConfirmed]=useState(false);const[busy,setBusy]=useState(false);const[message,setMessage]=useState<string|null>(null);
- async function submit(e:React.FormEvent){e.preventDefault();setBusy(true);setMessage(null);try{const f=new FormData();f.set('bookingId',booking.id);f.set('recipientName',recipient);f.set('notes',notes);f.set('confirmed',String(confirmed));if(signature)f.set('signature',signature);photos.forEach(p=>f.append('photos',p));const r=await fetch('/api/bookings/proof-of-delivery',{method:'POST',body:f});const d=await r.json().catch(()=>null);if(!r.ok){setMessage(d?.error||'Unable to submit proof of delivery');return;}setMessage('Proof of delivery submitted successfully.');await onDone();setTimeout(()=>setOpen(false),500)}finally{setBusy(false)}}
- return <div className="podMount">{!open?<button className="btn orange fullBtn" onClick={()=>setOpen(true)}>Complete delivery</button>:<form className="infoPanel podPanel" onSubmit={submit}><div className="subHeading"><h3>Proof of delivery</h3><button type="button" className="textAction" onClick={()=>setOpen(false)}>Close</button></div><p className="muted">Add delivery evidence and the recipient’s signature before completing this booking.</p><div className="field"><label>RECIPIENT NAME</label><input value={recipient} onChange={e=>setRecipient(e.target.value)} minLength={2} maxLength={120} required placeholder="Name of person receiving vehicle"/></div><div className="field"><label>DELIVERY PHOTOS</label><input type="file" accept="image/jpeg,image/png,image/webp" multiple required onChange={e=>setPhotos(Array.from(e.target.files||[]).slice(0,6))}/><small className="muted">1–6 photos. JPG, PNG or WebP.</small></div><div className="field"><label>RECIPIENT SIGNATURE</label><SignaturePad onChange={setSignature}/></div><div className="field"><label>DELIVERY NOTES</label><textarea value={notes} onChange={e=>setNotes(e.target.value)} rows={4} maxLength={1000} placeholder="Optional condition, access or handover notes"/></div><label className="podConfirm"><input type="checkbox" checked={confirmed} onChange={e=>setConfirmed(e.target.checked)} required/> I confirm the vehicle has been delivered to the recipient.</label>{message&&<div className={message.startsWith('Proof')?'formNotice successNotice':'formNotice errorNotice'}>{message}</div>}<button className="btn orange fullBtn" disabled={busy||!signature||photos.length===0}>{busy?'Submitting…':'Submit proof & complete delivery'}</button></form>}</div>
+ const inFlight=useRef(false);const[open,setOpen]=useState(false);const[recipient,setRecipient]=useState('');const[notes,setNotes]=useState('');const[photos,setPhotos]=useState<File[]>([]);const[signature,setSignature]=useState<File|null>(null);const[confirmed,setConfirmed]=useState(false);const[busy,setBusy]=useState(false);const[message,setMessage]=useState<string|null>(null);
+
+ async function submit(e:React.FormEvent){
+  e.preventDefault();
+  if(inFlight.current)return;
+  if(!recipient.trim()||!signature||photos.length<1||!confirmed){setMessage('Add the recipient name, delivery photos and signature, then confirm the handover.');return}
+  inFlight.current=true;setBusy(true);setMessage(null);
+  try{
+   const f=new FormData();f.set('bookingId',booking.id);f.set('recipientName',recipient);f.set('notes',notes);f.set('confirmed',String(confirmed));f.set('signature',signature);photos.forEach(p=>f.append('photos',p));
+   const r=await fetch('/api/bookings/proof-of-delivery',{method:'POST',body:f});
+   const d=await r.json().catch(()=>null);
+   if(!r.ok){setMessage(typeof d?.error==='string'?d.error:'Unable to submit proof of delivery. Your details are still here.');return}
+   if(d?.ok!==true||typeof d.submittedAt!=='string'||!Number.isFinite(Date.parse(d.submittedAt))){setMessage('We could not verify the saved delivery. Refresh and check this booking before submitting again.');return}
+   setMessage('Proof of delivery submitted successfully.');
+   await onDone();
+  }catch{setMessage('The connection was interrupted. Refresh and check whether this delivery is completed before submitting again.')}
+  finally{inFlight.current=false;setBusy(false)}
+ }
+
+ return <div className="podMount" data-pod-mount="true">{!open?<button type="button" className="btn orange fullBtn" onClick={()=>setOpen(true)}>Complete delivery</button>:<form className="infoPanel podPanel" onSubmit={submit} aria-busy={busy}><fieldset disabled={busy} style={{border:0,padding:0,margin:0,minWidth:0}}><div className="subHeading"><h3>Proof of delivery</h3><button type="button" className="textAction" onClick={()=>setOpen(false)}>Close</button></div><p className="muted">Add delivery evidence and the recipient’s signature before completing this booking.</p><div className="field"><label>RECIPIENT NAME</label><input value={recipient} onChange={e=>setRecipient(e.target.value)} minLength={2} maxLength={120} required placeholder="Name of person receiving vehicle"/></div><div className="field"><label>DELIVERY PHOTOS</label><input type="file" accept="image/jpeg,image/png,image/webp" multiple required onChange={e=>setPhotos(Array.from(e.target.files||[]).slice(0,6))}/><small className="muted">1–6 photos. JPG, PNG or WebP.</small></div><div className="field"><label>RECIPIENT SIGNATURE</label><SignaturePad onChange={setSignature}/></div><div className="field"><label>DELIVERY NOTES</label><textarea value={notes} onChange={e=>setNotes(e.target.value)} rows={4} maxLength={1000} placeholder="Optional condition, access or handover notes"/></div><label className="podConfirm"><input type="checkbox" checked={confirmed} onChange={e=>setConfirmed(e.target.checked)} required/> I confirm the vehicle has been delivered to the recipient.</label>{message&&<div role={message.startsWith('Proof')?'status':'alert'} className={message.startsWith('Proof')?'formNotice successNotice':'formNotice errorNotice'}>{message}</div>}<button className="btn orange fullBtn" disabled={busy||!signature||photos.length===0}>{busy?'Submitting…':'Submit proof & complete delivery'}</button></fieldset></form>}</div>
 }
 
-export default function TransporterProofOfDeliveryEnhancer(){
- const pathname=usePathname();const[mounts,setMounts]=useState<{el:HTMLElement,booking:any}[]>([]);const[version,setVersion]=useState(0);
- useEffect(()=>{const refresh=()=>setVersion(v=>v+1);window.addEventListener('drivedrop-bookings-updated',refresh);return()=>window.removeEventListener('drivedrop-bookings-updated',refresh)},[]);
- useEffect(()=>{if(pathname!=='/transporter'){setMounts([]);return}let cancelled=false;let retries=0;async function sync(){try{const r=await fetch('/api/my-bookings',{cache:'no-store'});if(!r.ok||cancelled)return;const bookings=await r.json();const cards=Array.from(document.querySelectorAll<HTMLElement>('.transporterBooking'));if(cards.length===0&&retries++<20){setTimeout(sync,100);return}const next:{el:HTMLElement,booking:any}[]=[];cards.forEach((card,i)=>{card.querySelector('[data-pod-mount]')?.remove();const b=bookings[i];if(!b)return;Array.from(card.querySelectorAll<HTMLButtonElement>('.actionButtons button')).forEach(button=>{if(button.textContent?.trim()==='Delivered')button.style.display='none'});if(!['IN_TRANSIT','ARRIVING_SOON'].includes(b.status))return;const target=(card.querySelector('.actionPanel')||card.querySelector('.bookingColumns')||card) as HTMLElement;const el=document.createElement('div');el.dataset.podMount='true';target.appendChild(el);next.push({el,booking:b})});setMounts(next)}catch{}}sync();return()=>{cancelled=true;document.querySelectorAll('[data-pod-mount]').forEach(n=>n.remove())}},[pathname,version]);
- const refresh=async()=>{setVersion(v=>v+1)};
- return <>{mounts.map(({el,booking})=>createPortal(<PodForm key={booking.id} booking={booking} onDone={refresh}/>,el))}</>
+export default function TransporterProofOfDeliveryEnhancer({booking,onDone}:{booking:any,onDone:()=>void|Promise<void>}){
+ return <PodForm booking={booking} onDone={onDone}/>;
 }
