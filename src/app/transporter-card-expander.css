@@ -16,3 +16,14 @@
 .transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollapsedContact{display:flex!important;align-items:center;margin:0 14px 14px;min-width:0}
 .transporterCollapsedContact>.btn{max-width:100%;white-space:normal;text-align:center}
 @media(max-width:760px){.transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollapsedContact{margin:0 12px 12px}}
+
+/* Keep the required collection workflow reachable when its booking is collapsed. */
+.transporterBooking>.transporterCollectionAction{margin:14px 0;min-width:0}
+.transporterExpandableCard.transporterBooking>.transporterCollectionAction{margin:14px 18px}
+.transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollectionAction{display:block!important;margin:0 14px 14px}
+.transporterCollectionAction .btn.fullBtn{min-height:44px;white-space:normal}
+.transporterCollectionAction .podPanel{margin-top:0}
+@media(max-width:760px){
+ .transporterExpandableCard.transporterBooking>.transporterCollectionAction{margin:13px}
+ .transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollectionAction{margin:0 12px 12px}
+}
