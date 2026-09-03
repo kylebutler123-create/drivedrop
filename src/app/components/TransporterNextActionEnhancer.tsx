@@ -13,21 +13,23 @@ const guidance:Record<string,{title:string;body:string}>={
 };
 
 function enhance(card:HTMLElement){
- if(card.dataset.nextActionEnhanced==='true')return;
- const status=text(card.querySelector('.bookingTop .statusPill'));
+ const status=card.dataset.bookingStatusLabel||text(card.querySelector('.bookingTop .statusPill'));
+ if(card.dataset.nextActionStatus===status)return;
  const info=guidance[status];
  if(!info)return;
  const panel=card.querySelector<HTMLElement>('.actionPanel');
  if(!panel)return;
  card.dataset.nextActionEnhanced='true';
+ card.dataset.nextActionStatus=status;
  panel.classList.add('transporterNextActionPanel');
- const intro=document.createElement('div');
+ const intro=panel.querySelector<HTMLElement>('.transporterNextActionIntro')||document.createElement('div');
  intro.className='transporterNextActionIntro';
  intro.innerHTML=`<span>Delivery workflow</span><strong>${info.title}</strong><p>${info.body}</p>`;
- panel.insertBefore(intro,panel.firstChild);
+ if(intro.parentElement!==panel)panel.insertBefore(intro,panel.firstChild);
  const oldLabel=Array.from(panel.children).find(el=>el.tagName==='SPAN'&&!el.classList.contains('transporterNextActionIntro')) as HTMLElement|undefined;
  if(oldLabel)oldLabel.style.display='none';
  const buttons=Array.from(panel.querySelectorAll<HTMLButtonElement>('.actionButtons .btn'));
+ buttons.forEach(button=>button.classList.remove('nextActionSecondary'));
  if(buttons.length>1){
    const preferred=status==='Confirmed'?'Collection Scheduled':status==='Collection Scheduled'?'Collected':status==='Collected'?'In Transit':status==='In Transit'?'Arriving Soon':'';
    buttons.forEach(button=>{if(preferred&&text(button)!==preferred)button.classList.add('nextActionSecondary')});
@@ -39,11 +41,11 @@ export default function TransporterNextActionEnhancer(){
  useEffect(()=>{
    if(pathname!=='/transporter')return;
    let cancelled=false,scheduled=false;
-   const scan=()=>{scheduled=false;if(cancelled)return;document.querySelectorAll<HTMLElement>('.transporterBooking:not([data-next-action-enhanced="true"])').forEach(enhance)};
+   const scan=()=>{scheduled=false;if(cancelled)return;document.querySelectorAll<HTMLElement>('.transporterBooking').forEach(enhance)};
    const schedule=()=>{if(cancelled||scheduled)return;scheduled=true;requestAnimationFrame(scan)};
    schedule();
    const observer=new MutationObserver(schedule);
-   observer.observe(document.body,{childList:true,subtree:true});
+   observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-booking-status-label']});
    return()=>{cancelled=true;observer.disconnect()};
  },[pathname]);
  return null;
