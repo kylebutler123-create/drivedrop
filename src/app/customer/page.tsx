@@ -32,7 +32,22 @@ const requestInFlight=useRef(false);
 const[confirmationNotice,setConfirmationNotice]=useState<{type:'success'|'error',text:string}|null>(null);
 const confirmationInFlight=useRef(false);
 const confirmedBookingIds=useRef(new Set<string>());
-async function load(){let[m,j,b,d]=await Promise.all([fetch('/api/me',{cache:'no-store'}),fetch('/api/my-jobs',{cache:'no-store'}),fetch('/api/my-bookings',{cache:'no-store'}),fetch('/api/disputes',{cache:'no-store'})]);if(m.ok)setMe(await m.json());if(j.ok){const rows=await j.json();if(Array.isArray(rows)){setJobs(rows);setJobsLoaded(true)}}if(b.ok)setBookings(await b.json());if(d.ok)setDisputes(await d.json())}useEffect(()=>{load()},[]);async function create(e:any){
+async function load(){
+ const read=async(path:string,apply:(data:any)=>void)=>{
+  try{
+   const response=await fetch(path,{cache:'no-store'});
+   if(!response.ok)return;
+   const data=await response.json();
+   apply(data);
+  }catch{}
+ };
+ await Promise.all([
+  read('/api/me',(data:any)=>{if(data&&typeof data==='object'&&!Array.isArray(data))setMe(data)}),
+  read('/api/my-jobs',(data:any)=>{if(Array.isArray(data)){setJobs(data);setJobsLoaded(true)}}),
+  read('/api/my-bookings',(data:any)=>{if(Array.isArray(data))setBookings(data)}),
+  read('/api/disputes',(data:any)=>{if(Array.isArray(data))setDisputes(data)})
+ ]);
+}useEffect(()=>{load()},[]);async function create(e:any){
  e.preventDefault();
  if(requestInFlight.current)return;
  const form=e.currentTarget as HTMLFormElement;
