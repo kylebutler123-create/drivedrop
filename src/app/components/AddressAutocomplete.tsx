@@ -8,12 +8,26 @@ export default function AddressAutocomplete({name,label}:{name:string;label:stri
  const timer=useRef<ReturnType<typeof setTimeout>|null>(null);
  const requestVersion=useRef(0);
  const activeRequest=useRef<AbortController|null>(null);
+ const field=useRef<HTMLDivElement|null>(null);
  function cancelPending(){
   requestVersion.current+=1;
   if(timer.current!==null){clearTimeout(timer.current);timer.current=null}
   activeRequest.current?.abort();activeRequest.current=null;
  }
  useEffect(()=>()=>cancelPending(),[]);
+ useEffect(()=>{
+  if(!open)return;
+  const onOutsidePointer=(event:PointerEvent)=>{
+   if(event.target instanceof Node&&!field.current?.contains(event.target))setOpen(false);
+  };
+  document.addEventListener('pointerdown',onOutsidePointer);
+  return()=>document.removeEventListener('pointerdown',onOutsidePointer);
+ },[open]);
+ function useEnteredAddress(){
+  cancelPending();
+  setOpen(false);setHits([]);setLoading(false);
+  setLookupMessage('Using your entered address.');
+ }
  function change(v:string){
   cancelPending();
   const version=requestVersion.current;
@@ -55,5 +69,5 @@ export default function AddressAutocomplete({name,label}:{name:string;label:stri
    if(version===requestVersion.current)activeRequest.current=null;
   }
  }
- return <div className="field addressField"><label>{label}</label><input name={name} value={value} onChange={e=>change(e.target.value)} onFocus={()=>setOpen(true)} autoComplete="off" placeholder="Start typing an address or postcode" required aria-autocomplete="list"/>{open&&(loading||hits.length>0)&&<div className="addressSuggestions">{loading&&<div className="addressStatus">Finding addresses…</div>}{!loading&&hits.map(h=><button type="button" key={h.id} onMouseDown={e=>e.preventDefault()} onClick={()=>choose(h)}>{h.suggestion}</button>)}</div>}<small className="muted" role={lookupMessage?'status':undefined}>{lookupMessage||'Can’t find it? You can type the address manually.'}</small></div>
+ return <div className="field addressField" ref={field} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget as Node|null))setOpen(false)}} onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();setOpen(false)}}}><label>{label}</label><input name={name} value={value} onChange={e=>change(e.target.value)} onFocus={()=>setOpen(true)} autoComplete="off" placeholder="Start typing an address or postcode" required aria-autocomplete="list"/>{open&&(value.trim().length>0||loading||hits.length>0)&&<div className="addressSuggestions">{value.trim().length>0&&<button type="button" style={{fontWeight:700,color:'#b9560c',background:'#fff8f1'}} onPointerDown={e=>e.preventDefault()} onMouseDown={e=>e.preventDefault()} onClick={useEnteredAddress}>Use address as entered</button>}{loading&&<div className="addressStatus">Finding addresses…</div>}{!loading&&hits.map(h=><button type="button" key={h.id} onPointerDown={e=>e.preventDefault()} onMouseDown={e=>e.preventDefault()} onClick={()=>choose(h)}>{h.suggestion}</button>)}</div>}<small className="muted" role={lookupMessage?'status':undefined}>{lookupMessage||'Can’t find it? Type the full address and choose “Use address as entered”.'}</small></div>
 }
