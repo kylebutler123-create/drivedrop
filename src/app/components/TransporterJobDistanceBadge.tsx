@@ -7,7 +7,7 @@ export function renderJobDistanceBadge(card:HTMLElement){
     existing?.remove();
     return;
   }
-  const summary=card.querySelector<HTMLElement>('.transporterCardSummaryMain');
+  const summary=card.querySelector<HTMLElement>(':scope > .bookingTop > div')||card.querySelector<HTMLElement>('.transporterCardSummaryMain');
   if(!summary)return;
   const rounded=miles<10?miles.toFixed(1):Math.round(miles).toString();
   const label=`${rounded} ${Number(rounded)===1?'mile':'miles'} to collection`;

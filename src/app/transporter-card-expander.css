@@ -27,3 +27,17 @@
  .transporterExpandableCard.transporterBooking>.transporterCollectionAction{margin:13px}
  .transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollectionAction{margin:0 12px 12px}
 }
+
+/* Available Jobs use their polished header; only quote controls expand. */
+.jobOpportunity>.bookingTop{padding-top:0}
+.jobOpportunity .jobOwnQuotePrice{margin:6px 0;color:#183654;font-size:14px;font-weight:800;line-height:1.4}
+.jobOpportunity>.jobQuoteDetails{margin-top:16px;min-width:0}
+.jobQuoteDetails>.jobQuoteToggle{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:12px 14px;border:1px solid #dce5ed;border-radius:12px;background:#f7fafc;color:#183654;font-size:13px;font-weight:800;list-style:none;cursor:pointer;box-sizing:border-box}
+.jobQuoteToggle::-webkit-details-marker{display:none}
+.jobQuoteToggle:hover{background:#edf3f8}
+.jobQuoteToggle:focus-visible{outline:3px solid #ff7a18;outline-offset:3px}
+.jobQuoteChevron::before{content:'+';font-size:22px;line-height:1}
+.jobQuoteDetails[open]>.jobQuoteToggle .jobQuoteChevron::before{content:'−'}
+.jobQuoteDetails>.infoPanel{margin-top:16px;border:1px solid #dfe7ef}
+.jobQuoteDetails>.formNotice{margin-top:12px}
+.jobOpportunity.hasCustomerCounterDate>.bookingTop{border-left:3px solid #ed9c59;padding-left:12px}
