@@ -18,44 +18,11 @@
   font-weight: 900;
 }
 
-/* Explain the customer total inside the expanded quote without changing pricing. */
+/* Identify the final customer amount inside an expanded quote. */
 .customerQuoteTotalLabel {
   color: #7d624d;
   font-size: 9px;
   font-weight: 900;
   letter-spacing: .05em;
   text-transform: uppercase;
-}
-.customerQuotePriceBreakdown {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 7px;
-  width: 100%;
-}
-.customerQuotePriceBreakdown span {
-  padding: 7px 9px;
-  border: 1px solid #f0d9c5;
-  border-radius: 9px;
-  background: #fff;
-  color: #7d624d;
-  font-size: 10px;
-}
-.customerQuotePriceBreakdown b {
-  margin-left: 3px;
-  color: #29465f;
-}
-@media(max-width:700px) {
-  .quoteComparisonExpanded .quoteDecision {
-    display: grid;
-    grid-template-columns: minmax(0,1fr) auto;
-  }
-  .quoteComparisonExpanded .customerQuotePriceBreakdown,
-  .quoteComparisonExpanded .quoteDecision > .btn,
-  .quoteComparisonExpanded .quoteDecision > .formNotice {
-    grid-column: 1 / -1;
-  }
-  .customerQuotePriceBreakdown {
-    justify-content: flex-start;
-  }
 }
