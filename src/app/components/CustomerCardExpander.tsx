@@ -3,8 +3,39 @@ import {useEffect} from 'react';
 import {usePathname} from 'next/navigation';
 
 function text(el:Element|null){return (el?.textContent||'').replace(/\s+/g,' ').trim()}
+type DeliveryProgress={customerId:string;bookingId:string;statusLabel:string;eventKey:string;highlight:boolean};
+const seenProgress=new Map<string,string>();
+const lastProgressPayload=new WeakMap<HTMLElement,string>();
+function syncDeliveryProgress(card:HTMLElement,markSeen=false){
+ const raw=card.dataset.deliveryProgress;
+ if(!raw)return;
+ if(!markSeen&&lastProgressPayload.get(card)===raw)return;
+ let progress:DeliveryProgress;
+ try{progress=JSON.parse(raw)}catch{return}
+ if(!progress||typeof progress.statusLabel!=='string'||typeof progress.eventKey!=='string'||typeof progress.customerId!=='string'||typeof progress.bookingId!=='string')return;
+ const main=card.querySelector<HTMLElement>('.customerCardSummaryMain');
+ if(!main)return;
+ lastProgressPayload.set(card,raw);
+ const status=main.querySelector<HTMLElement>('.customerCardSummaryStatus');
+ if(status&&status.textContent!==progress.statusLabel)status.textContent=progress.statusLabel;
+ const storageKey='drivedrop:delivery-progress:v1:'+JSON.stringify([progress.customerId,progress.bookingId]);
+ let seen=seenProgress.get(storageKey);
+ if(seen===undefined){try{seen=localStorage.getItem(storageKey)||undefined}catch{}}
+ if(markSeen&&progress.customerId&&progress.bookingId){
+  seen=progress.eventKey;seenProgress.set(storageKey,seen);
+  try{localStorage.setItem(storageKey,seen)}catch{}
+ }
+ const unread=progress.highlight===true&&!!progress.customerId&&!!progress.bookingId&&seen!==progress.eventKey;
+ card.classList.toggle('hasUnreadDeliveryProgress',unread);
+ let badge=main.querySelector<HTMLElement>('.customerDeliveryProgressAlert');
+ if(!unread){badge?.remove();return}
+ if(!badge){badge=document.createElement('span');badge.className='customerDeliveryProgressAlert';main.appendChild(badge)}
+ const message='Delivery update · '+progress.statusLabel;
+ if(badge.textContent!==message)badge.textContent=message;
+}
+
 function enhance(card:HTMLElement){
- if(card.dataset.customerExpandable==='true')return;
+ if(card.dataset.customerExpandable==='true'){syncDeliveryProgress(card);return}
  card.dataset.customerExpandable='true';
  card.classList.add('customerExpandableCard','isCollapsed');
  const btn=document.createElement('button');
@@ -21,19 +52,25 @@ function enhance(card:HTMLElement){
  const meta=routeStops.length>=2?`${routeStops[0]} → ${routeStops[1]}`:partner;
  const stat=quoteCount?`${quoteCount} quote${quoteCount==='1'?'':'s'}`:paymentValue?`${paymentLabel||'Payment'} · ${paymentValue}`:partner;
  btn.innerHTML=`<span class="customerCardSummaryMain"><span class="customerCardSummaryStatus">${status}</span><strong>${title}</strong><small>${meta}</small></span><span class="customerCardSummarySide"><b>${stat||'View details'}</b><span class="customerCardChevron">+</span></span>`;
- const toggle=()=>{const collapsed=card.classList.toggle('isCollapsed');btn.setAttribute('aria-expanded',collapsed?'false':'true');const chevron=btn.querySelector('.customerCardChevron');if(chevron)chevron.textContent=collapsed?'+':'−'};
+ const toggle=()=>{const collapsed=card.classList.toggle('isCollapsed');btn.setAttribute('aria-expanded',collapsed?'false':'true');const chevron=btn.querySelector('.customerCardChevron');if(chevron)chevron.textContent=collapsed?'+':'−';if(!collapsed)syncDeliveryProgress(card,true)};
  btn.addEventListener('click',toggle);
  card.insertBefore(btn,card.firstChild);
+ syncDeliveryProgress(card);
 }
 
 export default function CustomerCardExpander(){
  const pathname=usePathname();
  useEffect(()=>{
   if(pathname!=='/customer')return;
-  const scan=()=>document.querySelectorAll<HTMLElement>('main.dashboardShell .bookingCard, main.dashboardShell .quoteRequestCard').forEach(enhance);
+  let frame:number|null=null;
+  const scan=()=>{frame=null;document.querySelectorAll<HTMLElement>('main.dashboardShell .bookingCard, main.dashboardShell .quoteRequestCard').forEach(enhance)};
+  const schedule=()=>{if(frame===null)frame=requestAnimationFrame(scan)};
   scan();
-  const observer=new MutationObserver(scan);observer.observe(document.body,{childList:true,subtree:true});
-  return()=>observer.disconnect();
+  const observer=new MutationObserver(records=>{
+   for(const record of records){if(record.type==='attributes'&&record.target instanceof HTMLElement)syncDeliveryProgress(record.target);else schedule()}
+  });
+  observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-delivery-progress']});
+  return()=>{observer.disconnect();if(frame!==null)cancelAnimationFrame(frame)};
  },[pathname]);
  return null;
 }

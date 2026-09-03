@@ -22,3 +22,9 @@
 .customerRequestActions{margin-top:14px;padding-top:12px;border-top:1px solid #e1e8ef;min-width:0}
 .customerRequestActions>.actionButtons{display:flex;flex-wrap:wrap;gap:8px}
 .customerRequestActions .btn{min-height:44px;max-width:100%;white-space:normal}
+
+/* New delivery progress is visible on the front of its booking card. */
+.customerExpandableCard.bookingCard.hasUnreadDeliveryProgress{border-color:#e9a265!important}
+.customerExpandableCard.bookingCard.hasUnreadDeliveryProgress>.customerCardToggle{background:#fff6ed}
+.customerExpandableCard.bookingCard.hasUnreadDeliveryProgress>.customerCardToggle:hover{background:#fff0e2}
+.customerCardSummaryMain .customerDeliveryProgressAlert{display:block;margin-top:8px;padding:7px 9px;border:1px solid #f1c39d;border-radius:8px;background:#fff0df;color:#92400e;font-size:11px;font-weight:800;line-height:1.4;white-space:normal;overflow-wrap:anywhere}
