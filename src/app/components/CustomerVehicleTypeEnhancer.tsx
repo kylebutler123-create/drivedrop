@@ -54,5 +54,5 @@ export default function CustomerVehicleTypeEnhancer(){
    document.querySelector('[data-registration-field]')?.remove();
   };
  },[pathname]);
- return <>{target&&createPortal(<><label>VEHICLE TYPE</label><select name="vehicleType" required defaultValue=""><option value="" disabled>Select vehicle type</option>{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select></>,target)}{registrationTarget&&createPortal(<><label>REGISTRATION</label><input name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters"/></>,registrationTarget)}</>;
+ return <>{target&&createPortal(<><label htmlFor="request-vehicle-type">VEHICLE TYPE</label><select id="request-vehicle-type" name="vehicleType" required defaultValue=""><option value="" disabled>Select vehicle type</option>{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select></>,target)}{registrationTarget&&createPortal(<><label htmlFor="request-registration">REGISTRATION</label><input id="request-registration" name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters"/></>,registrationTarget)}</>;
 }
