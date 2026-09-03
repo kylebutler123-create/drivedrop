@@ -7,3 +7,13 @@
 .customerDateActions .actionButtons{display:flex;flex-wrap:wrap;gap:8px}
 .customerDateActions .btn{max-width:100%;white-space:normal}
 @media(max-width:480px){.customerDateActions .actionButtons{display:grid;grid-template-columns:minmax(0,1fr)}.customerDateActions .btn{width:100%;min-width:0}}
+
+/* Make a proposed collection date unmistakable while the customer is scanning quotes. */
+.quoteOffer.needsQuoteAction .quoteCompareStats > span:nth-child(3) {
+  border-color: #efb174;
+  background: #fff3e7;
+}
+.quoteOffer.needsQuoteAction [data-compare-status] {
+  color: #a84d0c;
+  font-weight: 900;
+}

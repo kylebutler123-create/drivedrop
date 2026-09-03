@@ -23,6 +23,7 @@ function refreshQuoteSummary(card:HTMLElement,summary:HTMLElement){
     const element=summary.querySelector<HTMLElement>(selector);
     if(element&&element.textContent!==value)element.textContent=value;
   }
+  card.classList.toggle('needsQuoteAction',data.status.startsWith('Action needed'));
   renderedSummaries.set(summary,raw);
 }
 
@@ -50,7 +51,7 @@ export default function CustomerQuoteComparisonEnhancer(){
         summary.type='button';
         summary.className='quoteComparisonSummary';
         summary.setAttribute('aria-expanded','false');
-        summary.innerHTML='<span class="quoteCompareIdentity"><span class="quoteCompareAvatar">🚛</span><span><b></b><small></small></span></span><span class="quoteCompareStats"><span><small>Price</small><b data-compare-price></b></span><span><small>Collection</small><b data-compare-date></b></span><span><small>Status</small><b data-compare-status></b></span></span><span class="quoteCompareMessage"><small>Message</small><b></b></span><span class="quoteCompareChevron">+</span>';
+        summary.innerHTML='<span class="quoteCompareIdentity"><span class="quoteCompareAvatar">🚛</span><span><b></b><small></small></span></span><span class="quoteCompareStats"><span><small>Total price</small><b data-compare-price></b></span><span><small>Collection</small><b data-compare-date></b></span><span><small>Status</small><b data-compare-status></b></span></span><span class="quoteCompareMessage"><small>Message</small><b></b></span><span class="quoteCompareChevron">+</span>';
         refreshQuoteSummary(card,summary);
         summary.addEventListener('click',()=>{
           const open=card.classList.toggle('quoteComparisonOpen');
