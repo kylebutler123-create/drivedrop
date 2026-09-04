@@ -1,1 +1,32 @@
 .quoteRequestCard.hasCustomerQuotes{border-color:#f0b77f!important;background:linear-gradient(180deg,#fffaf5 0%,#fff 34%);box-shadow:0 12px 34px rgba(159,83,23,.10)!important}.quoteRequestCard.hasCustomerQuotes .quoteCount{border-color:#efc49b;background:#fff5eb}.quoteRequestCard.hasCustomerQuotes .quoteCount strong{color:#9b4d13}.quotesReceivedBadge{display:inline-flex!important;align-items:center;width:max-content;margin:7px 0 4px;padding:5px 8px;border-radius:999px;background:#fff0e4;color:#a84d0c;font-size:9px;font-weight:900;letter-spacing:.03em;text-transform:uppercase}.quoteRequestCard.hasCustomerQuotes .bookingTop h2{margin-top:5px}@media(max-width:760px){.quoteRequestCard.hasCustomerQuotes{box-shadow:0 8px 24px rgba(159,83,23,.09)!important}.quotesReceivedBadge{margin-top:6px}.quoteRequestCard.hasCustomerQuotes .quoteCount{background:#fff5eb}}
+
+/* Make quote activity unmistakable while customers scan compressed requests. */
+.quoteRequestCard.hasCustomerQuotes.isCollapsed{
+ border:2px solid #eb8a3d!important;
+ box-shadow:0 0 0 3px rgba(235,138,61,.12),0 14px 34px rgba(159,83,23,.16)!important
+}
+.quoteRequestCard.hasCustomerQuotes.isCollapsed>.customerCardToggle{
+ padding-left:11px;
+ border-left:5px solid #f47a1f;
+ background:linear-gradient(100deg,#fff1e4 0%,#fff8f1 58%,#fff 100%)
+}
+.quoteRequestCard.hasCustomerQuotes.isCollapsed>.customerCardToggle:hover{background:linear-gradient(100deg,#ffe8d4 0%,#fff3e7 58%,#fffaf6 100%)}
+.quoteRequestCard.hasCustomerQuotes.isCollapsed .customerCardSummaryStatus{
+ display:inline-flex;
+ width:max-content;
+ padding:4px 7px;
+ border-radius:999px;
+ background:#f47a1f;
+ color:#fff
+}
+.quoteRequestCard.hasCustomerQuotes.isCollapsed .customerCardSummarySide>b{
+ padding:7px 10px;
+ border:1px solid #efbd91;
+ border-radius:999px;
+ background:#fff3e8;
+ color:#9b4d13
+}
+@media(max-width:760px){
+ .quoteRequestCard.hasCustomerQuotes.isCollapsed{box-shadow:0 0 0 2px rgba(235,138,61,.12),0 10px 26px rgba(159,83,23,.14)!important}
+ .quoteRequestCard.hasCustomerQuotes.isCollapsed>.customerCardToggle{padding-left:9px}
+}
