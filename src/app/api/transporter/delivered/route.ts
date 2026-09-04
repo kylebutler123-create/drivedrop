@@ -26,7 +26,13 @@ export async function GET(){
  const jobIds=bookings.map(booking=>booking.job.id);
  const vehicleRows=jobIds.length?await prisma.$queryRawUnsafe<Array<{id:string;vehicleType:string|null}>>(`SELECT "id", "vehicleType" FROM "TransportJob" WHERE "id" IN (${jobIds.map((_,i)=>`$${i+1}`).join(',')})`,...jobIds):[];
  const vehicleTypes=new Map(vehicleRows.map(row=>[row.id,row.vehicleType]));
- const completedBookings=bookings.map(booking=>({...booking,job:{...booking.job,vehicleType:vehicleTypes.get(booking.job.id)||null}}));
+ const completedBookings=bookings
+  .map(booking=>({...booking,job:{...booking.job,vehicleType:vehicleTypes.get(booking.job.id)||null}}))
+  .sort((a,b)=>{
+   const aCompletedAt=new Date(a.trackingEvents[0]?.createdAt||a.createdAt).getTime();
+   const bCompletedAt=new Date(b.trackingEvents[0]?.createdAt||b.createdAt).getTime();
+   return bCompletedAt-aCompletedAt;
+  });
  const deliveredProceedsPence=completedBookings.reduce((total,booking)=>total+(booking.payment?.transporterProceedsPence||0),0);
  return NextResponse.json({bookings:completedBookings,deliveredProceedsPence,payoutDetailsComplete:payoutDetails.length>0},{headers:{'Cache-Control':'no-store, max-age=0'}});
 }
