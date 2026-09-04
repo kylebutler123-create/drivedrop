@@ -1,5 +1,5 @@
 'use client';
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {usePathname} from 'next/navigation';
 
@@ -29,10 +29,14 @@ export default function TransporterDeliveredSummary(){
  const[refreshing,setRefreshing]=useState(false);
  const[totalProceedsPence,setTotalProceedsPence]=useState(0);
  const[proceedsLoaded,setProceedsLoaded]=useState(false);
+ const showRef=useRef(false);
+ const loadedRef=useRef(false);
+ const refreshingRef=useRef(false);
+ const failedRef=useRef(false);
  useEffect(()=>{
-  setTarget(null);setListTarget(null);setProceedsTarget(null);setShow(false);setExpanded(null);setLoaded(false);setLoadFailed(false);setRefreshing(false);setProceedsLoaded(false);if(pathname!=='/transporter')return;
+  setTarget(null);setListTarget(null);setProceedsTarget(null);setShow(false);showRef.current=false;setExpanded(null);setLoaded(false);loadedRef.current=false;setLoadFailed(false);failedRef.current=false;setRefreshing(false);refreshingRef.current=false;setProceedsLoaded(false);if(pathname!=='/transporter')return;
   let cancelled=false;let cleanup:(()=>void)|undefined;let attempts=0;
-  const initialise=()=>{if(cancelled)return;const summary=document.querySelector<HTMLElement>('.transporterHero .dashboardSummary');const hero=document.querySelector<HTMLElement>('.transporterHero');const proceeds=document.querySelector<HTMLElement>('[data-booked-proceeds-summary]');if(!summary||!hero||!proceeds){attempts+=1;if(attempts<20)window.setTimeout(initialise,50);return}const oldMount=summary.querySelector<HTMLElement>('[data-delivered-summary]');oldMount?.remove();document.querySelector<HTMLElement>('[data-delivered-list]')?.remove();const mount=document.createElement('div');mount.dataset.deliveredSummary='true';mount.setAttribute('role','button');mount.setAttribute('tabindex','0');mount.style.cursor='pointer';const jobsBox=Array.from(summary.children).find(child=>child.textContent?.includes('Jobs available'));if(jobsBox?.nextSibling)summary.insertBefore(mount,jobsBox.nextSibling);else summary.appendChild(mount);const list=document.createElement('div');list.dataset.deliveredList='true';hero.insertAdjacentElement('afterend',list);setTarget(mount);setListTarget(list);setProceedsTarget(proceeds);const standardBoxes=Array.from(summary.children).filter(child=>child!==mount&&child.getAttribute('role')==='button') as HTMLElement[];const clearStandardSelection=()=>standardBoxes.forEach(box=>box.setAttribute('aria-pressed','false'));const toggleDelivered=()=>setShow(current=>{if(!current){clearStandardSelection();return true}return false});const key=(e:KeyboardEvent)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleDelivered()}};const clearDelivered=()=>setShow(false);mount.addEventListener('click',toggleDelivered);mount.addEventListener('keydown',key);standardBoxes.forEach(box=>box.addEventListener('click',clearDelivered));cleanup=()=>{mount.removeEventListener('click',toggleDelivered);mount.removeEventListener('keydown',key);standardBoxes.forEach(box=>box.removeEventListener('click',clearDelivered));mount.remove();list.remove()}};
+  const initialise=()=>{if(cancelled)return;const summary=document.querySelector<HTMLElement>('.transporterHero .dashboardSummary');const hero=document.querySelector<HTMLElement>('.transporterHero');const proceeds=document.querySelector<HTMLElement>('[data-booked-proceeds-summary]');if(!summary||!hero||!proceeds){attempts+=1;if(attempts<20)window.setTimeout(initialise,50);return}const oldMount=summary.querySelector<HTMLElement>('[data-delivered-summary]');oldMount?.remove();document.querySelector<HTMLElement>('[data-delivered-list]')?.remove();const mount=document.createElement('div');mount.dataset.deliveredSummary='true';mount.setAttribute('role','button');mount.setAttribute('tabindex','0');mount.style.cursor='pointer';const jobsBox=Array.from(summary.children).find(child=>child.textContent?.includes('Jobs available'));if(jobsBox?.nextSibling)summary.insertBefore(mount,jobsBox.nextSibling);else summary.appendChild(mount);const list=document.createElement('div');list.dataset.deliveredList='true';hero.insertAdjacentElement('afterend',list);setTarget(mount);setListTarget(list);setProceedsTarget(proceeds);const standardBoxes=Array.from(summary.children).filter(child=>child!==mount&&child.getAttribute('role')==='button') as HTMLElement[];const clearStandardSelection=()=>standardBoxes.forEach(box=>box.setAttribute('aria-pressed','false'));const toggleDelivered=()=>{const next=!showRef.current;showRef.current=next;setShow(next);if(next){clearStandardSelection();if((loadedRef.current||failedRef.current)&&!refreshingRef.current)setVersion(v=>v+1)}};const key=(e:KeyboardEvent)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleDelivered()}};const clearDelivered=()=>{showRef.current=false;setShow(false)};mount.addEventListener('click',toggleDelivered);mount.addEventListener('keydown',key);standardBoxes.forEach(box=>box.addEventListener('click',clearDelivered));cleanup=()=>{mount.removeEventListener('click',toggleDelivered);mount.removeEventListener('keydown',key);standardBoxes.forEach(box=>box.removeEventListener('click',clearDelivered));mount.remove();list.remove()}};
   initialise();return()=>{cancelled=true;cleanup?.()};
  },[pathname]);
  useEffect(()=>{const refresh=()=>setVersion(v=>v+1);window.addEventListener('drivedrop-bookings-updated',refresh);return()=>window.removeEventListener('drivedrop-bookings-updated',refresh)},[]);
@@ -47,27 +51,27 @@ export default function TransporterDeliveredSummary(){
    }catch{return null}
   }
   async function load(){
-   setRefreshing(true);setLoadFailed(false);
+   refreshingRef.current=true;failedRef.current=false;setRefreshing(true);setLoadFailed(false);
    try{
     const[data,activeBookings]=await Promise.all([
      request('/api/transporter/delivered'),
      request('/api/my-bookings')
     ]);
     if(cancelled)return;
-    if(!data||!Array.isArray(data.bookings)){setLoadFailed(true);return}
+    if(!data||!Array.isArray(data.bookings)){failedRef.current=true;setLoadFailed(true);return}
     setBookings(data.bookings);
     setPayoutDetailsComplete(data.payoutDetailsComplete!==false);
-    setLoaded(true);
+    setLoaded(true);loadedRef.current=true;
     if(Array.isArray(activeBookings)){
      const activeProceedsPence=activeBookings.reduce((total:number,booking:any)=>total+(booking.payment?.transporterProceedsPence||0),0);
      const combinedProceedsPence=activeProceedsPence+(Number(data.deliveredProceedsPence)||0);
      setTotalProceedsPence(combinedProceedsPence);
      setProceedsLoaded(true);
     }
-   }finally{if(!cancelled)setRefreshing(false)}
+   }finally{if(!cancelled){refreshingRef.current=false;setRefreshing(false)}}
   }
   void load();
-  return()=>{cancelled=true};
+  return()=>{cancelled=true;refreshingRef.current=false};
  },[pathname,version]);
  useEffect(()=>{if(target)target.setAttribute('aria-pressed',show?'true':'false')},[target,show]);
  if(!target)return null;
