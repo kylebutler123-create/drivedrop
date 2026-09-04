@@ -3,6 +3,7 @@ import {useEffect} from 'react';
 import {usePathname} from 'next/navigation';
 
 function text(el:Element|null){return (el?.textContent||'').replace(/\s+/g,' ').trim()}
+function escapeHtml(value:any){return String(value??'').replace(/[&<>'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]||c))}
 type DeliveryProgress={customerId:string;bookingId:string;statusLabel:string;eventKey:string;highlight:boolean};
 const seenProgress=new Map<string,string>();
 const lastProgressPayload=new WeakMap<HTMLElement,string>();
@@ -34,8 +35,23 @@ function syncDeliveryProgress(card:HTMLElement,markSeen=false){
  if(badge.textContent!==message)badge.textContent=message;
 }
 
+type CompletedSummary={title:string;transporter:string;registration:string;completedAt?:string|null;evidenceCount:number;paymentText:string};
+function syncCompletedSummary(card:HTMLElement){
+ const raw=card.dataset.completedSummary;
+ if(!raw)return;
+ let summary:CompletedSummary;
+ try{summary=JSON.parse(raw)}catch{return}
+ if(!summary||typeof summary.title!=='string'||typeof summary.transporter!=='string'||typeof summary.registration!=='string'||typeof summary.paymentText!=='string'||!Number.isFinite(summary.evidenceCount))return;
+ const button=card.querySelector<HTMLButtonElement>(':scope > .customerCardToggle');
+ if(!button)return;
+ const completedDate=summary.completedAt?new Date(summary.completedAt):null;
+ const completedLabel=completedDate&&Number.isFinite(completedDate.getTime())?completedDate.toLocaleDateString('en-GB'):'Completed';
+ button.classList.add('customerCompletedSummary');
+ button.innerHTML=`<span class="customerCompletedIdentity"><span class="customerCardSummaryStatus">Completed</span><strong>${escapeHtml(summary.title)}</strong><small>Transporter · ${escapeHtml(summary.transporter)} · ${escapeHtml(summary.registration)}</small></span><span class="customerCompletedQuick"><span><small>Completed</small><b>${escapeHtml(completedLabel)}</b></span><span><small>Payment</small><b>${escapeHtml(summary.paymentText)}</b></span><span><small>Confirmation</small><b>Confirmed</b></span><span><small>Evidence</small><b>${summary.evidenceCount} item${summary.evidenceCount===1?'':'s'}</b></span></span><span class="customerCardChevron">${card.classList.contains('isCollapsed')?'+':'−'}</span>`;
+}
+
 function enhance(card:HTMLElement){
- if(card.dataset.customerExpandable==='true'){syncDeliveryProgress(card);return}
+ if(card.dataset.customerExpandable==='true'){syncDeliveryProgress(card);syncCompletedSummary(card);return}
  card.dataset.customerExpandable='true';
  card.classList.add('customerExpandableCard','isCollapsed');
  const btn=document.createElement('button');
@@ -56,6 +72,7 @@ function enhance(card:HTMLElement){
  btn.addEventListener('click',toggle);
  card.insertBefore(btn,card.firstChild);
  syncDeliveryProgress(card);
+ syncCompletedSummary(card);
 }
 
 export default function CustomerCardExpander(){
@@ -67,9 +84,9 @@ export default function CustomerCardExpander(){
   const schedule=()=>{if(frame===null)frame=requestAnimationFrame(scan)};
   scan();
   const observer=new MutationObserver(records=>{
-   for(const record of records){if(record.type==='attributes'&&record.target instanceof HTMLElement)syncDeliveryProgress(record.target);else schedule()}
+   for(const record of records){if(record.type==='attributes'&&record.target instanceof HTMLElement){syncDeliveryProgress(record.target);syncCompletedSummary(record.target)}else schedule()}
   });
-  observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-delivery-progress']});
+  observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-delivery-progress','data-completed-summary']});
   return()=>{observer.disconnect();if(frame!==null)cancelAnimationFrame(frame)};
  },[pathname]);
  return null;
