@@ -35,7 +35,8 @@ function syncDeliveryProgress(card:HTMLElement,markSeen=false){
  if(badge.textContent!==message)badge.textContent=message;
 }
 
-type CompletedSummary={title:string;transporter:string;registration:string;completedAt?:string|null;evidenceCount:number;paymentText:string};
+type CompletedSummary={title:string;transporter:string;registration:string;deliveredAt?:string|null;evidenceCount:number;paymentText:string};
+const lastCompletedPayload=new WeakMap<HTMLElement,string>();
 function syncCompletedSummary(card:HTMLElement){
  const raw=card.dataset.completedSummary;
  if(!raw)return;
@@ -44,10 +45,12 @@ function syncCompletedSummary(card:HTMLElement){
  if(!summary||typeof summary.title!=='string'||typeof summary.transporter!=='string'||typeof summary.registration!=='string'||typeof summary.paymentText!=='string'||!Number.isFinite(summary.evidenceCount))return;
  const button=card.querySelector<HTMLButtonElement>(':scope > .customerCardToggle');
  if(!button)return;
- const completedDate=summary.completedAt?new Date(summary.completedAt):null;
- const completedLabel=completedDate&&Number.isFinite(completedDate.getTime())?completedDate.toLocaleDateString('en-GB'):'Completed';
+ if(lastCompletedPayload.get(card)===raw&&button.classList.contains('customerCompletedSummary')&&button.querySelector('.customerCompletedIdentity'))return;
+ const deliveredDate=summary.deliveredAt?new Date(summary.deliveredAt):null;
+ const deliveredLabel=deliveredDate&&Number.isFinite(deliveredDate.getTime())?deliveredDate.toLocaleDateString('en-GB'):'Date unavailable';
+ lastCompletedPayload.set(card,raw);
  button.classList.add('customerCompletedSummary');
- button.innerHTML=`<span class="customerCompletedIdentity"><span class="customerCardSummaryStatus">Completed</span><strong>${escapeHtml(summary.title)}</strong><small>Transporter · ${escapeHtml(summary.transporter)} · ${escapeHtml(summary.registration)}</small></span><span class="customerCompletedQuick"><span><small>Completed</small><b>${escapeHtml(completedLabel)}</b></span><span><small>Payment</small><b>${escapeHtml(summary.paymentText)}</b></span><span><small>Confirmation</small><b>Confirmed</b></span><span><small>Evidence</small><b>${summary.evidenceCount} item${summary.evidenceCount===1?'':'s'}</b></span></span><span class="customerCardChevron">${card.classList.contains('isCollapsed')?'+':'−'}</span>`;
+ button.innerHTML=`<span class="customerCompletedIdentity"><span class="customerCardSummaryStatus">Completed</span><strong>${escapeHtml(summary.title)}</strong><small>Transporter · ${escapeHtml(summary.transporter)} · ${escapeHtml(summary.registration)}</small></span><span class="customerCompletedQuick"><span><small>Delivered</small><b>${escapeHtml(deliveredLabel)}</b></span><span><small>Payment</small><b>${escapeHtml(summary.paymentText)}</b></span><span><small>Confirmation</small><b>Confirmed</b></span><span><small>Evidence</small><b>${summary.evidenceCount} item${summary.evidenceCount===1?'':'s'}</b></span></span><span class="customerCardChevron">${card.classList.contains('isCollapsed')?'+':'−'}</span>`;
 }
 
 function enhance(card:HTMLElement){
