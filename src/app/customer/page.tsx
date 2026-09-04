@@ -25,7 +25,7 @@ function customerDeliveryProgress(booking:any,customerId?:string){
  return {customerId:customerId||'',bookingId:booking.id,statusLabel:label(booking.status),eventKey:[booking.status,latest?.id||latest?.createdAt||''].join(':'),highlight:!booking.customerConfirmedAt&&statuses.includes(booking.status)};
 }
 function customerDeliveredAt(booking:any){
- return [...(booking.trackingEvents||[])].reverse().find((event:any)=>event.status==='DELIVERED')?.createdAt||booking.customerConfirmedAt||booking.createdAt;
+ return booking.proofOfDelivery?.submittedAt||[...(booking.trackingEvents||[])].reverse().find((event:any)=>event.status==='DELIVERED')?.createdAt||booking.customerConfirmedAt||booking.createdAt;
 }
 function customerCompletedSummary(booking:any){
  const payment=booking.payment;
