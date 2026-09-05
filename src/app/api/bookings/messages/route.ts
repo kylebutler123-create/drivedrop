@@ -29,3 +29,16 @@ export async function POST(r:Request){
 }
 
 export async function PATCH(r:Request){const u=await currentUser();if(!u)return NextResponse.json({error:'Unauthorized'},{status:401});const x=R.safeParse(await r.json());if(!x.success)return NextResponse.json({error:'Invalid request'},{status:400});if(!await access(x.data.bookingId,u))return NextResponse.json({error:'Forbidden'},{status:403});const result=await prisma.message.updateMany({where:{bookingId:x.data.bookingId,senderId:{not:u.id},readAt:null},data:{readAt:new Date()}});return NextResponse.json({updated:result.count});}
+
+
+export async function DELETE(r:Request){
+ const u=await currentUser();if(!u)return NextResponse.json({error:'Unauthorized'},{status:401});
+ const x=R.safeParse(await r.json().catch(()=>null));if(!x.success)return NextResponse.json({error:'Invalid request'},{status:400});
+ const booking=await access(x.data.bookingId,u);if(!booking)return NextResponse.json({error:'Forbidden'},{status:403});
+ const hiddenAt=new Date();
+ await prisma.$transaction([
+  prisma.conversationInboxState.upsert({where:{bookingId_userId:{bookingId:x.data.bookingId,userId:u.id}},update:{hiddenAt},create:{bookingId:x.data.bookingId,userId:u.id,hiddenAt}}),
+  prisma.message.updateMany({where:{bookingId:x.data.bookingId,senderId:{not:u.id},readAt:null},data:{readAt:hiddenAt}})
+ ]);
+ return NextResponse.json({hidden:true},{headers:{'Cache-Control':'no-store, max-age=0'}});
+}

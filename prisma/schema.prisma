@@ -140,6 +140,7 @@ model User {
   transporterBookings              Booking[]                 @relation("TransporterBookings")
   trackingEvents                   TrackingEvent[]           @relation("TrackingActor")
   sentMessages                     Message[]                 @relation("MessageSender")
+  conversationInboxStates          ConversationInboxState[]
   uploadedEvidence                 Evidence[]                @relation("EvidenceUploader")
   reviewsWritten                   Review[]                  @relation("ReviewCustomer")
   reviewsReceived                  Review[]                  @relation("ReviewTransporter")
@@ -217,6 +218,7 @@ model Booking {
   createdAt           DateTime        @default(now())
   trackingEvents      TrackingEvent[]
   messages            Message[]
+  conversationInboxStates ConversationInboxState[]
   evidence            Evidence[]
   review              Review?
   payment             BookingPayment?
@@ -251,6 +253,20 @@ model Message {
 
   @@index([bookingId, createdAt])
   @@index([bookingId, readAt])
+}
+
+model ConversationInboxState {
+  id        String   @id @default(cuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hiddenAt  DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([bookingId, userId])
+  @@index([userId, hiddenAt])
 }
 
 model Evidence {
