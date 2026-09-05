@@ -4,7 +4,7 @@ import {usePathname} from 'next/navigation';
 
 function text(el:Element|null){return (el?.textContent||'').replace(/\s+/g,' ').trim()}
 function escapeHtml(value:any){return String(value??'').replace(/[&<>'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]||c))}
-type DeliveryProgress={customerId:string;bookingId:string;statusLabel:string;eventKey:string;highlight:boolean};
+type DeliveryProgress={customerId:string;bookingId:string;statusLabel:string;eventKey:string;highlight:boolean;confirmationRequired?:boolean;deliveredAt?:string|null};
 const seenProgress=new Map<string,string>();
 const lastProgressPayload=new WeakMap<HTMLElement,string>();
 function syncDeliveryProgress(card:HTMLElement,markSeen=false){
@@ -19,6 +19,16 @@ function syncDeliveryProgress(card:HTMLElement,markSeen=false){
  lastProgressPayload.set(card,raw);
  const status=main.querySelector<HTMLElement>('.customerCardSummaryStatus');
  if(status&&status.textContent!==progress.statusLabel)status.textContent=progress.statusLabel;
+ const confirmationRequired=progress.confirmationRequired===true;
+ card.classList.toggle('requiresDeliveryConfirmation',confirmationRequired);
+ let confirmation=main.querySelector<HTMLElement>('.customerDeliveryConfirmationAlert');
+ if(confirmationRequired){
+  const deliveredDate=progress.deliveredAt?new Date(progress.deliveredAt):null;
+  const deliveredLabel=deliveredDate&&Number.isFinite(deliveredDate.getTime())?deliveredDate.toLocaleDateString('en-GB'):'Date unavailable';
+  if(!confirmation){confirmation=document.createElement('span');confirmation.className='customerDeliveryConfirmationAlert';main.appendChild(confirmation)}
+  const confirmationMessage=`Delivered · ${deliveredLabel} · Confirmation required`;
+  if(confirmation.textContent!==confirmationMessage)confirmation.textContent=confirmationMessage;
+ }else confirmation?.remove();
  const storageKey='drivedrop:delivery-progress:v1:'+JSON.stringify([progress.customerId,progress.bookingId]);
  let seen=seenProgress.get(storageKey);
  if(seen===undefined){try{seen=localStorage.getItem(storageKey)||undefined}catch{}}
@@ -26,7 +36,7 @@ function syncDeliveryProgress(card:HTMLElement,markSeen=false){
   seen=progress.eventKey;seenProgress.set(storageKey,seen);
   try{localStorage.setItem(storageKey,seen)}catch{}
  }
- const unread=progress.highlight===true&&!!progress.customerId&&!!progress.bookingId&&seen!==progress.eventKey;
+ const unread=!confirmationRequired&&progress.highlight===true&&!!progress.customerId&&!!progress.bookingId&&seen!==progress.eventKey;
  card.classList.toggle('hasUnreadDeliveryProgress',unread);
  let badge=main.querySelector<HTMLElement>('.customerDeliveryProgressAlert');
  if(!unread){badge?.remove();return}

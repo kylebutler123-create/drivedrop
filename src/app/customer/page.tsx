@@ -22,7 +22,8 @@ function customerDeliveryProgress(booking:any,customerId?:string){
  const events=Array.isArray(booking.trackingEvents)?booking.trackingEvents:[];
  let latest:any=null;
  for(let i=events.length-1;i>=0;i--){if(events[i].status===booking.status){latest=events[i];break}}
- return {customerId:customerId||'',bookingId:booking.id,statusLabel:label(booking.status),eventKey:[booking.status,latest?.id||latest?.createdAt||''].join(':'),highlight:!booking.customerConfirmedAt&&statuses.includes(booking.status)};
+ const confirmationRequired=booking.status==='DELIVERED'&&!booking.customerConfirmedAt;
+ return {customerId:customerId||'',bookingId:booking.id,statusLabel:label(booking.status),eventKey:[booking.status,latest?.id||latest?.createdAt||''].join(':'),highlight:!booking.customerConfirmedAt&&statuses.includes(booking.status),confirmationRequired,deliveredAt:confirmationRequired?customerDeliveredAt(booking):null};
 }
 function customerDeliveredAt(booking:any){
  return booking.proofOfDelivery?.submittedAt||[...(booking.trackingEvents||[])].reverse().find((event:any)=>event.status==='DELIVERED')?.createdAt||booking.customerConfirmedAt||booking.createdAt;
