@@ -35,3 +35,5 @@
 .customerExpandableCard.bookingCard.requiresDeliveryConfirmation>.customerCardToggle{background:#fff6ed}
 .customerExpandableCard.bookingCard.requiresDeliveryConfirmation>.customerCardToggle:hover{background:#fff0e2}
 .customerCardSummaryMain .customerDeliveryConfirmationAlert{display:block;margin-top:8px;padding:7px 9px;border:1px solid #f1c39d;border-radius:8px;background:#fff0df;color:#92400e;font-size:11px;font-weight:800;line-height:1.4;white-space:normal;overflow-wrap:anywhere}
+
+.customerCardSummaryMain .customerDeliveryReference{margin-top:5px;color:#31506b;font-size:9px;font-weight:800;letter-spacing:.02em}

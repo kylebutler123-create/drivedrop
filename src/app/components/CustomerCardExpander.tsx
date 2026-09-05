@@ -4,6 +4,7 @@ import {usePathname} from 'next/navigation';
 
 function text(el:Element|null){return (el?.textContent||'').replace(/\s+/g,' ').trim()}
 function escapeHtml(value:any){return String(value??'').replace(/[&<>'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]||c))}
+function bookingReference(value:any){const id=String(value??'').trim();return id?`DD-${id.slice(-8).toUpperCase()}`:''}
 type DeliveryProgress={customerId:string;bookingId:string;statusLabel:string;eventKey:string;highlight:boolean;confirmationRequired?:boolean;deliveredAt?:string|null};
 const seenProgress=new Map<string,string>();
 const lastProgressPayload=new WeakMap<HTMLElement,string>();
@@ -56,11 +57,12 @@ function syncCompletedSummary(card:HTMLElement){
  const button=card.querySelector<HTMLButtonElement>(':scope > .customerCardToggle');
  if(!button)return;
  if(lastCompletedPayload.get(card)===raw&&button.classList.contains('customerCompletedSummary')&&button.querySelector('.customerCompletedIdentity'))return;
+ const reference=bookingReference(card.dataset.bookingId);
  const deliveredDate=summary.deliveredAt?new Date(summary.deliveredAt):null;
  const deliveredLabel=deliveredDate&&Number.isFinite(deliveredDate.getTime())?deliveredDate.toLocaleDateString('en-GB'):'Date unavailable';
  lastCompletedPayload.set(card,raw);
  button.classList.add('customerCompletedSummary');
- button.innerHTML=`<span class="customerCompletedIdentity"><span class="customerCardSummaryStatus">Completed</span><strong>${escapeHtml(summary.title)}</strong><small>Transporter · ${escapeHtml(summary.transporter)} · ${escapeHtml(summary.registration)}</small></span><span class="customerCompletedQuick"><span><small>Delivered</small><b>${escapeHtml(deliveredLabel)}</b></span><span><small>Payment</small><b>${escapeHtml(summary.paymentText)}</b></span><span><small>Confirmation</small><b>Confirmed</b></span><span><small>Evidence</small><b>${summary.evidenceCount} item${summary.evidenceCount===1?'':'s'}</b></span></span><span class="customerCardChevron">${card.classList.contains('isCollapsed')?'+':'−'}</span>`;
+ button.innerHTML=`<span class="customerCompletedIdentity"><span class="customerCardSummaryStatus">Completed</span><strong>${escapeHtml(summary.title)}</strong><small>Transporter · ${escapeHtml(summary.transporter)} · ${escapeHtml(summary.registration)}</small>${reference?`<small class="customerDeliveryReference">Delivery reference · ${escapeHtml(reference)}</small>`:''}</span><span class="customerCompletedQuick"><span><small>Delivered</small><b>${escapeHtml(deliveredLabel)}</b></span><span><small>Payment</small><b>${escapeHtml(summary.paymentText)}</b></span><span><small>Confirmation</small><b>Confirmed</b></span><span><small>Evidence</small><b>${summary.evidenceCount} item${summary.evidenceCount===1?'':'s'}</b></span></span><span class="customerCardChevron">${card.classList.contains('isCollapsed')?'+':'−'}</span>`;
 }
 
 function enhance(card:HTMLElement){
@@ -78,9 +80,10 @@ function enhance(card:HTMLElement){
  const paymentValue=text(card.querySelector('.paymentMini strong'));
  const quoteCount=text(card.querySelector('.quoteCount strong'));
  const kind=card.classList.contains('quoteRequestCard')?'quote':'booking';
+ const reference=kind==='booking'?bookingReference(card.dataset.bookingId):'';
  const meta=routeStops.length>=2?`${routeStops[0]} → ${routeStops[1]}`:partner;
  const stat=quoteCount?`${quoteCount} quote${quoteCount==='1'?'':'s'}`:paymentValue?`${paymentLabel||'Payment'} · ${paymentValue}`:partner;
- btn.innerHTML=`<span class="customerCardSummaryMain"><span class="customerCardSummaryStatus">${status}</span><strong>${title}</strong><small>${meta}</small></span><span class="customerCardSummarySide"><b>${stat||'View details'}</b><span class="customerCardChevron">+</span></span>`;
+ btn.innerHTML=`<span class="customerCardSummaryMain"><span class="customerCardSummaryStatus">${status}</span><strong>${title}</strong><small>${meta}</small>${reference?`<small class="customerDeliveryReference">Delivery reference · ${escapeHtml(reference)}</small>`:''}</span><span class="customerCardSummarySide"><b>${stat||'View details'}</b><span class="customerCardChevron">+</span></span>`;
  const toggle=()=>{const collapsed=card.classList.toggle('isCollapsed');btn.setAttribute('aria-expanded',collapsed?'false':'true');const chevron=btn.querySelector('.customerCardChevron');if(chevron)chevron.textContent=collapsed?'+':'−';if(!collapsed)syncDeliveryProgress(card,true)};
  btn.addEventListener('click',toggle);
  card.insertBefore(btn,card.firstChild);
