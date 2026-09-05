@@ -239,6 +239,7 @@ model TrackingEvent {
   createdAt DateTime      @default(now())
 
   @@index([bookingId, createdAt])
+  @@index([actorId])
 }
 
 model Message {
@@ -253,6 +254,7 @@ model Message {
 
   @@index([bookingId, createdAt])
   @@index([bookingId, readAt])
+  @@index([senderId])
 }
 
 model ConversationInboxState {
@@ -281,6 +283,7 @@ model Evidence {
   createdAt  DateTime     @default(now())
 
   @@index([bookingId, type, createdAt])
+  @@index([uploaderId])
 }
 
 model Dispute {
@@ -303,6 +306,7 @@ model Dispute {
 
   @@index([bookingId, status, createdAt])
   @@index([raisedById, createdAt])
+  @@index([reviewerId])
 }
 
 model Review {
@@ -328,6 +332,7 @@ model Review {
 
   @@index([transporterId, createdAt])
   @@index([moderationStatus, createdAt])
+  @@index([customerId])
 }
 
 model Session {
@@ -360,6 +365,8 @@ model TransporterVerification {
   documents       VerificationDocument[]
   createdAt       DateTime               @default(now())
   updatedAt       DateTime               @updatedAt
+
+  @@index([reviewerId])
 }
 
 model VerificationDocument {
@@ -382,6 +389,8 @@ model VerificationDocument {
 
   @@index([verificationId, type])
   @@index([expiresAt])
+  @@index([reviewerId])
+  @@index([uploaderId])
 }
 
 model BookingPayment {
