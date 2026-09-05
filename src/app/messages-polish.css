@@ -2,3 +2,5 @@
 
 .conversationTop .conversationCardReference{margin-top:4px;color:#31506b;font-weight:900;letter-spacing:.03em}
 .conversationDeliveryReference{display:inline-block;margin-top:7px;padding:5px 8px;border:1px solid #d8e2ea;border-radius:8px;background:#f4f7fa;color:#31506b;font-size:9px;font-weight:900;letter-spacing:.03em}
+
+@media(max-width:900px){.messagesLayout.hasSelectedConversation .conversationPanel{order:-1}}
