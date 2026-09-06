@@ -23,18 +23,21 @@ export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:an
  const[category,setCategory]=useState<Category>('READY');
  const[blockedOnly,setBlockedOnly]=useState(initialBlockedOnly);
  const[query,setQuery]=useState('');
- const counts=useMemo(()=>Object.fromEntries(categories.map(([key])=>[key,rows.filter(row=>row.payoutStatus===key).length])) as Record<Category,number>,[rows]);
- const values=useMemo(()=>Object.fromEntries(categories.map(([key])=>[key,rows.filter(row=>row.payoutStatus===key).reduce((total,row)=>total+(row.transporterProceedsPence||0),0)])) as Record<Category,number>,[rows]);
+ const[released,setReleased]=useState<Record<string,string>>({});
+ const liveRows=useMemo(()=>rows.map(row=>{const releasedAt=released[row.id];return releasedAt?{...row,payoutStatus:'PAID',updatedAt:releasedAt,events:[{id:`released-${row.id}`,type:'PAYOUT_PAID',createdAt:releasedAt},...(row.events||[])]}:row}),[rows,released]);
+ const counts=useMemo(()=>Object.fromEntries(categories.map(([key])=>[key,liveRows.filter(row=>row.payoutStatus===key).length])) as Record<Category,number>,[liveRows]);
+ const values=useMemo(()=>Object.fromEntries(categories.map(([key])=>[key,liveRows.filter(row=>row.payoutStatus===key).reduce((total,row)=>total+(row.transporterProceedsPence||0),0)])) as Record<Category,number>,[liveRows]);
  const displayed=useMemo(()=>{
   const term=query.trim().toLowerCase();
-  return rows
+  return liveRows
    .filter(row=>row.payoutStatus===category)
    .filter(row=>!blockedOnly||category!=='READY'||!row.payoutDetailsComplete)
    .filter(row=>!term||searchableText(row).includes(term))
    .slice()
    .sort((a,b)=>eventDate(b,category)-eventDate(a,category));
- },[rows,category,blockedOnly,query]);
+ },[liveRows,category,blockedOnly,query]);
  const selectCategory=(next:Category)=>{setCategory(next);setBlockedOnly(false)};
+ const payoutReleased=(paymentId:string)=>{const releasedAt=new Date().toISOString();setReleased(current=>({...current,[paymentId]:releasedAt}));setCategory('PAID');setBlockedOnly(false);setQuery('')};
  const title=blockedOnly&&category==='READY'?'Blocked payouts':category==='READY'?'Ready for payout':category==='HELD'?'Held payouts':'Paid payouts';
  const eyebrow=category==='READY'?'Action required':category==='HELD'?'Protected funds':'Finance history';
  const emptyLabel=query?'matching '+category.toLowerCase()+' payouts':blockedOnly?'blocked payouts':category==='READY'?'payouts ready for release':undefined;
@@ -59,6 +62,6 @@ export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:an
    <div><span className="dashboardEyebrow dark">{eyebrow}</span><h2>{title}</h2></div>
    <span>{displayed.length} shown · newest first</span>
   </div>
-  <PayoutRecords rows={displayed} kind={category} emptyLabel={emptyLabel}/>
+  <PayoutRecords rows={displayed} kind={category} emptyLabel={emptyLabel} onPayoutReleased={payoutReleased}/>
  </>;
 }
