@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import {ReactNode,useState} from 'react';
+import {ReactNode,useEffect,useState} from 'react';
 
 type View='ALL'|'USERS'|'VERIFICATION'|'DISPUTES'|'OPERATIONS';
 const labels:Record<Exclude<View,'ALL'>,string>={USERS:'User manager',VERIFICATION:'Transporter verification',DISPUTES:'Dispute management',OPERATIONS:'Bookings & deliveries'};
@@ -18,8 +18,9 @@ const activeSub={...subStyle,color:'#cad6e4'} as const;
 const arrowStyle={width:24,height:24,borderRadius:'50%',display:'grid',placeItems:'center',background:'#f3f6f9',color:'#4b627a',fontSize:13,fontWeight:900} as const;
 const activeArrow={...arrowStyle,background:'#ff7a18',color:'#fff'} as const;
 
-export default function AdminSectionSwitcher({userCount,transporterCount,disputeCount,userSection,verificationSection,disputeSection,operationsSection}:{userCount:number;transporterCount:number;disputeCount:number;userSection:ReactNode;verificationSection:ReactNode;disputeSection:ReactNode;operationsSection:ReactNode}){
- const[view,setView]=useState<View>('ALL');
+export default function AdminSectionSwitcher({userCount,transporterCount,disputeCount,userSection,verificationSection,disputeSection,operationsSection,initialView='ALL',actionLabel}:{userCount:number;transporterCount:number;disputeCount:number;userSection:ReactNode;verificationSection:ReactNode;disputeSection:ReactNode;operationsSection:ReactNode;initialView?:View;actionLabel?:string}){
+ const[view,setView]=useState<View>(initialView);
+ useEffect(()=>setView(initialView),[initialView]);
  const toggle=(next:Exclude<View,'ALL'>)=>setView(view===next?'ALL':next);
  const showUsers=view==='ALL'||view==='USERS';
  const showVerification=view==='ALL'||view==='VERIFICATION';
@@ -36,7 +37,7 @@ export default function AdminSectionSwitcher({userCount,transporterCount,dispute
    {linkCard('/admin/payouts','£','Finance','Payouts','Ready, held & paid transporter funds')}
    {linkCard('/admin/review-disputes','★','Reviews','Review moderation','Moderate challenged customer feedback')}
   </div>
-  {view!=='ALL'&&<div className="dashboardFilterBar"><span>Showing {labels[view as Exclude<View,'ALL'>].toLowerCase()} only</span><button className="textAction" onClick={()=>setView('ALL')}>Show everything</button></div>}
+  {view!=='ALL'&&<div className="dashboardFilterBar"><span>{actionLabel||`Showing ${labels[view as Exclude<View,'ALL'>].toLowerCase()} only`}</span>{actionLabel?<Link className="textAction" href="/admin">Show everything</Link>:<button className="textAction" onClick={()=>setView('ALL')}>Show everything</button>}</div>}
   {showUsers&&userSection}
   {showVerification&&verificationSection}
   {showDisputes&&disputeSection}
