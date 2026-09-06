@@ -137,7 +137,7 @@ export default function MessagesPage(){
   try{
    const f=new FormData();
    f.set('bookingId',bookingId);
-   if(me.role==='ADMIN'&&adminRecipient.current?.bookingId===bookingId)f.set('recipientId',adminRecipient.current.recipientId);
+   if(me?.role==='ADMIN'&&adminRecipient.current?.bookingId===bookingId)f.set('recipientId',adminRecipient.current.recipientId);
    f.set('body',body);
    images.forEach(img=>f.append('images',img));
    const r=await fetch('/api/bookings/messages',{method:'POST',body:f});

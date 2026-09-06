@@ -2,6 +2,7 @@
 import {useEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {usePathname} from 'next/navigation';
+import Link from 'next/link';
 
 const money=(pence:number)=>`£${(pence/100).toFixed(2)}`;
 const bookingReference=(value:any)=>{const id=String(value??'').trim();return id?`DD-${id.slice(-8).toUpperCase()}`:'Not available'};
