@@ -9,6 +9,7 @@ const categories:[Category,string,string][]=[
  ['PAID','Paid','✓']
 ];
 const money=(p:number)=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(p/100);
+const bookingReference=(value:any)=>{const id=String(value??'').trim();return id?`DD-${id.slice(-8).toUpperCase()}`:''};
 const eventDate=(payment:any,category:Category)=>{
  const eventType=category==='PAID'?'PAYOUT_PAID':category==='READY'?'PAYOUT_READY':null;
  const event=eventType?payment.events?.find((item:any)=>item.type===eventType):null;
@@ -16,7 +17,7 @@ const eventDate=(payment:any,category:Category)=>{
 };
 const searchableText=(payment:any)=>{
  const booking=payment.booking||{},job=booking.job||{},transporter=booking.transporter||{},customer=booking.customer||{};
- return [job.vehicleType,job.vehicleMake,job.vehicleModel,job.registration,job.collection,job.delivery,transporter.name,transporter.email,customer.name,customer.email].filter(Boolean).join(' ').toLowerCase();
+ return [booking.id,bookingReference(booking.id),job.vehicleType,job.vehicleMake,job.vehicleModel,job.registration,job.collection,job.delivery,transporter.name,transporter.email,customer.name,customer.email].filter(Boolean).join(' ').toLowerCase();
 };
 
 export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:any[];initialBlockedOnly?:boolean}){
