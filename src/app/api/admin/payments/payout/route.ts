@@ -51,7 +51,7 @@ export async function POST(r:Request){
    type:'PAYMENT',
    title:'Payout released',
    body:`DriveDrop released your test payout of ${money(result.payment.transporterProceedsPence)} for the ${vehicle}${reference} delivery.`,
-   href:'/transporter?view=deliveries'
+   href:'/transporter/delivered'
   });
   return NextResponse.json(result.payment);
  }catch(e:any){
