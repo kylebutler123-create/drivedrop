@@ -4,3 +4,6 @@
 @media(max-width:760px){.payoutCategoryControls{grid-template-columns:1fr;gap:8px}.payoutCategoryButton{padding:12px 13px}.payoutCategoryButton:hover{transform:none}.payoutSearchBar{align-items:stretch;flex-direction:column;gap:8px}.payoutSearchBar>label{align-self:flex-start}.payoutBlockedFilter{align-self:flex-start}.payoutResultsHeading{align-items:flex-start;flex-direction:column;gap:4px}}
 
 .adminPayoutIdentity .adminPayoutReference{color:#405a74;font-weight:800;letter-spacing:.02em}
+
+.payoutResultsActions{display:flex;align-items:center;justify-content:flex-end;gap:12px}.payoutExportButton{min-height:38px;padding:8px 13px;font-size:10px}.payoutExportButton:disabled{cursor:not-allowed;opacity:.48}
+@media(max-width:760px){.payoutResultsActions{width:100%;align-items:flex-start;flex-direction:column}.payoutExportButton{width:100%}}

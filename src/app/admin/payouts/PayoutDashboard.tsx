@@ -15,6 +15,7 @@ const eventDate=(payment:any,category:Category)=>{
  const event=eventType?payment.events?.find((item:any)=>item.type===eventType):null;
  return new Date(event?.createdAt||payment.updatedAt||payment.createdAt||0).getTime();
 };
+const csvCell=(value:unknown)=>{let text=String(value??'');if(/^[=+\-@]/.test(text))text="'"+text;return '"'+text.replaceAll('"','""')+'"'};
 const searchableText=(payment:any)=>{
  const booking=payment.booking||{},job=booking.job||{},transporter=booking.transporter||{},customer=booking.customer||{};
  return [booking.id,bookingReference(booking.id),job.vehicleType,job.vehicleMake,job.vehicleModel,job.registration,job.collection,job.delivery,transporter.name,transporter.email,customer.name,customer.email].filter(Boolean).join(' ').toLowerCase();
@@ -37,6 +38,17 @@ export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:an
    .slice()
    .sort((a,b)=>eventDate(b,category)-eventDate(a,category));
  },[liveRows,category,blockedOnly,query]);
+ const exportVisible=()=>{
+  if(!displayed.length)return;
+  const headings=['Delivery reference','Payout status','Status date','Vehicle','Registration','Transporter','Transporter email','Customer','Customer email','Collection','Delivery','Total paid GBP','DriveDrop fee GBP','Transporter proceeds GBP'];
+  const data=displayed.map(payment=>{
+   const booking=payment.booking||{},job=booking.job||{},transporter=booking.transporter||{},customer=booking.customer||{},timestamp=eventDate(payment,category);
+   return [bookingReference(booking.id),category,timestamp?new Date(timestamp).toISOString():'',[job.vehicleMake,job.vehicleModel].filter(Boolean).join(' '),job.registration||'',transporter.name||'',transporter.email||'',customer.name||'',customer.email||'',job.collection||'',job.delivery||'',((payment.paidPence||0)/100).toFixed(2),((payment.platformFeePence||0)/100).toFixed(2),((payment.transporterProceedsPence||0)/100).toFixed(2)];
+  });
+  const csv=[headings,...data].map(row=>row.map(csvCell).join(',')).join('\r\n');
+  const blob=new Blob(['\uFEFF',csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),link=document.createElement('a');
+  link.href=url;link.download='drivedrop-'+category.toLowerCase()+'-payouts-'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(link);link.click();link.remove();window.setTimeout(()=>URL.revokeObjectURL(url),0);
+ };
  const selectCategory=(next:Category)=>{setCategory(next);setBlockedOnly(false)};
  const payoutReleased=(paymentId:string)=>{const releasedAt=new Date().toISOString();setReleased(current=>({...current,[paymentId]:releasedAt}));setCategory('PAID');setBlockedOnly(false);setQuery('')};
  const title=blockedOnly&&category==='READY'?'Blocked payouts':category==='READY'?'Ready for payout':category==='HELD'?'Held payouts':'Paid payouts';
@@ -61,7 +73,7 @@ export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:an
   </div>
   <div className="dashboardSectionHeading payoutResultsHeading">
    <div><span className="dashboardEyebrow dark">{eyebrow}</span><h2>{title}</h2></div>
-   <span>{displayed.length} shown · newest first</span>
+   <div className="payoutResultsActions"><span>{displayed.length} shown · newest first</span><button type="button" className="btn light payoutExportButton" onClick={exportVisible} disabled={!displayed.length}>↓ Export visible CSV</button></div>
   </div>
   <PayoutRecords rows={displayed} kind={category} emptyLabel={emptyLabel} onPayoutReleased={payoutReleased}/>
  </>;
