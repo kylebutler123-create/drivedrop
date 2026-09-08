@@ -141,6 +141,8 @@ model User {
   transporterBookings              Booking[]                 @relation("TransporterBookings")
   trackingEvents                   TrackingEvent[]           @relation("TrackingActor")
   sentMessages                     Message[]                 @relation("MessageSender")
+  supportConversation               SupportConversation?      @relation("SupportConversationUser")
+  supportMessagesSent               SupportMessage[]          @relation("SupportMessageSender")
   conversationInboxStates          ConversationInboxState[]
   uploadedEvidence                 Evidence[]                @relation("EvidenceUploader")
   reviewsWritten                   Review[]                  @relation("ReviewCustomer")
@@ -255,6 +257,32 @@ model Message {
 
   @@index([bookingId, createdAt])
   @@index([bookingId, readAt])
+  @@index([senderId])
+}
+
+model SupportConversation {
+  id        String           @id @default(cuid())
+  userId    String           @unique
+  user      User             @relation("SupportConversationUser", fields: [userId], references: [id], onDelete: Cascade)
+  messages  SupportMessage[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([updatedAt])
+}
+
+model SupportMessage {
+  id             String              @id @default(cuid())
+  conversationId String
+  conversation   SupportConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User                @relation("SupportMessageSender", fields: [senderId], references: [id])
+  body           String
+  readAt         DateTime?
+  createdAt      DateTime            @default(now())
+
+  @@index([conversationId, createdAt])
+  @@index([conversationId, readAt])
   @@index([senderId])
 }
 
