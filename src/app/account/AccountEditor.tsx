@@ -3,19 +3,19 @@
 import {useState} from 'react';
 import {useRouter} from 'next/navigation';
 
-type Props={name:string;email:string;role:string;business?:{businessName:string;companyNumber:string;businessAddress:string;phone:string;yearsOperating:number|null;website:string}|null};
+type Props={name:string;email:string;phone:string|null;role:string;business?:{businessName:string;companyNumber:string;businessAddress:string;phone:string;yearsOperating:number|null;website:string}|null};
 
-export default function AccountEditor({name,email,role,business}:Props){
+export default function AccountEditor({name,email,phone,role,business}:Props){
   const router=useRouter();
   const [editing,setEditing]=useState(false);
   const [saving,setSaving]=useState(false);
   const [notice,setNotice]=useState('');
-  const [form,setForm]=useState({name,businessName:business?.businessName||'',companyNumber:business?.companyNumber||'',businessAddress:business?.businessAddress||'',phone:business?.phone||'',yearsOperating:business?.yearsOperating?.toString()||'',website:business?.website||''});
+  const [form,setForm]=useState({name,businessName:business?.businessName||'',companyNumber:business?.companyNumber||'',businessAddress:business?.businessAddress||'',phone:role==='CUSTOMER'?(phone||''):(business?.phone||''),yearsOperating:business?.yearsOperating?.toString()||'',website:business?.website||''});
 
   async function save(){
     setSaving(true);setNotice('');
     try{
-      const personal=await fetch('/api/account',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({name:form.name})});
+      const personal=await fetch('/api/account',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({name:form.name,phone:role==='CUSTOMER'?(form.phone.trim()||null):undefined})});
       const personalBody=await personal.json();
       if(!personal.ok)throw new Error(personalBody.error||'Could not save account details');
       if(role==='TRANSPORTER'){
@@ -35,6 +35,7 @@ export default function AccountEditor({name,email,role,business}:Props){
     <div className="accountEditGrid">
       <label><span>Name</span><input value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></label>
       <label><span>Email address</span><input value={email} disabled/><small>Login email cannot be changed here.</small></label>
+      {role==='CUSTOMER'&&<label><span>Phone number</span><input type="tel" inputMode="tel" autoComplete="tel" minLength={7} maxLength={30} value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})}/></label>}
       {role==='TRANSPORTER'&&<>
         <label><span>Business name</span><input value={form.businessName} onChange={e=>setForm({...form,businessName:e.target.value})}/></label>
         <label><span>Company number</span><input value={form.companyNumber} onChange={e=>setForm({...form,companyNumber:e.target.value})}/></label>
