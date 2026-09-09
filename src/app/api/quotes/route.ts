@@ -6,7 +6,7 @@ export async function POST(r:Request){
   if(!u||u.role!=='TRANSPORTER')return NextResponse.json({error:'Transporter login required'},{status:403});
   if(u.accountStatus!=='ACTIVE'||u.workRestricted)return NextResponse.json({error:'Your transporter account is not currently permitted to quote on jobs'},{status:403});
   const insuranceToday=new Date();insuranceToday.setUTCHours(0,0,0,0);
-  const verification=await prisma.transporterVerification.findUnique({where:{transporterId:u.id},select:{status:true,documents:{where:{type:'INSURANCE',status:'APPROVED',expiresAt:{gte:insuranceToday}},select:{id:true},take:1}}});
+  const verification=await prisma.transporterVerification.findUnique({where:{transporterId:u.id},select:{status:true,documents:{where:{type:'INSURANCE',status:{notIn:['REJECTED','EXPIRED']},expiresAt:{gte:insuranceToday}},select:{id:true},take:1}}});
   if(!verification||verification.status!=='APPROVED')return NextResponse.json({error:'DriveDrop verification approval is required before you can submit quotes'},{status:403});\n  if(!verification.documents.length)return NextResponse.json({error:'Your approved insurance has expired. Upload replacement insurance and wait for DriveDrop approval before submitting new quotes'},{status:403});
   const d=await parseJson(r,S);
   const result=await prisma.$transaction(async (tx: any)=>{
