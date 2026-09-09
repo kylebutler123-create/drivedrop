@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server';
 import {currentUser} from '@/lib/auth';
 import {prisma} from '@/lib/prisma';
+import {createNotificationSafely} from '@/lib/notifications';
 import {z} from 'zod';
 
 const S=z.object({action:z.enum(['SUSPEND','REACTIVATE','RESTRICT_WORK','RESTORE_WORK','SAVE_NOTE','DELETE']),note:z.string().max(1000).optional()});
@@ -16,7 +17,16 @@ export async function PATCH(r:Request,{params}:{params:Promise<{id:string}>}){
  if((d.action==='RESTRICT_WORK'||d.action==='RESTORE_WORK')&&target.role!=='TRANSPORTER')return NextResponse.json({error:'Work restrictions only apply to transporters.'},{status:400});
  if(d.action==='SUSPEND'){await prisma.$transaction([prisma.user.update({where:{id},data:{accountStatus:'SUSPENDED',adminNote:note}}),prisma.session.deleteMany({where:{userId:id}})]);}
  if(d.action==='REACTIVATE')await prisma.user.update({where:{id},data:{accountStatus:'ACTIVE'}});
- if(d.action==='RESTRICT_WORK')await prisma.user.update({where:{id},data:{workRestricted:true,adminNote:note}});
+ if(d.action==='RESTRICT_WORK'){
+  await prisma.user.update({where:{id},data:{workRestricted:true,adminNote:note}});
+  if(!target.workRestricted)await createNotificationSafely({
+   userId:id,
+   type:'ACCOUNT',
+   title:'New work access restricted',
+   body:'DriveDrop has restricted your transporter account from accepting new transport work. You can continue managing existing deliveries. Contact DriveDrop Support through Messages if you need help.',
+   href:'/messages'
+  });
+ }
  if(d.action==='RESTORE_WORK')await prisma.user.update({where:{id},data:{workRestricted:false}});
  if(d.action==='SAVE_NOTE')await prisma.user.update({where:{id},data:{adminNote:note||null}});
  if(d.action==='DELETE'){
