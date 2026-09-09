@@ -6,6 +6,11 @@ import {z} from 'zod';
 
 const S=z.object({action:z.enum(['SUSPEND','REACTIVATE','RESTRICT_WORK','RESTORE_WORK','SAVE_NOTE','DELETE']),note:z.string().max(1000).optional()});
 
+async function supportConversationHref(userId:string){
+ const conversation=await prisma.supportConversation.upsert({where:{userId},update:{},create:{userId},select:{id:true}});
+ return `/messages?bookingId=${encodeURIComponent(`support:${conversation.id}`)}`;
+}
+
 export async function PATCH(r:Request,{params}:{params:Promise<{id:string}>}){
  const admin=await currentUser(); if(!admin||admin.role!=='ADMIN')return NextResponse.json({error:'Forbidden'},{status:403});
  const {id}=await params; if(id===admin.id)return NextResponse.json({error:'You cannot change your own administrator account here.'},{status:400});
@@ -23,11 +28,20 @@ export async function PATCH(r:Request,{params}:{params:Promise<{id:string}>}){
    userId:id,
    type:'ACCOUNT',
    title:'New work access restricted',
-   body:'DriveDrop has restricted your transporter account from accepting new transport work. You can continue managing existing deliveries. Contact DriveDrop Support through Messages if you need help.',
-   href:'/messages'
+   body:'DriveDrop has restricted your transporter account from accepting new transport work. You can continue managing existing deliveries. Contact DriveDrop Support if you need help.',
+   href:await supportConversationHref(id)
   });
  }
- if(d.action==='RESTORE_WORK')await prisma.user.update({where:{id},data:{workRestricted:false}});
+ if(d.action==='RESTORE_WORK'){
+  await prisma.user.update({where:{id},data:{workRestricted:false}});
+  if(target.workRestricted)await createNotificationSafely({
+   userId:id,
+   type:'ACCOUNT',
+   title:'New work access restored',
+   body:'DriveDrop has restored your transporter work access. You can now view available jobs and submit quotes again. Contact DriveDrop Support if you need help.',
+   href:await supportConversationHref(id)
+  });
+ }
  if(d.action==='SAVE_NOTE')await prisma.user.update({where:{id},data:{adminNote:note||null}});
  if(d.action==='DELETE'){
    const activeBookings=await prisma.booking.count({where:{OR:[{customerId:id},{transporterId:id}],status:{notIn:['DELIVERED','CANCELLED']}}});
