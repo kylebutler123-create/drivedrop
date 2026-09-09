@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 const MAX_FILE_SIZE = 4 * 1024 * 1024;
@@ -11,12 +11,15 @@ export default function Verification() {
   const [verification, setVerification] = useState<any>(null);
   const [message, setMessage] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [submittedFeedback, setSubmittedFeedback] = useState(false);
+  const submittedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   async function load() {
     const response = await fetch('/api/transporter/verification', { cache: 'no-store' });
     if (response.ok) setVerification(await response.json());
   }
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); return () => { if (submittedTimer.current) clearTimeout(submittedTimer.current); }; }, []);
 
   async function save(event: any) {
     event.preventDefault(); setMessage('');
@@ -49,15 +52,25 @@ export default function Verification() {
   }
 
   async function submit() {
-    setMessage(''); const response = await fetch('/api/transporter/verification', { method: 'POST' });
-    const body = await response.json().catch(() => ({}));
-    setMessage(response.ok ? 'Verification submitted for DriveDrop review' : body.error || 'Unable to submit verification');
-    if (response.ok) setVerification((current:any)=>current?{...current,...body,documents:current.documents}:current);
-    else await load();
+    if (submittingReview) return;
+    setMessage('');
+    setSubmittingReview(true);
+    try {
+      const response = await fetch('/api/transporter/verification', { method: 'POST' });
+      const body = await response.json().catch(() => ({}));
+      setMessage(response.ok ? 'Verification submitted for DriveDrop review' : body.error || 'Unable to submit verification');
+      if (response.ok) {
+        setVerification((current:any)=>current?{...current,...body,documents:current.documents}:current);
+        setSubmittedFeedback(true);
+        if (submittedTimer.current) clearTimeout(submittedTimer.current);
+        submittedTimer.current = setTimeout(() => setSubmittedFeedback(false), 1600);
+      } else await load();
+    } finally {
+      setSubmittingReview(false);
+    }
   }
 
   const docs = verification?.documents || [];
-  const reviewSubmitted = verification?.status === 'PENDING';
   return <main className="shell dashboardShell verificationShell">
     <Link className="backLink" href="/transporter">← Back to transporter dashboard</Link>
     <header className="dashboardHero verificationHero"><div><span className="dashboardEyebrow">Trust & compliance</span><h1>DriveDrop Verification</h1><p>Build customer confidence by keeping your business, insurance and verification documents up to date.</p></div><div className="verificationStatusCard"><span>Verification status</span><strong>{verification ? label(verification.status) : 'Loading…'}</strong><small>{docs.length} document{docs.length===1?'':'s'} uploaded</small></div></header>
@@ -66,6 +79,6 @@ export default function Verification() {
     <section className="dashboardCard verificationSection"><div className="verificationHeading"><div className="panelIcon">1</div><div><h2>Business details</h2><p>Tell customers who they are booking their vehicle transport with.</p></div></div><form onSubmit={save}><div className="grid"><div className="field"><label>BUSINESS NAME</label><input name="businessName" defaultValue={verification?.businessName || ''} required /></div><div className="field"><label>COMPANY NUMBER</label><input name="companyNumber" defaultValue={verification?.companyNumber || ''} /></div><div className="field"><label>PHONE</label><input name="phone" type="tel" inputMode="tel" autoComplete="tel" defaultValue={verification?.phone || ''} required /></div><div className="field"><label>YEARS OPERATING</label><input name="yearsOperating" type="number" inputMode="numeric" min="0" step="1" defaultValue={verification?.yearsOperating ?? ''} /></div><div className="field"><label>WEBSITE</label><input name="website" type="url" defaultValue={verification?.website || ''} /></div></div><div className="field"><label>BUSINESS ADDRESS</label><textarea name="businessAddress" rows={3} defaultValue={verification?.businessAddress || ''} required /></div><button className="btn orange">Save business details</button></form></section>
     <section className="dashboardCard verificationSection"><div className="verificationHeading"><div className="panelIcon">2</div><div><h2>Verification documents</h2><p>Upload supporting documents securely. PDF, JPG/JPEG or PNG, maximum 4 MB each.</p></div></div><form className="documentUploadForm" onSubmit={addDocument}><div className="grid"><div className="field"><label>DOCUMENT TYPE</label><select name="type"><option value="INSURANCE">Insurance</option><option value="COMPANY_REGISTRATION">Company registration</option><option value="IDENTITY">Identity</option><option value="OPERATOR_LICENCE">Operator licence</option><option value="OTHER">Other</option></select></div><div className="field fileField"><label>UPLOAD DOCUMENT</label><input name="file" type="file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" required /></div><div className="field"><label>INSURER</label><input name="insurer" /></div><div className="field"><label>POLICY / REFERENCE</label><input name="policyNumber" /></div><div className="field"><label>EXPIRY DATE</label><input name="expiresAt" type="date" /></div></div><button className="btn orange" disabled={uploading}>{uploading ? 'Uploading securely…' : 'Upload secure document'}</button></form>
     <div className="documentList">{docs.length===0?<div className="emptyDocuments"><span>📄</span><div><b>No verification documents yet</b><p>Upload your first document above.</p></div></div>:docs.map((document:any)=>{const documentStatus=document.expiresAt&&new Date(document.expiresAt)<new Date()?'EXPIRED':document.status;return <a className="documentRow" key={document.id} href={`/api/verification-documents/${document.id}`} target="_blank" rel="noreferrer"><div className="documentIcon">📄</div><div><b>{label(document.type)}</b><span>{document.insurer || document.policyNumber || 'Secure verification document'}</span>{document.expiresAt&&<small>Expires {new Date(document.expiresAt).toLocaleDateString('en-GB')}</small>}</div><span className="statusPill">{label(documentStatus)}</span><strong>View →</strong></a>})}</div>
-    {docs.length>0 && verification.status!=='APPROVED' && <div className="submitReviewPanel"><div><b>Ready for review?</b><p>When your details and documents are complete, submit them to DriveDrop.</p></div><button className="btn orange" onClick={submit} disabled={uploading||reviewSubmitted}>{reviewSubmitted?'Submitted':'Submit for DriveDrop review'}</button></div>}</section>
+    {docs.length>0 && verification.status!=='APPROVED' && <div className="submitReviewPanel"><div><b>Ready for review?</b><p>When your details and documents are complete, submit them to DriveDrop.</p></div><button type="button" className="btn orange" onClick={submit} disabled={uploading||submittingReview}>{submittedFeedback?'Submitted':submittingReview?'Submitting…':'Submit documents'}</button></div>}</section>
   </main>;
 }
