@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 type Notification={id:string;type:string;title:string;body:string;href:string|null;readAt:string|null;createdAt:string};
 const icon=(type:string)=>type==='QUOTE'?'£':type==='BOOKING'?'✓':type==='PAYMENT'?'£':type==='DELIVERY'?'🚗':type==='MESSAGE'?'💬':type==='DISPUTE'?'!':type==='REVIEW'?'★':type==='VERIFICATION'?'🛡️':'🔔';
-const destination=(n:Notification)=>n.type==='QUOTE'?'/customer?view=quotes#quote-requests':n.type==='BOOKING'?'/transporter?view=deliveries':n.type==='PAYMENT'?(n.title==='Payout released'?(n.href?.startsWith('/transporter?view=completed')?n.href:'/transporter?view=completed'):n.href||'/transporter?view=deliveries'):n.type==='DELIVERY'?'/customer?view=bookings':n.type==='MESSAGE'?'/messages':n.href;
+const destination=(n:Notification)=>n.type==='QUOTE'?'/customer?view=quotes#quote-requests':n.type==='BOOKING'?'/transporter?view=deliveries':n.type==='PAYMENT'?(n.title==='Payout released'?(n.href?.startsWith('/transporter?view=completed')?n.href:'/transporter?view=completed'):n.href||'/transporter?view=deliveries'):n.type==='DELIVERY'?'/customer?view=bookings':n.type==='MESSAGE'?'/messages':n.type==='VERIFICATION'?null:n.href;
 const tone=(type:string)=>type==='DISPUTE'?'danger':type==='PAYMENT'||type==='QUOTE'?'finance':type==='VERIFICATION'?'compliance':type==='DELIVERY'||type==='BOOKING'?'delivery':'standard';
 
 export default function NotificationsPage(){

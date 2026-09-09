@@ -7,8 +7,8 @@ import {z} from 'zod';
 const S=z.object({verificationId:z.string(),status:z.enum(['APPROVED','REJECTED','SUSPENDED']),reviewNote:z.string().max(1000).optional()});
 const notificationCopy={
  APPROVED:{title:'Verification approved',body:'DriveDrop has approved your transporter verification. Your verified status is now active.'},
- REJECTED:{title:'Verification requires changes',body:'DriveDrop has reviewed your transporter verification and changes are required. Open Verification & Insurance to read the review note and update your details or documents.'},
- SUSPENDED:{title:'Verification suspended',body:'DriveDrop has suspended your transporter verification. Open Verification & Insurance to review your current status and the Admin review note.'}
+ REJECTED:{title:'Verification requires changes',body:'DriveDrop has reviewed your transporter verification and changes are required. Review the Admin note before updating your details or documents.'},
+ SUSPENDED:{title:'Verification suspended',body:'DriveDrop has suspended your transporter verification.'}
 } as const;
 
 export async function GET(){
@@ -27,7 +27,7 @@ export async function PATCH(r:Request){
  const updated=await prisma.transporterVerification.update({where:{id:x.data.verificationId},data:{status:x.data.status,reviewNote:x.data.reviewNote,reviewedAt:new Date(),reviewerId:u.id}});
  if(current.status!==x.data.status){
   const copy=notificationCopy[x.data.status];
-  await createNotificationSafely({userId:current.transporterId,type:'VERIFICATION',title:copy.title,body:copy.body,href:'/transporter/verification'});
+  await createNotificationSafely({userId:current.transporterId,type:'VERIFICATION',title:copy.title,body:copy.body});
  }
  return NextResponse.json(updated);
 }
