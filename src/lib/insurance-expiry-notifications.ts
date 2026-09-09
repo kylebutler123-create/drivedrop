@@ -4,6 +4,8 @@ type InsuranceDocument={
  id:string;
  expiresAt:Date;
  transporterId:string;
+ businessName:string;
+ transporterName:string;
 };
 
 type WarningStage='30-day'|'7-day'|'expired';
@@ -43,10 +45,14 @@ export async function sendInsuranceExpiryNotifications(today=new Date()){
   SELECT DISTINCT ON (document."verificationId")
    document."id",
    document."expiresAt",
-   verification."transporterId"
+   verification."transporterId",
+   verification."businessName",
+   transporter."name" AS "transporterName"
   FROM "VerificationDocument" document
   INNER JOIN "TransporterVerification" verification
    ON verification."id"=document."verificationId"
+  INNER JOIN "User" transporter
+   ON transporter."id"=verification."transporterId"
   WHERE document."type"='INSURANCE'
    AND document."status"<>'REJECTED'
    AND document."expiresAt" IS NOT NULL
@@ -69,8 +75,36 @@ export async function sendInsuranceExpiryNotifications(today=new Date()){
    NULL,
    NOW()
   )
-  ON CONFLICT ("id") DO NOTHING
+ ON CONFLICT ("id") DO NOTHING
  `));
 
- return {checked:documents.length,due:due.length,created:inserted.reduce((sum,count)=>sum+count,0)};
+ const expired=due.filter(item=>item.stage==='expired');
+ const admins=expired.length?await prisma.user.findMany({
+  where:{role:'ADMIN',accountStatus:'ACTIVE'},
+  select:{id:true},
+ }):[];
+ const adminInserted=await Promise.all(expired.flatMap(({document})=>{
+  const date=document.expiresAt.toLocaleDateString('en-GB',{timeZone:'UTC'});
+  const transporter=document.businessName.trim()||document.transporterName.trim()||'A transporter';
+  return admins.map(admin=>prisma.$executeRaw`
+   INSERT INTO "Notification" ("id","userId","type","title","body","href","createdAt")
+   VALUES (
+    ${`insurance-expiry-admin:${document.id}:${admin.id}`},
+    ${admin.id},
+    'ACCOUNT',
+    'Transporter insurance expired',
+    ${`${transporter}'s insurance expired on ${date}. New quote submissions are blocked until replacement insurance is approved.`},
+    '/admin',
+    NOW()
+   )
+   ON CONFLICT ("id") DO NOTHING
+  `);
+ }));
+
+ return {
+  checked:documents.length,
+  due:due.length,
+  created:inserted.reduce((sum,count)=>sum+count,0),
+  adminCreated:adminInserted.reduce((sum,count)=>sum+count,0),
+ };
 }
