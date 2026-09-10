@@ -22,13 +22,14 @@ export async function PATCH(r:Request){
  if(!u||u.role!=='ADMIN')return NextResponse.json({error:'Admin access required'},{status:403});
  const x=S.safeParse(await r.json());
  if(!x.success)return NextResponse.json({error:'Invalid review'},{status:400});
- const current=await prisma.transporterVerification.findUnique({where:{id:x.data.verificationId},include:{documents:{select:{type:true,status:true,expiresAt:true}}}});
+ const current=await prisma.transporterVerification.findUnique({where:{id:x.data.verificationId},include:{documents:{orderBy:{createdAt:'desc'},select:{type:true,status:true,expiresAt:true}}}});
  if(!current)return NextResponse.json({error:'Verification record not found'},{status:404});
  const now=new Date();
  const insuranceToday=new Date(now);insuranceToday.setUTCHours(0,0,0,0);
  if(x.data.status==='APPROVED'){
-  const currentInsurance=current.documents.some(document=>document.type==='INSURANCE'&&['PENDING','APPROVED'].includes(document.status)&&document.expiresAt&&document.expiresAt>=insuranceToday);
-  if(!currentInsurance)return NextResponse.json({error:'A current insurance document with a future expiry date is required before approval'},{status:400});
+  const latestInsurance=current.documents.find(document=>document.type==='INSURANCE'&&document.status!=='REJECTED');
+  const currentInsurance=latestInsurance&&['PENDING','APPROVED'].includes(latestInsurance.status)&&latestInsurance.expiresAt&&latestInsurance.expiresAt>=insuranceToday;
+  if(!currentInsurance)return NextResponse.json({error:'Replacement insurance is required. The newest insurance document must have a current or future expiry date before approval.'},{status:400});
  }
  const updated=await prisma.$transaction(async(tx:any)=>{
   await tx.verificationDocument.updateMany({where:{verificationId:current.id,status:{not:'REJECTED'},expiresAt:{lt:insuranceToday}},data:{status:'EXPIRED',reviewerId:u.id,reviewedAt:now}});
