@@ -16,7 +16,8 @@ const eventDate=(payment:any,category:Category)=>{
  const event=eventType?payment.events?.find((item:any)=>item.type===eventType):null;
  return new Date(event?.createdAt||payment.updatedAt||payment.createdAt||0).getTime();
 };
-const rowsForCategory=(rows:any[],category:Category)=>rows.filter(row=>category==='BLOCKED'?row.payoutStatus==='READY'&&!row.payoutDetailsComplete:category==='READY'?row.payoutStatus==='READY'&&row.payoutDetailsComplete:row.payoutStatus===category);
+const matchesCategory=(row:any,category:Category)=>category==='BLOCKED'?row.payoutStatus==='READY'&&!row.payoutDetailsComplete:category==='READY'?row.payoutStatus==='READY'&&row.payoutDetailsComplete:row.payoutStatus===category;
+const rowsForCategory=(rows:any[],category:Category)=>rows.filter(row=>matchesCategory(row,category));
 const csvCell=(value:unknown)=>{let text=String(value??'');if(/^[=+\-@]/.test(text))text="'"+text;return '"'+text.replaceAll('"','""')+'"'};
 const searchableText=(payment:any)=>{
  const booking=payment.booking||{},job=booking.job||{},transporter=booking.transporter||{},customer=booking.customer||{};
@@ -33,7 +34,7 @@ export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:an
  const displayed=useMemo(()=>{
   const term=query.trim().toLowerCase();
   return liveRows
-   .filter(row=>rowsForCategory([row],category).length>0)
+   .filter(row=>matchesCategory(row,category))
    .filter(row=>!term||searchableText(row).includes(term))
    .slice()
    .sort((a,b)=>eventDate(b,category)-eventDate(a,category));
