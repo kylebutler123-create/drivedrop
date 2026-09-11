@@ -361,20 +361,46 @@ body:has(.homePage) > .guestTop .nav{display:none;}
     background:linear-gradient(180deg,rgba(4,18,37,.76) 0%,rgba(4,18,37,.62) 31%,rgba(4,18,37,.92) 58%,#061a35 100%);
   }
   .homePage .visualHeroInner{
-    padding:94px 15px 22px;
-    gap:18px;
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    padding:94px 12px 22px;
+    grid-template-columns:minmax(0,1fr);
+    gap:16px;
   }
-  .homePage .marketHeroCopy h1{font-size:34px;max-width:340px;margin:8px 0 11px;}
-  .homePage .marketHeroCopy p{font-size:14px;line-height:1.45;max-width:350px;}
+  .homePage .marketHeroCopy{
+    width:100%;
+    min-width:0;
+    padding:0 3px;
+  }
+  .homePage .marketHeroCopy h1{max-width:330px;margin:8px 0 11px;font-size:31px;line-height:1.06;overflow-wrap:break-word;}
+  .homePage .marketHeroCopy p{max-width:350px;margin:0;font-size:13px;line-height:1.45;}
   .homePage .heroBubbles{margin-top:15px;gap:5px;}
   .homePage .heroBubbles span{padding:6px 8px;font-size:10px;}
-  .homePage .quotePanel{max-width:none;padding:18px;border-radius:16px;}
-  .homePage .quotePanelHeader strong{font-size:18px;}
+  .homePage .quotePanel{
+    width:100%;
+    max-width:calc(100vw - 24px);
+    min-width:0;
+    margin:0 auto;
+    padding:16px;
+    justify-self:stretch;
+    border-radius:16px;
+  }
+  .homePage .quotePanelHeader{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    gap:3px;
+    margin-bottom:8px;
+  }
+  .homePage .quotePanelHeader strong{font-size:17px;line-height:1.2;}
   .homePage .quotePanelHeader span{font-size:10px;}
-  .homePage .quoteGrid{grid-template-columns:1fr;gap:0;}
+  .homePage .quoteForm,
+  .homePage .quoteGrid,
+  .homePage .quoteGrid > div{width:100%;min-width:0;}
+  .homePage .quoteGrid{grid-template-columns:minmax(0,1fr);gap:0;}
   .homePage .quoteForm input,
-  .homePage .quoteForm select{padding:11px 12px;}
-  .homePage .quoteCta{width:100%;}
+  .homePage .quoteForm select{width:100%;max-width:100%;min-width:0;padding:11px 12px;}
+  .homePage .quoteCta{width:100%;max-width:100%;}
 
   .homePage .bubbleGrid{grid-template-columns:1fr 1fr;padding:9px 12px;}
   .homePage .featureBubble{
