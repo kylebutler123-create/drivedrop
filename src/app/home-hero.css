@@ -72,7 +72,7 @@ body:has(.visualHero) .visualHeroInner{padding-top:150px;}
   .top .nav > a:not(.btn){font-size:11px;white-space:nowrap;}
   .top .nav .btn{font-size:11px;padding:7px 9px;white-space:nowrap;}
   .photoSplit{padding:28px 0;}
-  .photoSplit .splitPhoto{aspect-ratio:7/5;border-radius:18px;background-size:cover;background-position:center;}
-  .photoBanner{width:calc(100% - 32px);margin:28px auto;aspect-ratio:7/5;background-size:cover;background-position:center;border-radius:18px;}
+  .photoSplit .splitPhoto{width:100vw;margin-left:50%;transform:translateX(-50%);aspect-ratio:7/5;border-radius:0;background-size:cover;background-position:center;}
+  .photoBanner{width:100%;margin:28px 0;aspect-ratio:7/5;background-size:cover;background-position:center;border-radius:0;}
   .siteFooter .footerLegal p{font-size:11px;}
 }
