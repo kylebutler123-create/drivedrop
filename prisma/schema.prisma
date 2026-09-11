@@ -32,6 +32,7 @@ enum QuoteStatus {
   ACCEPTED
   DECLINED
   EXPIRED
+  WITHDRAWN
 }
 
 enum DateNegotiationStatus {
