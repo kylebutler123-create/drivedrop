@@ -35,7 +35,7 @@ export default function TransporterCancelDeliveryEnhancer(){
       button.addEventListener('click',async()=>{
         const reason=window.prompt('Reason for cancelling this delivery:')?.trim();
         if(!reason)return;
-        if(!window.confirm('Cancel this delivery? The customer request will be reopened for new quotes.'))return;
+        if(!window.confirm('Cancel this delivery? The customer request will be reopened for new quotes. A £25 cancellation fine will be automatically deducted from your next completed job payout.'))return;
         button.disabled=true;
         button.textContent='Cancelling…';
         try{
