@@ -308,6 +308,7 @@ body:has(.homePage) > .guestTop{
 .homePage .reviewCustomer{
   display:flex;
   align-items:center;
+  justify-content:center;
   gap:11px;
   margin:0 0 16px;
 }
