@@ -14,7 +14,11 @@ const notificationCopy={
 export async function GET(){
  const u=await currentUser();
  if(!u||u.role!=='ADMIN')return NextResponse.json({error:'Admin access required'},{status:403});
- return NextResponse.json(await prisma.transporterVerification.findMany({include:{transporter:{select:{name:true,email:true,accountStatus:true,workRestricted:true}},documents:{orderBy:{createdAt:'desc'}}},orderBy:[{status:'asc'},{submittedAt:'desc'}]}));
+ const transporters=await prisma.user.findMany({where:{role:'TRANSPORTER'},select:{id:true,name:true,email:true,accountStatus:true,workRestricted:true,transporterVerification:{include:{documents:{orderBy:{createdAt:'desc'}}}}},orderBy:{createdAt:'desc'}});
+ const rows=transporters.map(transporter=>transporter.transporterVerification?{...transporter.transporterVerification,transporter:{id:transporter.id,name:transporter.name,email:transporter.email,accountStatus:transporter.accountStatus,workRestricted:transporter.workRestricted}}:{id:`not-started:${transporter.id}`,status:'NOT_STARTED',businessName:'Not provided',companyNumber:null,phone:null,yearsOperating:null,website:null,businessAddress:null,submittedAt:null,reviewedAt:null,reviewNote:null,documents:[],transporter:{id:transporter.id,name:transporter.name,email:transporter.email,accountStatus:transporter.accountStatus,workRestricted:transporter.workRestricted}});
+ const order:Record<string,number>={PENDING:0,SUSPENDED:1,REJECTED:2,APPROVED:3,NOT_STARTED:4};
+ rows.sort((a:any,b:any)=>(order[a.status]??9)-(order[b.status]??9));
+ return NextResponse.json(rows);
 }
 
 export async function PATCH(r:Request){
