@@ -152,41 +152,53 @@
   }
   .loginPage.transporterLogin .authCard{
     max-width:432px;
-    padding:23px 26px;
+    padding:18px 24px;
+  }
+  .loginPage.transporterLogin .backLink{
+    font-size:11px;
   }
   .loginPage.transporterLogin .authHeading{
-    margin:17px 0 12px;
+    margin:12px 0 8px;
   }
   .loginPage.transporterLogin .authHeading h2{
-    margin:6px 0;
-    font-size:29px;
+    margin:4px 0;
+    font-size:27px;
+  }
+  .loginPage.transporterLogin .authHeading p{
+    font-size:12px;
+    line-height:1.4;
   }
   .loginPage.transporterLogin .accountSwitch{
-    margin:13px 0 12px;
+    margin:9px 0 8px;
+    padding:3px;
   }
   .loginPage.transporterLogin .accountSwitch a{
-    padding:8px 11px;
+    padding:7px 10px;
   }
   .loginPage.transporterLogin .field{
-    margin:11px 0;
+    margin:8px 0;
+  }
+  .loginPage.transporterLogin .field label{
+    margin-bottom:4px;
   }
   .loginPage.transporterLogin .authCard input{
-    padding:12px;
+    padding:11px 12px;
   }
   .loginPage.transporterLogin .authSubmit{
-    min-height:43px;
-    padding:12px 18px;
-    margin-top:5px;
+    min-height:40px;
+    padding:10px 17px;
+    margin-top:3px;
   }
   .loginPage.transporterLogin .authDivider{
-    margin:16px 0 11px;
+    margin:11px 0 8px;
   }
   .loginPage.transporterLogin .authSecondary{
-    min-height:40px;
-    padding:10px 14px;
+    min-height:38px;
+    padding:9px 13px;
   }
   .loginPage.transporterLogin .authFootnote{
-    margin-top:10px;
+    margin-top:7px;
+    font-size:9px;
   }
 }
 
