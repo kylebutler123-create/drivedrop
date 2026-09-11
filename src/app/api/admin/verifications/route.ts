@@ -31,8 +31,8 @@ export async function PATCH(r:Request){
  const now=new Date();
  const insuranceToday=new Date(now);insuranceToday.setUTCHours(0,0,0,0);
  if(x.data.status==='APPROVED'){
-  const latestInsurance=current.documents.find(document=>document.type==='INSURANCE'&&document.status!=='REJECTED');
-  const currentInsurance=latestInsurance&&['PENDING','APPROVED'].includes(latestInsurance.status)&&latestInsurance.expiresAt&&latestInsurance.expiresAt>=insuranceToday;
+  const latestInsurance=current.documents.find(document=>document.type==='INSURANCE'&&document.status!=='REJECTED'&&document.expiresAt);
+  const currentInsurance=latestInsurance&&['PENDING','APPROVED'].includes(latestInsurance.status)&&latestInsurance.expiresAt>=insuranceToday;
   if(!currentInsurance)return NextResponse.json({error:'Replacement insurance is required. The newest insurance document must have a current or future expiry date before approval.'},{status:400});
  }
  const updated=await prisma.$transaction(async(tx:any)=>{
