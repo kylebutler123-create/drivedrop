@@ -309,8 +309,7 @@ body:has(.homePage) > .guestTop{
   display:flex;
   align-items:center;
   gap:11px;
-  margin-top:auto;
-  padding-top:17px;
+  margin:0 0 16px;
 }
 .homePage .reviewAvatar{
   width:46px;
