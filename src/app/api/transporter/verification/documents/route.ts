@@ -66,25 +66,16 @@ export async function POST(request: Request) {
   try {
     await uploadVerificationFile(storagePath, file);
     const replacementForApprovedAccount = verification.status === 'APPROVED';
-    const document = await prisma.$transaction(async (tx: any) => {
-      const created = await tx.verificationDocument.create({
-        data: {
-          verificationId: verification.id,
-          uploaderId: user.id,
-          type: parsed.data.type,
-          documentUrl: storagePath,
-          policyNumber: parsed.data.policyNumber,
-          insurer: parsed.data.insurer,
-          expiresAt: expiryDate,
-        },
-      });
-      if (replacementForApprovedAccount) {
-        await tx.transporterVerification.update({
-          where: { id: verification.id },
-          data: { status: 'PENDING', submittedAt: new Date(), reviewedAt: null, reviewerId: null, reviewNote: null },
-        });
-      }
-      return created;
+    const document = await prisma.verificationDocument.create({
+      data: {
+        verificationId: verification.id,
+        uploaderId: user.id,
+        type: parsed.data.type,
+        documentUrl: storagePath,
+        policyNumber: parsed.data.policyNumber,
+        insurer: parsed.data.insurer,
+        expiresAt: expiryDate,
+      },
     });
     if (replacementForApprovedAccount) {
       await notifyAdminsSafely({
