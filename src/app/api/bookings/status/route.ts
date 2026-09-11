@@ -28,17 +28,28 @@ export async function PATCH(r:Request){
       const booking=await tx.booking.update({where:{id:b.id},data:{status:d.status}});
       const event=await tx.trackingEvent.create({data:{bookingId:b.id,status:d.status,note:d.note,actorId:u.id}});
       let cancellationFeeCreated=false;
+      let automaticRefundPence=0;
       if(d.status==='CANCELLED'){
         await tx.transportJob.update({where:{id:b.jobId},data:{status:'OPEN'}});
         await tx.quote.updateMany({where:{jobId:b.jobId},data:{status:'PENDING'}});
         if(b.payment){
-          await tx.bookingPayment.update({where:{id:b.payment.id},data:b.payment.paidPence>0?{payoutStatus:'HELD'}:{status:'CANCELLED',payoutStatus:'CANCELLED'}});
+          const refundablePence=Math.max(0,b.payment.paidPence-b.payment.refundedPence);
+          if(u.role==='TRANSPORTER'&&refundablePence>0){
+            if(b.payment.provider!=='TEST')throw new Error('Automatic refunds are not configured for this payment provider');
+            automaticRefundPence=refundablePence;
+            await tx.bookingPayment.update({where:{id:b.payment.id},data:{refundedPence:b.payment.paidPence,status:'REFUNDED',payoutStatus:'CANCELLED',platformFeePence:0,transporterProceedsPence:0}});
+            await tx.financeEvent.create({data:{paymentId:b.payment.id,type:'REFUND_CREATED',amountPence:refundablePence,actorId:u.id,note:'Automatic full refund after transporter cancellation'}});
+          }else if(u.role==='TRANSPORTER'){
+            await tx.bookingPayment.update({where:{id:b.payment.id},data:b.payment.paidPence>0?{status:'REFUNDED',payoutStatus:'CANCELLED',platformFeePence:0,transporterProceedsPence:0}:{status:'CANCELLED',payoutStatus:'CANCELLED'}});
+          }else{
+            await tx.bookingPayment.update({where:{id:b.payment.id},data:b.payment.paidPence>0?{payoutStatus:'HELD'}:{status:'CANCELLED',payoutStatus:'CANCELLED'}});
+          }
         }
         if(u.role==='TRANSPORTER'){
           cancellationFeeCreated=(await recordTransporterCancellationFee(tx,b.transporterId,b.id))>0;
         }
       }
-      return {booking,event,before:b,cancellationFeeCreated};
+      return {booking,event,before:b,cancellationFeeCreated,automaticRefundPence};
     });
     const b=result.before;
     const vehicle=[b.job.vehicleYear,b.job.vehicleMake,b.job.vehicleModel].filter(Boolean).join(' ').replace(/\s+/g,' ').trim()||'vehicle';
@@ -50,9 +61,12 @@ export async function PATCH(r:Request){
     if(d.status==='CANCELLED'&&u.role==='TRANSPORTER'&&result.cancellationFeeCreated){
       await createNotificationSafely({userId:b.transporterId,type:'PAYMENT',title:'£25 cancellation fine recorded',body:`A £${(CANCELLATION_FEE_PENCE/100).toFixed(0)} cancellation fine has been added and will be automatically deducted from your next completed job payout.`,href:'/transporter'});
     }
-    if(d.status==='CANCELLED'){
-      await sendTransactionalEmailSafely({to:b.customer.email,subject:`Your ${vehicle} delivery has been reopened`,heading:'Transporter cancelled — your request is open again',preheader:`Your DriveDrop transport request is available for new quotes again.`,body:`Hi ${b.customer.name?.trim()||'there'},\n\n${transporter} has cancelled the booking for your ${vehicle}.\n\nYour transport request has automatically been reopened so verified transporters can quote again.${d.note?`\n\nCancellation reason: ${d.note}`:''}`,ctaLabel:'View your request',ctaPath:'/customer',});
+    if(d.status==='CANCELLED'&&result.automaticRefundPence>0){
+      await createNotificationSafely({userId:b.customerId,type:'PAYMENT',title:'Payment automatically refunded',body:`Your £${(result.automaticRefundPence/100).toFixed(2)} payment for the ${vehicle} has been refunded because the transporter cancelled the delivery.`,href:'/customer'});
     }
-    return NextResponse.json({booking:result.booking,event:result.event});
+    if(d.status==='CANCELLED'){
+      await sendTransactionalEmailSafely({to:b.customer.email,subject:result.automaticRefundPence>0?`Your ${vehicle} delivery was cancelled and refunded`:`Your ${vehicle} delivery has been reopened`,heading:result.automaticRefundPence>0?'Transporter cancelled — payment automatically refunded':'Transporter cancelled — your request is open again',preheader:result.automaticRefundPence>0?`Your payment has been refunded and your DriveDrop request is open again.`:`Your DriveDrop transport request is available for new quotes again.`,body:`Hi ${b.customer.name?.trim()||'there'},\n\n${transporter} has cancelled the booking for your ${vehicle}.${result.automaticRefundPence>0?`\n\nYour payment of £${(result.automaticRefundPence/100).toFixed(2)} has been automatically refunded.`:''}\n\nYour transport request has automatically been reopened so verified transporters can quote again.${d.note?`\n\nCancellation reason: ${d.note}`:''}`,ctaLabel:'View your request',ctaPath:'/customer',});
+    }
+    return NextResponse.json({booking:result.booking,event:result.event,automaticRefundPence:result.automaticRefundPence});
   }catch(e:any){return NextResponse.json({error:e.message||'Unable to update delivery'},{status:400})}
 }
