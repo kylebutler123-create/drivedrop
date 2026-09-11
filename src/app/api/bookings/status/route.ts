@@ -22,7 +22,6 @@ export async function PATCH(r:Request){
       if(u.role==='TRANSPORTER'&&b.transporterId!==u.id) throw new Error('Forbidden');
       if(!allowed[b.status]?.includes(d.status)) throw new Error(`Cannot move booking from ${b.status} to ${d.status}`);
       if(d.status==='CANCELLED'&&u.role==='TRANSPORTER'){
-        if(b.payment?.paidPence>0) throw new Error('A paid booking cannot be cancelled directly by the transporter. Please report the problem to DriveDrop for review.');
         if(!d.note?.trim()) throw new Error('Please provide a cancellation reason');
       }
       if(paymentRequiredStatuses.has(d.status)&&(!b.payment||b.payment.status!=='PAID'||b.payment.paidPence<b.payment.depositPence)) throw new Error('Customer payment must be secured before vehicle collection can begin');
