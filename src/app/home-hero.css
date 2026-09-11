@@ -34,13 +34,22 @@ body:has(.homePage, .loginPage) > .guestTop .btn{
 }
 body:has(.homePage, .loginPage) > .guestTop .nav{display:none;}
 
-/* The homepage navigation overlays its hero; login navigation remains solid. */
+/* The homepage and desktop transporter login place navigation over their imagery. */
 body:has(.homePage) > .guestTop{
   position:absolute;
   inset:0 0 auto;
   z-index:20;
   background:linear-gradient(180deg,rgba(4,18,37,.82),rgba(4,18,37,.3) 72%,transparent);
   border-bottom:0;
+}
+@media(min-width:761px){
+  body:has(.transporterLogin) > .guestTop{
+    position:absolute;
+    inset:0 0 auto;
+    z-index:20;
+    background:linear-gradient(180deg,rgba(4,18,37,.86),rgba(4,18,37,.34) 72%,transparent);
+    border-bottom:0;
+  }
 }
 
 .homePage{
