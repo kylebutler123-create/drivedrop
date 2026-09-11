@@ -14,7 +14,7 @@ export async function GET(){
  const jobs=await prisma.transportJob.findMany({
   where:{customerId:u.id,status:{in:['OPEN','QUOTED']},createdAt:{gte:quoteRequestExpiryCutoff()}},
   include:{
-   quotes:{include:{transporter:{select:{
+   quotes:{where:{status:'PENDING'},include:{transporter:{select:{
     id:true,
     name:true,
     createdAt:true,
