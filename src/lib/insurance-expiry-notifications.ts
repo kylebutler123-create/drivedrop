@@ -1,14 +1,29 @@
 import {prisma} from '@/lib/prisma';
 
-type InsuranceDocument={
+type InsuranceDocumentSnapshot={
  id:string;
- expiresAt:Date;
- transporterId:string;
- businessName:string;
- transporterName:string;
+ type:string;
+ status:string;
+ expiresAt:Date|null;
+ createdAt:Date;
 };
 
-type WarningStage='30-day'|'7-day'|'expired';
+type VerificationSnapshot={
+ id:string;
+ status:string;
+ reviewedAt:Date|null;
+ documents:InsuranceDocumentSnapshot[];
+};
+
+export type TransporterInsuranceStatus={
+ state:'VALID'|'EXPIRING'|'EXPIRED'|'MISSING';
+ expiresAt:Date|null;
+ daysRemaining:number|null;
+ documentId:string|null;
+ replacementPending:boolean;
+};
+
+type WarningStage='missing'|'30-day'|'7-day'|'expired';
 
 const DAY_MS=24*60*60*1000;
 
@@ -16,7 +31,7 @@ function utcDay(value:Date){
  return Date.UTC(value.getUTCFullYear(),value.getUTCMonth(),value.getUTCDate());
 }
 
-export function insuranceWarningStage(expiresAt:Date,today=new Date()):WarningStage|null{
+export function insuranceWarningStage(expiresAt:Date,today=new Date()):Exclude<WarningStage,'missing'>|null{
  const daysRemaining=Math.round((utcDay(expiresAt)-utcDay(today))/DAY_MS);
  if(daysRemaining<0)return 'expired';
  if(daysRemaining<=7)return '7-day';
@@ -24,77 +39,134 @@ export function insuranceWarningStage(expiresAt:Date,today=new Date()):WarningSt
  return null;
 }
 
-function notificationCopy(stage:WarningStage,expiresAt:Date){
- const date=expiresAt.toLocaleDateString('en-GB',{timeZone:'UTC'});
- if(stage==='expired')return {
-  title:'Insurance has expired',
-  body:`Your insurance expired on ${date}. New quote submissions are blocked until replacement insurance is uploaded and approved. Active deliveries are unaffected.`,
- };
- if(stage==='7-day')return {
-  title:'Insurance expires within 7 days',
-  body:`Your latest insurance document expires on ${date}. Upload replacement insurance now to avoid losing access to new quotes.`,
- };
+export function insuranceStatusForVerification(verification:VerificationSnapshot|null,today=new Date()):TransporterInsuranceStatus{
+ if(!verification)return {state:'MISSING',expiresAt:null,daysRemaining:null,documentId:null,replacementPending:false};
+ const reviewedAt=verification.reviewedAt?.getTime()??null;
+ const insurance=verification.documents
+  .filter(document=>document.type==='INSURANCE'&&document.status!=='REJECTED')
+  .sort((a,b)=>b.createdAt.getTime()-a.createdAt.getTime());
+ const isEffectivelyApproved=(document:InsuranceDocumentSnapshot)=>
+  document.status==='APPROVED'||
+  (verification.status==='APPROVED'&&document.status==='PENDING'&&reviewedAt!==null&&document.createdAt.getTime()<=reviewedAt);
+ const approvedInsurance=insurance.find(document=>isEffectivelyApproved(document)&&document.expiresAt);
+ const replacementPending=insurance.some(document=>document.status==='PENDING'&&(reviewedAt===null||document.createdAt.getTime()>reviewedAt));
+ if(!approvedInsurance?.expiresAt)return {state:'MISSING',expiresAt:null,daysRemaining:null,documentId:null,replacementPending};
+ const daysRemaining=Math.round((utcDay(approvedInsurance.expiresAt)-utcDay(today))/DAY_MS);
  return {
-  title:'Insurance expires within 30 days',
-  body:`Your latest insurance document expires on ${date}. Upload replacement insurance early to avoid losing access to new quotes.`,
+  state:daysRemaining<0?'EXPIRED':daysRemaining<=30?'EXPIRING':'VALID',
+  expiresAt:approvedInsurance.expiresAt,
+  daysRemaining,
+  documentId:approvedInsurance.id,
+  replacementPending,
  };
 }
 
-export async function sendInsuranceExpiryNotifications(today=new Date()){
- const documents=await prisma.$queryRaw<InsuranceDocument[]>`
-  SELECT DISTINCT ON (document."verificationId")
-   document."id",
-   document."expiresAt",
-   verification."transporterId",
-   verification."businessName",
-   transporter."name" AS "transporterName"
-  FROM "VerificationDocument" document
-  INNER JOIN "TransporterVerification" verification
-   ON verification."id"=document."verificationId"
-  INNER JOIN "User" transporter
-   ON transporter."id"=verification."transporterId"
-  WHERE document."type"='INSURANCE'
-   AND document."status"<>'REJECTED'
-   AND document."expiresAt" IS NOT NULL
-  ORDER BY document."verificationId",document."createdAt" DESC,document."id" DESC
- `;
+function warningStage(status:TransporterInsuranceStatus):WarningStage|null{
+ if(status.state==='MISSING')return 'missing';
+ if(status.state==='EXPIRED')return 'expired';
+ if(status.state==='EXPIRING'&&status.daysRemaining!==null)return status.daysRemaining<=7?'7-day':'30-day';
+ return null;
+}
 
- const due=documents.flatMap(document=>{
-  const stage=insuranceWarningStage(document.expiresAt,today);
-  return stage?[{document,stage,copy:notificationCopy(stage,document.expiresAt)}]:[];
- });
+function notificationCopy(stage:WarningStage,expiresAt:Date|null,replacementPending=false){
+ const date=expiresAt?.toLocaleDateString('en-GB',{timeZone:'UTC'});
+ const pending=replacementPending?' Your uploaded replacement is awaiting DriveDrop approval.':'';
+ if(stage==='missing')return {
+  title:'Replacement insurance required',
+  body:`There is no valid approved insurance on your account.${pending} New quote submissions are blocked until replacement insurance is approved. Active deliveries are unaffected.`,
+ };
+ if(stage==='expired')return {
+  title:'Replacement insurance required',
+  body:`Your insurance expired on ${date}.${pending} New quote submissions are blocked until replacement insurance is approved. Active deliveries are unaffected.`,
+ };
+ if(stage==='7-day')return {
+  title:'Insurance expires within 7 days',
+  body:`Your approved insurance expires on ${date}. Upload replacement insurance now to avoid losing access to new quotes.`,
+ };
+ return {
+  title:'Insurance expires within 30 days',
+  body:`Your approved insurance expires on ${date}. Upload replacement insurance early to avoid losing access to new quotes.`,
+ };
+}
 
- const inserted=await Promise.all(due.map(({document,stage,copy})=>prisma.$executeRaw`
+function notificationId(verificationId:string,status:TransporterInsuranceStatus,stage:WarningStage){
+ const source=status.documentId||verificationId;
+ return `insurance-expiry:${source}:${stage}`;
+}
+
+export async function ensureTransporterInsuranceNotification(input:{
+ transporterId:string;
+ verificationId:string;
+ insuranceStatus:TransporterInsuranceStatus;
+}){
+ const stage=warningStage(input.insuranceStatus);
+ if(!stage)return 0;
+ const copy=notificationCopy(stage,input.insuranceStatus.expiresAt,input.insuranceStatus.replacementPending);
+ return prisma.$executeRaw`
   INSERT INTO "Notification" ("id","userId","type","title","body","href","createdAt")
   VALUES (
-   ${`insurance-expiry:${document.id}:${stage}`},
-   ${document.transporterId},
+   ${notificationId(input.verificationId,input.insuranceStatus,stage)},
+   ${input.transporterId},
    'VERIFICATION',
    ${copy.title},
    ${copy.body},
-   NULL,
+   '/transporter/verification',
    NOW()
   )
- ON CONFLICT ("id") DO NOTHING
- `));
+  ON CONFLICT ("id") DO NOTHING
+ `;
+}
 
- const expired=due.filter(item=>item.stage==='expired');
- const admins=expired.length?await prisma.user.findMany({
+export async function sendInsuranceExpiryNotifications(today=new Date()){
+ const verifications=await prisma.transporterVerification.findMany({
+  where:{status:'APPROVED'},
+  select:{
+   id:true,
+   status:true,
+   reviewedAt:true,
+   transporterId:true,
+   businessName:true,
+   transporter:{select:{name:true}},
+   documents:{
+    where:{type:'INSURANCE',status:{not:'REJECTED'}},
+    select:{id:true,type:true,status:true,expiresAt:true,createdAt:true},
+    orderBy:{createdAt:'desc'},
+   },
+  },
+ });
+
+ const due=verifications.flatMap(verification=>{
+  const insuranceStatus=insuranceStatusForVerification(verification,today);
+  const stage=warningStage(insuranceStatus);
+  return stage?[{verification,insuranceStatus,stage}]:[];
+ });
+
+ const inserted=await Promise.all(due.map(({verification,insuranceStatus})=>
+  ensureTransporterInsuranceNotification({
+   transporterId:verification.transporterId,
+   verificationId:verification.id,
+   insuranceStatus,
+  })
+ ));
+
+ const adminDue=due.filter(item=>item.stage==='expired'||item.stage==='missing');
+ const admins=adminDue.length?await prisma.user.findMany({
   where:{role:'ADMIN',accountStatus:'ACTIVE'},
   select:{id:true},
  }):[];
- const adminInserted=await Promise.all(expired.flatMap(({document})=>{
-  const date=document.expiresAt.toLocaleDateString('en-GB',{timeZone:'UTC'});
-  const transporter=document.businessName.trim()||document.transporterName.trim()||'A transporter';
+ const adminInserted=await Promise.all(adminDue.flatMap(({verification,insuranceStatus,stage})=>{
+  const copy=notificationCopy(stage,insuranceStatus.expiresAt,insuranceStatus.replacementPending);
+  const transporter=verification.businessName.trim()||verification.transporter.name.trim()||'A transporter';
+  const source=insuranceStatus.documentId||verification.id;
   return admins.map(admin=>prisma.$executeRaw`
    INSERT INTO "Notification" ("id","userId","type","title","body","href","createdAt")
    VALUES (
-    ${`insurance-expiry-admin:${document.id}:${admin.id}`},
+    ${`insurance-expiry-admin:${source}:${stage}:${admin.id}`},
     ${admin.id},
     'ACCOUNT',
-    'Transporter insurance expired',
-    ${`${transporter}'s insurance expired on ${date}. New quote submissions are blocked until replacement insurance is approved.`},
-    '/admin',
+    'Transporter replacement insurance required',
+    ${`${transporter}: ${copy.body}`},
+    '/admin?action=verification',
     NOW()
    )
    ON CONFLICT ("id") DO NOTHING
@@ -102,7 +174,7 @@ export async function sendInsuranceExpiryNotifications(today=new Date()){
  }));
 
  return {
-  checked:documents.length,
+  checked:verifications.length,
   due:due.length,
   created:inserted.reduce((sum,count)=>sum+count,0),
   adminCreated:adminInserted.reduce((sum,count)=>sum+count,0),
