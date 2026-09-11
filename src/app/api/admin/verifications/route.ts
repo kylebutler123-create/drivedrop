@@ -35,7 +35,7 @@ export async function PATCH(r:Request){
   if(x.data.documentStatus==='APPROVED'&&document.type==='INSURANCE'&&(!document.expiresAt||document.expiresAt<today))return NextResponse.json({error:'Insurance must have a current or future expiry date before approval'},{status:400});
   const updated=await prisma.verificationDocument.update({where:{id:document.id},data:{status:x.data.documentStatus,reviewerId:u.id,reviewedAt:now,reviewNote:x.data.reviewNote||null}});
   const documentLabel=document.type.toLowerCase().replaceAll('_',' ');
-  await createNotificationSafely({userId:document.verification.transporterId,type:'VERIFICATION',title:x.data.documentStatus==='APPROVED'?'Verification document approved':'Verification document requires changes',body:x.data.documentStatus==='APPROVED'?\`DriveDrop approved your new \${documentLabel} document.\`:\`DriveDrop reviewed your new \${documentLabel} document and changes are required.\${x.data.reviewNote?\` Admin note: \${x.data.reviewNote}\`:''}\`,href:'/transporter/verification'});
+  await createNotificationSafely({userId:document.verification.transporterId,type:'VERIFICATION',title:x.data.documentStatus==='APPROVED'?'Verification document approved':'Verification document requires changes',body:x.data.documentStatus==='APPROVED'?`DriveDrop approved your new ${documentLabel} document.`:`DriveDrop reviewed your new ${documentLabel} document and changes are required.${x.data.reviewNote?` Admin note: ${x.data.reviewNote}`:''}`,href:'/transporter/verification'});
   return NextResponse.json(updated);
  }
  const current=await prisma.transporterVerification.findUnique({where:{id:x.data.verificationId},include:{documents:{orderBy:{createdAt:'desc'},select:{type:true,status:true,expiresAt:true}}}});
