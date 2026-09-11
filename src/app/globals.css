@@ -8,3 +8,158 @@
 .cancellationPolicyWarning{display:flex;align-items:center;gap:10px;margin:0 0 16px;padding:12px 15px;border:1px solid #ffd2ad;border-left:4px solid var(--orange);border-radius:12px;background:#fff7f0;color:#8f430b;box-shadow:0 5px 16px rgba(255,122,24,.08)}
 .cancellationPolicyWarning span{font-size:16px}
 .cancellationPolicyWarning strong{font-size:13px;line-height:1.4}
+
+
+/* Shared customer and transporter login presentation. */
+.loginPage{
+  min-height:calc(100vh - 70px);
+  grid-template-columns:minmax(0,1.04fr) minmax(420px,.96fr);
+}
+.loginPage .authVisual{
+  min-height:680px;
+  background-position:center;
+}
+.loginPage.customerLogin .authVisual{
+  background-image:url('/drivedrop-prestige-loading.webp');
+}
+.loginPage.transporterLogin .authVisual{
+  background-image:url('/drivedrop-transporter-countryside.webp');
+}
+.loginPage .authOverlay{
+  background:linear-gradient(180deg,rgba(4,18,37,.18) 0%,rgba(4,18,37,.9) 100%);
+}
+.loginPage .authVisualContent{
+  max-width:660px;
+  padding:46px;
+}
+.loginPage .authVisualContent h1{
+  max-width:600px;
+  margin:11px 0 15px;
+  font-size:46px;
+  line-height:1.04;
+}
+.loginPage .authVisualContent p{
+  margin:0;
+  font-size:15px;
+  line-height:1.62;
+}
+.loginPage .authTrust{
+  margin-top:21px;
+}
+.loginPage .authTrust span{
+  padding:8px 11px;
+  font-size:11px;
+}
+.loginPage .authPanel{
+  padding:34px;
+}
+.loginPage .authCard{
+  max-width:460px;
+  padding:30px;
+  border-radius:22px;
+  box-shadow:0 20px 55px rgba(16,35,63,.11);
+}
+.loginPage .backLink{
+  display:inline-flex;
+  align-items:center;
+  color:#51647a;
+}
+.loginPage .authHeading{
+  margin:23px 0 18px;
+}
+.loginPage .authHeading h2{
+  margin:7px 0 8px;
+  font-size:31px;
+}
+.loginPage .authHeading p{
+  font-size:13px;
+  line-height:1.55;
+}
+.loginPage .accountSwitch{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4px;
+  margin:18px 0 17px;
+  padding:4px;
+  border-radius:999px;
+  background:#edf2f7;
+}
+.loginPage .accountSwitch a{
+  padding:10px 12px;
+  border-radius:999px;
+  color:#5d6f84;
+  font-size:12px;
+  font-weight:800;
+  text-align:center;
+  transition:background .18s ease,color .18s ease,box-shadow .18s ease;
+}
+.loginPage .accountSwitch a.active{
+  color:#fff;
+  background:var(--navy);
+  box-shadow:0 5px 14px rgba(7,26,51,.16);
+}
+.loginPage .passwordLabelRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.loginPage .forgotLink{
+  color:#c85c0b;
+  font-size:11px;
+  font-weight:800;
+}
+.loginPage .authSubmit{
+  min-height:46px;
+}
+.loginPage .authSecondary{
+  min-height:43px;
+  align-items:center;
+}
+.loginPage .authFootnote{
+  margin:15px 0 0;
+}
+@media(max-width:760px){
+  .loginPage{
+    min-height:auto;
+    grid-template-columns:1fr;
+  }
+  .loginPage .authVisual{
+    min-height:310px;
+  }
+  .loginPage .authVisualContent{
+    padding:28px 18px;
+  }
+  .loginPage .authVisualContent h1{
+    max-width:360px;
+    margin:8px 0 11px;
+    font-size:31px;
+  }
+  .loginPage .authVisualContent p{
+    max-width:420px;
+    font-size:12px;
+    line-height:1.5;
+  }
+  .loginPage .authTrust{
+    gap:6px;
+    margin-top:15px;
+  }
+  .loginPage .authTrust span{
+    padding:6px 8px;
+    font-size:9px;
+  }
+  .loginPage .authPanel{
+    padding:16px 12px 32px;
+  }
+  .loginPage .authCard{
+    max-width:500px;
+    padding:21px;
+    border-radius:18px;
+  }
+  .loginPage .authHeading{
+    margin:19px 0 15px;
+  }
+  .loginPage .authHeading h2{
+    font-size:27px;
+  }
+}
