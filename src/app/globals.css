@@ -152,7 +152,41 @@
   }
   .loginPage.transporterLogin .authCard{
     max-width:432px;
-    padding:26px;
+    padding:23px 26px;
+  }
+  .loginPage.transporterLogin .authHeading{
+    margin:17px 0 12px;
+  }
+  .loginPage.transporterLogin .authHeading h2{
+    margin:6px 0;
+    font-size:29px;
+  }
+  .loginPage.transporterLogin .accountSwitch{
+    margin:13px 0 12px;
+  }
+  .loginPage.transporterLogin .accountSwitch a{
+    padding:8px 11px;
+  }
+  .loginPage.transporterLogin .field{
+    margin:11px 0;
+  }
+  .loginPage.transporterLogin .authCard input{
+    padding:12px;
+  }
+  .loginPage.transporterLogin .authSubmit{
+    min-height:43px;
+    padding:12px 18px;
+    margin-top:5px;
+  }
+  .loginPage.transporterLogin .authDivider{
+    margin:16px 0 11px;
+  }
+  .loginPage.transporterLogin .authSecondary{
+    min-height:40px;
+    padding:10px 14px;
+  }
+  .loginPage.transporterLogin .authFootnote{
+    margin-top:10px;
   }
 }
 
