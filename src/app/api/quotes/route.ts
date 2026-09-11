@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';import { prisma } from '@/lib/prisma';import { currentUser } from '@/lib/auth';import { z } from 'zod';import {apiError,parseJson} from '@/lib/api';import {sendTransactionalEmailSafely} from '@/lib/email';import {createNotificationSafely} from '@/lib/notifications';import {calculateCustomerPrice} from '@/lib/finance';import {insuranceStatusForVerification} from '@/lib/insurance-expiry-notifications'
 const S=z.object({jobId:z.string().min(1),pricePence:z.number().int().min(1000).max(10_000_000),message:z.string().trim().max(1000).optional(),proposedCollectionDate:z.string().optional()})
+const W=z.object({quoteId:z.string().min(1)})
 export async function POST(r:Request){
  try{
   const u=await currentUser();
@@ -15,13 +16,13 @@ export async function POST(r:Request){
    if(!job)throw new Error('Not found');
    if(!['OPEN','QUOTED'].includes(job.status))throw new Error('Job is no longer accepting quotes');
    const existing=await tx.quote.findFirst({where:{jobId:d.jobId,transporterId:u.id}});
-   if(existing&&existing.status!=='PENDING')throw new Error('This quote can no longer be revised');
+   if(existing&&!['PENDING','WITHDRAWN'].includes(existing.status))throw new Error('This quote can no longer be revised');
    const proposed=d.proposedCollectionDate?new Date(`${d.proposedCollectionDate}T12:00:00`):null;
    const q=existing
-    ?await tx.quote.update({where:{id:existing.id},data:{pricePence:d.pricePence,message:d.message||null,proposedCollectionDate:proposed,dateNegotiationStatus:proposed?'PROPOSED':'ORIGINAL'}})
+    ?await tx.quote.update({where:{id:existing.id},data:{status:'PENDING',pricePence:d.pricePence,message:d.message||null,proposedCollectionDate:proposed,dateNegotiationStatus:proposed?'PROPOSED':'ORIGINAL'}})
     :await tx.quote.create({data:{jobId:d.jobId,pricePence:d.pricePence,message:d.message,transporterId:u.id,proposedCollectionDate:proposed,dateNegotiationStatus:proposed?'PROPOSED':'ORIGINAL'}});
    if(job.status==='OPEN')await tx.transportJob.update({where:{id:d.jobId},data:{status:'QUOTED'}});
-   return {quote:q,customer:job.customer,vehicleMake:job.vehicleMake,vehicleModel:job.vehicleModel,collection:job.collection,delivery:job.delivery,revised:!!existing}
+   return {quote:q,customer:job.customer,vehicleMake:job.vehicleMake,vehicleModel:job.vehicleModel,collection:job.collection,delivery:job.delivery,revised:existing?.status==='PENDING'}
   });
   const pricing=calculateCustomerPrice(result.quote.pricePence);
   const customerTotal=`£${(pricing.customerTotalPence/100).toFixed(2)}`;
@@ -29,4 +30,27 @@ export async function POST(r:Request){
   await sendTransactionalEmailSafely({to:result.customer.email,subject:`${result.revised?'Updated':'New'} quote for your ${result.vehicleMake} ${result.vehicleModel}`,heading:result.revised?'A transporter updated their quote':'You have a new transport quote',body:`A verified DriveDrop transporter has ${result.revised?'updated their quote to':'quoted'} ${customerTotal} including the DriveDrop fee to move your ${result.vehicleMake} ${result.vehicleModel}.\n\n${result.collection} → ${result.delivery}\n\nSign in to review the quote, transporter details and any proposed collection date.`,ctaLabel:'Review your quote',ctaPath:'/customer',preheader:`DriveDrop quote: ${customerTotal}`});
   return NextResponse.json({...result.quote,transporterBasePricePence:result.quote.pricePence,platformFeePence:pricing.platformFeePence,customerTotalPence:pricing.customerTotalPence},{status:result.revised?200:201})
  }catch(e){return apiError(e,'Unable to submit quote')}
+}
+
+
+export async function DELETE(r:Request){
+ try{
+  const u=await currentUser();
+  if(!u||u.role!=='TRANSPORTER')return NextResponse.json({error:'Transporter login required'},{status:403});
+  const d=await parseJson(r,W);
+  const result=await prisma.$transaction(async(tx:any)=>{
+   const quote=await tx.quote.findFirst({where:{id:d.quoteId,transporterId:u.id},include:{booking:{select:{id:true}},job:{select:{id:true,status:true,customerId:true,vehicleMake:true,vehicleModel:true}}}});
+   if(!quote)throw new Error('Quote not found');
+   if(quote.status!=='PENDING')throw new Error('Only a pending quote can be cancelled');
+   if(quote.booking)throw new Error('This quote has already become a booking and cannot be cancelled as a quote');
+   const withdrawn=await tx.quote.update({where:{id:quote.id},data:{status:'WITHDRAWN'}});
+   const pendingQuotes=await tx.quote.count({where:{jobId:quote.jobId,status:'PENDING'}});
+   const jobStatus=quote.job.status==='QUOTED'&&pendingQuotes===0
+    ?(await tx.transportJob.update({where:{id:quote.jobId},data:{status:'OPEN'},select:{status:true}})).status
+    :quote.job.status;
+   return{quote:withdrawn,jobStatus,customerId:quote.job.customerId,vehicleMake:quote.job.vehicleMake,vehicleModel:quote.job.vehicleModel};
+  });
+  await createNotificationSafely({userId:result.customerId,type:'QUOTE',title:'Transport quote withdrawn',body:`A transporter has withdrawn their quote for your ${result.vehicleMake} ${result.vehicleModel}. Your request remains open for quotes.`,href:'/customer?view=quotes#quote-requests'});
+  return NextResponse.json({quote:result.quote,jobStatus:result.jobStatus,noCancellationFine:true});
+ }catch(e){return apiError(e,'Unable to cancel quote')}
 }
