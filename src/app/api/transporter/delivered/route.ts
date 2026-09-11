@@ -17,7 +17,7 @@ export async function GET(){
     customer:{select:{name:true}},
     trackingEvents:{where:{status:'DELIVERED'},select:{createdAt:true,note:true},orderBy:{createdAt:'desc'},take:1},
     evidence:{select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'asc'}},
-    payment:{select:{transporterProceedsPence:true,payoutStatus:true,status:true,events:{where:{type:'PAYOUT_PAID'},select:{createdAt:true},orderBy:{createdAt:'desc'},take:1}}}
+    payment:{select:{transporterProceedsPence:true,cancellationDeductionPence:true,payoutStatus:true,status:true,events:{where:{type:'PAYOUT_PAID'},select:{createdAt:true},orderBy:{createdAt:'desc'},take:1}}}
    },
    orderBy:{createdAt:'desc'}
   }),
