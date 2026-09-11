@@ -261,18 +261,26 @@ body:has(.homePage) > .guestTop .nav{display:none;}
 .homePage .recentGrid{gap:14px;}
 .homePage .deliveryCard{
   display:grid;
-  grid-template-columns:52px 1fr;
-  gap:4px 12px;
-  padding:18px;
+  grid-template-columns:112px minmax(0,1fr);
+  gap:4px 13px;
+  padding:14px;
   border-radius:17px;
   box-shadow:0 7px 22px rgba(16,35,63,.045);
 }
-.homePage .vehicleBubble{
+.homePage .vehicleThumb{
   grid-row:1/4;
-  width:52px;
-  height:52px;
-  border-radius:14px;
-  font-size:24px;
+  width:112px;
+  height:100%;
+  min-height:112px;
+  overflow:hidden;
+  border-radius:13px;
+  background:#e9eef5;
+}
+.homePage .vehicleThumb img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 .homePage .deliveryCard h3{margin:1px 0 6px;font-size:16px;}
 .homePage .deliveryRoute{padding:10px 12px;font-size:12px;}
@@ -478,8 +486,8 @@ body:has(.homePage) > .guestTop .nav{display:none;}
   .homePage .sectionHeadingRow{display:block;margin-bottom:15px;}
   .homePage .sectionHeadingRow > a{display:inline-block;margin-top:4px;}
   .homePage .recentGrid{grid-template-columns:1fr;gap:9px;}
-  .homePage .deliveryCard{grid-template-columns:45px 1fr;padding:13px;border-radius:13px;}
-  .homePage .vehicleBubble{width:45px;height:45px;border-radius:12px;font-size:20px;}
+  .homePage .deliveryCard{grid-template-columns:96px minmax(0,1fr);padding:11px;border-radius:13px;}
+  .homePage .vehicleThumb{width:96px;min-height:96px;border-radius:11px;}
   .homePage .deliveryCard h3{font-size:14px;}
   .homePage .deliveryRoute{font-size:10px;}
   .homePage .deliveryPrice strong{font-size:18px;}
