@@ -8,9 +8,11 @@ const gridStyle={display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240p
 const baseCard={width:'100%',minHeight:106,display:'grid',gridTemplateColumns:'44px minmax(0,1fr) 24px',alignItems:'center',gap:12,padding:'15px 16px',border:'1px solid #d8e1ea',borderRadius:16,background:'#fff',color:'#10233f',textAlign:'left',boxShadow:'0 8px 24px rgba(16,35,63,.07)',cursor:'pointer',textDecoration:'none'} as const;
 const activeCard={...baseCard,background:'#071a33',color:'#fff',border:'2px solid #ff7a18',boxShadow:'0 12px 30px rgba(7,26,51,.20)'} as const;
 const attentionCard={...baseCard,background:'#fff4f2',color:'#7f1d1d',border:'2px solid #d94848',boxShadow:'0 8px 24px rgba(145,38,38,.12)'} as const;
+const financeAttentionCard={...baseCard,background:'#fff8f1',color:'#7f3f0d',border:'2px solid #ff7a18',boxShadow:'0 8px 24px rgba(185,86,12,.12)'} as const;
 const iconStyle={width:44,height:44,borderRadius:13,display:'grid',placeItems:'center',background:'#fff3e9',color:'#b9560c',fontSize:19,fontWeight:900} as const;
 const activeIcon={...iconStyle,background:'rgba(255,255,255,.12)',color:'#fff'} as const;
 const attentionIcon={...iconStyle,background:'#d94848',color:'#fff'} as const;
+const financeAttentionIcon={...iconStyle,background:'#ff7a18',color:'#fff'} as const;
 const copyStyle={minWidth:0,display:'grid',gap:2} as const;
 const kickerStyle={fontSize:10,lineHeight:1.2,textTransform:'uppercase',letterSpacing:'.07em',color:'#b9560c'} as const;
 const activeKicker={...kickerStyle,color:'#ffb16f'} as const;
@@ -21,8 +23,12 @@ const activeSub={...subStyle,color:'#cad6e4'} as const;
 const arrowStyle={width:24,height:24,borderRadius:'50%',display:'grid',placeItems:'center',background:'#f3f6f9',color:'#4b627a',fontSize:13,fontWeight:900} as const;
 const activeArrow={...arrowStyle,background:'#ff7a18',color:'#fff'} as const;
 const attentionArrow={...arrowStyle,background:'#d94848',color:'#fff'} as const;
+const financeAttentionArrow={...arrowStyle,background:'#ff7a18',color:'#fff'} as const;
+const payoutBadgeRow={display:'flex',alignItems:'center',gap:5,flexWrap:'wrap'} as const;
+const readyPayoutBadge={display:'inline-flex',padding:'3px 6px',borderRadius:999,background:'#fff0e3',color:'#a94d0b',fontSize:9,fontWeight:900,lineHeight:1.2} as const;
+const blockedPayoutBadge={...readyPayoutBadge,background:'#ffe3df',color:'#a52222'} as const;
 
-export default function AdminSectionSwitcher({userCount,transporterCount,disputeCount,openDisputeCount,userSection,verificationSection,disputeSection,operationsSection,initialView='ALL',actionLabel}:{userCount:number;transporterCount:number;disputeCount:number;openDisputeCount:number;userSection:ReactNode;verificationSection:ReactNode;disputeSection:ReactNode;operationsSection:ReactNode;initialView?:View;actionLabel?:string}){
+export default function AdminSectionSwitcher({userCount,transporterCount,disputeCount,openDisputeCount,readyPayoutCount,blockedPayoutCount,userSection,verificationSection,disputeSection,operationsSection,initialView='ALL',actionLabel}:{userCount:number;transporterCount:number;disputeCount:number;openDisputeCount:number;readyPayoutCount:number;blockedPayoutCount:number;userSection:ReactNode;verificationSection:ReactNode;disputeSection:ReactNode;operationsSection:ReactNode;initialView?:View;actionLabel?:string}){
  const[view,setView]=useState<View>(initialView);
  useEffect(()=>setView(initialView),[initialView]);
  const toggle=(next:Exclude<View,'ALL'>)=>setView(view===next?'ALL':next);
@@ -32,13 +38,14 @@ export default function AdminSectionSwitcher({userCount,transporterCount,dispute
  const showOperations=view==='ALL'||view==='OPERATIONS';
  const filterCard=(key:Exclude<View,'ALL'>,icon:string,value:string|number,subtitle:string)=>{const active=view===key;const attention=key==='DISPUTES'&&openDisputeCount>0;const displayedValue=attention?`${openDisputeCount} open`:value;return <button type="button" aria-pressed={active} onClick={()=>toggle(key)} style={active?activeCard:attention?attentionCard:baseCard}><span style={active?activeIcon:attention?attentionIcon:iconStyle}>{icon}</span><span style={copyStyle}><strong style={active?activeKicker:attention?attentionKicker:kickerStyle}>{displayedValue}</strong><b style={titleStyle}>{labels[key]}</b><small style={active?activeSub:subStyle}>{attention?'Open disputes require attention':subtitle}</small></span><span style={active?activeArrow:attention?attentionArrow:arrowStyle}>{active?'−':'→'}</span></button>};
  const linkCard=(href:string,icon:string,kicker:string,title:string,subtitle:string)=><Link href={href} style={baseCard}><span style={iconStyle}>{icon}</span><span style={copyStyle}><strong style={kickerStyle}>{kicker}</strong><b style={titleStyle}>{title}</b><small style={subStyle}>{subtitle}</small></span><span style={arrowStyle}>→</span></Link>;
+ const payoutLinkCard=()=>{const blocked=blockedPayoutCount>0,ready=readyPayoutCount>0;return <Link href="/admin/payouts" style={blocked?attentionCard:ready?financeAttentionCard:baseCard}><span style={blocked?attentionIcon:ready?financeAttentionIcon:iconStyle}>£</span><span style={copyStyle}><span style={payoutBadgeRow}><strong style={readyPayoutBadge}>{readyPayoutCount} ready</strong><strong style={blockedPayoutBadge}>{blockedPayoutCount} blocked</strong></span><b style={titleStyle}>Payouts</b><small style={subStyle}>{blocked?'Blocked payouts require attention':ready?'Payouts are ready to release':'Ready, held & paid transporter funds'}</small></span><span style={blocked?attentionArrow:ready?financeAttentionArrow:arrowStyle}>→</span></Link>};
  return <>
   <div style={gridStyle}>
    {filterCard('USERS','👥',userCount,'Manage customer & transporter accounts')}
    {filterCard('VERIFICATION','✓',transporterCount,'Review transporter compliance')}
    {filterCard('DISPUTES','🛡️',disputeCount,'Review protected booking disputes')}
    {filterCard('OPERATIONS','🚗','View','Bookings, deliveries & evidence')}
-   {linkCard('/admin/payouts','£','Finance','Payouts','Ready, held & paid transporter funds')}
+   {payoutLinkCard()}
    {linkCard('/admin/review-disputes','★','Reviews','Review moderation','Moderate challenged customer feedback')}
   </div>
   {view!=='ALL'&&<div className="dashboardFilterBar"><span>{actionLabel||`Showing ${labels[view as Exclude<View,'ALL'>].toLowerCase()} only`}</span>{actionLabel?<Link className="textAction" href="/admin">Show everything</Link>:<button className="textAction" onClick={()=>setView('ALL')}>Show everything</button>}</div>}
