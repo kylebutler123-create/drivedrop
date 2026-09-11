@@ -1,14 +1,14 @@
-import { NextResponse } from 'next/server';import { prisma } from '@/lib/prisma';import { currentUser } from '@/lib/auth';import { z } from 'zod';import {apiError,parseJson} from '@/lib/api';import {sendTransactionalEmailSafely} from '@/lib/email';import {createNotificationSafely} from '@/lib/notifications';import {calculateCustomerPrice} from '@/lib/finance'
+import { NextResponse } from 'next/server';import { prisma } from '@/lib/prisma';import { currentUser } from '@/lib/auth';import { z } from 'zod';import {apiError,parseJson} from '@/lib/api';import {sendTransactionalEmailSafely} from '@/lib/email';import {createNotificationSafely} from '@/lib/notifications';import {calculateCustomerPrice} from '@/lib/finance';import {insuranceStatusForVerification} from '@/lib/insurance-expiry-notifications'
 const S=z.object({jobId:z.string().min(1),pricePence:z.number().int().min(1000).max(10_000_000),message:z.string().trim().max(1000).optional(),proposedCollectionDate:z.string().optional()})
 export async function POST(r:Request){
  try{
   const u=await currentUser();
   if(!u||u.role!=='TRANSPORTER')return NextResponse.json({error:'Transporter login required'},{status:403});
   if(u.accountStatus!=='ACTIVE'||u.workRestricted)return NextResponse.json({error:'Your transporter account is not currently permitted to quote on jobs'},{status:403});
-  const insuranceToday=new Date();insuranceToday.setUTCHours(0,0,0,0);
-  const verification=await prisma.transporterVerification.findUnique({where:{transporterId:u.id},select:{status:true,documents:{where:{type:'INSURANCE',status:{notIn:['REJECTED','EXPIRED']},expiresAt:{gte:insuranceToday}},select:{id:true},take:1}}});
+  const verification=await prisma.transporterVerification.findUnique({where:{transporterId:u.id},select:{id:true,status:true,reviewedAt:true,documents:{where:{type:'INSURANCE',status:{not:'REJECTED'}},select:{id:true,type:true,status:true,expiresAt:true,createdAt:true},orderBy:{createdAt:'desc'}}}});
   if(!verification||verification.status!=='APPROVED')return NextResponse.json({error:'DriveDrop verification approval is required before you can submit quotes'},{status:403});
-  if(!verification.documents.length)return NextResponse.json({error:'Your approved insurance has expired. Upload replacement insurance and wait for DriveDrop approval before submitting new quotes'},{status:403});
+  const insuranceStatus=insuranceStatusForVerification(verification);
+  if(insuranceStatus.state==='MISSING'||insuranceStatus.state==='EXPIRED')return NextResponse.json({error:insuranceStatus.replacementPending?'Your replacement insurance is awaiting DriveDrop approval. New quotes remain blocked until it is approved.':'Your approved insurance is missing or expired. Upload replacement insurance and wait for DriveDrop approval before submitting new quotes'},{status:403});
   const d=await parseJson(r,S);
   const result=await prisma.$transaction(async (tx: any)=>{
    const job=await tx.transportJob.findUnique({where:{id:d.jobId},include:{customer:{select:{id:true,email:true,name:true}}}});
