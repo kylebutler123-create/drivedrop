@@ -41,7 +41,7 @@ body:has(.visualHero) .visualHeroInner{padding-top:150px;}
 .photoSplit{padding:48px 0;}
 .photoSplit .splitGrid{grid-template-columns:1fr;}
 .photoSplit .splitPhoto{
-  width:100%;aspect-ratio:7/5;height:auto;
+  width:100%;aspect-ratio:3/2;height:auto;
   background-image:url('/31CBCFA0-15FB-495B-924A-A6BDEB69F0A1.png');
   background-size:cover;background-position:center;background-repeat:no-repeat;
   border-radius:28px;overflow:hidden;background-color:#071a33;
@@ -51,7 +51,7 @@ body:has(.visualHero) .visualHeroInner{padding-top:150px;}
   width:min(1180px,calc(100% - 48px));margin:48px auto;
   background-image:url('/DDD56A74-C705-425F-BBD0-0257D1F3FE7A.png')!important;
   background-size:cover;background-position:center;background-repeat:no-repeat;
-  aspect-ratio:7/5;min-height:0!important;height:auto;background-color:#071a33;
+  aspect-ratio:3/2;min-height:0!important;height:auto;background-color:#071a33;
   border-radius:28px;overflow:hidden;
 }
 .photoBanner .photoBannerOverlay,.photoBanner .photoBannerContent{display:none;}
@@ -72,7 +72,8 @@ body:has(.visualHero) .visualHeroInner{padding-top:150px;}
   .top .nav > a:not(.btn){font-size:11px;white-space:nowrap;}
   .top .nav .btn{font-size:11px;padding:7px 9px;white-space:nowrap;}
   .photoSplit{padding:28px 0;}
-  .photoSplit .splitPhoto{width:100vw;margin-left:50%;transform:translateX(-50%);aspect-ratio:7/5;border-radius:0;background-size:cover;background-position:center;}
-  .photoBanner{width:100%;margin:28px 0;aspect-ratio:7/5;background-size:cover;background-position:center;border-radius:0;}
+  .photoSplit .splitGrid{width:100%;max-width:none;padding:0;}
+  .photoSplit .splitPhoto{width:100%;margin:0;transform:none;aspect-ratio:3/2;border-radius:0;background-size:cover;background-position:center;}
+  .photoBanner{width:100%;margin:28px 0;aspect-ratio:3/2;background-size:cover;background-position:center;border-radius:0;}
   .siteFooter .footerLegal p{font-size:11px;}
 }
