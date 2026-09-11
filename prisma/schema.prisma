@@ -431,6 +431,7 @@ model BookingPayment {
   depositPence             Int
   platformFeePence         Int
   transporterProceedsPence Int
+  cancellationDeductionPence Int          @default(0)
   remainingBalancePence    Int
   paidPence                Int           @default(0)
   refundedPence            Int           @default(0)
@@ -454,4 +455,29 @@ model FinanceEvent {
   createdAt   DateTime       @default(now())
 
   @@index([paymentId, createdAt])
+}
+
+
+model TransporterCancellationFee {
+  id                 String   @id
+  transporterId      String
+  cancelledBookingId String   @unique
+  amountPence        Int      @default(2500)
+  appliedPence       Int      @default(0)
+  status             String   @default("PENDING")
+  createdAt          DateTime @default(now()) @db.Timestamptz(3)
+  appliedAt          DateTime? @db.Timestamptz(3)
+
+  @@index([transporterId, status, createdAt])
+}
+
+model TransporterCancellationDeduction {
+  id          String   @id
+  feeId       String
+  paymentId   String
+  amountPence Int
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+
+  @@unique([feeId, paymentId])
+  @@index([paymentId])
 }
