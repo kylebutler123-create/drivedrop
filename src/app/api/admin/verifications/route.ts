@@ -38,23 +38,24 @@ export async function PATCH(r:Request){
   await createNotificationSafely({userId:document.verification.transporterId,type:'VERIFICATION',title:x.data.documentStatus==='APPROVED'?'Verification document approved':'Verification document requires changes',body:x.data.documentStatus==='APPROVED'?`DriveDrop approved your new ${documentLabel} document.`:`DriveDrop reviewed your new ${documentLabel} document and changes are required.${x.data.reviewNote?` Admin note: ${x.data.reviewNote}`:''}`,href:'/transporter/verification'});
   return NextResponse.json(updated);
  }
- const current=await prisma.transporterVerification.findUnique({where:{id:x.data.verificationId},include:{documents:{orderBy:{createdAt:'desc'},select:{type:true,status:true,expiresAt:true}}}});
+ const review=VerificationReview.parse(x.data);
+ const current=await prisma.transporterVerification.findUnique({where:{id:review.verificationId},include:{documents:{orderBy:{createdAt:'desc'},select:{type:true,status:true,expiresAt:true}}}});
  if(!current)return NextResponse.json({error:'Verification record not found'},{status:404});
  const now=new Date();
  const insuranceToday=new Date(now);insuranceToday.setUTCHours(0,0,0,0);
- if(x.data.status==='APPROVED'){
+ if(review.status==='APPROVED'){
   const latestInsurance=current.documents.find(document=>document.type==='INSURANCE'&&document.status!=='REJECTED'&&document.expiresAt);
   const currentInsurance=latestInsurance&&['PENDING','APPROVED'].includes(latestInsurance.status)&&latestInsurance.expiresAt!>=insuranceToday;
   if(!currentInsurance)return NextResponse.json({error:'Replacement insurance is required. The newest insurance document must have a current or future expiry date before approval.'},{status:400});
  }
  const updated=await prisma.$transaction(async(tx:any)=>{
   await tx.verificationDocument.updateMany({where:{verificationId:current.id,status:{not:'REJECTED'},expiresAt:{lt:insuranceToday}},data:{status:'EXPIRED',reviewerId:u.id,reviewedAt:now}});
-  if(x.data.status==='APPROVED')await tx.verificationDocument.updateMany({where:{verificationId:current.id,status:'PENDING',OR:[{expiresAt:null},{expiresAt:{gte:insuranceToday}}]},data:{status:'APPROVED',reviewerId:u.id,reviewedAt:now,reviewNote:null}});
-  if(x.data.status==='REJECTED')await tx.verificationDocument.updateMany({where:{verificationId:current.id,status:'PENDING'},data:{status:'REJECTED',reviewerId:u.id,reviewedAt:now,reviewNote:x.data.reviewNote}});
-  return tx.transporterVerification.update({where:{id:current.id},data:{status:x.data.status,reviewNote:x.data.reviewNote,reviewedAt:now,reviewerId:u.id}});
+  if(review.status==='APPROVED')await tx.verificationDocument.updateMany({where:{verificationId:current.id,status:'PENDING',OR:[{expiresAt:null},{expiresAt:{gte:insuranceToday}}]},data:{status:'APPROVED',reviewerId:u.id,reviewedAt:now,reviewNote:null}});
+  if(review.status==='REJECTED')await tx.verificationDocument.updateMany({where:{verificationId:current.id,status:'PENDING'},data:{status:'REJECTED',reviewerId:u.id,reviewedAt:now,reviewNote:review.reviewNote}});
+  return tx.transporterVerification.update({where:{id:current.id},data:{status:review.status,reviewNote:review.reviewNote,reviewedAt:now,reviewerId:u.id}});
  });
- if(current.status!==x.data.status){
-  const copy=notificationCopy[x.data.status];
+ if(current.status!==review.status){
+  const copy=notificationCopy[review.status];
   await createNotificationSafely({userId:current.transporterId,type:'VERIFICATION',title:copy.title,body:copy.body});
  }
  return NextResponse.json(updated);
