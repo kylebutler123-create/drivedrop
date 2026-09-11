@@ -10,7 +10,8 @@ type Quote={
   proposedCollectionDate?:string|null;
 };
 type Draft={price:string;message:string;date:string};
-type Props={jobId:string;quote:Quote;onUpdated:(quote:Quote)=>void};
+type WithdrawResult={quote:Quote;jobStatus:string;noCancellationFine:true};
+type Props={jobId:string;quote:Quote;onUpdated:(quote:Quote)=>void;onCancelled:(result:WithdrawResult)=>void};
 
 function quoteDraft(quote:Quote):Draft{
   return {
@@ -43,10 +44,25 @@ async function saveQuoteRevision(jobId:string,quoteId:string,draft:Draft):Promis
   return result;
 }
 
-export default function TransporterRequoteEnhancer({jobId,quote,onUpdated}:Props){
+async function cancelQuote(quoteId:string):Promise<WithdrawResult>{
+  const response=await fetch('/api/quotes',{
+    method:'DELETE',
+    headers:{'content-type':'application/json'},
+    body:JSON.stringify({quoteId})
+  });
+  const result=await response.json().catch(()=>null);
+  if(!response.ok)throw new Error(result?.error||'Unable to cancel your quote. Please try again.');
+  if(result?.quote?.id!==quoteId||result.quote.status!=='WITHDRAWN'||result.noCancellationFine!==true){
+    throw new Error('We could not verify the cancellation. Refresh and check your quote before trying again.');
+  }
+  return result;
+}
+
+export default function TransporterRequoteEnhancer({jobId,quote,onUpdated,onCancelled}:Props){
   const [editing,setEditing]=useState(false);
   const [draft,setDraft]=useState<Draft>(()=>quoteDraft(quote));
   const [saving,setSaving]=useState(false);
+  const [withdrawing,setWithdrawing]=useState(false);
   const [notice,setNotice]=useState<{type:'success'|'error';text:string}|null>(null);
   const submitting=useRef(false);
 
@@ -79,9 +95,26 @@ export default function TransporterRequoteEnhancer({jobId,quote,onUpdated}:Props
     }
   }
 
+  async function withdraw(){
+    if(submitting.current||quote.status!=='PENDING')return;
+    if(!window.confirm('Cancel this quote? The customer request will remain open and no cancellation fine will be charged.'))return;
+    submitting.current=true;
+    setWithdrawing(true);
+    setNotice(null);
+    try{
+      const result=await cancelQuote(quote.id);
+      onCancelled(result);
+    }catch(error){
+      setNotice({type:'error',text:error instanceof Error?error.message:'Unable to cancel your quote. Check your connection and try again.'});
+    }finally{
+      submitting.current=false;
+      setWithdrawing(false);
+    }
+  }
+
   if(quote.status!=='PENDING')return null;
   return <div className="requoteWrap">
-    {!editing?<button type="button" className="btn orange requoteButton" onClick={openEditor}>Adjust quote</button>:<form className="requoteForm" onSubmit={submit} aria-busy={saving}>
+    {!editing?<div className="requoteActions"><button type="button" className="btn orange requoteButton" disabled={withdrawing} onClick={openEditor}>Adjust quote</button><button type="button" className="btn light" disabled={withdrawing} onClick={withdraw}>{withdrawing?'Cancelling…':'Cancel quote'}</button></div>:<form className="requoteForm" onSubmit={submit} aria-busy={saving}>
       <div className="requoteHeading"><strong>Adjust your quote</strong><small>Your updated offer replaces your current pending quote.</small></div>
       <label>NEW PRICE (£)<input name="price" type="number" min="10" max="100000" step="0.01" required value={draft.price} disabled={saving} onChange={event=>setDraft({...draft,price:event.target.value})}/></label>
       <label>ALTERNATIVE COLLECTION DATE<input name="date" type="date" value={draft.date} disabled={saving} onChange={event=>setDraft({...draft,date:event.target.value})}/></label>
