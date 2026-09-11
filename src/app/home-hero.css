@@ -183,19 +183,33 @@ body:has(.homePage) > .guestTop .nav{display:none;}
 .homePage .largeCta{margin-top:22px;padding:13px 22px;font-size:13px;}
 
 /* Full-width editorial vehicle artwork. */
-.homePage .photoSplit{padding:42px 0;background:var(--homeNavy);}
-.homePage .photoSplit .splitGrid{grid-template-columns:1fr;}
+.homePage .photoSplit{padding:64px 0;background:#f8fbff;color:var(--homeNavy);}
+.homePage .photoSplit .splitGrid{grid-template-columns:minmax(0,1.08fr) minmax(330px,.92fr);gap:42px;align-items:center;}
 .homePage .photoSplit .splitPhoto{
   width:100%;
-  height:auto;
   aspect-ratio:3/2;
   overflow:hidden;
   border-radius:22px;
-  background:url('/31CBCFA0-15FB-495B-924A-A6BDEB69F0A1.png') center/cover no-repeat var(--homeNavy);
-  box-shadow:0 24px 65px rgba(0,0,0,.2);
+  box-shadow:0 20px 52px rgba(16,35,63,.14);
 }
-.homePage .photoSplit .splitPhoto img,
-.homePage .photoSplit .splitCopy{display:none;}
+.homePage .photoSplit .splitPhoto img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.homePage .photoSplit .splitCopy{display:block;}
+.homePage .photoSplit .splitCopy h2{margin:8px 0 12px;font-size:36px;line-height:1.08;}
+.homePage .photoSplit .splitCopy p{margin:0;color:#53667d;font-size:15px;line-height:1.65;}
+.homePage .photoSplit .pillList{margin-top:20px;}
+.homePage .photoSplit .pillList span{
+  padding:8px 11px;
+  color:#174d82;
+  background:#eaf3ff;
+  border:1px solid #d6e6f7;
+  font-size:11px;
+  font-weight:800;
+}
 
 .homePage .trustGrid{gap:34px;}
 .homePage .trustGrid > div:first-child p{
@@ -219,17 +233,27 @@ body:has(.homePage) > .guestTop .nav{display:none;}
 
 .homePage .photoBanner{
   width:min(1180px,calc(100% - 40px));
-  min-height:0!important;
+  min-height:430px!important;
   height:auto;
-  aspect-ratio:3/2;
-  margin:42px auto;
+  margin:46px auto;
   overflow:hidden;
   border-radius:22px;
-  background:url('/DDD56A74-C705-425F-BBD0-0257D1F3FE7A.png') center/cover no-repeat var(--homeNavy)!important;
+  background:url('/drivedrop-prestige-loading.webp') 66% center/cover no-repeat var(--homeNavy)!important;
   box-shadow:0 18px 48px rgba(16,35,63,.11);
 }
-.homePage .photoBannerOverlay,
-.homePage .photoBannerContent{display:none;}
+.homePage .photoBannerOverlay{
+  display:block;
+  background:linear-gradient(90deg,rgba(4,18,37,.94) 0%,rgba(4,18,37,.78) 38%,rgba(4,18,37,.18) 70%,transparent 100%);
+}
+.homePage .photoBannerContent{
+  display:block;
+  width:100%;
+  max-width:1180px;
+  padding:72px 58px;
+}
+.homePage .photoBannerContent h2{max-width:520px;margin:9px 0 12px;font-size:40px;line-height:1.08;}
+.homePage .photoBannerContent p{max-width:500px;margin:0;color:#dce7f4;font-size:15px;line-height:1.6;}
+.homePage .photoBannerContent .largeCta{width:auto;}
 
 /* Marketplace activity. */
 .homePage .sectionHeadingRow{align-items:flex-end;margin-bottom:20px;}
@@ -390,14 +414,19 @@ body:has(.homePage) > .guestTop .nav{display:none;}
   .homePage .stepNo{top:12px;right:12px;width:25px;height:25px;font-size:10px;}
   .homePage .largeCta{width:100%;padding:12px 14px;font-size:11px;}
 
-  .homePage .photoSplit{padding:24px 0;}
-  .homePage .photoSplit .splitGrid{width:100%;max-width:none;padding:0;}
+  .homePage .photoSplit{padding:0 0 40px;}
+  .homePage .photoSplit .splitGrid{width:100%;max-width:none;padding:0;grid-template-columns:1fr;gap:0;}
   .homePage .photoSplit .splitPhoto{
     width:100%;
     margin:0;
     border-radius:0;
     box-shadow:none;
   }
+  .homePage .photoSplit .splitCopy{padding:28px 15px 0;}
+  .homePage .photoSplit .splitCopy h2{font-size:27px;}
+  .homePage .photoSplit .splitCopy p{font-size:13px;}
+  .homePage .photoSplit .pillList{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .homePage .photoSplit .pillList span{display:block;padding:8px;font-size:9px;}
   .homePage .trustGrid{grid-template-columns:1fr;gap:18px;}
   .homePage .verifiedCard{padding:17px;border-radius:16px;}
   .homePage .verifiedStats{gap:6px;}
@@ -406,10 +435,19 @@ body:has(.homePage) > .guestTop .nav{display:none;}
 
   .homePage .photoBanner{
     width:100%;
+    min-height:470px!important;
     margin:24px 0;
     border-radius:0;
+    background-position:68% center!important;
     box-shadow:none;
   }
+  .homePage .photoBannerOverlay{
+    background:linear-gradient(180deg,rgba(4,18,37,.9) 0%,rgba(4,18,37,.7) 48%,rgba(4,18,37,.22) 100%);
+  }
+  .homePage .photoBannerContent{padding:38px 15px;}
+  .homePage .photoBannerContent h2{max-width:330px;font-size:29px;}
+  .homePage .photoBannerContent p{max-width:330px;font-size:13px;}
+  .homePage .photoBannerContent .largeCta{width:auto;}
 
   .homePage .sectionHeadingRow{display:block;margin-bottom:15px;}
   .homePage .sectionHeadingRow > a{display:inline-block;margin-top:4px;}
