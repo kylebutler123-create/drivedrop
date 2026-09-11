@@ -4,7 +4,9 @@ import {currentUser} from '@/lib/auth';
 import {createNotificationSafely} from '@/lib/notifications';
 import {z} from 'zod';
 
-const S=z.object({verificationId:z.string(),status:z.enum(['APPROVED','REJECTED','SUSPENDED']),reviewNote:z.string().max(1000).optional()});
+const VerificationReview=z.object({verificationId:z.string(),status:z.enum(['APPROVED','REJECTED','SUSPENDED']),reviewNote:z.string().max(1000).optional()});
+const DocumentReview=z.object({documentId:z.string(),documentStatus:z.enum(['APPROVED','REJECTED']),reviewNote:z.string().max(1000).optional()});
+const S=z.union([VerificationReview,DocumentReview]);
 const notificationCopy={
  APPROVED:{title:'Verification approved',body:'DriveDrop has approved your transporter verification. Your verified status is now active.'},
  REJECTED:{title:'Verification requires changes',body:'DriveDrop has reviewed your transporter verification and changes are required. Review the Admin note before updating your details or documents.'},
@@ -26,6 +28,16 @@ export async function PATCH(r:Request){
  if(!u||u.role!=='ADMIN')return NextResponse.json({error:'Admin access required'},{status:403});
  const x=S.safeParse(await r.json());
  if(!x.success)return NextResponse.json({error:'Invalid review'},{status:400});
+ if('documentId' in x.data){
+  const document=await prisma.verificationDocument.findUnique({where:{id:x.data.documentId},include:{verification:{select:{transporterId:true,businessName:true}}}});
+  if(!document)return NextResponse.json({error:'Verification document not found'},{status:404});
+  const now=new Date();const today=new Date(now);today.setUTCHours(0,0,0,0);
+  if(x.data.documentStatus==='APPROVED'&&document.type==='INSURANCE'&&(!document.expiresAt||document.expiresAt<today))return NextResponse.json({error:'Insurance must have a current or future expiry date before approval'},{status:400});
+  const updated=await prisma.verificationDocument.update({where:{id:document.id},data:{status:x.data.documentStatus,reviewerId:u.id,reviewedAt:now,reviewNote:x.data.reviewNote||null}});
+  const documentLabel=document.type.toLowerCase().replaceAll('_',' ');
+  await createNotificationSafely({userId:document.verification.transporterId,type:'VERIFICATION',title:x.data.documentStatus==='APPROVED'?'Verification document approved':'Verification document requires changes',body:x.data.documentStatus==='APPROVED'?\`DriveDrop approved your new \${documentLabel} document.\`:\`DriveDrop reviewed your new \${documentLabel} document and changes are required.\${x.data.reviewNote?\` Admin note: \${x.data.reviewNote}\`:''}\`,href:'/transporter/verification'});
+  return NextResponse.json(updated);
+ }
  const current=await prisma.transporterVerification.findUnique({where:{id:x.data.verificationId},include:{documents:{orderBy:{createdAt:'desc'},select:{type:true,status:true,expiresAt:true}}}});
  if(!current)return NextResponse.json({error:'Verification record not found'},{status:404});
  const now=new Date();
