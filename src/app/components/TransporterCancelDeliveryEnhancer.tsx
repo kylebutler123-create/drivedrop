@@ -17,8 +17,9 @@ export default function TransporterCancelDeliveryEnhancer(){
     const bookings=await response.json();
     if(!Array.isArray(bookings))return;
     const cards=Array.from(document.querySelectorAll<HTMLElement>('article.transporterBooking'));
-    cards.forEach((card,index)=>{
-      const booking=bookings[index];
+    cards.forEach(card=>{
+      const bookingId=card.dataset.bookingId;
+      const booking=bookingId?bookings.find((candidate:any)=>candidate.id===bookingId):null;
       const existing=card.querySelector<HTMLButtonElement>('[data-cancel-delivery]');
       if(!booking||!['CONFIRMED','COLLECTION_SCHEDULED'].includes(booking.status)){
         existing?.remove();
@@ -42,6 +43,13 @@ export default function TransporterCancelDeliveryEnhancer(){
           const result=await fetch('/api/bookings/status',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({bookingId:booking.id,status:'CANCELLED',note:reason})});
           const data=await result.json().catch(()=>null);
           if(!result.ok){window.alert(data?.error||'Unable to cancel delivery');button.disabled=false;button.textContent='Cancel delivery';return;}
+          if(data?.booking?.id!==booking.id||data.booking.status!=='CANCELLED'){
+            window.alert('The cancellation could not be verified. Refresh and check this delivery before trying again.');
+            button.disabled=false;
+            button.textContent='Cancel delivery';
+            return;
+          }
+          card.remove();
           window.location.reload();
         }catch{
           window.alert('Unable to cancel delivery. Please try again.');
