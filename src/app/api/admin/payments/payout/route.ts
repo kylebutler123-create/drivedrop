@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
 import {createNotificationSafely} from '@/lib/notifications';
+import {applyCancellationFeesToPayout} from '@/lib/cancellation-fees';
 import {z} from 'zod';
 
 const S=z.object({paymentId:z.string()});
@@ -36,10 +37,22 @@ export async function POST(r:Request){
    if(old.payoutStatus!=='READY')throw new Error('Payout is not ready for release');
    const details=await tx.$queryRaw<any[]>`SELECT "id" FROM "TransporterPayoutDetails" WHERE "userId"=${old.booking.transporterId} LIMIT 1`;
    if(!details.length)throw new Error('Transporter payout details are not complete');
-   const payment=await tx.bookingPayment.update({where:{id:paymentId},data:{payoutStatus:'PAID'}});
-   await tx.financeEvent.create({data:{paymentId,type:'PAYOUT_PAID',amountPence:payment.transporterProceedsPence,actorId:u.id,note:'Sandbox/test payout — payout details verified'}});
+   const feeResult=await applyCancellationFeesToPayout({
+    tx,
+    transporterId:old.booking.transporterId,
+    paymentId,
+    completedAt:old.booking.customerConfirmedAt,
+    proceedsPence:old.transporterProceedsPence,
+   });
+   const payment=await tx.bookingPayment.update({where:{id:paymentId},data:{
+    payoutStatus:'PAID',
+    transporterProceedsPence:feeResult.netProceedsPence,
+    cancellationDeductionPence:{increment:feeResult.deductedPence},
+   }});
+   await tx.financeEvent.create({data:{paymentId,type:'PAYOUT_PAID',amountPence:payment.transporterProceedsPence,actorId:u.id,note:feeResult.deductedPence>0?`Sandbox/test payout — £${(feeResult.deductedPence/100).toFixed(2)} cancellation fine deducted`:'Sandbox/test payout — payout details verified'}});
    return {
     payment,
+    cancellationDeductionPence:feeResult.deductedPence,
     transporterId:old.booking.transporterId,
     bookingId:old.booking.id,
     job:old.booking.job
@@ -51,7 +64,7 @@ export async function POST(r:Request){
    userId:result.transporterId,
    type:'PAYMENT',
    title:'Payout released',
-   body:`DriveDrop released your test payout of ${money(result.payment.transporterProceedsPence)} for the ${vehicle}${reference} delivery.`,
+   body:result.cancellationDeductionPence>0?`DriveDrop released your test payout of ${money(result.payment.transporterProceedsPence)} for the ${vehicle}${reference} delivery after automatically deducting a ${money(result.cancellationDeductionPence)} cancellation fine.`:`DriveDrop released your test payout of ${money(result.payment.transporterProceedsPence)} for the ${vehicle}${reference} delivery.`,
    href:`/transporter?view=completed&bookingId=${encodeURIComponent(result.bookingId)}`
   });
   return NextResponse.json(result.payment);
