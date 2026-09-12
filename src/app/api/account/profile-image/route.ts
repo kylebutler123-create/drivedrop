@@ -45,7 +45,7 @@ export async function POST(request:Request){
   try{
     await uploadProfileImage(nextPath,file);
     await updatePath(verification.id,kind,nextPath);
-    if(previousPath)await removeProfileImage(previousPath);
+    if(previousPath)await removeProfileImage(previousPath).catch(error=>console.error('Previous profile image cleanup failed',error));
     return NextResponse.json({kind,path:nextPath,url:profileImageUrl(nextPath)});
   }catch(error){
     console.error('Profile image upload failed',error);
@@ -63,6 +63,6 @@ export async function DELETE(request:Request){
   if(!verification)return NextResponse.json({error:'Transporter profile not found'},{status:404});
   const previousPath=pathForKind(verification,kind);
   await updatePath(verification.id,kind,null);
-  if(previousPath)await removeProfileImage(previousPath);
+  if(previousPath)await removeProfileImage(previousPath).catch(error=>console.error('Profile image cleanup failed',error));
   return NextResponse.json({ok:true,kind});
 }
