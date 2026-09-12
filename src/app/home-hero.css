@@ -15,24 +15,24 @@
 }
 
 /* Keep public navigation aligned between the homepage and login screens. */
-body:has(.homePage, .loginPage) > .guestTop{
+body:has(.homePage, .loginPage, .registerPage) > .guestTop{
   padding:14px max(4vw,20px);
 }
-body:has(.homePage, .loginPage) > .guestTop .guestPrimaryNav{
+body:has(.homePage, .loginPage, .registerPage) > .guestTop .guestPrimaryNav{
   width:min(1180px,100%);
   margin:auto;
   display:flex;
   align-items:center;
   gap:10px;
 }
-body:has(.homePage, .loginPage) > .guestTop .headerLogo{margin-right:auto;}
-body:has(.homePage, .loginPage) > .guestTop .btn{
+body:has(.homePage, .loginPage, .registerPage) > .guestTop .headerLogo{margin-right:auto;}
+body:has(.homePage, .loginPage, .registerPage) > .guestTop .btn{
   min-height:40px;
   padding:10px 16px;
   font-size:13px;
   white-space:nowrap;
 }
-body:has(.homePage, .loginPage) > .guestTop .nav{display:none;}
+body:has(.homePage, .loginPage, .registerPage) > .guestTop .nav{display:none;}
 
 /* The homepage and desktop transporter login place navigation over their imagery. */
 body:has(.homePage) > .guestTop{
@@ -44,6 +44,13 @@ body:has(.homePage) > .guestTop{
 }
 @media(min-width:761px){
   body:has(.transporterLogin) > .guestTop{
+    position:absolute;
+    inset:0 0 auto;
+    z-index:20;
+    background:linear-gradient(180deg,rgba(4,18,37,.86),rgba(4,18,37,.34) 72%,transparent);
+    border-bottom:0;
+  }
+  body:has(.registerPage) > .guestTop{
     position:absolute;
     inset:0 0 auto;
     z-index:20;
@@ -380,26 +387,26 @@ body:has(.homePage) > .guestTop{
 .homePage .footerLegal p{margin:0;font-size:10px;color:#8294aa;}
 
 @media(max-width:760px){
-  body:has(.homePage, .loginPage) > .guestTop{
+  body:has(.homePage, .loginPage, .registerPage) > .guestTop{
     display:block;
     padding:8px 12px 13px;
   }
   body:has(.homePage) > .guestTop{
     background:linear-gradient(180deg,rgba(4,18,37,.9),rgba(4,18,37,.48) 78%,transparent);
   }
-  body:has(.homePage, .loginPage) > .guestTop .guestPrimaryNav{
+  body:has(.homePage, .loginPage, .registerPage) > .guestTop .guestPrimaryNav{
     display:grid;
     grid-template-columns:minmax(108px,1fr) auto auto;
     gap:6px;
   }
-  body:has(.homePage, .loginPage) > .guestTop .headerLogo{
+  body:has(.homePage, .loginPage, .registerPage) > .guestTop .headerLogo{
     width:128px;
     height:48px;
     min-width:0;
     margin:0;
   }
-  body:has(.homePage, .loginPage) > .guestTop .headerLogo img{max-width:128px;}
-  body:has(.homePage, .loginPage) > .guestTop .btn{
+  body:has(.homePage, .loginPage, .registerPage) > .guestTop .headerLogo img{max-width:128px;}
+  body:has(.homePage, .loginPage, .registerPage) > .guestTop .btn{
     min-height:34px;
     padding:7px 8px;
     font-size:9px;

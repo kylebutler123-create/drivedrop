@@ -247,3 +247,135 @@
     font-size:27px;
   }
 }
+
+/* Shared customer and transporter registration presentation. */
+.registerPage .authCard{
+  max-width:460px;
+  padding:26px;
+  border-radius:22px;
+  box-shadow:0 20px 55px rgba(16,35,63,.12);
+}
+.registerPage .authHeading{
+  margin:18px 0 13px;
+}
+.registerPage .authHeading h2{
+  margin:6px 0 7px;
+  font-size:29px;
+}
+.registerPage .authHeading p{
+  font-size:12px;
+  line-height:1.48;
+}
+.registerPage .field{
+  margin:10px 0;
+}
+.registerPage .authCard input,
+.registerPage .authCard select{
+  padding:12px;
+}
+.registerPage .authSubmit{
+  min-height:43px;
+  padding:11px 18px;
+  margin-top:5px;
+}
+.registerPage .authDivider{
+  margin:16px 0 11px;
+}
+.registerPage .authSecondary{
+  min-height:40px;
+  align-items:center;
+  padding:10px 14px;
+}
+.registerPage .authFootnote{
+  margin-top:10px;
+}
+@media(min-width:761px){
+  .registerPage{
+    position:relative;
+    display:block;
+    min-height:100vh;
+    isolation:isolate;
+  }
+  .registerPage .authVisual{
+    position:absolute;
+    inset:0;
+    min-height:100%;
+    background-color:#061a35;
+    background-position:center top;
+    background-size:cover;
+    background-repeat:no-repeat;
+  }
+  .registerPage.customerRegister .authVisual{
+    background-image:url('/drivedrop-prestige-loading.webp');
+  }
+  .registerPage.transporterRegister .authVisual{
+    background-image:url('/drivedrop-transporter-countryside.webp');
+  }
+  .registerPage .authOverlay{
+    background:linear-gradient(90deg,rgba(4,18,37,.84) 0%,rgba(4,18,37,.58) 42%,rgba(4,18,37,.18) 100%);
+  }
+  .registerPage .authVisualContent{
+    width:min(650px,calc(100% - 510px));
+    max-width:none;
+    padding:140px 46px 46px max(46px,calc((100vw - 1180px)/2 + 20px));
+  }
+  .registerPage .authVisualContent h1{
+    max-width:560px;
+    margin:10px 0 14px;
+    font-size:44px;
+    line-height:1.04;
+  }
+  .registerPage .authVisualContent p{
+    margin:0;
+    font-size:14px;
+    line-height:1.58;
+  }
+  .registerPage .authPanel{
+    position:relative;
+    z-index:3;
+    width:100%;
+    min-height:100vh;
+    justify-content:flex-end;
+    padding:118px max(20px,calc((100vw - 1280px)/2 + 20px)) 28px 34px;
+    background:linear-gradient(90deg,transparent 42%,rgba(4,18,37,.28) 100%);
+  }
+}
+@media(max-width:760px){
+  .registerPage .authVisual{
+    background-image:url('/drivedrop-prestige-loading.webp');
+    background-position:center;
+  }
+  .registerPage.transporterRegister .authVisual{
+    background-image:url('/drivedrop-transporter-countryside.webp');
+  }
+  .registerPage .authVisualContent{
+    padding:28px 18px;
+  }
+  .registerPage .authVisualContent h1{
+    margin:8px 0 11px;
+    font-size:31px;
+  }
+  .registerPage .authVisualContent p{
+    font-size:12px;
+    line-height:1.5;
+  }
+  .registerPage .authTrust{
+    gap:6px;
+    margin-top:15px;
+  }
+  .registerPage .authTrust span{
+    padding:6px 8px;
+    font-size:9px;
+  }
+  .registerPage .authPanel{
+    padding:16px 12px 32px;
+  }
+  .registerPage .authCard{
+    max-width:500px;
+    padding:21px;
+    border-radius:18px;
+  }
+  .registerPage .authHeading{
+    margin:17px 0 12px;
+  }
+}
