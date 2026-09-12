@@ -39,7 +39,8 @@ export async function uploadMessageImage(path:string,file:File){return upload(ME
 export async function downloadMessageImage(path:string){return download(MESSAGE_BUCKET,path)}
 
 export function validateProfileImage(file:File){return validateWithSignature(file,profileTypes,MAX_PROFILE_FILE_SIZE,'JPG/JPEG, PNG and WebP image')}
-export function createProfileStoragePath(userId:string,extension:string){return `${userId}/${randomUUID()}.${extension}`}
+export type ProfileImageKind='logo'|'transporter'|'truck';
+export function createProfileStoragePath(userId:string,kind:ProfileImageKind,extension:string){return `${userId}/${kind}/${randomUUID()}.${extension}`}
 export async function uploadProfileImage(path:string,file:File){return upload(PROFILE_BUCKET,path,file)}
 export async function removeProfileImage(path:string){return remove(PROFILE_BUCKET,path)}
 export function profileImageUrl(path:string|null|undefined){if(!path)return null;const {url}=config();return `${url}/storage/v1/object/public/${PROFILE_BUCKET}/${path}`}

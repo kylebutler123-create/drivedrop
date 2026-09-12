@@ -385,8 +385,11 @@ model TransporterVerification {
   businessAddress String
   phone           String
   yearsOperating  Int?
-  website         String?
-  status          VerificationStatus     @default(NOT_STARTED)
+  website                String?
+  profileImagePath       String?
+  transporterPhotoPath   String?
+  truckPhotoPath         String?
+  status                 VerificationStatus     @default(NOT_STARTED)
   submittedAt     DateTime?
   reviewedAt      DateTime?
   reviewerId      String?

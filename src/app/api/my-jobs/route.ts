@@ -29,8 +29,8 @@ export async function GET(){
  const vehicleTypeRows=jobIds.length?await prisma.$queryRawUnsafe<Array<{id:string;vehicleType:string|null}>>(`SELECT "id", "vehicleType" FROM "TransportJob" WHERE "id" IN (${jobIds.map((_,i)=>`$${i+1}`).join(',')})`,...jobIds):[];
  const vehicleTypes=new Map(vehicleTypeRows.map(row=>[row.id,row.vehicleType]));
  const transporterIds=[...new Set(jobs.flatMap(job=>job.quotes.map(q=>q.transporter.id)))];
- const profileRows=transporterIds.length?await prisma.$queryRawUnsafe<Array<{transporterId:string;profileImagePath:string|null}>>(`SELECT "transporterId", "profileImagePath" FROM "TransporterVerification" WHERE "transporterId" IN (${transporterIds.map((_,i)=>`$${i+1}`).join(',')})`,...transporterIds):[];
- const profilePaths=new Map(profileRows.map(row=>[row.transporterId,row.profileImagePath]));
+ const profileRows=transporterIds.length?await prisma.$queryRawUnsafe<Array<{transporterId:string;profileImagePath:string|null;transporterPhotoPath:string|null;truckPhotoPath:string|null}>>(`SELECT "transporterId", "profileImagePath", "transporterPhotoPath", "truckPhotoPath" FROM "TransporterVerification" WHERE "transporterId" IN (${transporterIds.map((_,i)=>`$${i+1}`).join(',')})`,...transporterIds):[];
+ const profileMedia=new Map(profileRows.map(row=>[row.transporterId,row]));
  const result=jobs.map(job=>({...job,vehicleType:vehicleTypes.get(job.id)||null,quotes:job.quotes.map(q=>{
   const ratings=q.transporter.reviewsReceived.map(r=>r.rating);
   const reviewCount=ratings.length;
@@ -41,7 +41,8 @@ export async function GET(){
   const businessName=verification?.businessName||transporter.name;
   const displayName=`${businessName} · ${ratingText}`;
   const pricing=calculateCustomerPrice(q.pricePence);
-  return {...q,transporterBasePricePence:q.pricePence,platformFeePence:pricing.platformFeePence,pricePence:pricing.customerTotalPence,transporter:{...transporter,name:displayName,personName:transporter.name,businessName,companyNumber:verification?.companyNumber||null,yearsOperating:verification?.yearsOperating??null,website:verification?.website||null,verificationStatus:verification?.status||'NOT_STARTED',reviewCount,averageRating,profileImageUrl:profileImageUrl(profilePaths.get(transporter.id)||null)}};
+  const media=profileMedia.get(transporter.id);
+  return {...q,transporterBasePricePence:q.pricePence,platformFeePence:pricing.platformFeePence,pricePence:pricing.customerTotalPence,transporter:{...transporter,name:displayName,personName:transporter.name,businessName,companyNumber:verification?.companyNumber||null,yearsOperating:verification?.yearsOperating??null,website:verification?.website||null,verificationStatus:verification?.status||'NOT_STARTED',reviewCount,averageRating,profileImageUrl:profileImageUrl(media?.transporterPhotoPath||media?.profileImagePath||null),businessLogoUrl:profileImageUrl(media?.profileImagePath||null),transporterPhotoUrl:profileImageUrl(media?.transporterPhotoPath||null),truckPhotoUrl:profileImageUrl(media?.truckPhotoPath||null)}};
  })}));
  return NextResponse.json(result,{headers:{'Cache-Control':'no-store, max-age=0'}});
 }

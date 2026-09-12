@@ -24,8 +24,12 @@ export default async function TransporterProfilePage({params}:{params:Promise<{i
     }
   });
   if(!transporter)notFound();
-  const profileRows=await prisma.$queryRawUnsafe<Array<{profileImagePath:string|null}>>('SELECT "profileImagePath" FROM "TransporterVerification" WHERE "transporterId" = $1 LIMIT 1',id);
-  const imageUrl=profileImageUrl(profileRows[0]?.profileImagePath||null);
+  const profileRows=await prisma.$queryRawUnsafe<Array<{profileImagePath:string|null;transporterPhotoPath:string|null;truckPhotoPath:string|null}>>('SELECT "profileImagePath", "transporterPhotoPath", "truckPhotoPath" FROM "TransporterVerification" WHERE "transporterId" = $1 LIMIT 1',id);
+  const profileMedia=profileRows[0];
+  const logoUrl=profileImageUrl(profileMedia?.profileImagePath||null);
+  const transporterPhotoUrl=profileImageUrl(profileMedia?.transporterPhotoPath||null);
+  const truckPhotoUrl=profileImageUrl(profileMedia?.truckPhotoPath||null);
+  const imageUrl=transporterPhotoUrl||logoUrl;
   const verification=transporter.transporterVerification;
   const ratings=transporter.reviewsReceived.map(review=>review.rating);
   const reviewCount=ratings.length;
@@ -52,6 +56,12 @@ export default async function TransporterProfilePage({params}:{params:Promise<{i
       <div><span className="trustSummaryIcon">🚗</span><strong>{transporter.transporterBookings.length}</strong><small>Completed deliveries</small></div>
       <div><span className="trustSummaryIcon">🏢</span><strong>{verification?.yearsOperating??'—'}</strong><small>{verification?.yearsOperating!=null?'Years operating':'Experience not provided'}</small></div>
     </section>
+
+    {(transporterPhotoUrl||truckPhotoUrl||logoUrl)&&<section className="transporterProfileMediaGallery" aria-label="Transporter photos">
+      {transporterPhotoUrl&&<article className="transporterMediaCard person"><img src={transporterPhotoUrl} alt={businessName+' transporter'}/><div><strong>Your transporter</strong><small>{transporter.name}</small></div></article>}
+      {truckPhotoUrl&&<article className="transporterMediaCard truck"><img src={truckPhotoUrl} alt={businessName+' transport vehicle'}/><div><strong>Transport vehicle</strong><small>Uploaded by the transporter</small></div></article>}
+      {logoUrl&&<article className="transporterMediaCard logo"><img src={logoUrl} alt={businessName+' business logo'}/><div><strong>Business logo</strong><small>{businessName}</small></div></article>}
+    </section>}
 
     <div className="transporterProfileGrid">
       <div className="transporterProfileSide">
