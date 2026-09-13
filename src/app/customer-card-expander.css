@@ -40,3 +40,8 @@
 
 .dashboardSummary.customerDashboardSummary{grid-template-columns:repeat(4,minmax(0,1fr));min-width:490px}
 @media(max-width:760px){.dashboardSummary.customerDashboardSummary{grid-template-columns:repeat(2,minmax(0,1fr));width:100%;min-width:0}}
+
+/* Keep the customer transport request compact without changing other forms. */
+.requestPanel>form>.grid{column-gap:14px;row-gap:4px;margin-top:10px}
+.requestPanel>form>.grid>.field{margin:5px 0}
+@media(max-width:760px){.requestPanel>form>.grid{row-gap:2px;margin-top:8px}.requestPanel>form>.grid>.field{margin:4px 0}}
