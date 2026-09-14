@@ -43,7 +43,7 @@ function hasUnseenCustomerProgress(booking:any,customerId?:string){
 }
 function CustomerSummaryActivity({count}:{count:number}){
  if(count<1)return null;
- return <span className="customerSummaryActivity">{count} new {count===1?'update':'updates'}</span>;
+ return <span className="customerSummaryActivity" aria-label={count+' new '+(count===1?'update':'updates')}>{count}</span>;
 }
 export default function Customer(){const[jobs,setJobs]=useState<any[]>([]),[me,setMe]=useState<any>(),[bookings,setBookings]=useState<any[]>([]),[disputes,setDisputes]=useState<any[]>([]),[view,setView]=useState<'REQUEST'|'QUOTES'|'BOOKINGS'|'COMPLETED'|'CANCELLED'>('REQUEST'),[submitting,setSubmitting]=useState(false),[formMessage,setFormMessage]=useState<{type:'success'|'error',text:string}|null>(null),[newJobId,setNewJobId]=useState<string|null>(null),[disputeBookingId,setDisputeBookingId]=useState<string|null>(null),[disputeReason,setDisputeReason]=useState(''),[disputeDetails,setDisputeDetails]=useState(''),[disputeSubmitting,setDisputeSubmitting]=useState(false),[disputeMessage,setDisputeMessage]=useState<string|null>(null);const[requestNotice,setRequestNotice]=useState<string|null>(null);const[jobsLoaded,setJobsLoaded]=useState(false);const[bookingsLoaded,setBookingsLoaded]=useState(false);const[quoteRefreshNotice,setQuoteRefreshNotice]=useState<string|null>(null);const[refreshingQuotes,setRefreshingQuotes]=useState(false);const[refreshingBookings,setRefreshingBookings]=useState(false);
 const[confirmingBookingId,setConfirmingBookingId]=useState<string|null>(null);
