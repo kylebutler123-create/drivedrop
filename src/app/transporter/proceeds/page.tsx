@@ -20,6 +20,11 @@ const payoutLabel=(booking:any)=>{
  if(booking.status==='DELIVERED'&&!booking.customerConfirmedAt)return'Awaiting customer confirmation';
  return'In progress';
 };
+const heldOrAwaitingConfirmation=(booking:any)=>{
+ const payoutStatus=booking.payment?.payoutStatus;
+ if(payoutStatus==='HELD')return true;
+ return booking.status==='DELIVERED'&&!booking.customerConfirmedAt&&!['READY','PAID','CANCELLED'].includes(payoutStatus);
+};
 
 export default async function TransporterProceeds({searchParams}:{searchParams:Promise<{filter?:string}>}){
  const[user,params]=await Promise.all([currentUser(),searchParams]);
@@ -41,8 +46,8 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
  const total=rows.reduce((sum,booking)=>sum+(booking.payment?.transporterProceedsPence||0),0);
  const paid=rows.filter(booking=>booking.payment?.payoutStatus==='PAID').reduce((sum,booking)=>sum+(booking.payment?.transporterProceedsPence||0),0);
  const ready=rows.filter(booking=>booking.payment?.payoutStatus==='READY').reduce((sum,booking)=>sum+(booking.payment?.transporterProceedsPence||0),0);
- const held=rows.filter(booking=>booking.payment?.payoutStatus==='HELD').reduce((sum,booking)=>sum+(booking.payment?.transporterProceedsPence||0),0);
- const visibleRows=filter==='BOOKED'?rows:rows.filter(booking=>booking.payment?.payoutStatus===filter);
+ const held=rows.filter(heldOrAwaitingConfirmation).reduce((sum,booking)=>sum+(booking.payment?.transporterProceedsPence||0),0);
+ const visibleRows=filter==='BOOKED'?rows:filter==='HELD'?rows.filter(heldOrAwaitingConfirmation):rows.filter(booking=>booking.payment?.payoutStatus===filter);
  const breakdownTitle=filter==='READY'?'Ready for release':filter==='HELD'?'Held proceeds':filter==='PAID'?'Paid proceeds':'Booked proceeds';
  return <main className={`shell dashboardShell ${styles.page}`}>
   <Link className="backLink" href="/transporter">← Back to transporter dashboard</Link>
