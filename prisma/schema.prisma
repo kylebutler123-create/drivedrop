@@ -219,6 +219,10 @@ model Booking {
   agreedPricePence    Int
   status              BookingStatus   @default(PENDING_PAYMENT)
   customerConfirmedAt DateTime?
+  deliveryLatitude     Float?
+  deliveryLongitude    Float?
+  deliveryLocationAccuracyMeters Float?
+  deliveryLocationCapturedAt DateTime?
   createdAt           DateTime        @default(now())
   trackingEvents      TrackingEvent[]
   messages            Message[]

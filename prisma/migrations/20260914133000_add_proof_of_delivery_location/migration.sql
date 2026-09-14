@@ -1,0 +1,5 @@
+ALTER TABLE "Booking"
+  ADD COLUMN IF NOT EXISTS "deliveryLatitude" DOUBLE PRECISION,
+  ADD COLUMN IF NOT EXISTS "deliveryLongitude" DOUBLE PRECISION,
+  ADD COLUMN IF NOT EXISTS "deliveryLocationAccuracyMeters" DOUBLE PRECISION,
+  ADD COLUMN IF NOT EXISTS "deliveryLocationCapturedAt" TIMESTAMP(3);

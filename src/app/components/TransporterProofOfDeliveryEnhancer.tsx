@@ -1,7 +1,7 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
 
-
+type DeliveryLocation={latitude:number;longitude:number;accuracy:number;capturedAt:string};
 
 function SignaturePad({onChange}:{onChange:(file:File|null)=>void}){
  const canvasRef=useRef<HTMLCanvasElement>(null);
@@ -13,7 +13,28 @@ function SignaturePad({onChange}:{onChange:(file:File|null)=>void}){
 }
 
 function PodForm({booking,onDone}:{booking:any,onDone:()=>void|Promise<void>}){
- const inFlight=useRef(false);const[open,setOpen]=useState(false);const[recipient,setRecipient]=useState('');const[notes,setNotes]=useState('');const[photos,setPhotos]=useState<File[]>([]);const[signature,setSignature]=useState<File|null>(null);const[confirmed,setConfirmed]=useState(false);const[busy,setBusy]=useState(false);const[message,setMessage]=useState<string|null>(null);
+ const inFlight=useRef(false);
+ const[open,setOpen]=useState(false);
+ const[recipient,setRecipient]=useState('');
+ const[notes,setNotes]=useState('');
+ const[photos,setPhotos]=useState<File[]>([]);
+ const[signature,setSignature]=useState<File|null>(null);
+ const[confirmed,setConfirmed]=useState(false);
+ const[busy,setBusy]=useState(false);
+ const[message,setMessage]=useState<string|null>(null);
+ const[location,setLocation]=useState<DeliveryLocation|null>(null);
+ const[locationBusy,setLocationBusy]=useState(false);
+ const[locationMessage,setLocationMessage]=useState<string|null>(null);
+
+ function captureLocation(){
+  if(!('geolocation' in navigator)){setLocationMessage('Location is not available on this device. You can still submit proof of delivery.');return}
+  setLocationBusy(true);setLocationMessage(null);
+  navigator.geolocation.getCurrentPosition(
+   position=>{setLocation({latitude:position.coords.latitude,longitude:position.coords.longitude,accuracy:position.coords.accuracy,capturedAt:new Date(position.timestamp).toISOString()});setLocationBusy(false)},
+   error=>{const denied=error.code===error.PERMISSION_DENIED;setLocationMessage(denied?'Location permission was not granted. You can still submit proof of delivery.':'We could not capture your location. Check your signal and try again, or submit without it.');setLocationBusy(false)},
+   {enableHighAccuracy:true,timeout:15000,maximumAge:0}
+  );
+ }
 
  async function submit(e:React.FormEvent){
   e.preventDefault();
@@ -22,6 +43,7 @@ function PodForm({booking,onDone}:{booking:any,onDone:()=>void|Promise<void>}){
   inFlight.current=true;setBusy(true);setMessage(null);
   try{
    const f=new FormData();f.set('bookingId',booking.id);f.set('recipientName',recipient);f.set('notes',notes);f.set('confirmed',String(confirmed));f.set('signature',signature);photos.forEach(p=>f.append('photos',p));
+   if(location){f.set('deliveryLatitude',String(location.latitude));f.set('deliveryLongitude',String(location.longitude));f.set('deliveryAccuracyMeters',String(location.accuracy));f.set('deliveryLocationCapturedAt',location.capturedAt)}
    const r=await fetch('/api/bookings/proof-of-delivery',{method:'POST',body:f});
    const d=await r.json().catch(()=>null);
    if(!r.ok){setMessage(typeof d?.error==='string'?d.error:'Unable to submit proof of delivery. Your details are still here.');return}
@@ -32,7 +54,7 @@ function PodForm({booking,onDone}:{booking:any,onDone:()=>void|Promise<void>}){
   finally{inFlight.current=false;setBusy(false)}
  }
 
- return <div className="podMount" data-pod-mount="true">{!open?<button type="button" className="btn orange fullBtn" onClick={()=>setOpen(true)}>Complete delivery</button>:<form className="infoPanel podPanel" onSubmit={submit} aria-busy={busy}><fieldset disabled={busy} style={{border:0,padding:0,margin:0,minWidth:0}}><div className="subHeading"><h3>Proof of delivery</h3><button type="button" className="textAction" onClick={()=>setOpen(false)}>Close</button></div><p className="muted">Add delivery evidence and the recipient’s signature before completing this booking.</p><div className="field"><label>RECIPIENT NAME</label><input value={recipient} onChange={e=>setRecipient(e.target.value)} minLength={2} maxLength={120} required placeholder="Name of person receiving vehicle"/></div><div className="field"><label>DELIVERY PHOTOS</label><input type="file" accept="image/jpeg,image/png,image/webp" multiple required onChange={e=>setPhotos(Array.from(e.target.files||[]).slice(0,6))}/><small className="muted">1–6 photos. JPG, PNG or WebP.</small></div><div className="field"><label>RECIPIENT SIGNATURE</label><SignaturePad onChange={setSignature}/></div><div className="field"><label>DELIVERY NOTES</label><textarea value={notes} onChange={e=>setNotes(e.target.value)} rows={4} maxLength={1000} placeholder="Optional condition, access or handover notes"/></div><label className="podConfirm"><input type="checkbox" checked={confirmed} onChange={e=>setConfirmed(e.target.checked)} required/> I confirm the vehicle has been delivered to the recipient.</label>{message&&<div role={message.startsWith('Proof')?'status':'alert'} className={message.startsWith('Proof')?'formNotice successNotice':'formNotice errorNotice'}>{message}</div>}<button className="btn orange fullBtn" disabled={busy||!signature||photos.length===0}>{busy?'Submitting…':'Submit proof & complete delivery'}</button></fieldset></form>}</div>
+ return <div className="podMount" data-pod-mount="true">{!open?<button type="button" className="btn orange fullBtn" onClick={()=>setOpen(true)}>Complete delivery</button>:<form className="infoPanel podPanel" onSubmit={submit} aria-busy={busy}><fieldset disabled={busy} style={{border:0,padding:0,margin:0,minWidth:0}}><div className="subHeading"><h3>Proof of delivery</h3><button type="button" className="textAction" onClick={()=>setOpen(false)}>Close</button></div><p className="muted">Add delivery evidence and the recipient’s signature before completing this booking.</p><div className="field"><label>RECIPIENT NAME</label><input value={recipient} onChange={e=>setRecipient(e.target.value)} minLength={2} maxLength={120} required placeholder="Name of person receiving vehicle"/></div><div className="field"><label>DELIVERY PHOTOS</label><input type="file" accept="image/jpeg,image/png,image/webp" multiple required onChange={e=>setPhotos(Array.from(e.target.files||[]).slice(0,6))}/><small className="muted">1–6 photos. JPG, PNG or WebP.</small></div><div className="field"><label>RECIPIENT SIGNATURE</label><SignaturePad onChange={setSignature}/></div><div className="field podLocationField"><label>DELIVERY LOCATION <span>OPTIONAL</span></label><p>Share your current location once to record where the handover took place. This does not enable continuous tracking.</p><button type="button" className="btn light podLocationButton" onClick={captureLocation} disabled={locationBusy}>{locationBusy?'Capturing location…':location?'Update delivery location':'Share delivery location'}</button>{location&&<div className="podLocationSuccess" role="status"><strong>Delivery location captured</strong><span>{Math.round(location.accuracy)} m accuracy · captured just now</span></div>}{locationMessage&&<div className="podLocationNotice" role="status">{locationMessage}</div>}</div><div className="field"><label>DELIVERY NOTES</label><textarea value={notes} onChange={e=>setNotes(e.target.value)} rows={4} maxLength={1000} placeholder="Optional condition, access or handover notes"/></div><label className="podConfirm"><input type="checkbox" checked={confirmed} onChange={e=>setConfirmed(e.target.checked)} required/> I confirm the vehicle has been delivered to the recipient.</label>{message&&<div role={message.startsWith('Proof')?'status':'alert'} className={message.startsWith('Proof')?'formNotice successNotice':'formNotice errorNotice'}>{message}</div>}<button className="btn orange fullBtn" disabled={busy||!signature||photos.length===0}>{busy?'Submitting…':'Submit proof & complete delivery'}</button></fieldset></form>}</div>
 }
 
 export default function TransporterProofOfDeliveryEnhancer({booking,onDone}:{booking:any,onDone:()=>void|Promise<void>}){

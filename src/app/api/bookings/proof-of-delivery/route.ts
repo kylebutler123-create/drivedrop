@@ -7,6 +7,20 @@ import {sendTransactionalEmailSafely} from '@/lib/email';
 
 const SIGNATURE_MARKER='__POD_SIGNATURE__';
 
+type DeliveryLocation={latitude:number;longitude:number;accuracyMeters:number;capturedAt:Date};
+
+function parseDeliveryLocation(form:FormData):{location:DeliveryLocation|null;error?:string}{
+ const raw=[form.get('deliveryLatitude'),form.get('deliveryLongitude'),form.get('deliveryAccuracyMeters'),form.get('deliveryLocationCapturedAt')];
+ const provided=raw.filter(value=>value!==null).length;
+ if(provided===0)return{location:null};
+ if(provided!==raw.length)return{location:null,error:'Delivery location details are incomplete'};
+ const latitude=Number(raw[0]);const longitude=Number(raw[1]);const accuracyMeters=Number(raw[2]);const capturedAt=new Date(String(raw[3]));
+ if(!Number.isFinite(latitude)||latitude< -90||latitude>90||!Number.isFinite(longitude)||longitude< -180||longitude>180)return{location:null,error:'Delivery location coordinates are invalid'};
+ if(!Number.isFinite(accuracyMeters)||accuracyMeters<0||accuracyMeters>100000)return{location:null,error:'Delivery location accuracy is invalid'};
+ if(!Number.isFinite(capturedAt.getTime())||capturedAt.getTime()>Date.now()+5*60*1000)return{location:null,error:'Delivery location time is invalid'};
+ return{location:{latitude,longitude,accuracyMeters,capturedAt}};
+}
+
 export async function GET(r:Request){
  const u=await currentUser();if(!u)return NextResponse.json({error:'Authentication required'},{status:401});
  const bookingId=new URL(r.url).searchParams.get('bookingId')||'';
@@ -14,12 +28,12 @@ export async function GET(r:Request){
  const booking=await prisma.booking.findUnique({where:{id:bookingId},select:{id:true,customerId:true,transporterId:true,status:true}});
  if(!booking)return NextResponse.json({error:'Booking not found'},{status:404});
  if(u.role!=='ADMIN'&&u.id!==booking.customerId&&u.id!==booking.transporterId)return NextResponse.json({error:'Access denied'},{status:403});
- const rows=await prisma.$queryRaw<Array<{podRecipientName:string|null,podNotes:string|null,podSubmittedAt:Date|null}>>`SELECT "podRecipientName","podNotes","podSubmittedAt" FROM "Booking" WHERE "id"=${bookingId}`;
+ const rows=await prisma.$queryRaw<Array<{podRecipientName:string|null,podNotes:string|null,podSubmittedAt:Date|null;deliveryLatitude:number|null;deliveryLongitude:number|null;deliveryLocationAccuracyMeters:number|null;deliveryLocationCapturedAt:Date|null}>>`SELECT "podRecipientName","podNotes","podSubmittedAt","deliveryLatitude","deliveryLongitude","deliveryLocationAccuracyMeters","deliveryLocationCapturedAt" FROM "Booking" WHERE "id"=${bookingId}`;
  const evidence=await prisma.evidence.findMany({where:{bookingId,type:'DELIVERY'},orderBy:{createdAt:'asc'},select:{id:true,note:true,createdAt:true}});
  const signature=evidence.find(e=>e.note===SIGNATURE_MARKER)||null;
  const photos=evidence.filter(e=>e.note!==SIGNATURE_MARKER);
- const pod=rows[0]||{podRecipientName:null,podNotes:null,podSubmittedAt:null};
- return NextResponse.json({bookingId,status:booking.status,recipientName:pod.podRecipientName,notes:pod.podNotes,submittedAt:pod.podSubmittedAt,signature,photos});
+ const pod=rows[0]||{podRecipientName:null,podNotes:null,podSubmittedAt:null,deliveryLatitude:null,deliveryLongitude:null,deliveryLocationAccuracyMeters:null,deliveryLocationCapturedAt:null};
+ return NextResponse.json({bookingId,status:booking.status,recipientName:pod.podRecipientName,notes:pod.podNotes,submittedAt:pod.podSubmittedAt,deliveryLocation:pod.deliveryLatitude!==null&&pod.deliveryLongitude!==null?{latitude:pod.deliveryLatitude,longitude:pod.deliveryLongitude,accuracyMeters:pod.deliveryLocationAccuracyMeters,capturedAt:pod.deliveryLocationCapturedAt}:null,signature,photos});
 }
 
 export async function POST(r:Request){
@@ -39,6 +53,9 @@ export async function POST(r:Request){
  if(!(signature instanceof File)||signature.size<=0)return NextResponse.json({error:'Recipient signature is required'},{status:400});
  if(photos.length<1)return NextResponse.json({error:'Add at least one delivery photo'},{status:400});
  if(photos.length>6)return NextResponse.json({error:'You can upload up to 6 delivery photos'},{status:400});
+ const parsedLocation=parseDeliveryLocation(form);
+ if(parsedLocation.error)return NextResponse.json({error:parsedLocation.error},{status:400});
+ const deliveryLocation=parsedLocation.location;
 
  const booking=await prisma.booking.findFirst({where:{id:bookingId,transporterId:u.id},include:{payment:true,job:true,customer:{select:{name:true,email:true}}}});
  if(!booking)return NextResponse.json({error:'Booking not found'},{status:404});
@@ -60,7 +77,7 @@ export async function POST(r:Request){
   await prisma.$transaction(async(tx:any)=>{
    for(const path of uploadedPhotos)await tx.evidence.create({data:{bookingId:booking.id,uploaderId:u.id,type:'DELIVERY',imageUrl:path,note:'Proof of delivery photo'}});
    await tx.evidence.create({data:{bookingId:booking.id,uploaderId:u.id,type:'DELIVERY',imageUrl:signaturePath,note:SIGNATURE_MARKER}});
-   await tx.$executeRaw`UPDATE "Booking" SET "podRecipientName"=${recipientName}, "podNotes"=${notes||null}, "podSubmittedAt"=${submittedAt}, "status"='DELIVERED'::"BookingStatus" WHERE "id"=${booking.id}`;
+   await tx.$executeRaw`UPDATE "Booking" SET "podRecipientName"=${recipientName}, "podNotes"=${notes||null}, "podSubmittedAt"=${submittedAt}, "deliveryLatitude"=${deliveryLocation?.latitude??null}, "deliveryLongitude"=${deliveryLocation?.longitude??null}, "deliveryLocationAccuracyMeters"=${deliveryLocation?.accuracyMeters??null}, "deliveryLocationCapturedAt"=${deliveryLocation?.capturedAt??null}, "status"='DELIVERED'::"BookingStatus" WHERE "id"=${booking.id}`;
    await tx.trackingEvent.create({data:{bookingId:booking.id,status:'DELIVERED',note:notes||`Proof of delivery signed by ${recipientName}`,actorId:u.id}});
   });
   try{await prisma.transportJob.update({where:{id:booking.jobId},data:{status:'COMPLETED'}})}catch(e){console.error('Transport job completion sync failed',e)}
