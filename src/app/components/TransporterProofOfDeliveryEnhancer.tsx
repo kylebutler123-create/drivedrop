@@ -26,14 +26,41 @@ function PodForm({booking,onDone}:{booking:any,onDone:()=>void|Promise<void>}){
  const[locationBusy,setLocationBusy]=useState(false);
  const[locationMessage,setLocationMessage]=useState<string|null>(null);
 
+ const locationRequest=useRef(0);
+ useEffect(()=>()=>{locationRequest.current+=1},[]);
+
  function captureLocation(){
-  if(!('geolocation' in navigator)){setLocationMessage('Location is not available on this device. You can still submit proof of delivery.');return}
+  if(locationBusy||busy)return;
+  if(!window.isSecureContext){setLocationMessage('Location needs a secure HTTPS page. Open DriveDrop directly in Safari. [LOCATION_HTTPS]');return}
+  const policyDocument=document as Document&{permissionsPolicy?:{allowsFeature:(feature:string)=>boolean};featurePolicy?:{allowsFeature:(feature:string)=>boolean}};
+  const policy=policyDocument.permissionsPolicy||policyDocument.featurePolicy;
+  if(policy&&!policy.allowsFeature('geolocation')){setLocationMessage('This page is blocking location access. Please send DriveDrop this code: LOCATION_POLICY. You can still submit without location.');return}
+  if(!('geolocation' in navigator)){setLocationMessage('Location is not available on this device. You can still submit proof of delivery. [LOCATION_UNAVAILABLE]');return}
+  const request=++locationRequest.current;
   setLocationBusy(true);setLocationMessage(null);
-  navigator.geolocation.getCurrentPosition(
-   position=>{setLocation({latitude:position.coords.latitude,longitude:position.coords.longitude,accuracy:position.coords.accuracy,capturedAt:new Date(position.timestamp).toISOString()});setLocationBusy(false)},
-   error=>{const denied=error.code===error.PERMISSION_DENIED;setLocationMessage(denied?'Location permission was not granted. You can still submit proof of delivery.':'We could not capture your location. Check your signal and try again, or submit without it.');setLocationBusy(false)},
-   {enableHighAccuracy:true,timeout:15000,maximumAge:0}
-  );
+  const success=(position:GeolocationPosition)=>{
+   if(request!==locationRequest.current)return;
+   const {latitude,longitude,accuracy}=position.coords;
+   if(![latitude,longitude,accuracy,position.timestamp].every(Number.isFinite)||Math.abs(latitude)>90||Math.abs(longitude)>180||accuracy<0){
+    setLocationBusy(false);setLocationMessage('The device returned an invalid location. Please try again. [LOCATION_INVALID]');return;
+   }
+   setLocation({latitude,longitude,accuracy,capturedAt:new Date(position.timestamp).toISOString()});setLocationBusy(false);setLocationMessage(null);
+  };
+  const failure=(error:GeolocationPositionError)=>{
+   if(request!==locationRequest.current)return;
+   setLocationBusy(false);
+   const detail=error.message?.trim().slice(0,240);
+   const reason=error.code===1?'The browser or device blocked location access':error.code===3?'The device took too long to find a location':'The device could not determine its location';
+   setLocationMessage(reason+'. You can retry or submit without location. [LOCATION_'+error.code+']'+(detail?' Browser details: '+detail:''));
+  };
+  try{
+   navigator.geolocation.getCurrentPosition(success,error=>{
+    if(request!==locationRequest.current)return;
+    if(error.code===1){failure(error);return}
+    setLocationMessage('GPS is unavailable. Trying the device’s standard location service…');
+    navigator.geolocation.getCurrentPosition(success,failure,{enableHighAccuracy:false,timeout:15000,maximumAge:0});
+   },{enableHighAccuracy:true,timeout:15000,maximumAge:0});
+  }catch{setLocationBusy(false);setLocationMessage('The browser could not start location capture. Open DriveDrop directly in Safari and retry. [LOCATION_START]')}
  }
 
  async function submit(e:React.FormEvent){
@@ -54,7 +81,7 @@ function PodForm({booking,onDone}:{booking:any,onDone:()=>void|Promise<void>}){
   finally{inFlight.current=false;setBusy(false)}
  }
 
- return <div className="podMount" data-pod-mount="true">{!open?<button type="button" className="btn orange fullBtn" onClick={()=>setOpen(true)}>Complete delivery</button>:<form className="infoPanel podPanel" onSubmit={submit} aria-busy={busy}><fieldset disabled={busy} style={{border:0,padding:0,margin:0,minWidth:0}}><div className="subHeading"><h3>Proof of delivery</h3><button type="button" className="textAction" onClick={()=>setOpen(false)}>Close</button></div><p className="muted">Add delivery evidence and the recipient’s signature before completing this booking.</p><div className="field"><label>RECIPIENT NAME</label><input value={recipient} onChange={e=>setRecipient(e.target.value)} minLength={2} maxLength={120} required placeholder="Name of person receiving vehicle"/></div><div className="field"><label>DELIVERY PHOTOS</label><input type="file" accept="image/jpeg,image/png,image/webp" multiple required onChange={e=>setPhotos(Array.from(e.target.files||[]).slice(0,6))}/><small className="muted">1–6 photos. JPG, PNG or WebP.</small></div><div className="field"><label>RECIPIENT SIGNATURE</label><SignaturePad onChange={setSignature}/></div><div className="field podLocationField"><label>DELIVERY LOCATION <span>OPTIONAL</span></label><p>Share your current location once to record where the handover took place. This does not enable continuous tracking.</p><button type="button" className="btn light podLocationButton" onClick={captureLocation} disabled={locationBusy}>{locationBusy?'Capturing location…':location?'Update delivery location':'Share delivery location'}</button>{location&&<div className="podLocationSuccess" role="status"><strong>Delivery location captured</strong><span>{Math.round(location.accuracy)} m accuracy · captured just now</span></div>}{locationMessage&&<div className="podLocationNotice" role="status">{locationMessage}</div>}</div><div className="field"><label>DELIVERY NOTES</label><textarea value={notes} onChange={e=>setNotes(e.target.value)} rows={4} maxLength={1000} placeholder="Optional condition, access or handover notes"/></div><label className="podConfirm"><input type="checkbox" checked={confirmed} onChange={e=>setConfirmed(e.target.checked)} required/> I confirm the vehicle has been delivered to the recipient.</label>{message&&<div role={message.startsWith('Proof')?'status':'alert'} className={message.startsWith('Proof')?'formNotice successNotice':'formNotice errorNotice'}>{message}</div>}<button className="btn orange fullBtn" disabled={busy||!signature||photos.length===0}>{busy?'Submitting…':'Submit proof & complete delivery'}</button></fieldset></form>}</div>
+ return <div className="podMount" data-pod-mount="true">{!open?<button type="button" className="btn orange fullBtn" onClick={()=>setOpen(true)}>Complete delivery</button>:<form className="infoPanel podPanel" onSubmit={submit} aria-busy={busy}><fieldset disabled={busy} style={{border:0,padding:0,margin:0,minWidth:0}}><div className="subHeading"><h3>Proof of delivery</h3><button type="button" className="textAction" onClick={()=>setOpen(false)}>Close</button></div><p className="muted">Add delivery evidence and the recipient’s signature before completing this booking.</p><div className="field"><label>RECIPIENT NAME</label><input value={recipient} onChange={e=>setRecipient(e.target.value)} minLength={2} maxLength={120} required placeholder="Name of person receiving vehicle"/></div><div className="field"><label>DELIVERY PHOTOS</label><input type="file" accept="image/jpeg,image/png,image/webp" multiple required onChange={e=>setPhotos(Array.from(e.target.files||[]).slice(0,6))}/><small className="muted">1–6 photos. JPG, PNG or WebP.</small></div><div className="field"><label>RECIPIENT SIGNATURE</label><SignaturePad onChange={setSignature}/></div><div className="field podLocationField"><label>DELIVERY LOCATION <span>OPTIONAL</span></label><p>Share your current location once to record where the handover took place. This does not enable continuous tracking.</p><button type="button" className="btn light podLocationButton" onClick={captureLocation} disabled={locationBusy}>{locationBusy?'Capturing location…':location?'Update delivery location':'Share delivery location'}</button>{location&&<div className="podLocationSuccess" role="status"><strong>Delivery location captured</strong><span>{Math.round(location.accuracy)} m accuracy · captured at {new Date(location.capturedAt).toLocaleTimeString('en-GB')}</span></div>}{locationMessage&&<div className="podLocationNotice" role="status">{locationMessage}</div>}</div><div className="field"><label>DELIVERY NOTES</label><textarea value={notes} onChange={e=>setNotes(e.target.value)} rows={4} maxLength={1000} placeholder="Optional condition, access or handover notes"/></div><label className="podConfirm"><input type="checkbox" checked={confirmed} onChange={e=>setConfirmed(e.target.checked)} required/> I confirm the vehicle has been delivered to the recipient.</label>{message&&<div role={message.startsWith('Proof')?'status':'alert'} className={message.startsWith('Proof')?'formNotice successNotice':'formNotice errorNotice'}>{message}</div>}<button className="btn orange fullBtn" disabled={busy||!signature||photos.length===0}>{busy?'Submitting…':'Submit proof & complete delivery'}</button></fieldset></form>}</div>
 }
 
 export default function TransporterProofOfDeliveryEnhancer({booking,onDone}:{booking:any,onDone:()=>void|Promise<void>}){
