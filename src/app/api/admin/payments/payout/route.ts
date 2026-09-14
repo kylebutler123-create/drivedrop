@@ -26,13 +26,16 @@ export async function POST(r:Request){
    const old=await tx.bookingPayment.findUniqueOrThrow({
     where:{id:paymentId},
     include:{booking:{include:{
-     disputes:{where:{status:{in:['OPEN','UNDER_REVIEW']}}},
+     disputes:{select:{status:true,resolution:true}},
+     trackingEvents:{where:{status:'DELIVERED'},select:{createdAt:true},orderBy:{createdAt:'desc'},take:1},
      job:{select:{vehicleMake:true,vehicleModel:true,registration:true}}
     }}}
    });
-   if(old.booking.disputes.length)throw new Error('Payout is held while an active dispute is under review');
+   const activeDisputes=old.booking.disputes.filter((dispute:any)=>['OPEN','UNDER_REVIEW'].includes(dispute.status));
+   const adminReleaseOverride=old.booking.disputes.some((dispute:any)=>dispute.status==='RESOLVED'&&dispute.resolution==='RELEASE_PAYOUT');
+   if(activeDisputes.length)throw new Error('Payout is held while an active dispute is under review');
    if(old.booking.status!=='DELIVERED')throw new Error('Delivery must be completed first');
-   if(!old.booking.customerConfirmedAt)throw new Error('Customer must confirm delivery first');
+   if(!old.booking.customerConfirmedAt&&!adminReleaseOverride)throw new Error('Customer confirmation or an approved admin dispute resolution is required');
    if(old.status!=='PAID')throw new Error('Customer payment not recorded');
    if(old.payoutStatus!=='READY')throw new Error('Payout is not ready for release');
    const details=await tx.$queryRaw<any[]>`SELECT "id" FROM "TransporterPayoutDetails" WHERE "userId"=${old.booking.transporterId} LIMIT 1`;
@@ -41,7 +44,7 @@ export async function POST(r:Request){
     tx,
     transporterId:old.booking.transporterId,
     paymentId,
-    completedAt:old.booking.customerConfirmedAt,
+    completedAt:old.booking.customerConfirmedAt||old.booking.trackingEvents[0]?.createdAt||new Date(),
     proceedsPence:old.transporterProceedsPence,
    });
    const payment=await tx.bookingPayment.update({where:{id:paymentId},data:{

@@ -14,3 +14,16 @@
 .transporterCompletedCard.hasUnreadPaid>.transporterCompletedSummary{padding-left:9px;border-left:4px solid #2f9c61;background:#ddf3e6}
 .transporterCompletedCard.hasUnreadPaid>.transporterCompletedSummary:hover{background:#d5efdf}
 @media(max-width:800px){.transporterCompletedCard.hasUnreadPaid>.transporterCompletedSummary{padding-left:7px}}
+
+
+/* Delivered-but-unconfirmed dispute action. */
+.transporterCompletedContact{flex-wrap:wrap;gap:8px}
+.transporterDisputeNotice{margin:0 13px 10px}
+.transporterDisputeForm{margin:0 13px 12px;padding:14px;border:1px solid #d8e3ec;border-radius:12px;background:#f8fbfd}
+.transporterDisputeForm strong{display:block;color:#173451;font-size:13px}
+.transporterDisputeForm p{margin:4px 0 12px;color:#667b8e;font-size:11px;line-height:1.5}
+.transporterDisputeForm label{display:block;margin-bottom:5px;color:#29465f;font-size:10px;font-weight:900}
+.transporterDisputeForm textarea{box-sizing:border-box;width:100%;resize:vertical;min-height:88px;padding:10px 11px;border:1px solid #cbd8e3;border-radius:9px;background:#fff;color:#173451;font:inherit;font-size:12px;line-height:1.45}
+.transporterDisputeForm textarea:focus{border-color:#ff8a2a;outline:3px solid rgba(255,138,42,.14)}
+.transporterDisputeForm .actionButtons{margin-top:10px}
+@media(max-width:800px){.transporterCompletedContact .btn{width:auto;flex:1 1 145px}.transporterDisputeNotice,.transporterDisputeForm{margin-right:11px;margin-left:11px}}
