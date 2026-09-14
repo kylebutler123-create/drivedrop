@@ -38,3 +38,6 @@
 .transporterHero .dashboardSummary>[data-booked-proceeds-summary]:hover{transform:translateY(-2px);background:rgba(255,255,255,.16);box-shadow:0 12px 28px rgba(7,26,51,.16)}
 .transporterHero .dashboardSummary>[data-booked-proceeds-summary]:focus-visible{outline:3px solid rgba(255,154,80,.55);outline-offset:3px}
 @media(max-width:760px){.transporterHero .dashboardSummary>[data-booked-proceeds-summary]{padding:12px 6px}.transporterHero .dashboardSummary>[data-booked-proceeds-summary]:hover{transform:none}}
+
+/* Completed delivery payout filter. */
+.transporterCompletedFilter{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:0 0 14px}.transporterCompletedFilter>span{color:#60758a;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.035em}.transporterCompletedFilter select{min-height:40px;min-width:270px;padding:8px 36px 8px 11px;border:1px solid #cfd9e3;border-radius:10px;background:#fff;color:#183654;font-size:11px;font-weight:800}.transporterCompletedFilter select:focus{border-color:#ff8a2a;outline:3px solid rgba(255,138,42,.14)}.transporterCompletedFilterEmpty{margin-top:8px}@media(max-width:600px){.transporterCompletedFilter{align-items:stretch;flex-direction:column}.transporterCompletedFilter select{width:100%;min-width:0}}
