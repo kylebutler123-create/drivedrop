@@ -51,7 +51,7 @@
 .customerSummaryActivity{
  position:absolute;
  top:10px;
- right:10px;
+ left:10px;
  display:block!important;
  width:8px;
  height:8px;
@@ -63,5 +63,5 @@
  box-shadow:0 0 0 3px rgba(244,122,31,.14)
 }
 @media(max-width:760px){
- .customerSummaryActivity{top:9px;right:9px;width:8px;height:8px}
+ .customerSummaryActivity{top:9px;left:9px;width:8px;height:8px}
 }
