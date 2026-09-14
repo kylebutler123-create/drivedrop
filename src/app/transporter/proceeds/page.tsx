@@ -11,7 +11,7 @@ const money=(pence:number)=>new Intl.NumberFormat('en-GB',{style:'currency',curr
 const label=(value:string)=>value.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,character=>character.toUpperCase());
 const reference=(id:string)=>'DD-'+id.slice(-8).toUpperCase();
 const activeStatuses=['CONFIRMED','COLLECTION_SCHEDULED','COLLECTED','IN_TRANSIT','ARRIVING_SOON','DELIVERED'] as const;
-type ProceedsFilter='BOOKED'|'IN_PROGRESS'|'READY'|'HELD'|'PAID';
+type ProceedsFilter='BOOKED'|'IN_PROGRESS'|'READY'|'HELD'|'PAID'|'FINES';
 const payoutLabel=(booking:any)=>{
  const status=booking.payment?.payoutStatus;
  if(status==='PAID')return'Paid';
@@ -28,7 +28,7 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
  if(!user)redirect('/login?account=transporter');
  if(user.role!=='TRANSPORTER')notFound();
  const requested=String(params.filter||'').toUpperCase();
- const filter:ProceedsFilter=requested==='IN_PROGRESS'||requested==='READY'||requested==='HELD'||requested==='PAID'?requested:'BOOKED';
+ const filter:ProceedsFilter=requested==='IN_PROGRESS'||requested==='READY'||requested==='HELD'||requested==='PAID'||requested==='FINES'?requested:'BOOKED';
  const bookings=await prisma.booking.findMany({
   where:{transporterId:user.id,status:{in:[...activeStatuses]}},
   select:{
@@ -45,8 +45,9 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
  const paid=rows.filter(booking=>booking.payment?.payoutStatus==='PAID').reduce((sum,booking)=>sum+proceedsBeforeFine(booking),0);
  const ready=rows.filter(booking=>booking.payment?.payoutStatus==='READY').reduce((sum,booking)=>sum+proceedsBeforeFine(booking),0);
  const held=rows.filter(booking=>booking.payment?.payoutStatus==='HELD').reduce((sum,booking)=>sum+proceedsBeforeFine(booking),0);
- const visibleRows=filter==='BOOKED'?rows:filter==='IN_PROGRESS'?rows.filter(inProgress):rows.filter(booking=>booking.payment?.payoutStatus===filter);
- const breakdownTitle=filter==='IN_PROGRESS'?'In progress':filter==='READY'?'Ready for release':filter==='HELD'?'Held proceeds':filter==='PAID'?'Paid proceeds':'Booked proceeds';
+ const fines=rows.reduce((sum,booking)=>sum+(booking.payment?.cancellationDeductionPence||0),0);
+ const visibleRows=filter==='BOOKED'?rows:filter==='IN_PROGRESS'?rows.filter(inProgress):filter==='FINES'?rows.filter(booking=>(booking.payment?.cancellationDeductionPence||0)>0):rows.filter(booking=>booking.payment?.payoutStatus===filter);
+ const breakdownTitle=filter==='IN_PROGRESS'?'In progress':filter==='READY'?'Ready for release':filter==='HELD'?'Held proceeds':filter==='PAID'?'Paid proceeds':filter==='FINES'?'Cancellation fines':'Booked proceeds';
  return <main className={`shell dashboardShell ${styles.page}`}>
   <Link className="backLink" href="/transporter">← Back to transporter dashboard</Link>
   <header className={styles.hero}>
@@ -59,6 +60,7 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
    <Link href="/transporter/proceeds?filter=ready" className={filter==='READY'?styles.active:undefined} aria-current={filter==='READY'?'page':undefined}><small>Ready for release</small><strong>{money(ready)}</strong></Link>
    <Link href="/transporter/proceeds?filter=held" className={filter==='HELD'?styles.active:undefined} aria-current={filter==='HELD'?'page':undefined}><small>Held</small><strong>{money(held)}</strong></Link>
    <Link href="/transporter/proceeds?filter=paid" className={filter==='PAID'?styles.active:undefined} aria-current={filter==='PAID'?'page':undefined}><small>Paid</small><strong>{money(paid)}</strong></Link>
+   <Link href="/transporter/proceeds?filter=fines" className={filter==='FINES'?styles.active:undefined} aria-current={filter==='FINES'?'page':undefined}><small>Fines</small><strong>−{money(fines)}</strong></Link>
   </nav>
   <div className={styles.heading}><div><h2>{breakdownTitle}</h2><p>Newest bookings first</p></div><span>{visibleRows.length} record{visibleRows.length===1?'':'s'}</span></div>
   {visibleRows.length===0?<section className="dashboardCard emptyState"><div>£</div><h3>No {breakdownTitle.toLowerCase()}</h3><p>{filter==='BOOKED'?'Proceeds will appear here after a customer accepts and pays for a delivery.':'No proceeds currently match this status.'}</p></section>:<section className={styles.list}>{visibleRows.map(booking=>{const payment=booking.payment!;const fine=payment.cancellationDeductionPence||0;const net=payment.transporterProceedsPence||0;const beforeFine=net+fine;const paidAt=payment.events[0]?.createdAt;return <article className={styles.card} key={booking.id}>
