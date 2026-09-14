@@ -51,7 +51,7 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
  const fines=adjustmentRows.reduce((sum,booking)=>sum+(booking.payment?.cancellationDeductionPence||0),0);
  const refunds=adjustmentRows.reduce((sum,booking)=>sum+(booking.payment?.refundedPence||0),0);
  const visibleRows=filter==='BOOKED'?rows:filter==='IN_PROGRESS'?rows.filter(inProgress):filter==='FINES'?adjustmentRows:rows.filter(booking=>booking.payment?.payoutStatus===filter);
- const breakdownTitle=filter==='IN_PROGRESS'?'In progress':filter==='READY'?'Ready for release':filter==='HELD'?'Held proceeds':filter==='PAID'?'Paid proceeds':filter==='FINES'?'Fines / refunds':'Booked proceeds';
+ const breakdownTitle=filter==='IN_PROGRESS'?'In progress':filter==='READY'?'Ready for release':filter==='HELD'?'Held proceeds':filter==='PAID'?'Paid proceeds':filter==='FINES'?'Fines / Refunds':'Booked proceeds';
  return <main className={`shell dashboardShell ${styles.page}`}>
   <Link className="backLink" href="/transporter">← Back to transporter dashboard</Link>
   <header className={styles.hero}>
