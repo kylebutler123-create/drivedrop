@@ -3,3 +3,14 @@
 .transporterCompletedIdentity .transporterDeliveryReference{color:#31506b;font-weight:800;letter-spacing:.02em}
 
 .transporterCompletedContact{display:flex;justify-content:flex-end;padding:0 13px 10px;background:#fff}.transporterCompletedContact .btn{min-height:38px;padding:8px 13px;font-size:11px;line-height:1.25}@media(max-width:800px){.transporterCompletedContact{justify-content:stretch;padding:0 11px 10px}.transporterCompletedContact .btn{width:100%}}
+
+
+/* Paid completed deliveries stay green; unread paid activity receives a stronger highlight. */
+.transporterCompletedCard.isPaid{border-color:#a8d8be!important;background:#f2faf5}
+.transporterCompletedCard.isPaid>.transporterCompletedSummary{background:#edf8f2}
+.transporterCompletedCard.isPaid>.transporterCompletedSummary:hover{background:#e5f5ec}
+.transporterCompletedCard.isPaid .successPill{border-color:#a8d8be;background:#dff3e8;color:#12633d}
+.transporterCompletedCard.hasUnreadPaid{border:2px solid #39a66b!important;box-shadow:0 0 0 3px rgba(57,166,107,.12),0 12px 30px rgba(28,107,66,.14)!important}
+.transporterCompletedCard.hasUnreadPaid>.transporterCompletedSummary{padding-left:9px;border-left:4px solid #2f9c61;background:#ddf3e6}
+.transporterCompletedCard.hasUnreadPaid>.transporterCompletedSummary:hover{background:#d5efdf}
+@media(max-width:800px){.transporterCompletedCard.hasUnreadPaid>.transporterCompletedSummary{padding-left:7px}}
