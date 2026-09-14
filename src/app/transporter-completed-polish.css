@@ -27,3 +27,8 @@
 .transporterDisputeForm textarea:focus{border-color:#ff8a2a;outline:3px solid rgba(255,138,42,.14)}
 .transporterDisputeForm .actionButtons{margin-top:10px}
 @media(max-width:800px){.transporterCompletedContact .btn{width:auto;flex:1 1 145px}.transporterDisputeNotice,.transporterDisputeForm{margin-right:11px;margin-left:11px}}
+
+
+/* Keep transporter summary actions in their operational order. */
+.transporterHero .dashboardSummary{grid-template-columns:repeat(3,minmax(0,1fr))}
+.transporterHero .dashboardSummary>[data-booked-proceeds-summary]{grid-column:1/-1}
