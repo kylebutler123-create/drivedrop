@@ -34,8 +34,10 @@ function syncDeliveryProgress(card:HTMLElement,markSeen=false){
  let seen=seenProgress.get(storageKey);
  if(seen===undefined){try{seen=localStorage.getItem(storageKey)||undefined}catch{}}
  if(markSeen&&progress.customerId&&progress.bookingId){
+  const newlySeen=seen!==progress.eventKey;
   seen=progress.eventKey;seenProgress.set(storageKey,seen);
   try{localStorage.setItem(storageKey,seen)}catch{}
+  if(newlySeen)window.dispatchEvent(new CustomEvent('drivedrop:customer-progress-seen'));
  }
  const unread=!confirmationRequired&&progress.highlight===true&&!!progress.customerId&&!!progress.bookingId&&seen!==progress.eventKey;
  card.classList.toggle('hasUnreadDeliveryProgress',unread);
