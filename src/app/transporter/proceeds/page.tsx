@@ -21,6 +21,7 @@ const payoutLabel=(booking:any)=>{
  return'In progress';
 };
 const inProgress=(booking:any)=>!['READY','HELD','PAID','CANCELLED'].includes(booking.payment?.payoutStatus);
+const proceedsBeforeFine=(booking:any)=>(booking.payment?.transporterProceedsPence||0)+(booking.payment?.cancellationDeductionPence||0);
 
 export default async function TransporterProceeds({searchParams}:{searchParams:Promise<{filter?:string}>}){
  const[user,params]=await Promise.all([currentUser(),searchParams]);
@@ -39,18 +40,18 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
   orderBy:{createdAt:'desc'}
  });
  const rows=bookings.filter(booking=>booking.payment&&booking.payment.payoutStatus!=='CANCELLED');
- const total=rows.reduce((sum,booking)=>sum+(booking.payment?.transporterProceedsPence||0),0);
- const inProgressTotal=rows.filter(inProgress).reduce((sum,booking)=>sum+(booking.payment?.transporterProceedsPence||0),0);
- const paid=rows.filter(booking=>booking.payment?.payoutStatus==='PAID').reduce((sum,booking)=>sum+(booking.payment?.transporterProceedsPence||0),0);
- const ready=rows.filter(booking=>booking.payment?.payoutStatus==='READY').reduce((sum,booking)=>sum+(booking.payment?.transporterProceedsPence||0),0);
- const held=rows.filter(booking=>booking.payment?.payoutStatus==='HELD').reduce((sum,booking)=>sum+(booking.payment?.transporterProceedsPence||0),0);
+ const total=rows.reduce((sum,booking)=>sum+proceedsBeforeFine(booking),0);
+ const inProgressTotal=rows.filter(inProgress).reduce((sum,booking)=>sum+proceedsBeforeFine(booking),0);
+ const paid=rows.filter(booking=>booking.payment?.payoutStatus==='PAID').reduce((sum,booking)=>sum+proceedsBeforeFine(booking),0);
+ const ready=rows.filter(booking=>booking.payment?.payoutStatus==='READY').reduce((sum,booking)=>sum+proceedsBeforeFine(booking),0);
+ const held=rows.filter(booking=>booking.payment?.payoutStatus==='HELD').reduce((sum,booking)=>sum+proceedsBeforeFine(booking),0);
  const visibleRows=filter==='BOOKED'?rows:filter==='IN_PROGRESS'?rows.filter(inProgress):rows.filter(booking=>booking.payment?.payoutStatus===filter);
  const breakdownTitle=filter==='IN_PROGRESS'?'In progress':filter==='READY'?'Ready for release':filter==='HELD'?'Held proceeds':filter==='PAID'?'Paid proceeds':'Booked proceeds';
  return <main className={`shell dashboardShell ${styles.page}`}>
   <Link className="backLink" href="/transporter">← Back to transporter dashboard</Link>
   <header className={styles.hero}>
    <div><span>Transporter finances</span><h1>Booked proceeds</h1><p>See the proceeds attached to every active and completed delivery, including payout progress and any cancellation fine deductions.</p></div>
-   <div className={styles.total}><small>Total booked proceeds</small><strong>{money(total)}</strong><span>{rows.length} booking{rows.length===1?'':'s'}</span></div>
+   <div className={styles.total}><small>Total booked proceeds before fines</small><strong>{money(total)}</strong><span>{rows.length} booking{rows.length===1?'':'s'}</span></div>
   </header>
   <nav className={styles.summary} aria-label="Filter proceeds">
    <Link href="/transporter/proceeds" className={filter==='BOOKED'?styles.active:undefined} aria-current={filter==='BOOKED'?'page':undefined}><small>Booked proceeds</small><strong>{money(total)}</strong></Link>
