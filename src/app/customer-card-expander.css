@@ -47,26 +47,21 @@
 @media(max-width:760px){.requestPanel>form>.grid{row-gap:2px;margin-top:8px}.requestPanel>form>.grid>.field{margin:4px 0}}
 
 
-/* Show only the activity number in a compact orange circle. */
+/* Show new activity as a subtle orange dot. */
 .customerSummaryActivity{
  position:absolute;
- top:8px;
- right:8px;
- display:grid!important;
- place-items:center;
- width:22px;
- height:22px;
+ top:10px;
+ right:10px;
+ display:block!important;
+ width:8px;
+ height:8px;
  margin:0;
  padding:0;
  border:0;
  border-radius:50%;
  background:#f47a1f;
- color:#fff!important;
- box-shadow:0 2px 7px rgba(133,61,10,.24);
- font-size:10px!important;
- font-weight:900;
- line-height:1
+ box-shadow:0 0 0 3px rgba(244,122,31,.14)
 }
 @media(max-width:760px){
- .customerSummaryActivity{top:7px;right:7px;width:21px;height:21px;font-size:10px!important}
+ .customerSummaryActivity{top:9px;right:9px;width:8px;height:8px}
 }
