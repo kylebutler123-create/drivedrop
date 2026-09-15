@@ -10,4 +10,17 @@ export async function GET(){
  return NextResponse.json({...verification,insuranceStatus},{headers:{'Cache-Control':'no-store, max-age=0'}});
 }
 export async function PUT(r:Request){const u=await currentUser();if(!u||u.role!=='TRANSPORTER')return NextResponse.json({error:'Transporter access required'},{status:403});const x=S.safeParse(await r.json());if(!x.success)return NextResponse.json({error:'Invalid business details'},{status:400});const data={...x.data,website:x.data.website||null};const v=await prisma.transporterVerification.upsert({where:{transporterId:u.id},create:{...data,transporterId:u.id},update:data,include:{documents:true}});return NextResponse.json(v)}
-export async function POST(){const u=await currentUser();if(!u||u.role!=='TRANSPORTER')return NextResponse.json({error:'Transporter access required'},{status:403});const v=await prisma.transporterVerification.findUnique({where:{transporterId:u.id},include:{documents:true}});if(!v)return NextResponse.json({error:'Complete your business details first'},{status:400});if(!v.documents.length)return NextResponse.json({error:'Upload at least one verification document first'},{status:400});const updated=await prisma.transporterVerification.update({where:{id:v.id},data:{status:'PENDING',submittedAt:new Date(),reviewNote:null}});await notifyAdminsSafely({type:'ADMIN_VERIFICATION',title:'Transporter verification needs review',body:`${v.businessName||u.name} submitted transporter verification with ${v.documents.length} document${v.documents.length===1?'':'s'}.`,href:'/admin'});return NextResponse.json(updated)}
+export async function POST(){
+ const u=await currentUser();
+ if(!u||u.role!=='TRANSPORTER')return NextResponse.json({error:'Transporter access required'},{status:403});
+ const v=await prisma.transporterVerification.findUnique({where:{transporterId:u.id},include:{documents:true}});
+ if(!v)return NextResponse.json({error:'Complete your business details first'},{status:400});
+ const today=new Date();today.setUTCHours(0,0,0,0);
+ const insurance=v.documents.find(document=>document.type==='INSURANCE'&&document.status!=='REJECTED'&&document.expiresAt&&document.expiresAt>=today);
+ if(!insurance)return NextResponse.json({error:'Upload a current insurance certificate before submitting verification'},{status:400});
+ const drivingLicence=v.documents.find(document=>document.type==='DRIVING_LICENCE'&&document.status!=='REJECTED');
+ if(!drivingLicence)return NextResponse.json({error:'Upload your driving licence before submitting verification'},{status:400});
+ const updated=await prisma.transporterVerification.update({where:{id:v.id},data:{status:'PENDING',submittedAt:new Date(),reviewNote:null}});
+ await notifyAdminsSafely({type:'ADMIN_VERIFICATION',title:'Transporter verification needs review',body:`${v.businessName||u.name} submitted transporter verification with insurance and a driving licence ready for comparison.`,href:'/admin'});
+ return NextResponse.json(updated);
+}
