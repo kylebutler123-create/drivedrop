@@ -44,13 +44,12 @@ export async function PATCH(r:Request){
  const now=new Date();
  const insuranceToday=new Date(now);insuranceToday.setUTCHours(0,0,0,0);
  if(review.status==='APPROVED'){
-  const latestInsurance=current.documents.find(document=>document.type==='INSURANCE'&&document.status!=='REJECTED'&&document.expiresAt);
-  const currentInsurance=latestInsurance&&['PENDING','APPROVED'].includes(latestInsurance.status)&&latestInsurance.expiresAt!>=insuranceToday;
-  if(!currentInsurance)return NextResponse.json({error:'Replacement insurance is required. The newest insurance document must have a current or future expiry date before approval.'},{status:400});
+  const approvedInsurance=current.documents.find(document=>document.type==='INSURANCE'&&document.status==='APPROVED'&&document.expiresAt&&document.expiresAt>=insuranceToday);
+  const approvedDrivingLicence=current.documents.find(document=>document.type==='DRIVING_LICENCE'&&document.status==='APPROVED');
+  if(!approvedInsurance||!approvedDrivingLicence)return NextResponse.json({error:'Approve a current insurance certificate and the driving licence after comparing both documents before approving this account.'},{status:400});
  }
  const updated=await prisma.$transaction(async(tx:any)=>{
   await tx.verificationDocument.updateMany({where:{verificationId:current.id,status:{not:'REJECTED'},expiresAt:{lt:insuranceToday}},data:{status:'EXPIRED',reviewerId:u.id,reviewedAt:now}});
-  if(review.status==='APPROVED')await tx.verificationDocument.updateMany({where:{verificationId:current.id,status:'PENDING',OR:[{expiresAt:null},{expiresAt:{gte:insuranceToday}}]},data:{status:'APPROVED',reviewerId:u.id,reviewedAt:now,reviewNote:null}});
   if(review.status==='REJECTED')await tx.verificationDocument.updateMany({where:{verificationId:current.id,status:'PENDING'},data:{status:'REJECTED',reviewerId:u.id,reviewedAt:now,reviewNote:review.reviewNote}});
   return tx.transporterVerification.update({where:{id:current.id},data:{status:review.status,reviewNote:review.reviewNote,reviewedAt:now,reviewerId:u.id}});
  });
