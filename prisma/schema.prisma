@@ -69,6 +69,7 @@ enum VerificationStatus {
 
 enum VerificationDocumentType {
   INSURANCE
+  DRIVING_LICENCE
   COMPANY_REGISTRATION
   IDENTITY
   OPERATOR_LICENCE
