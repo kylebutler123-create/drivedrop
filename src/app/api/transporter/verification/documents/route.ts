@@ -10,7 +10,7 @@ import {
 } from '@/lib/supabase-storage';
 
 const metadataSchema = z.object({
-  type: z.enum(['INSURANCE', 'COMPANY_REGISTRATION', 'IDENTITY', 'OPERATOR_LICENCE', 'OTHER']),
+  type: z.enum(['INSURANCE', 'DRIVING_LICENCE', 'COMPANY_REGISTRATION', 'IDENTITY', 'OPERATOR_LICENCE', 'OTHER']),
   policyNumber: z.string().max(100).optional(),
   insurer: z.string().max(150).optional(),
   expiresAt: z.string().optional(),
