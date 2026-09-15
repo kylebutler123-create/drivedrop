@@ -5,3 +5,5 @@
 .verificationSection .businessDetailsForm>.grid{column-gap:12px;row-gap:0}.verificationSection .businessDetailsForm .field{margin-bottom:3px}.businessDetailsForm>.btn{margin-top:2px}
 
 .verificationSection .insuranceUploadCard>.grid{row-gap:2px}.verificationSection .insuranceUploadCard .field{margin-bottom:4px}
+
+.businessDetailsSection .verificationHeading{margin-bottom:7px;padding-bottom:10px}
