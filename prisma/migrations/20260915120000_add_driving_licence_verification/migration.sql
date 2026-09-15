@@ -1,0 +1,1 @@
+ALTER TYPE "VerificationDocumentType" ADD VALUE IF NOT EXISTS 'DRIVING_LICENCE';
