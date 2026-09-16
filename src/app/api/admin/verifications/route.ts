@@ -37,18 +37,24 @@ export async function PATCH(r:Request){
   const documentLabel=document.type.toLowerCase().replaceAll('_',' ');
   const result=await prisma.$transaction(async(tx:any)=>{
    const updated=await tx.verificationDocument.update({where:{id:document.id},data:{status:documentReview.documentStatus,reviewerId:u.id,reviewedAt:now,reviewNote:documentReview.reviewNote||null}});
-   let verificationStatusChanged=false;
-   if(documentReview.documentStatus==='REJECTED'&&['INSURANCE','DRIVING_LICENCE'].includes(document.type)){
+   let verificationStatusChanged:null|'APPROVED'|'REJECTED'=null;
+   if(['INSURANCE','DRIVING_LICENCE'].includes(document.type)){
     const approvedInsurance=await tx.verificationDocument.findFirst({where:{verificationId:document.verificationId,type:'INSURANCE',status:'APPROVED',expiresAt:{gte:today}},select:{id:true}});
     const approvedDrivingLicence=await tx.verificationDocument.findFirst({where:{verificationId:document.verificationId,type:'DRIVING_LICENCE',status:'APPROVED'},select:{id:true}});
-    if(!approvedInsurance||!approvedDrivingLicence){
+    const currentVerification=await tx.transporterVerification.findUnique({where:{id:document.verificationId},select:{status:true}});
+    if(documentReview.documentStatus==='REJECTED'&&(!approvedInsurance||!approvedDrivingLicence)){
      await tx.transporterVerification.update({where:{id:document.verificationId},data:{status:'REJECTED',reviewNote:documentReview.reviewNote||`${documentLabel.charAt(0).toUpperCase()+documentLabel.slice(1)} rejected. Upload a replacement document and submit verification again.`,reviewedAt:now,reviewerId:u.id}});
-     verificationStatusChanged=true;
+     verificationStatusChanged='REJECTED';
+    }else if(documentReview.documentStatus==='APPROVED'&&approvedInsurance&&approvedDrivingLicence&&currentVerification&&['PENDING','REJECTED'].includes(currentVerification.status)){
+     await tx.transporterVerification.update({where:{id:document.verificationId},data:{status:'APPROVED',reviewNote:null,reviewedAt:now,reviewerId:u.id}});
+     verificationStatusChanged='APPROVED';
     }
    }
    return {updated,verificationStatusChanged};
   });
-  await createNotificationSafely({userId:document.verification.transporterId,type:'VERIFICATION',title:documentReview.documentStatus==='APPROVED'?'Verification document approved':'Verification document requires changes',body:documentReview.documentStatus==='APPROVED'?`DriveDrop approved your new ${documentLabel} document.`:`DriveDrop reviewed your new ${documentLabel} document and changes are required.${result.verificationStatusChanged?' Your transporter verification is no longer approved. Upload a replacement document and submit it for review.':''}${documentReview.reviewNote?` Admin note: ${documentReview.reviewNote}`:''}`,href:'/transporter/verification'});
+  const verificationApproved=result.verificationStatusChanged==='APPROVED';
+  const verificationRejected=result.verificationStatusChanged==='REJECTED';
+  await createNotificationSafely({userId:document.verification.transporterId,type:'VERIFICATION',title:verificationApproved?'Verification approved':documentReview.documentStatus==='APPROVED'?'Verification document approved':'Verification document requires changes',body:verificationApproved?'DriveDrop has approved your transporter verification. Your verified status is now active.':documentReview.documentStatus==='APPROVED'?`DriveDrop approved your new ${documentLabel} document.`:`DriveDrop reviewed your new ${documentLabel} document and changes are required.${verificationRejected?' Your transporter verification is no longer approved. Upload a replacement document and submit it for review.':''}${documentReview.reviewNote?` Admin note: ${documentReview.reviewNote}`:''}`,href:'/transporter/verification'});
   return NextResponse.json({...result.updated,verificationStatusChanged:result.verificationStatusChanged});
  }
  const review=VerificationReview.parse(x.data);
