@@ -33,10 +33,22 @@ export async function PATCH(r:Request){
   if(!document)return NextResponse.json({error:'Verification document not found'},{status:404});
   const now=new Date();const today=new Date(now);today.setUTCHours(0,0,0,0);
   if(x.data.documentStatus==='APPROVED'&&document.type==='INSURANCE'&&(!document.expiresAt||document.expiresAt<today))return NextResponse.json({error:'Insurance must have a current or future expiry date before approval'},{status:400});
-  const updated=await prisma.verificationDocument.update({where:{id:document.id},data:{status:x.data.documentStatus,reviewerId:u.id,reviewedAt:now,reviewNote:x.data.reviewNote||null}});
   const documentLabel=document.type.toLowerCase().replaceAll('_',' ');
-  await createNotificationSafely({userId:document.verification.transporterId,type:'VERIFICATION',title:x.data.documentStatus==='APPROVED'?'Verification document approved':'Verification document requires changes',body:x.data.documentStatus==='APPROVED'?`DriveDrop approved your new ${documentLabel} document.`:`DriveDrop reviewed your new ${documentLabel} document and changes are required.${x.data.reviewNote?` Admin note: ${x.data.reviewNote}`:''}`,href:'/transporter/verification'});
-  return NextResponse.json(updated);
+  const result=await prisma.$transaction(async(tx:any)=>{
+   const updated=await tx.verificationDocument.update({where:{id:document.id},data:{status:x.data.documentStatus,reviewerId:u.id,reviewedAt:now,reviewNote:x.data.reviewNote||null}});
+   let verificationStatusChanged=false;
+   if(x.data.documentStatus==='REJECTED'&&['INSURANCE','DRIVING_LICENCE'].includes(document.type)){
+    const approvedInsurance=await tx.verificationDocument.findFirst({where:{verificationId:document.verificationId,type:'INSURANCE',status:'APPROVED',expiresAt:{gte:today}},select:{id:true}});
+    const approvedDrivingLicence=await tx.verificationDocument.findFirst({where:{verificationId:document.verificationId,type:'DRIVING_LICENCE',status:'APPROVED'},select:{id:true}});
+    if(!approvedInsurance||!approvedDrivingLicence){
+     await tx.transporterVerification.update({where:{id:document.verificationId},data:{status:'REJECTED',reviewNote:x.data.reviewNote||`${documentLabel.charAt(0).toUpperCase()+documentLabel.slice(1)} rejected. Upload a replacement document and submit verification again.`,reviewedAt:now,reviewerId:u.id}});
+     verificationStatusChanged=true;
+    }
+   }
+   return {updated,verificationStatusChanged};
+  });
+  await createNotificationSafely({userId:document.verification.transporterId,type:'VERIFICATION',title:x.data.documentStatus==='APPROVED'?'Verification document approved':'Verification document requires changes',body:x.data.documentStatus==='APPROVED'?`DriveDrop approved your new ${documentLabel} document.`:`DriveDrop reviewed your new ${documentLabel} document and changes are required.${result.verificationStatusChanged?' Your transporter verification is no longer approved. Upload a replacement document and submit it for review.':''}${x.data.reviewNote?` Admin note: ${x.data.reviewNote}`:''}`,href:'/transporter/verification'});
+  return NextResponse.json({...result.updated,verificationStatusChanged:result.verificationStatusChanged});
  }
  const review=VerificationReview.parse(x.data);
  const current=await prisma.transporterVerification.findUnique({where:{id:review.verificationId},include:{documents:{orderBy:{createdAt:'desc'},select:{type:true,status:true,expiresAt:true}}}});
