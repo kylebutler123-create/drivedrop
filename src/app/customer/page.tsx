@@ -1,4 +1,4 @@
-'use client';import {useEffect,useRef,useState} from 'react';import AddressAutocomplete from '@/app/components/AddressAutocomplete';import CustomerCollectionDateActions from '@/app/components/CustomerCollectionDateActions';import Link from 'next/link';import CustomerRequestActions from '@/app/components/CustomerRequestActions';import CustomerReviewForm from '@/app/components/CustomerReviewForm';
+'use client';import {useEffect,useLayoutEffect,useRef,useState} from 'react';import AddressAutocomplete from '@/app/components/AddressAutocomplete';import CustomerCollectionDateActions from '@/app/components/CustomerCollectionDateActions';import Link from 'next/link';import CustomerRequestActions from '@/app/components/CustomerRequestActions';import CustomerReviewForm from '@/app/components/CustomerReviewForm';
 const vehicleTypes=['Car','Motorcycle','Van','Motor home','Truck','Caravan','Plant machine','Farm machine'];
 const label=(s:string)=>s.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
 function collectionDateLabel(value:string|null|undefined){
@@ -79,7 +79,7 @@ function CustomerDeliveryLocationMap({proof}:{proof:any}){
 export default function Customer(){const[jobs,setJobs]=useState<any[]>([]),[me,setMe]=useState<any>(),[bookings,setBookings]=useState<any[]>([]),[disputes,setDisputes]=useState<any[]>([]),[view,setView]=useState<'REQUEST'|'QUOTES'|'BOOKINGS'|'COMPLETED'|'CANCELLED'>('REQUEST'),[submitting,setSubmitting]=useState(false),[formMessage,setFormMessage]=useState<{type:'success'|'error',text:string}|null>(null),[newJobId,setNewJobId]=useState<string|null>(null),[disputeBookingId,setDisputeBookingId]=useState<string|null>(null),[disputeReason,setDisputeReason]=useState(''),[disputeDetails,setDisputeDetails]=useState(''),[disputeSubmitting,setDisputeSubmitting]=useState(false),[disputeMessage,setDisputeMessage]=useState<string|null>(null);const[requestNotice,setRequestNotice]=useState<string|null>(null);const[jobsLoaded,setJobsLoaded]=useState(false);const[bookingsLoaded,setBookingsLoaded]=useState(false);const[quoteRefreshNotice,setQuoteRefreshNotice]=useState<string|null>(null);const[refreshingQuotes,setRefreshingQuotes]=useState(false);const[refreshingBookings,setRefreshingBookings]=useState(false);
 const[confirmingBookingId,setConfirmingBookingId]=useState<string|null>(null);
 const[bookingQuoteId,setBookingQuoteId]=useState<string|null>(null);
-const[acceptedBookingScrollId,setAcceptedBookingScrollId]=useState<string|null>(null);
+const pendingAcceptedBookingId=useRef<string|null>(null);
 const[bookingNotice,setBookingNotice]=useState<{quoteId:string;type:'error'|'success';text:string}|null>(null);
 const bookingInFlight=useRef(false);
 const requestInFlight=useRef(false);
@@ -131,17 +131,15 @@ useEffect(()=>{
  });
  return()=>cancelAnimationFrame(frame);
 },[view,jobsLoaded,bookingsLoaded]);
-useEffect(()=>{
- if(view!=='BOOKINGS'||!acceptedBookingScrollId||!bookings.some(booking=>booking.id===acceptedBookingScrollId))return;
- const frame=requestAnimationFrame(()=>{
-  const card=Array.from(document.querySelectorAll<HTMLElement>('.bookingCard')).find(element=>element.dataset.bookingId===acceptedBookingScrollId);
-  const target=card||document.getElementById('customer-bookings');
-  if(!target)return;
-  window.scrollTo({top:Math.max(0,target.getBoundingClientRect().top+window.scrollY-(card?72:0)),behavior:'auto'});
-  setAcceptedBookingScrollId(null);
- });
- return()=>cancelAnimationFrame(frame);
-},[view,bookings,acceptedBookingScrollId]);
+useLayoutEffect(()=>{
+ const bookingId=pendingAcceptedBookingId.current;
+ if(view!=='BOOKINGS'||!bookingId)return;
+ const card=Array.from(document.querySelectorAll<HTMLElement>('.bookingCard')).find(element=>element.dataset.bookingId===bookingId);
+ const target=card||document.getElementById('customer-bookings');
+ if(!target)return;
+ window.scrollTo({top:Math.max(0,target.getBoundingClientRect().top+window.scrollY-(card?72:0)),behavior:'instant'});
+ pendingAcceptedBookingId.current=null;
+},[view,bookings]);
 async function create(e:any){
  e.preventDefault();
  if(requestInFlight.current)return;
@@ -228,16 +226,17 @@ async function create(e:any){
   if(typeof saved?.id!=='string'||!saved.id||saved.quoteId!==quoteId||!['CONFIRMED','PENDING_PAYMENT'].includes(saved.status)||typeof saved?.payment?.status!=='string'){
    setBookingNotice({quoteId,type:'error',text:'We could not verify the booking response. Refresh and check Your deliveries before trying again.'});return;
   }
-  setJobs(current=>current.filter(job=>!(job.quotes||[]).some((quote:any)=>quote.id===quoteId)));
-  setView('BOOKINGS');
+  pendingAcceptedBookingId.current=saved.id;
   try{
    const bookingsResponse=await fetch('/api/my-bookings',{cache:'no-store'});
    const rows=await bookingsResponse.json().catch(()=>null);
    if(!bookingsResponse.ok||!Array.isArray(rows)||!rows.some((booking:any)=>booking.id===saved.id))throw new Error('Unable to refresh bookings');
-   setBookings(rows);setBookingsLoaded(true);setAcceptedBookingScrollId(saved.id);
+   setBookings(rows);setBookingsLoaded(true);
   }catch{
    setConfirmationNotice({type:'success',text:'Quote accepted and payment recorded. Refresh the dashboard to load the confirmed delivery details.'});
   }
+  setJobs(current=>current.filter(job=>!(job.quotes||[]).some((quote:any)=>quote.id===quoteId)));
+  setView('BOOKINGS');
  }catch{
   setBookingNotice({quoteId,type:'error',text:'The connection was interrupted. Refresh and check Your deliveries before trying again.'});
  }finally{
