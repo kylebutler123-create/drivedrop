@@ -1,3 +1,4 @@
+import {vehicleTypes} from '@/lib/vehicle-types';
 import {after,NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
@@ -6,7 +7,7 @@ import {quoteRequestExpiryCutoff} from '@/lib/job-expiry';
 import {sendTransactionalEmailBatchSafely} from '@/lib/email';
 import {insuranceStatusForVerification} from '@/lib/insurance-expiry-notifications';
 
-const vehicleTypes=['Car','Motorcycle','Van','Motor home','Truck','Caravan','Plant machine','Farm machine'] as const;
+
 const S=z.object({collection:z.string().min(2),delivery:z.string().min(2),vehicleType:z.enum(vehicleTypes),vehicleMake:z.string().min(1),vehicleModel:z.string().min(1),registration:z.string().optional(),running:z.boolean().default(true),collectionDate:z.coerce.date()});
 
 export async function POST(r:Request){
