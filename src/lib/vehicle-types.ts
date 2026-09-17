@@ -3,8 +3,8 @@ export const vehicleTypes=[
   'Van',
   'Motorcycle',
   'Classic / prestige vehicle',
-  'Other vehicle',
-  'Motorhome',
+  'Motorhome / campers',
+  'Other vehicles',
 ] as const;
 
 export type VehicleType=(typeof vehicleTypes)[number];
@@ -19,13 +19,15 @@ export function vehicleTypeCategory(value:unknown):VehicleType|null{
     case 'classic / prestige vehicle':return 'Classic / prestige vehicle';
     case 'motor home':
     case 'motor_home':
-    case 'motorhome':return 'Motorhome';
+    case 'motorhome':
+    case 'motorhome / campers':return 'Motorhome / campers';
     case 'other':
     case 'other vehicle':
+    case 'other vehicles':
     case 'truck':
     case 'caravan':
     case 'plant machine':
-    case 'farm machine':return 'Other vehicle';
+    case 'farm machine':return 'Other vehicles';
     default:return null;
   }
 }
