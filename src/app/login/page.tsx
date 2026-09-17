@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import {useRouter,useSearchParams} from 'next/navigation';
 import {useState} from 'react';
+import {vehicleTypeCategory} from '@/lib/vehicle-types';
 
 export default function Login(){
   const router=useRouter();
@@ -11,6 +12,8 @@ export default function Login(){
   const emailChange=searchParams.get('emailChange');
   const accountClosed=searchParams.get('accountClosed');
   const changedEmail=searchParams.get('email')||'';
+  const requestedVehicleType=vehicleTypeCategory(searchParams.get('vehicleType'));
+  const vehicleTypeQuery=requestedVehicleType?`&vehicleType=${encodeURIComponent(requestedVehicleType)}`:'';
   const [err,setErr]=useState('');
   const [showPassword,setShowPassword]=useState(false);
 
@@ -19,7 +22,7 @@ export default function Login(){
   const isTransporter=account==='transporter';
   const emailNotice=emailChange==='confirmed'?'Your email address has been verified and updated. Sign in using your new email address.':emailChange==='taken'?'That email address is already linked to another DriveDrop account.':emailChange==='invalid'?'That email verification link is invalid or has expired. Please request a new one from your Account page.':null;
 
-  async function submit(e:any){e.preventDefault();setErr('');const f=new FormData(e.currentTarget);const res=await fetch('/api/auth/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.fromEntries(f))});const d=await res.json();if(!res.ok)return setErr(d.error);router.push(d.role==='CUSTOMER'?'/customer':d.role==='TRANSPORTER'?'/transporter':'/admin');router.refresh();}
+  async function submit(e:any){e.preventDefault();setErr('');const f=new FormData(e.currentTarget);const res=await fetch('/api/auth/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.fromEntries(f))});const d=await res.json();if(!res.ok)return setErr(d.error);router.push(d.role==='CUSTOMER'?`/customer${requestedVehicleType?`?vehicleType=${encodeURIComponent(requestedVehicleType)}`:''}`:d.role==='TRANSPORTER'?'/transporter':'/admin');router.refresh();}
 
   return <main className={`authPage loginPage ${isTransporter?'transporterLogin':'customerLogin'}`}>
     <section className="authVisual">
@@ -46,7 +49,7 @@ export default function Login(){
         {accountClosed==='1'&&<div className="formNotice">Your DriveDrop account has been closed and you have been signed out.</div>}
         {emailNotice&&<div className={`formNotice${emailChange==='confirmed'?'':' errorNotice'}`}>{emailNotice}</div>}
         <div className="accountSwitch" aria-label="Choose account type">
-          <Link className={!isTransporter?'active':''} aria-current={!isTransporter?'page':undefined} href="/login?account=customer">Customer</Link>
+          <Link className={!isTransporter?'active':''} aria-current={!isTransporter?'page':undefined} href={`/login?account=customer${vehicleTypeQuery}`}>Customer</Link>
           <Link className={isTransporter?'active':''} aria-current={isTransporter?'page':undefined} href="/login?account=transporter">Transporter</Link>
         </div>
         <form onSubmit={submit}>
@@ -68,7 +71,7 @@ export default function Login(){
           <button className="btn orange authSubmit">Sign in securely</button>
         </form>
         <div className="authDivider"><span>New to DriveDrop?</span></div>
-        <Link className="authSecondary" href={isTransporter?'/register?account=transporter':'/register?account=customer'}>{isTransporter?'Create transporter account':'Create customer account'} →</Link>
+        <Link className="authSecondary" href={isTransporter?'/register?account=transporter':`/register?account=customer${vehicleTypeQuery}`}>{isTransporter?'Create transporter account':'Create customer account'} →</Link>
         <p className="authFootnote">Your account credentials are handled securely by DriveDrop.</p>
       </div>
     </section>
