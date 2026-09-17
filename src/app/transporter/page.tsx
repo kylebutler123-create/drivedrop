@@ -1,5 +1,5 @@
-import {vehicleTypeDisplay} from '@/lib/vehicle-types';
-'use client';import {useEffect,useRef,useState} from 'react';import Link from 'next/link';import EvidenceUpload from '@/components/EvidenceUpload';import TransporterRequoteEnhancer from '@/app/components/TransporterRequoteEnhancer';import TransporterCollectionDateActions from '@/app/components/TransporterCollectionDateActions';
+'use client';
+import {vehicleTypeDisplay} from '@/lib/vehicle-types';import {useEffect,useRef,useState} from 'react';import Link from 'next/link';import EvidenceUpload from '@/components/EvidenceUpload';import TransporterRequoteEnhancer from '@/app/components/TransporterRequoteEnhancer';import TransporterCollectionDateActions from '@/app/components/TransporterCollectionDateActions';
 import TransporterProofOfDeliveryEnhancer from '@/app/components/TransporterProofOfDeliveryEnhancer';
 import TransporterProofOfCollectionEnhancer from '@/app/components/TransporterProofOfCollectionEnhancer';
 const label=(s:string)=>s.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
