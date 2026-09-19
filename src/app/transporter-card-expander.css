@@ -13,13 +13,10 @@
 
 /* Keep the quick message link outside the card-toggle button. */
 .transporterBooking>.transporterCollapsedContact{display:none}
-.transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollapsedContact{display:flex!important;align-items:stretch;flex-wrap:wrap;width:calc(100% - 28px);margin:0 14px 14px;min-width:0;max-width:calc(100% - 28px);box-sizing:border-box}
-.transporterCollapsedContact>.btn{flex:1 1 140px;min-width:0;max-width:100%;white-space:normal;text-align:center;overflow-wrap:anywhere}
+.transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollapsedContact{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;width:calc(100% - 28px);margin:0 14px 14px;min-width:0;max-width:calc(100% - 28px);box-sizing:border-box}
+.transporterCollapsedContact>.btn{width:100%;min-width:0;max-width:100%;padding-left:8px!important;padding-right:8px!important;white-space:normal;text-align:center;overflow-wrap:anywhere}
 @media(max-width:760px){
  .transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollapsedContact{width:calc(100% - 24px);margin:0 12px 12px;max-width:calc(100% - 24px)}
-}
-@media(max-width:420px){
- .transporterCollapsedContact>.btn{flex-basis:100%;width:100%}
 }
 
 /* Keep the required collection workflow reachable when its booking is collapsed. */
