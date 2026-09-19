@@ -2,10 +2,10 @@ export const vehicleTypes=[
   'Car',
   'Van',
   'Motorcycle',
-  'Classic / prestige vehicle',
+  'Classic / prestige',
   'Motorhome / campers',
   'Caravan / trailers',
-  'Plant / farm machinery',
+  'Plant / farm',
   'Other vehicles',
 ] as const;
 
@@ -18,7 +18,8 @@ export function vehicleTypeCategory(value:unknown):VehicleType|null{
     case 'van':return 'Van';
     case 'motorcycle':return 'Motorcycle';
     case 'classic':
-    case 'classic / prestige vehicle':return 'Classic / prestige vehicle';
+    case 'classic / prestige':
+    case 'classic / prestige vehicle':return 'Classic / prestige';
     case 'motor home':
     case 'motor_home':
     case 'motorhome':
@@ -32,8 +33,9 @@ export function vehicleTypeCategory(value:unknown):VehicleType|null{
     case 'plant machinery':
     case 'farm machine':
     case 'farm machinery':
+    case 'plant / farm':
     case 'plant / farm machine':
-    case 'plant / farm machinery':return 'Plant / farm machinery';
+    case 'plant / farm machinery':return 'Plant / farm';
     case 'other':
     case 'other vehicle':
     case 'other vehicles':
@@ -45,7 +47,7 @@ export function vehicleTypeCategory(value:unknown):VehicleType|null{
 export function vehicleTypeDisplay(value:unknown):string{
   const original=typeof value==='string'?value.trim():'';
   if(!original)return 'Not specified';
-  // Retain the older truck label while normalising caravan and machinery records into their new categories.
+  // Retain the older truck label while normalising previous category names.
   if(original.toLowerCase()==='truck')return original;
   return vehicleTypeCategory(original)||original;
 }
