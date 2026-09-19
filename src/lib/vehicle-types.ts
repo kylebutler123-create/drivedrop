@@ -4,6 +4,8 @@ export const vehicleTypes=[
   'Motorcycle',
   'Classic / prestige vehicle',
   'Motorhome / campers',
+  'Caravan / trailers',
+  'Plant / farm machinery',
   'Other vehicles',
 ] as const;
 
@@ -21,13 +23,21 @@ export function vehicleTypeCategory(value:unknown):VehicleType|null{
     case 'motor_home':
     case 'motorhome':
     case 'motorhome / campers':return 'Motorhome / campers';
+    case 'caravan':
+    case 'trailer':
+    case 'trailers':
+    case 'caravan / trailer':
+    case 'caravan / trailers':return 'Caravan / trailers';
+    case 'plant machine':
+    case 'plant machinery':
+    case 'farm machine':
+    case 'farm machinery':
+    case 'plant / farm machine':
+    case 'plant / farm machinery':return 'Plant / farm machinery';
     case 'other':
     case 'other vehicle':
     case 'other vehicles':
-    case 'truck':
-    case 'caravan':
-    case 'plant machine':
-    case 'farm machine':return 'Other vehicles';
+    case 'truck':return 'Other vehicles';
     default:return null;
   }
 }
@@ -35,7 +45,7 @@ export function vehicleTypeCategory(value:unknown):VehicleType|null{
 export function vehicleTypeDisplay(value:unknown):string{
   const original=typeof value==='string'?value.trim():'';
   if(!original)return 'Not specified';
-  // Retain the specific type on older cards while putting it under Other in the filter.
-  if(['truck','caravan','plant machine','farm machine'].includes(original.toLowerCase()))return original;
+  // Retain the older truck label while normalising caravan and machinery records into their new categories.
+  if(original.toLowerCase()==='truck')return original;
   return vehicleTypeCategory(original)||original;
 }
