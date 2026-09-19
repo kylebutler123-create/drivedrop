@@ -28,6 +28,17 @@
  .transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollectionAction{margin:0 12px 12px}
 }
 
+/* Keep the proof-of-delivery workflow reachable after collection when collapsed. */
+.transporterBooking>.transporterDeliveryAction{margin:14px 0;min-width:0}
+.transporterExpandableCard.transporterBooking>.transporterDeliveryAction{margin:14px 18px}
+.transporterExpandableCard.transporterBooking.isCollapsed>.transporterDeliveryAction{display:block!important;margin:0 14px 14px}
+.transporterDeliveryAction .btn.fullBtn{min-height:44px;white-space:normal}
+.transporterDeliveryAction .podPanel{margin-top:0}
+@media(max-width:760px){
+ .transporterExpandableCard.transporterBooking>.transporterDeliveryAction{margin:13px}
+ .transporterExpandableCard.transporterBooking.isCollapsed>.transporterDeliveryAction{margin:0 12px 12px}
+}
+
 /* Available Jobs use their polished header; only quote controls expand. */
 .jobOpportunity>.bookingTop{padding-top:0}
 .jobOpportunity .jobOwnQuotePrice{margin:6px 0;color:#183654;font-size:14px;font-weight:800;line-height:1.4}
