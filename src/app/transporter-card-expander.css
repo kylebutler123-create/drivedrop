@@ -13,9 +13,14 @@
 
 /* Keep the quick message link outside the card-toggle button. */
 .transporterBooking>.transporterCollapsedContact{display:none}
-.transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollapsedContact{display:flex!important;align-items:center;margin:0 14px 14px;min-width:0}
-.transporterCollapsedContact>.btn{max-width:100%;white-space:normal;text-align:center}
-@media(max-width:760px){.transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollapsedContact{margin:0 12px 12px}}
+.transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollapsedContact{display:flex!important;align-items:stretch;flex-wrap:wrap;width:calc(100% - 28px);margin:0 14px 14px;min-width:0;max-width:calc(100% - 28px);box-sizing:border-box}
+.transporterCollapsedContact>.btn{flex:1 1 140px;min-width:0;max-width:100%;white-space:normal;text-align:center;overflow-wrap:anywhere}
+@media(max-width:760px){
+ .transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollapsedContact{width:calc(100% - 24px);margin:0 12px 12px;max-width:calc(100% - 24px)}
+}
+@media(max-width:420px){
+ .transporterCollapsedContact>.btn{flex-basis:100%;width:100%}
+}
 
 /* Keep the required collection workflow reachable when its booking is collapsed. */
 .transporterBooking>.transporterCollectionAction{margin:14px 0;min-width:0}
@@ -29,14 +34,15 @@
 }
 
 /* Keep the proof-of-delivery workflow reachable after collection when collapsed. */
-.transporterBooking>.transporterDeliveryAction{margin:14px 0;min-width:0}
+.transporterBooking>.transporterDeliveryAction{margin:14px 0;min-width:0;max-width:100%;box-sizing:border-box}
 .transporterExpandableCard.transporterBooking>.transporterDeliveryAction{margin:14px 18px}
-.transporterExpandableCard.transporterBooking.isCollapsed>.transporterDeliveryAction{display:block!important;margin:0 14px 14px}
-.transporterDeliveryAction .btn.fullBtn{min-height:44px;white-space:normal}
-.transporterDeliveryAction .podPanel{margin-top:0}
+.transporterExpandableCard.transporterBooking.isCollapsed>.transporterDeliveryAction{display:block!important;width:calc(100% - 28px);margin:0 14px 14px;max-width:calc(100% - 28px)}
+.transporterDeliveryAction .podMount,.transporterDeliveryAction .podPanel{min-width:0;max-width:100%;box-sizing:border-box}
+.transporterDeliveryAction .btn.fullBtn{width:100%;min-width:0;max-width:100%;min-height:44px;white-space:normal;box-sizing:border-box}
+.transporterDeliveryAction .podPanel{margin-top:0;overflow:hidden}
 @media(max-width:760px){
  .transporterExpandableCard.transporterBooking>.transporterDeliveryAction{margin:13px}
- .transporterExpandableCard.transporterBooking.isCollapsed>.transporterDeliveryAction{margin:0 12px 12px}
+ .transporterExpandableCard.transporterBooking.isCollapsed>.transporterDeliveryAction{width:calc(100% - 24px);margin:0 12px 12px;max-width:calc(100% - 24px)}
 }
 
 /* Available Jobs use their polished header; only quote controls expand. */
