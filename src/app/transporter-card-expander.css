@@ -41,3 +41,7 @@
 .jobQuoteDetails>.infoPanel{margin-top:16px;border:1px solid #dfe7ef}
 .jobQuoteDetails>.formNotice{margin-top:12px}
 .jobOpportunity.hasCustomerCounterDate>.bookingTop{border-left:3px solid #ed9c59;padding-left:12px}
+/* Prompt the transporter to agree a collection time after quote acceptance. */
+.transporterBooking>.transporterCollectionTimePrompt{display:none!important}
+.transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollectionTimePrompt{display:block!important;width:calc(100% - 28px);margin:0 14px 8px;padding:9px 11px;border:1px solid #f0b477;border-radius:10px;background:#fff7ee;color:#91430b;font-size:12px;font-weight:800;line-height:1.35;text-align:center;overflow-wrap:anywhere;box-sizing:border-box}
+@media(max-width:760px){.transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollectionTimePrompt{width:calc(100% - 24px);margin:0 12px 8px;padding:8px 10px;font-size:11px}}
