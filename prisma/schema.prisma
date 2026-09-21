@@ -471,7 +471,7 @@ model TransporterCancellationFee {
   id                 String   @id
   transporterId      String
   cancelledBookingId String   @unique
-  amountPence        Int      @default(2500)
+  amountPence        Int      @default(5000)
   appliedPence       Int      @default(0)
   status             String   @default("PENDING")
   createdAt          DateTime @default(now()) @db.Timestamptz(3)

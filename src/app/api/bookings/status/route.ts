@@ -59,7 +59,7 @@ export async function PATCH(r:Request){
       await sendTransactionalEmailSafely({to:b.customer.email,subject:`Your ${vehicle} has been collected`,heading:'Vehicle collected',preheader:`Your DriveDrop transporter has collected your ${vehicle}.`,body:`Hi ${b.customer.name?.trim()||'there'},\n\n${transporter} has marked your ${vehicle} as collected.\n\nYou can follow the latest delivery status from your DriveDrop dashboard.`,ctaLabel:'Track your delivery',ctaPath:'/customer'});
     }
     if(d.status==='CANCELLED'&&u.role==='TRANSPORTER'&&result.cancellationFeeCreated){
-      await createNotificationSafely({userId:b.transporterId,type:'PAYMENT',title:'£25 cancellation fine recorded',body:`A £${(CANCELLATION_FEE_PENCE/100).toFixed(0)} cancellation fine has been added and will be automatically deducted from your next completed job payout.`,href:'/transporter'});
+      await createNotificationSafely({userId:b.transporterId,type:'PAYMENT',title:`£${(CANCELLATION_FEE_PENCE/100).toFixed(0)} cancellation fine recorded`,body:`A £${(CANCELLATION_FEE_PENCE/100).toFixed(0)} cancellation fine has been added and will be automatically deducted from your next completed job payout.`,href:'/transporter'});
     }
     if(d.status==='CANCELLED'&&result.automaticRefundPence>0){
       await createNotificationSafely({userId:b.customerId,type:'PAYMENT',title:'Payment automatically refunded',body:`Your £${(result.automaticRefundPence/100).toFixed(2)} payment for the ${vehicle} has been refunded because the transporter cancelled the delivery.`,href:'/customer'});

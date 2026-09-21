@@ -1,6 +1,6 @@
 import {randomUUID} from 'crypto';
 
-export const CANCELLATION_FEE_PENCE=2500;
+export const CANCELLATION_FEE_PENCE=5000;
 export const DISPUTE_FINE_PENCE=5000;
 
 export const disputeFineMarker=(disputeId:string)=>`ADMIN_DISPUTE_FINE:${disputeId}`;
