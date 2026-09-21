@@ -5,13 +5,31 @@ import {disputesEnabled} from '@/lib/features';
 import {sendTransactionalEmailSafely} from '@/lib/email';
 import {createNotificationSafely} from '@/lib/notifications';
 import {financeConfig} from '@/lib/finance';
+import {DISPUTE_FINE_PENCE,disputeFineMarker,recordTransporterDisputeFine} from '@/lib/cancellation-fees';
 import {z} from 'zod';
 
 const Review=z.object({disputeId:z.string().min(1),status:z.enum(['UNDER_REVIEW','RESOLVED','CLOSED']),resolution:z.enum(['REFUND_CUSTOMER','PARTIAL_REFUND','RELEASE_PAYOUT','NO_ACTION','OTHER']).optional(),resolutionNote:z.string().trim().max(2000).optional(),refundAmountPence:z.number().int().positive().optional()});
+const FineTransporter=z.object({disputeId:z.string().min(1),action:z.literal('FINE_TRANSPORTER')});
 const disabled=()=>NextResponse.json({error:'Disputes are not enabled in this environment'},{status:404});
 const resolutionLabel=(r?:string)=>({REFUND_CUSTOMER:'Refund customer',PARTIAL_REFUND:'Partial refund',RELEASE_PAYOUT:'Release transporter payout',NO_ACTION:'No action',OTHER:'Other resolution'}[r||'']||'Resolved');
 
-export async function GET(){if(!disputesEnabled())return disabled();const u=await currentUser();if(!u||u.role!=='ADMIN')return NextResponse.json({error:'Admin access required'},{status:403});const disputes=await prisma.dispute.findMany({include:{raisedBy:{select:{id:true,name:true,email:true,role:true}},booking:{include:{job:true,customer:{select:{id:true,name:true,email:true,phone:true}},transporter:{select:{id:true,name:true,email:true,phone:true,transporterVerification:{select:{phone:true}}}},payment:true,evidence:{select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'asc'}}}}},orderBy:[{status:'asc'},{createdAt:'desc'}]});const jobIds=[...new Set(disputes.map((d:any)=>d.booking?.job?.id).filter(Boolean))];const vehicleRows=jobIds.length?await prisma.$queryRawUnsafe<Array<{id:string;vehicleType:string|null}>>(`SELECT "id", "vehicleType" FROM "TransportJob" WHERE "id" IN (${jobIds.map((_:any,i:number)=>`$${i+1}`).join(',')})`,...jobIds):[];const vehicleTypes=new Map(vehicleRows.map(r=>[r.id,r.vehicleType]));return NextResponse.json(disputes.map((d:any)=>({...d,booking:d.booking?{...d.booking,transporter:{...d.booking.transporter,phone:d.booking.transporter.phone?.trim()||d.booking.transporter.transporterVerification?.phone?.trim()||null},job:{...d.booking.job,vehicleType:vehicleTypes.get(d.booking.job.id)||null}}:d.booking})))}
+export async function GET(){if(!disputesEnabled())return disabled();const u=await currentUser();if(!u||u.role!=='ADMIN')return NextResponse.json({error:'Admin access required'},{status:403});const disputes=await prisma.dispute.findMany({include:{raisedBy:{select:{id:true,name:true,email:true,role:true}},booking:{include:{job:true,customer:{select:{id:true,name:true,email:true,phone:true}},transporter:{select:{id:true,name:true,email:true,phone:true,transporterVerification:{select:{phone:true}}}},payment:{include:{events:{where:{note:{startsWith:'ADMIN_DISPUTE_FINE:'}},select:{note:true}}}},evidence:{select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'asc'}}}}},orderBy:[{status:'asc'},{createdAt:'desc'}]});const jobIds=[...new Set(disputes.map((d:any)=>d.booking?.job?.id).filter(Boolean))];const vehicleRows=jobIds.length?await prisma.$queryRawUnsafe<Array<{id:string;vehicleType:string|null}>>(`SELECT "id", "vehicleType" FROM "TransportJob" WHERE "id" IN (${jobIds.map((_:any,i:number)=>`$${i+1}`).join(',')})`,...jobIds):[];const vehicleTypes=new Map(vehicleRows.map(r=>[r.id,r.vehicleType]));return NextResponse.json(disputes.map((d:any)=>{const payment=d.booking?.payment;const transporterFineRecorded=payment?.events?.some((event:any)=>event.note===disputeFineMarker(d.id))||false;const cleanPayment=payment?Object.fromEntries(Object.entries(payment).filter(([key])=>key!=='events')):payment;return{...d,transporterFineRecorded,booking:d.booking?{...d.booking,payment:cleanPayment,transporter:{...d.booking.transporter,phone:d.booking.transporter.phone?.trim()||d.booking.transporter.transporterVerification?.phone?.trim()||null},job:{...d.booking.job,vehicleType:vehicleTypes.get(d.booking.job.id)||null}}:d.booking}}))}
+
+export async function POST(r:Request){
+ if(!disputesEnabled())return disabled();const u=await currentUser();if(!u||u.role!=='ADMIN')return NextResponse.json({error:'Admin access required'},{status:403});const parsed=FineTransporter.safeParse(await r.json());if(!parsed.success)return NextResponse.json({error:'Invalid transporter fine request'},{status:400});
+ try{
+  const result=await prisma.$transaction(async(tx:any)=>{
+   const dispute=await tx.dispute.findUniqueOrThrow({where:{id:parsed.data.disputeId},include:{booking:{include:{payment:true,job:true,transporter:{select:{id:true,name:true}}}}}});
+   if(!dispute.booking.payment)throw new Error('No payment exists for this booking');
+   const recorded=await recordTransporterDisputeFine({tx,disputeId:dispute.id,paymentId:dispute.booking.payment.id,actorId:u.id});
+   if(!recorded)throw new Error('A £50 fine has already been recorded for this dispute');
+   return{booking:dispute.booking};
+  });
+  const b=result.booking;const vehicle=[b.job.vehicleMake,b.job.vehicleModel].filter(Boolean).join(' ').replace(/\s+/g,' ').trim()||'vehicle';
+  await createNotificationSafely({userId:b.transporter.id,type:'PAYMENT',title:'£50 dispute fine recorded',body:`DriveDrop has added a £${(DISPUTE_FINE_PENCE/100).toFixed(0)} fine for the dispute involving the ${vehicle}. It will be automatically deducted from your next completed job payout.`,href:'/transporter/proceeds'});
+  return NextResponse.json({fineRecorded:true,amountPence:DISPUTE_FINE_PENCE});
+ }catch(e:any){return NextResponse.json({error:e.message||'Unable to fine transporter'},{status:400})}
+}
 
 export async function PATCH(r:Request){
  if(!disputesEnabled())return disabled();const u=await currentUser();if(!u||u.role!=='ADMIN')return NextResponse.json({error:'Admin access required'},{status:403});const parsed=Review.safeParse(await r.json());if(!parsed.success)return NextResponse.json({error:'Invalid dispute review'},{status:400});const d=parsed.data;if(d.status==='RESOLVED'&&!d.resolution)return NextResponse.json({error:'A resolution is required when resolving a dispute'},{status:400});

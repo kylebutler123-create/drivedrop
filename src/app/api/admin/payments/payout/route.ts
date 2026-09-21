@@ -52,7 +52,7 @@ export async function POST(r:Request){
     transporterProceedsPence:feeResult.netProceedsPence,
     cancellationDeductionPence:{increment:feeResult.deductedPence},
    }});
-   await tx.financeEvent.create({data:{paymentId,type:'PAYOUT_PAID',amountPence:payment.transporterProceedsPence,actorId:u.id,note:feeResult.deductedPence>0?`Sandbox/test payout — £${(feeResult.deductedPence/100).toFixed(2)} cancellation fine deducted`:'Sandbox/test payout — payout details verified'}});
+   await tx.financeEvent.create({data:{paymentId,type:'PAYOUT_PAID',amountPence:payment.transporterProceedsPence,actorId:u.id,note:feeResult.deductedPence>0?`Sandbox/test payout — £${(feeResult.deductedPence/100).toFixed(2)} fine deducted`:'Sandbox/test payout — payout details verified'}});
    return {
     payment,
     cancellationDeductionPence:feeResult.deductedPence,
@@ -67,7 +67,7 @@ export async function POST(r:Request){
    userId:result.transporterId,
    type:'PAYMENT',
    title:'Payout released',
-   body:result.cancellationDeductionPence>0?`DriveDrop released your test payout of ${money(result.payment.transporterProceedsPence)} for the ${vehicle}${reference} delivery after automatically deducting a ${money(result.cancellationDeductionPence)} cancellation fine.`:`DriveDrop released your test payout of ${money(result.payment.transporterProceedsPence)} for the ${vehicle}${reference} delivery.`,
+   body:result.cancellationDeductionPence>0?`DriveDrop released your test payout of ${money(result.payment.transporterProceedsPence)} for the ${vehicle}${reference} delivery after automatically deducting a ${money(result.cancellationDeductionPence)} fine.`:`DriveDrop released your test payout of ${money(result.payment.transporterProceedsPence)} for the ${vehicle}${reference} delivery.`,
    href:`/transporter?view=completed&bookingId=${encodeURIComponent(result.bookingId)}`
   });
   return NextResponse.json(result.payment);

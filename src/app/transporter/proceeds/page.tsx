@@ -61,7 +61,7 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
  return <main className={`shell dashboardShell ${styles.page}`}>
   <Link className="backLink" href="/transporter">← Back to transporter dashboard</Link>
   <header className={styles.hero}>
-   <div><span>Transporter finances</span><h1>Booked proceeds</h1><p>See the proceeds attached to every active and completed delivery, including payout progress and any cancellation fine deductions.</p></div>
+   <div><span>Transporter finances</span><h1>Booked proceeds</h1><p>See the proceeds attached to every active and completed delivery, including payout progress and any fine deductions.</p></div>
    <div className={styles.total}><small>Total booked proceeds before fines</small><strong>{money(total)}</strong><span>{rows.length} booking{rows.length===1?'':'s'}</span></div>
   </header>
   <nav className={styles.summary} aria-label="Filter proceeds">
@@ -88,7 +88,7 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
    <div className={styles.cardTop}><div><div className={styles.pills}><span>{label(booking.status)}</span><span className={payment.payoutStatus==='PAID'?styles.paid:payment.payoutStatus==='HELD'?styles.held:''}>{payoutLabel(booking)}</span></div><h3>{booking.job.vehicleMake} {booking.job.vehicleModel}</h3><p>{booking.customer.name}{booking.job.registration?` · ${booking.job.registration}`:''}</p><small>Delivery reference · {reference(booking.id)}</small></div><strong className={filter==='FINES'?styles.adjustmentAmount:undefined}>{filter==='FINES'?`−${money(fine+refund)}`:money(net)}</strong></div>
    <div className={styles.route}><div><small>Collection</small><b>{booking.job.collection}</b></div><span>→</span><div><small>Delivery</small><b>{booking.job.delivery}</b></div></div>
    <div className={styles.breakdown}>
-    {fine>0&&<><div><span>Proceeds before cancellation fine</span><b>{money(beforeFine)}</b></div><div><span>Cancellation fine deducted</span><b className={styles.deduction}>−{money(fine)}</b></div></>}
+    {fine>0&&<><div><span>Proceeds before fine</span><b>{money(beforeFine)}</b></div><div><span>Fine deducted</span><b className={styles.deduction}>−{money(fine)}</b></div></>}
     {refund>0&&<div><span>Customer refund</span><b className={styles.deduction}>−{money(refund)}</b></div>}
     <div><span>{fine>0?'Net proceeds':payment.payoutStatus==='CANCELLED'?'Net payout':'Booked proceeds'}</span><b>{money(net)}</b></div>
     <div><span>Payout status</span><b>{payoutLabel(booking)}</b></div>
