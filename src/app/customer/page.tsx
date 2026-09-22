@@ -168,6 +168,7 @@ async function create(e:any){
   setNewJobId(saved.id);
   setFormMessage(null);
   setRequestNotice('Request submitted — transporters can now send you quotes.');
+  setSelectedVehicleType('');
   form.reset();
   try{
    const jobsResponse=await fetch('/api/my-jobs',{cache:'no-store'});
