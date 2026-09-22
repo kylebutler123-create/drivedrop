@@ -1,5 +1,6 @@
 import {vehicleTypes} from '@/lib/vehicle-types';
 import {transportTypeDisplay,transportTypeValues} from '@/lib/transport-types';
+import {enclosedTransportCompatibilityMessage,isTransportVehicleCompatible} from '@/lib/transport-compatibility';
 import {after,NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
@@ -9,12 +10,16 @@ import {sendTransactionalEmailBatchSafely} from '@/lib/email';
 import {insuranceStatusForVerification} from '@/lib/insurance-expiry-notifications';
 
 
-const S=z.object({collection:z.string().min(2),delivery:z.string().min(2),transportType:z.enum(transportTypeValues),vehicleType:z.enum(vehicleTypes),vehicleMake:z.string().min(1),vehicleModel:z.string().min(1),registration:z.string().optional(),running:z.boolean().default(true),collectionDate:z.coerce.date()});
+const S=z.object({collection:z.string().min(2),delivery:z.string().min(2),transportType:z.enum(transportTypeValues),vehicleType:z.enum(vehicleTypes),vehicleMake:z.string().min(1),vehicleModel:z.string().min(1),registration:z.string().optional(),running:z.boolean().default(true),collectionDate:z.coerce.date()}).superRefine((data,context)=>{
+ if(!isTransportVehicleCompatible(data.transportType,data.vehicleType))context.addIssue({code:z.ZodIssueCode.custom,path:['vehicleType'],message:enclosedTransportCompatibilityMessage});
+});
 
 export async function POST(r:Request){
  const u=await currentUser();
  if(!u||u.role!=='CUSTOMER')return NextResponse.json({error:'Customer login required'},{status:403});
- const d=S.parse(await r.json());
+ const parsed=S.safeParse(await r.json());
+ if(!parsed.success)return NextResponse.json({error:parsed.error.issues[0]?.message||'Please check the request details and try again.'},{status:400});
+ const d=parsed.data;
  const {vehicleType,...jobData}=d;
  const job=await prisma.transportJob.create({data:{...jobData,customerId:u.id}});
  await prisma.$executeRaw`UPDATE "TransportJob" SET "vehicleType"=${vehicleType} WHERE "id"=${job.id}`;

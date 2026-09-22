@@ -1,5 +1,6 @@
 'use client';import {useEffect,useLayoutEffect,useRef,useState} from 'react';import AddressAutocomplete from '@/app/components/AddressAutocomplete';import CustomerCollectionDateActions from '@/app/components/CustomerCollectionDateActions';import Link from 'next/link';import CustomerRequestActions from '@/app/components/CustomerRequestActions';import CustomerReviewForm from '@/app/components/CustomerReviewForm';import {vehicleTypes,vehicleTypeCategory,vehicleTypeDisplay} from '@/lib/vehicle-types';
 import {transportTypes,transportTypeDisplay} from '@/lib/transport-types';
+import {enclosedTransportCompatibilityMessage,isTransportVehicleCompatible} from '@/lib/transport-compatibility';
 
 const label=(s:string)=>s.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
 function collectionDateLabel(value:string|null|undefined){
@@ -125,6 +126,25 @@ async function load(){
  }
 },[]);
 useEffect(()=>{
+ const transport=document.getElementById('request-transport-type') as HTMLSelectElement|null;
+ const vehicle=document.getElementById('request-vehicle-type') as HTMLSelectElement|null;
+ if(!transport||!vehicle)return;
+ const validateCompatibility=()=>{
+  const incompatible=Boolean(transport.value&&vehicle.value&&!isTransportVehicleCompatible(transport.value,vehicle.value));
+  const message=incompatible?enclosedTransportCompatibilityMessage:'';
+  transport.setCustomValidity(message);
+  vehicle.setCustomValidity(message);
+  setFormMessage(current=>incompatible?{type:'error',text:enclosedTransportCompatibilityMessage}:current?.text===enclosedTransportCompatibilityMessage?null:current);
+ };
+ transport.addEventListener('change',validateCompatibility);
+ vehicle.addEventListener('change',validateCompatibility);
+ validateCompatibility();
+ return()=>{
+  transport.removeEventListener('change',validateCompatibility);
+  vehicle.removeEventListener('change',validateCompatibility);
+ };
+},[]);
+useEffect(()=>{
  const targetView=deepLinkView.current;
  if(!targetView||view!==targetView)return;
  const ready=targetView==='QUOTES'?jobsLoaded:bookingsLoaded;
@@ -169,6 +189,7 @@ async function create(e:any){
   setFormMessage(null);
   setRequestNotice('Request submitted — transporters can now send you quotes.');
   setSelectedVehicleType('');
+  form.querySelectorAll('select').forEach(select=>select.setCustomValidity(''));
   form.reset();
   try{
    const jobsResponse=await fetch('/api/my-jobs',{cache:'no-store'});
