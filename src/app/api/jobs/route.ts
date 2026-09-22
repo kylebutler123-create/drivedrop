@@ -1,4 +1,5 @@
 import {vehicleTypes} from '@/lib/vehicle-types';
+import {transportTypeDisplay,transportTypeValues} from '@/lib/transport-types';
 import {after,NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
@@ -8,7 +9,7 @@ import {sendTransactionalEmailBatchSafely} from '@/lib/email';
 import {insuranceStatusForVerification} from '@/lib/insurance-expiry-notifications';
 
 
-const S=z.object({collection:z.string().min(2),delivery:z.string().min(2),vehicleType:z.enum(vehicleTypes),vehicleMake:z.string().min(1),vehicleModel:z.string().min(1),registration:z.string().optional(),running:z.boolean().default(true),collectionDate:z.coerce.date()});
+const S=z.object({collection:z.string().min(2),delivery:z.string().min(2),transportType:z.enum(transportTypeValues).default('ANY'),vehicleType:z.enum(vehicleTypes),vehicleMake:z.string().min(1),vehicleModel:z.string().min(1),registration:z.string().optional(),running:z.boolean().default(true),collectionDate:z.coerce.date()});
 
 export async function POST(r:Request){
  const u=await currentUser();
@@ -37,7 +38,7 @@ export async function POST(r:Request){
     subject:`New ${vehicleType.toLowerCase()} transport job available`,
     heading:'New transport job available',
     preheader:`${vehicle} — ${d.collection} to ${d.delivery}`,
-    body:`Hi ${transporter.name?.trim()||'there'},\n\nA new customer transport request is now available for quotes.\n\nVehicle: ${vehicle}\nCollection: ${d.collection}\nDelivery: ${d.delivery}\nCollection date: ${collectionDate}\n\nSign in to review the full job details and submit a quote.`,
+    body:`Hi ${transporter.name?.trim()||'there'},\n\nA new customer transport request is now available for quotes.\n\nVehicle: ${vehicle}\nTransport type: ${transportTypeDisplay(d.transportType)}\nCollection: ${d.collection}\nDelivery: ${d.delivery}\nCollection date: ${collectionDate}\n\nSign in to review the full job details and submit a quote.`,
     ctaLabel:'View available jobs',
     ctaPath:'/transporter',
    })),`new-job-${job.id}`);
