@@ -32,6 +32,9 @@
 /* Keep transporter summary actions in their operational order. */
 .transporterHero .dashboardSummary{grid-template-columns:repeat(3,minmax(0,1fr))}
 .transporterHero .dashboardSummary>[data-booked-proceeds-summary]{grid-column:1/-1}
+.transporterHero .dashboardSummary>[data-available-jobs-summary]{order:1}
+.transporterHero .dashboardSummary>[role="button"]:not([data-available-jobs-summary]):not([data-delivered-summary]){order:2}
+.transporterHero .dashboardSummary>[data-delivered-summary]{order:3}
 
 
 .transporterHero .dashboardSummary>[data-booked-proceeds-summary]{display:block;padding:16px;border:1px solid rgba(255,255,255,.13);border-radius:17px;background:rgba(255,255,255,.1);color:inherit;text-align:center;text-decoration:none;cursor:pointer;transition:transform .18s ease,background .18s ease,box-shadow .18s ease}
