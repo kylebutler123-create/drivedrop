@@ -131,9 +131,6 @@ useEffect(()=>{
  if(!transport||!vehicle)return;
  const validateCompatibility=()=>{
   const incompatible=Boolean(transport.value&&vehicle.value&&!isTransportVehicleCompatible(transport.value,vehicle.value));
-  const message=incompatible?enclosedTransportCompatibilityMessage:'';
-  transport.setCustomValidity(message);
-  vehicle.setCustomValidity(message);
   setFormMessage(current=>incompatible?{type:'error',text:enclosedTransportCompatibilityMessage}:current?.text===enclosedTransportCompatibilityMessage?null:current);
  };
  transport.addEventListener('change',validateCompatibility);
@@ -169,10 +166,15 @@ async function create(e:any){
  if(requestInFlight.current)return;
  const form=e.currentTarget as HTMLFormElement;
  if(!form.reportValidity())return;
+ const requestData=new FormData(form);
+ if(!isTransportVehicleCompatible(requestData.get('transportType'),requestData.get('vehicleType'))){
+  setFormMessage({type:'error',text:enclosedTransportCompatibilityMessage});
+  return;
+ }
  requestInFlight.current=true;setSubmitting(true);setFormMessage(null);
  let requestSaved=false;
  try{
-  const data:any=Object.fromEntries(new FormData(form));
+  const data:any=Object.fromEntries(requestData);
   data.running=data.running==='true';
   const response=await fetch('/api/jobs',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data)});
   const saved=await response.json().catch(()=>null);
@@ -189,7 +191,6 @@ async function create(e:any){
   setFormMessage(null);
   setRequestNotice('Request submitted — transporters can now send you quotes.');
   setSelectedVehicleType('');
-  form.querySelectorAll('select').forEach(select=>select.setCustomValidity(''));
   form.reset();
   try{
    const jobsResponse=await fetch('/api/my-jobs',{cache:'no-store'});
