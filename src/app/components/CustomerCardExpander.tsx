@@ -50,6 +50,25 @@ function syncDeliveryProgress(card:HTMLElement,markSeen=false){
 
 type CompletedSummary={title:string;transporter:string;registration:string;deliveredAt?:string|null;evidenceCount:number;paymentText:string};
 const lastCompletedPayload=new WeakMap<HTMLElement,string>();
+function completedActivityStorageKey(bookingId:string){return 'drivedrop:customer-completed-activity:v1:'+bookingId}
+function completedCardActivityStorageKey(bookingId:string){return 'drivedrop:customer-completed-card-activity:v1:'+bookingId}
+function syncCompletedActivity(card:HTMLElement,markSeen=false){
+ if(!card.dataset.completedSummary)return;
+ const bookingId=card.dataset.bookingId;
+ if(!bookingId)return;
+ const cardKey=completedCardActivityStorageKey(bookingId);
+ let unread=false;
+ try{
+  unread=localStorage.getItem(cardKey)!==null;
+  if(markSeen&&unread){
+   localStorage.removeItem(cardKey);
+   localStorage.removeItem(completedActivityStorageKey(bookingId));
+   unread=false;
+   window.dispatchEvent(new CustomEvent('drivedrop:customer-progress-seen'));
+  }
+ }catch{}
+ card.classList.toggle('hasUnreadCompletedActivity',unread);
+}
 function syncCompletedSummary(card:HTMLElement){
  const raw=card.dataset.completedSummary;
  if(!raw)return;
@@ -68,7 +87,7 @@ function syncCompletedSummary(card:HTMLElement){
 }
 
 function enhance(card:HTMLElement){
- if(card.dataset.customerExpandable==='true'){syncDeliveryProgress(card);syncCompletedSummary(card);return}
+ if(card.dataset.customerExpandable==='true'){syncDeliveryProgress(card);syncCompletedSummary(card);syncCompletedActivity(card);return}
  card.dataset.customerExpandable='true';
  card.classList.add('customerExpandableCard','isCollapsed');
  const btn=document.createElement('button');
@@ -86,11 +105,12 @@ function enhance(card:HTMLElement){
  const meta=routeStops.length>=2?`${routeStops[0]} → ${routeStops[1]}`:partner;
  const stat=quoteCount?`${quoteCount} quote${quoteCount==='1'?'':'s'}`:paymentValue?`${paymentLabel||'Payment'} · ${paymentValue}`:partner;
  btn.innerHTML=`<span class="customerCardSummaryMain"><span class="customerCardSummaryStatus">${status}</span><strong>${title}</strong><small>${meta}</small>${reference?`<small class="customerDeliveryReference">Delivery reference · ${escapeHtml(reference)}</small>`:''}</span><span class="customerCardSummarySide"><b>${stat||'View details'}</b><span class="customerCardChevron">+</span></span>`;
- const toggle=()=>{const collapsed=card.classList.toggle('isCollapsed');btn.setAttribute('aria-expanded',collapsed?'false':'true');const chevron=btn.querySelector('.customerCardChevron');if(chevron)chevron.textContent=collapsed?'+':'−';if(!collapsed)syncDeliveryProgress(card,true)};
+ const toggle=()=>{const collapsed=card.classList.toggle('isCollapsed');btn.setAttribute('aria-expanded',collapsed?'false':'true');const chevron=btn.querySelector('.customerCardChevron');if(chevron)chevron.textContent=collapsed?'+':'−';if(!collapsed){syncDeliveryProgress(card,true);syncCompletedActivity(card,true)}};
  btn.addEventListener('click',toggle);
  card.insertBefore(btn,card.firstChild);
  syncDeliveryProgress(card);
  syncCompletedSummary(card);
+ syncCompletedActivity(card);
 }
 
 export default function CustomerCardExpander(){
@@ -102,7 +122,7 @@ export default function CustomerCardExpander(){
   const schedule=()=>{if(frame===null)frame=requestAnimationFrame(scan)};
   scan();
   const observer=new MutationObserver(records=>{
-   for(const record of records){if(record.type==='attributes'&&record.target instanceof HTMLElement){syncDeliveryProgress(record.target);syncCompletedSummary(record.target)}else schedule()}
+   for(const record of records){if(record.type==='attributes'&&record.target instanceof HTMLElement){syncDeliveryProgress(record.target);syncCompletedSummary(record.target);syncCompletedActivity(record.target)}else schedule()}
   });
   observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-delivery-progress','data-completed-summary']});
   return()=>{observer.disconnect();if(frame!==null)cancelAnimationFrame(frame)};

@@ -29,6 +29,11 @@
 .customerExpandableCard.bookingCard.hasUnreadDeliveryProgress>.customerCardToggle:hover{background:#fff0e2}
 .customerCardSummaryMain .customerDeliveryProgressAlert{display:block;margin-top:8px;padding:7px 9px;border:1px solid #f1c39d;border-radius:8px;background:#fff0df;color:#92400e;font-size:11px;font-weight:800;line-height:1.4;white-space:normal;overflow-wrap:anywhere}
 
+/* Newly confirmed deliveries stay highlighted until their completed card is opened. */
+.customerExpandableCard.bookingCard.hasUnreadCompletedActivity{border:2px solid #e9a265!important;box-shadow:0 0 0 3px rgba(244,122,31,.12),0 10px 26px rgba(146,64,14,.1)!important}
+.customerExpandableCard.bookingCard.hasUnreadCompletedActivity>.customerCardToggle{background:#fff1e5}
+.customerExpandableCard.bookingCard.hasUnreadCompletedActivity>.customerCardToggle:hover{background:#ffe9d7}
+
 
 /* Delivered bookings keep their confirmation action visible on the compact card. */
 .customerExpandableCard.bookingCard.requiresDeliveryConfirmation{border-color:#e9a265!important}

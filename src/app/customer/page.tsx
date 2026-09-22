@@ -48,12 +48,16 @@ function CustomerSummaryActivity({count}:{count:number}){
  return <span className="customerSummaryActivity" aria-label="New activity"/>;
 }
 function completedActivityStorageKey(bookingId:string){return 'drivedrop:customer-completed-activity:v1:'+bookingId}
+function completedCardActivityStorageKey(bookingId:string){return 'drivedrop:customer-completed-card-activity:v1:'+bookingId}
 function hasUnseenCompletedActivity(booking:any){
  if(typeof window==='undefined'||!booking?.customerConfirmedAt||typeof booking?.id!=='string')return false;
  try{return localStorage.getItem(completedActivityStorageKey(booking.id))===String(booking.customerConfirmedAt)}catch{return false}
 }
 function markCompletedActivity(bookingId:string,confirmedAt:string){
- try{localStorage.setItem(completedActivityStorageKey(bookingId),confirmedAt)}catch{}
+ try{
+  localStorage.setItem(completedActivityStorageKey(bookingId),confirmedAt);
+  localStorage.setItem(completedCardActivityStorageKey(bookingId),confirmedAt);
+ }catch{}
 }
 function clearCompletedActivity(bookings:any[]){
  for(const booking of bookings){if(typeof booking?.id!=='string')continue;try{localStorage.removeItem(completedActivityStorageKey(booking.id))}catch{}}
