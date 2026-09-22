@@ -130,6 +130,7 @@ useEffect(()=>{
  const vehicle=document.getElementById('request-vehicle-type') as HTMLSelectElement|null;
  if(!transport||!vehicle)return;
  const validateCompatibility=()=>{
+  setSelectedVehicleType(vehicle.value);
   const incompatible=Boolean(transport.value&&vehicle.value&&!isTransportVehicleCompatible(transport.value,vehicle.value));
   setFormMessage(current=>incompatible?{type:'error',text:enclosedTransportCompatibilityMessage}:current?.text===enclosedTransportCompatibilityMessage?null:current);
  };
