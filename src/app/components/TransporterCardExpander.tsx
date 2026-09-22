@@ -118,8 +118,47 @@ function updateJobFilterEmptyState(section:HTMLElement,bar:HTMLElement,total:num
   empty.append(title,description);
   bar.insertAdjacentElement('afterend',empty);
 }
-function ensureJobFilters(){const section=document.getElementById('available-jobs');const heading=section?.querySelector('.dashboardSectionHeading');if(!section||!heading)return;let bar=section.querySelector<HTMLElement>('[data-job-filters]');if(!bar){bar=document.createElement('div');bar.dataset.jobFilters='true';bar.style.cssText='display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:0 0 14px;padding:12px 14px;border:1px solid #dfe7ef;border-radius:14px;background:#f8fafc';bar.innerHTML=`<label style="display:grid;gap:5px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#52667e">Vehicle type<select data-vehicle-select aria-label="Filter available jobs by vehicle type" style="min-height:40px;padding:8px 34px 8px 11px;border:1px solid #cfd9e3;border-radius:10px;background:#fff;color:#183654;font-weight:700">${['ALL',...vehicleTypes].map(type=>`<option value="${escapeHtml(type)}">${type==='ALL'?'All vehicle types':escapeHtml(type)}</option>`).join('')}</select></label><label style="display:grid;gap:5px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#52667e">Transport type<select data-transport-select aria-label="Filter available jobs by transport type" style="min-height:40px;padding:8px 34px 8px 11px;border:1px solid #cfd9e3;border-radius:10px;background:#fff;color:#183654;font-weight:700">${transportTypes.map(type=>`<option value="${escapeHtml(type.value)}">${escapeHtml(type.label)}</option>`).join('')}</select></label><label style="display:grid;gap:5px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#52667e">Your postcode<input data-postcode-input placeholder="e.g. B1 1AA" maxlength="16" style="min-height:40px;box-sizing:border-box;padding:8px 11px;border:1px solid #cfd9e3;border-radius:10px;background:#fff;color:#183654;font-weight:700;width:140px"/></label><label style="display:grid;gap:5px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#52667e">Radius<select data-radius-select style="min-height:40px;padding:8px 34px 8px 11px;border:1px solid #cfd9e3;border-radius:10px;background:#fff;color:#183654;font-weight:700"><option value="10">10 miles</option><option value="25" selected>25 miles</option><option value="50">50 miles</option><option value="75">75 miles</option><option value="100">100 miles</option><option value="150">150 miles</option><option value="200">200 miles</option></select></label><label style="display:grid;gap:5px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;color:#52667e">Sort by<select data-sort-select style="min-height:40px;padding:8px 34px 8px 11px;border:1px solid #cfd9e3;border-radius:10px;background:#fff;color:#183654;font-weight:700"><option value="DEFAULT">Default order</option><option value="NEAREST">Nearest collection</option><option value="COLLECTION_DATE">Collection date soonest</option><option value="NEWEST">Newest request</option><option value="VEHICLE">Vehicle type</option></select></label><button type="button" data-apply-distance class="btn orange" style="min-height:40px">Apply distance</button><button type="button" data-clear-distance class="btn light" style="min-height:40px;display:none">Clear distance</button><span data-filter-result style="margin-left:auto;color:#6c7d90;font-size:11px;font-weight:800"></span><span data-distance-message style="flex-basis:100%;color:#6c7d90;font-size:11px"></span>`;heading.insertAdjacentElement('afterend',bar)}
- const vehicle=bar.querySelector<HTMLSelectElement>('[data-vehicle-select]')!;const transport=bar.querySelector<HTMLSelectElement>('[data-transport-select]')!;const postcode=bar.querySelector<HTMLInputElement>('[data-postcode-input]')!;const radius=bar.querySelector<HTMLSelectElement>('[data-radius-select]')!;const sort=bar.querySelector<HTMLSelectElement>('[data-sort-select]')!;const applyBtn=bar.querySelector<HTMLButtonElement>('[data-apply-distance]')!;const clearBtn=bar.querySelector<HTMLButtonElement>('[data-clear-distance]')!;const result=bar.querySelector<HTMLElement>('[data-filter-result]')!;const message=bar.querySelector<HTMLElement>('[data-distance-message]')!;
+function ensureJobFilters(){const section=document.getElementById('available-jobs');const heading=section?.querySelector('.dashboardSectionHeading');if(!section||!heading)return;let bar=section.querySelector<HTMLElement>('[data-job-filters]');if(!bar){
+ bar=document.createElement('div');
+ bar.dataset.jobFilters='true';
+ bar.className='transporterJobFilters';
+ bar.innerHTML=`
+  <div class="transporterJobFiltersHeader">
+   <strong>Filter available jobs</strong>
+   <span data-filter-result aria-live="polite"></span>
+  </div>
+  <div class="transporterJobFiltersBody">
+   <label class="transporterJobFilterField">Vehicle type
+    <select data-vehicle-select aria-label="Filter available jobs by vehicle type">${['ALL',...vehicleTypes].map(type=>`<option value="${escapeHtml(type)}">${type==='ALL'?'All vehicle types':escapeHtml(type)}</option>`).join('')}</select>
+   </label>
+   <label class="transporterJobFilterField">Transport type
+    <select data-transport-select aria-label="Filter available jobs by transport type">${transportTypes.map(type=>`<option value="${escapeHtml(type.value)}">${type.value==='ANY'?'Any transport type':escapeHtml(type.label)}</option>`).join('')}</select>
+   </label>
+   <span class="transporterJobFilterSectionLabel">Distance from you</span>
+   <div class="transporterJobFilterDistance">
+    <label class="transporterJobFilterField">Your postcode
+     <input data-postcode-input placeholder="e.g. B1 1AA" maxlength="16"/>
+    </label>
+    <label class="transporterJobFilterField">Radius
+     <select data-radius-select aria-label="Filter available jobs by collection radius"><option value="10">10 miles</option><option value="25" selected>25 miles</option><option value="50">50 miles</option><option value="75">75 miles</option><option value="100">100 miles</option><option value="150">150 miles</option><option value="200">200 miles</option></select>
+    </label>
+   </div>
+   <div class="transporterJobFilterActions">
+    <button type="button" data-apply-distance class="btn orange">Apply distance</button>
+    <button type="button" data-clear-distance class="btn light" style="display:none">Clear</button>
+   </div>
+   <div class="transporterJobFilterDivider" aria-hidden="true"></div>
+   <label class="transporterJobFilterField transporterJobFilterSort">Sort by
+    <select data-sort-select aria-label="Sort available jobs"><option value="DEFAULT">Default order</option><option value="NEAREST">Nearest collection</option><option value="COLLECTION_DATE">Collection date soonest</option><option value="NEWEST">Newest request</option><option value="VEHICLE">Vehicle type</option></select>
+   </label>
+   <div class="transporterJobFiltersFooter">
+    <span data-distance-message>Filters update the cards below</span>
+    <strong data-filter-footer-count></strong>
+   </div>
+  </div>`;
+ heading.insertAdjacentElement('afterend',bar);
+}
+ const vehicle=bar.querySelector<HTMLSelectElement>('[data-vehicle-select]')!;const transport=bar.querySelector<HTMLSelectElement>('[data-transport-select]')!;const postcode=bar.querySelector<HTMLInputElement>('[data-postcode-input]')!;const radius=bar.querySelector<HTMLSelectElement>('[data-radius-select]')!;const sort=bar.querySelector<HTMLSelectElement>('[data-sort-select]')!;const applyBtn=bar.querySelector<HTMLButtonElement>('[data-apply-distance]')!;const clearBtn=bar.querySelector<HTMLButtonElement>('[data-clear-distance]')!;const result=bar.querySelector<HTMLElement>('[data-filter-result]')!;const footerCount=bar.querySelector<HTMLElement>('[data-filter-footer-count]')!;const message=bar.querySelector<HTMLElement>('[data-distance-message]')!;
  const updateDistanceMessage=()=>{
    if(!bar?.dataset.distanceActive)return;
    const origin=bar.dataset.distanceOrigin||bar.dataset.distancePostcode;
@@ -130,7 +169,7 @@ function ensureJobFilters(){const section=document.getElementById('available-job
    if(message.textContent!==notice)message.textContent=notice;
  };
  const sortCards=()=>{const cards=Array.from(section.querySelectorAll<HTMLElement>('.jobOpportunity'));cards.forEach(card=>{if(!jobDefaultOrder.has(card))jobDefaultOrder.set(card,nextJobOrder++)});if(sort.value==='NEAREST'&&!bar?.dataset.distanceActive){const hint='Apply a postcode distance first to sort by nearest collection.';if(message.textContent!==hint)message.textContent=hint;return}const original=new Map(cards.map((card,i)=>[card,i]));cards.sort((a,b)=>{if(sort.value==='NEAREST'){const av=Number(a.dataset.distanceMiles||Number.POSITIVE_INFINITY),bv=Number(b.dataset.distanceMiles||Number.POSITIVE_INFINITY);return av-bv}if(sort.value==='COLLECTION_DATE'){const av=new Date(a.dataset.collectionDate||'9999-12-31').getTime(),bv=new Date(b.dataset.collectionDate||'9999-12-31').getTime();return av-bv}if(sort.value==='NEWEST'){const av=new Date(a.dataset.createdAt||0).getTime(),bv=new Date(b.dataset.createdAt||0).getTime();return bv-av}if(sort.value==='VEHICLE')return (a.dataset.vehicleType||'').localeCompare(b.dataset.vehicleType||'');return (jobDefaultOrder.get(a)??0)-(jobDefaultOrder.get(b)??0)});if(cards.some((card,i)=>original.get(card)!==i))cards.forEach(card=>section.appendChild(card))};
- const applyFilters=()=>{sortCards();let visible=0;const cards=section.querySelectorAll<HTMLElement>('.jobOpportunity');cards.forEach(card=>{renderJobDistanceBadge(card);const vehicleOk=vehicle.value==='ALL'||vehicleTypeCategory(card.dataset.vehicleType)===vehicle.value;const transportOk=transport.value==='ANY'||transportTypeCategory(card.dataset.transportType)===transport.value;const distanceOk=!bar?.dataset.distanceActive||((Number(card.dataset.distanceMiles)<=Number(radius.value))&&card.dataset.distanceMiles!=='');const show=vehicleOk&&transportOk&&distanceOk;card.style.display=show?'':'none';if(show)visible++});const count=`${visible} job${visible===1?'':'s'} shown`;if(result.textContent!==count)result.textContent=count;updateJobFilterEmptyState(section,bar!,cards.length,visible,!!bar?.dataset.distanceActive,vehicle.value!=='ALL',transport.value!=='ANY')};
+ const applyFilters=()=>{sortCards();let visible=0;const cards=section.querySelectorAll<HTMLElement>('.jobOpportunity');cards.forEach(card=>{renderJobDistanceBadge(card);const vehicleOk=vehicle.value==='ALL'||vehicleTypeCategory(card.dataset.vehicleType)===vehicle.value;const transportOk=transport.value==='ANY'||transportTypeCategory(card.dataset.transportType)===transport.value;const distanceOk=!bar?.dataset.distanceActive||((Number(card.dataset.distanceMiles)<=Number(radius.value))&&card.dataset.distanceMiles!=='');const show=vehicleOk&&transportOk&&distanceOk;card.style.display=show?'':'none';if(show)visible++});const footerLabel=`${visible} job${visible===1?'':'s'}`;const count=`${footerLabel} shown`;if(result.textContent!==count)result.textContent=count;if(footerCount.textContent!==footerLabel)footerCount.textContent=footerLabel;updateJobFilterEmptyState(section,bar!,cards.length,visible,!!bar?.dataset.distanceActive,vehicle.value!=='ALL',transport.value!=='ANY')};
  if(!vehicle.dataset.bound){vehicle.dataset.bound='true';vehicle.addEventListener('change',applyFilters)}
  if(!transport.dataset.bound){transport.dataset.bound='true';transport.addEventListener('change',applyFilters)}
  if(!sort.dataset.bound){sort.dataset.bound='true';sort.addEventListener('change',applyFilters)}

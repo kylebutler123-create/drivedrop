@@ -42,6 +42,38 @@
 .jobQuoteDetails>.infoPanel{margin-top:16px;border:1px solid #dfe7ef}
 .jobQuoteDetails>.formNotice{margin-top:12px}
 .jobOpportunity.hasCustomerCounterDate>.bookingTop{border-left:3px solid #ed9c59;padding-left:12px}
+
+/* Available Jobs filter panel. */
+.transporterJobFilters{margin:0 0 14px;padding:15px;border:1px solid #d9e2ea;border-radius:17px;background:#fff;box-shadow:0 7px 20px rgba(15,47,76,.07);color:#173650}
+.transporterJobFiltersHeader,.transporterJobFiltersFooter{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0}
+.transporterJobFiltersHeader{margin-bottom:14px}
+.transporterJobFiltersHeader>strong{font-size:14px;font-weight:900}
+.transporterJobFiltersHeader>[data-filter-result],.transporterJobFiltersFooter{color:#65788b;font-size:11px;font-weight:700}
+.transporterJobFiltersHeader>[data-filter-result]{white-space:nowrap}
+.transporterJobFiltersBody{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.transporterJobFilterField{display:grid;gap:6px;min-width:0;color:#65788b;font-size:10px;font-weight:900;letter-spacing:.055em;text-transform:uppercase}
+.transporterJobFilterField>select,.transporterJobFilterField>input{width:100%;min-width:0;min-height:46px;box-sizing:border-box;padding:10px 34px 10px 12px;border:1px solid #cfd9e3;border-radius:11px;background:#fff;color:#183654;font-size:14px;font-weight:700;text-transform:none;letter-spacing:normal}
+.transporterJobFilterField>input{padding-right:12px}
+.transporterJobFilterSectionLabel{grid-column:1/-1;color:#65788b;font-size:10px;font-weight:900;letter-spacing:.055em;text-transform:uppercase}
+.transporterJobFilterDistance{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.9fr);gap:10px;min-width:0}
+.transporterJobFilterActions{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.85fr);gap:10px;min-width:0}
+.transporterJobFilters:not([data-distance-active]) .transporterJobFilterActions{grid-template-columns:1fr}
+.transporterJobFilterActions>.btn{width:100%;min-width:0;min-height:46px;box-sizing:border-box;justify-content:center}
+.transporterJobFilterDivider{grid-column:1/-1;height:1px;margin-top:2px;background:#d9e2ea}
+.transporterJobFilterSort{grid-column:1/-1}
+.transporterJobFiltersFooter{grid-column:1/-1;margin-top:2px}
+.transporterJobFiltersFooter>[data-distance-message]{min-width:0;overflow-wrap:anywhere}
+.transporterJobFiltersFooter>[data-filter-footer-count]{flex:0 0 auto;color:#173650;font-size:12px;font-weight:900;white-space:nowrap}
+@media(max-width:760px){
+ .transporterJobFilters{padding:15px}
+ .transporterJobFiltersBody{grid-template-columns:1fr}
+ .transporterJobFilterField>select,.transporterJobFilterField>input{font-size:16px}
+ .transporterJobFilterDistance{grid-template-columns:minmax(0,1.35fr) minmax(0,.9fr)}
+}
+@media(max-width:350px){
+ .transporterJobFilters{padding:12px}
+ .transporterJobFilterDistance,.transporterJobFilterActions{grid-template-columns:1fr}
+}
 /* Prompt the transporter to agree a collection time after quote acceptance. */
 .transporterBooking>.transporterCollectionTimePrompt{display:none!important}
 .transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollectionTimePrompt{display:block!important;width:calc(100% - 28px);margin:0 14px 8px;padding:9px 11px;border:1px solid #f0b477;border-radius:10px;background:#fff7ee;color:#91430b;font-size:12px;font-weight:800;line-height:1.35;text-align:center;overflow-wrap:anywhere;box-sizing:border-box}
