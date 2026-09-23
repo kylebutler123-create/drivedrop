@@ -25,7 +25,7 @@ function customerDeliveryProgress(booking:any,customerId?:string){
  let latest:any=null;
  for(let i=events.length-1;i>=0;i--){if(events[i].status===booking.status){latest=events[i];break}}
  const confirmationRequired=booking.status==='DELIVERED'&&!booking.customerConfirmedAt;
- return {customerId:customerId||'',bookingId:booking.id,statusLabel:label(booking.status),eventKey:[booking.status,latest?.id||latest?.createdAt||''].join(':'),highlight:!booking.customerConfirmedAt&&statuses.includes(booking.status),confirmationRequired,deliveredAt:confirmationRequired?customerDeliveredAt(booking):null};
+ return {customerId:customerId||'',bookingId:booking.id,status:booking.status,statusLabel:label(booking.status),eventKey:[booking.status,latest?.id||latest?.createdAt||''].join(':'),persistedEventKey:booking.status==='CANCELLED'&&typeof booking.customerCancellationSeenEventKey==='string'?booking.customerCancellationSeenEventKey:null,highlight:!booking.customerConfirmedAt&&statuses.includes(booking.status),confirmationRequired,deliveredAt:confirmationRequired?customerDeliveredAt(booking):null};
 }
 function customerDeliveredAt(booking:any){
  return booking.proofOfDelivery?.submittedAt||[...(booking.trackingEvents||[])].reverse().find((event:any)=>event.status==='DELIVERED')?.createdAt||booking.customerConfirmedAt||booking.createdAt;
@@ -40,6 +40,7 @@ function hasUnseenCustomerProgress(booking:any,customerId?:string){
  const progress=customerDeliveryProgress(booking,customerId);
  if(progress.confirmationRequired)return true;
  if(!progress.highlight)return false;
+ if(progress.persistedEventKey===progress.eventKey)return false;
  const storageKey='drivedrop:delivery-progress:v1:'+JSON.stringify([progress.customerId,progress.bookingId]);
  try{return localStorage.getItem(storageKey)!==progress.eventKey}catch{return true}
 }

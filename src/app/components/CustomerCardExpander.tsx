@@ -5,8 +5,9 @@ import {usePathname} from 'next/navigation';
 function text(el:Element|null){return (el?.textContent||'').replace(/\s+/g,' ').trim()}
 function escapeHtml(value:any){return String(value??'').replace(/[&<>'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]||c))}
 function bookingReference(value:any){const id=String(value??'').trim();return id?`DD-${id.slice(-8).toUpperCase()}`:''}
-type DeliveryProgress={customerId:string;bookingId:string;statusLabel:string;eventKey:string;highlight:boolean;confirmationRequired?:boolean;deliveredAt?:string|null};
+type DeliveryProgress={customerId:string;bookingId:string;status:string;statusLabel:string;eventKey:string;persistedEventKey?:string|null;highlight:boolean;confirmationRequired?:boolean;deliveredAt?:string|null};
 const seenProgress=new Map<string,string>();
+const persistedCancellationEvents=new Set<string>();
 const lastProgressPayload=new WeakMap<HTMLElement,string>();
 function syncDeliveryProgress(card:HTMLElement,markSeen=false){
  const raw=card.dataset.deliveryProgress;
@@ -14,7 +15,7 @@ function syncDeliveryProgress(card:HTMLElement,markSeen=false){
  if(!markSeen&&lastProgressPayload.get(card)===raw)return;
  let progress:DeliveryProgress;
  try{progress=JSON.parse(raw)}catch{return}
- if(!progress||typeof progress.statusLabel!=='string'||typeof progress.eventKey!=='string'||typeof progress.customerId!=='string'||typeof progress.bookingId!=='string')return;
+ if(!progress||typeof progress.status!=='string'||typeof progress.statusLabel!=='string'||typeof progress.eventKey!=='string'||typeof progress.customerId!=='string'||typeof progress.bookingId!=='string')return;
  const main=card.querySelector<HTMLElement>('.customerCardSummaryMain');
  if(!main)return;
  lastProgressPayload.set(card,raw);
@@ -33,13 +34,21 @@ function syncDeliveryProgress(card:HTMLElement,markSeen=false){
  const storageKey='drivedrop:delivery-progress:v1:'+JSON.stringify([progress.customerId,progress.bookingId]);
  let seen=seenProgress.get(storageKey);
  if(seen===undefined){try{seen=localStorage.getItem(storageKey)||undefined}catch{}}
+ const persistedSeen=progress.persistedEventKey===progress.eventKey;
  if(markSeen&&progress.customerId&&progress.bookingId){
   const newlySeen=seen!==progress.eventKey;
   seen=progress.eventKey;seenProgress.set(storageKey,seen);
   try{localStorage.setItem(storageKey,seen)}catch{}
+  if(progress.status==='CANCELLED'&&!persistedSeen){
+   const persistenceKey=storageKey+'\n'+progress.eventKey;
+   if(!persistedCancellationEvents.has(persistenceKey)){
+    persistedCancellationEvents.add(persistenceKey);
+    void fetch('/api/bookings/cancellation-seen',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({bookingId:progress.bookingId,eventKey:progress.eventKey})}).then(response=>{if(!response.ok)throw new Error('Unable to save cancelled-delivery read state')}).catch(()=>persistedCancellationEvents.delete(persistenceKey));
+   }
+  }
   if(newlySeen)window.dispatchEvent(new CustomEvent('drivedrop:customer-progress-seen'));
  }
- const unread=!confirmationRequired&&progress.highlight===true&&!!progress.customerId&&!!progress.bookingId&&seen!==progress.eventKey;
+ const unread=!confirmationRequired&&progress.highlight===true&&!!progress.customerId&&!!progress.bookingId&&!persistedSeen&&seen!==progress.eventKey;
  card.classList.toggle('hasUnreadDeliveryProgress',unread);
  let badge=main.querySelector<HTMLElement>('.customerDeliveryProgressAlert');
  if(!unread){badge?.remove();return}

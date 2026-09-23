@@ -221,6 +221,7 @@ model Booking {
   agreedPricePence    Int
   status              BookingStatus   @default(PENDING_PAYMENT)
   customerConfirmedAt DateTime?
+  customerCancellationSeenEventKey String?
   deliveryLatitude     Float?
   deliveryLongitude    Float?
   deliveryLocationAccuracyMeters Float?
