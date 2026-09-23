@@ -1,0 +1,48 @@
+/* Compact, role-specific navigation for the admin workspace. */
+.adminTop{min-height:72px!important;padding:10px clamp(16px,3vw,34px)!important;gap:18px!important}
+.adminPrimaryNav{gap:10px!important}
+.adminHeaderLogo img{max-height:44px!important}
+.adminHeaderLabel{display:flex!important;align-items:center!important;padding:5px 8px!important;border:0!important;border-radius:999px!important;background:rgba(255,255,255,.1)!important}
+.adminHeaderLabel small{display:none!important}
+.adminHeaderLabel strong{font-size:10px!important;font-weight:800!important;letter-spacing:.06em!important;text-transform:uppercase!important}
+.adminHeaderNav{gap:6px!important}
+.adminHeaderNav .adminNavIcon,.adminHeaderNav .mobileNavIcon{display:block!important;width:16px!important;height:16px!important;flex:0 0 16px!important}
+.adminHeaderNav .adminMessagesRow{order:3;height:42px;min-height:42px;border:1px solid rgba(255,255,255,.12);border-radius:11px;background:rgba(255,255,255,.07)}
+.adminHeaderNav .notificationsHeaderLink{order:4}
+.adminHeaderNav .adminHeaderLink{order:5}
+.adminHeaderNav .accountNavBtn{order:2}
+.adminHeaderNav .adminDashboardButton{order:1}
+.adminHeaderNav .adminSignOutForm{order:6}
+.adminHeaderNav .headerStatusLink,.adminHeaderNav .adminHeaderLink,.adminHeaderNav .adminHeaderButton{display:inline-flex!important;min-height:42px!important;align-items:center!important;justify-content:center!important;gap:6px!important;padding:0 11px!important;border-radius:11px!important;font-size:11px!important;line-height:1!important;text-decoration:none!important;white-space:nowrap!important;box-sizing:border-box!important}
+.adminHeaderNav .notificationsHeaderLink{border:1px solid rgba(255,255,255,.12)!important;background:rgba(255,255,255,.07)!important;color:#fff!important}
+.adminMessagesRow>a{width:100%;height:100%;padding:0 11px!important}
+.adminHeaderNav .adminHeaderLink,.adminHeaderNav .accountNavBtn{border:1px solid transparent!important;background:transparent!important;color:#dce6ef!important}
+.adminHeaderNav .adminDashboardButton{border-color:#ff7a18!important;background:#ff7a18!important;color:#fff!important;box-shadow:0 7px 18px rgba(255,122,24,.24)!important}
+.adminHeaderNav .adminSignOutButton{border-color:transparent!important;background:transparent!important;color:#aebed0!important;box-shadow:none!important}
+.adminHeaderNav .headerStatusLink.isActive,.adminHeaderNav .adminHeaderLink[aria-current="page"],.adminHeaderNav .accountNavBtn[aria-current="page"]{background:rgba(255,255,255,.13)!important;color:#fff!important}
+
+@media(max-width:900px){
+ .adminTop{display:grid!important;grid-template-columns:repeat(12,minmax(0,1fr))!important;align-items:center!important;gap:7px!important;padding:10px 12px 12px!important}
+ .adminPrimaryNav{grid-column:1/9!important;grid-row:1!important;width:auto!important;min-width:0!important;justify-content:flex-start!important}
+ .adminHeaderLogo img{max-height:36px!important}
+ .adminHeaderLabel{display:flex!important;padding:4px 7px!important}
+ .adminHeaderNav{display:contents!important}
+ .adminHeaderNav .adminSignOutForm{grid-column:9/13!important;grid-row:1!important;width:100%!important;display:flex!important;justify-content:flex-end!important}
+ .adminHeaderNav .adminSignOutButton{width:auto!important;min-width:0!important;min-height:42px!important;padding:0 6px!important;font-size:10px!important}
+ .adminHeaderNav .adminDashboardButton{grid-column:1/5!important;grid-row:2!important}
+ .adminHeaderNav .adminMessagesRow{grid-column:5/9!important;grid-row:2!important;width:100%!important;height:48px!important;min-height:48px!important;max-height:48px!important}
+ .adminHeaderNav .notificationsHeaderLink{grid-column:9/13!important;grid-row:2!important}
+ .adminHeaderNav .accountNavBtn{grid-column:1/6!important;grid-row:3!important}
+ .adminHeaderNav .adminHeaderLink{grid-column:6/13!important;grid-row:3!important}
+ .adminHeaderNav .adminDashboardButton,.adminHeaderNav .notificationsHeaderLink,.adminHeaderNav .accountNavBtn,.adminHeaderNav .adminHeaderLink{width:100%!important;min-width:0!important;min-height:48px!important;padding:0 7px!important;font-size:10px!important}
+ .adminHeaderNav .adminMessagesRow>a{width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;padding:0 7px!important;font-size:10px!important;overflow:hidden!important}
+ .adminHeaderNav .adminDashboardButton,.adminHeaderNav .notificationsHeaderLink,.adminHeaderNav .accountNavBtn,.adminHeaderNav .adminHeaderLink,.adminHeaderNav .adminMessagesRow{border:1px solid rgba(255,255,255,.13)!important;border-radius:11px!important;box-sizing:border-box!important}
+ .adminHeaderNav .notificationsHeaderLink,.adminHeaderNav .accountNavBtn,.adminHeaderNav .adminHeaderLink,.adminHeaderNav .adminMessagesRow{background:rgba(255,255,255,.07)!important;color:#edf4fa!important}
+ .adminHeaderNav .navCountBadge{min-width:17px;height:17px;padding:0 4px;font-size:9px}
+}
+
+@media(max-width:360px){
+ .adminTop{padding-right:9px!important;padding-left:9px!important;gap:6px!important}
+ .adminHeaderNav .adminDashboardButton,.adminHeaderNav .notificationsHeaderLink,.adminHeaderNav .accountNavBtn,.adminHeaderNav .adminHeaderLink,.adminHeaderNav .adminMessagesRow>a{gap:4px!important;padding-right:5px!important;padding-left:5px!important;font-size:9px!important}
+ .adminHeaderNav .adminNavIcon,.adminHeaderNav .mobileNavIcon{width:14px!important;height:14px!important;flex-basis:14px!important}
+}
