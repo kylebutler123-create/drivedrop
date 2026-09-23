@@ -31,7 +31,7 @@
  .adminHeaderNav .adminSignOutButton{width:auto!important;min-width:0!important;min-height:42px!important;padding:0 6px!important;font-size:10px!important}
  .adminHeaderNav .adminDashboardButton{grid-column:1/5!important;grid-row:2!important}
  .adminHeaderNav .adminMessagesRow{grid-column:5/9!important;grid-row:2!important;width:100%!important;height:48px!important;min-height:48px!important;max-height:48px!important}
- .adminHeaderNav .notificationsHeaderLink{grid-column:9/13!important;grid-row:2!important}
+ .adminHeaderNav>a.notificationsHeaderLink:not(.adminHeaderLink):not(.accountNavBtn):not(.adminDashboardButton){grid-column:9/13!important;grid-row:2!important}
  .adminHeaderNav .accountNavBtn{grid-column:1/6!important;grid-row:3!important}
  .adminHeaderNav .adminHeaderLink{grid-column:6/13!important;grid-row:3!important}
  .adminHeaderNav .adminDashboardButton,.adminHeaderNav .notificationsHeaderLink,.adminHeaderNav .accountNavBtn,.adminHeaderNav .adminHeaderLink{width:100%!important;min-width:0!important;min-height:48px!important;padding:0 7px!important;font-size:10px!important}
