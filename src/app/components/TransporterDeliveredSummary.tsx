@@ -9,7 +9,7 @@ const bookingReference=(value:any)=>{const id=String(value??'').trim();return id
 type DisputeFeedback={kind:'success'|'error';text:string};
 type CompletedFilter='ALL'|'AWAITING'|'READY'|'PAID';
 const paidActivityStorageKey=(bookingId:string)=>'drivedrop:transporter-paid:v1:'+bookingId;
-const paidActivityValue=(booking:any)=>['PAID',booking?.payment?.events?.[0]?.id||booking?.payment?.events?.[0]?.createdAt||booking?.payment?.updatedAt||''].join(':');
+const paidActivityValue=(booking:any)=>['PAID',booking?.payment?.events?.[0]?.createdAt||booking?.payment?.events?.[0]?.id||booking?.payment?.updatedAt||''].join(':');
 const persistedPaidActivity=new Set<string>();
 const payoutLabel=(status?:string,confirmed?:string|null,payoutDetailsComplete=true)=>{
  if(status==='PAID')return'Paid';
