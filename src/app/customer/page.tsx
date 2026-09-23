@@ -53,7 +53,7 @@ function completedCardActivityStorageKey(bookingId:string){return 'drivedrop:cus
 function hasUnseenCompletedActivity(booking:any){
  if(typeof window==='undefined'||!booking?.customerConfirmedAt||typeof booking?.id!=='string')return false;
  if(booking.customerCompletedSeenEventKey===String(booking.customerConfirmedAt))return false;
- try{return localStorage.getItem(completedActivityStorageKey(booking.id))===String(booking.customerConfirmedAt)}catch{return false}
+ try{return localStorage.getItem(completedCardActivityStorageKey(booking.id))===String(booking.customerConfirmedAt)}catch{return false}
 }
 function markCompletedActivity(bookingId:string,confirmedAt:string){
  try{
