@@ -57,22 +57,34 @@ function syncDeliveryProgress(card:HTMLElement,markSeen=false){
  if(badge.textContent!==message)badge.textContent=message;
 }
 
-type CompletedSummary={title:string;transporter:string;registration:string;deliveredAt?:string|null;evidenceCount:number;paymentText:string};
+type CompletedSummary={title:string;transporter:string;registration:string;deliveredAt?:string|null;evidenceCount:number;paymentText:string;eventKey:string;persistedEventKey?:string|null};
 const lastCompletedPayload=new WeakMap<HTMLElement,string>();
+const persistedCompletedEvents=new Set<string>();
 function completedActivityStorageKey(bookingId:string){return 'drivedrop:customer-completed-activity:v1:'+bookingId}
 function completedCardActivityStorageKey(bookingId:string){return 'drivedrop:customer-completed-card-activity:v1:'+bookingId}
 function syncCompletedActivity(card:HTMLElement,markSeen=false){
- if(!card.dataset.completedSummary)return;
+ const raw=card.dataset.completedSummary;
+ if(!raw)return;
  const bookingId=card.dataset.bookingId;
  if(!bookingId)return;
+ let summary:CompletedSummary;
+ try{summary=JSON.parse(raw)}catch{return}
+ if(!summary||typeof summary.eventKey!=='string'||!summary.eventKey)return;
  const cardKey=completedCardActivityStorageKey(bookingId);
+ const persistedSeen=summary.persistedEventKey===summary.eventKey;
  let unread=false;
  try{
-  unread=localStorage.getItem(cardKey)!==null;
+  unread=!persistedSeen&&localStorage.getItem(cardKey)===summary.eventKey;
+  if(persistedSeen){localStorage.removeItem(cardKey);localStorage.removeItem(completedActivityStorageKey(bookingId))}
   if(markSeen&&unread){
    localStorage.removeItem(cardKey);
    localStorage.removeItem(completedActivityStorageKey(bookingId));
    unread=false;
+   const persistenceKey=bookingId+'\n'+summary.eventKey;
+   if(!persistedCompletedEvents.has(persistenceKey)){
+    persistedCompletedEvents.add(persistenceKey);
+    void fetch('/api/bookings/completed-seen',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({bookingId,eventKey:summary.eventKey}),keepalive:true}).then(response=>{if(!response.ok)throw new Error('Unable to save completed-delivery read state')}).catch(()=>persistedCompletedEvents.delete(persistenceKey));
+   }
    window.dispatchEvent(new CustomEvent('drivedrop:customer-progress-seen'));
   }
  }catch{}
@@ -83,7 +95,7 @@ function syncCompletedSummary(card:HTMLElement){
  if(!raw)return;
  let summary:CompletedSummary;
  try{summary=JSON.parse(raw)}catch{return}
- if(!summary||typeof summary.title!=='string'||typeof summary.transporter!=='string'||typeof summary.registration!=='string'||typeof summary.paymentText!=='string'||!Number.isFinite(summary.evidenceCount))return;
+ if(!summary||typeof summary.title!=='string'||typeof summary.transporter!=='string'||typeof summary.registration!=='string'||typeof summary.paymentText!=='string'||typeof summary.eventKey!=='string'||!Number.isFinite(summary.evidenceCount))return;
  const button=card.querySelector<HTMLButtonElement>(':scope > .customerCardToggle');
  if(!button)return;
  if(lastCompletedPayload.get(card)===raw&&button.classList.contains('customerCompletedSummary')&&button.querySelector('.customerCompletedIdentity'))return;
