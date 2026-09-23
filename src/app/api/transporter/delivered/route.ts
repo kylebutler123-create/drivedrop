@@ -12,13 +12,13 @@ export async function GET(){
   prisma.booking.findMany({
    where:{transporterId:user.id,status:'DELIVERED'},
    select:{
-    id:true,status:true,agreedPricePence:true,customerConfirmedAt:true,deliveryLatitude:true,deliveryLongitude:true,deliveryLocationAccuracyMeters:true,deliveryLocationCapturedAt:true,createdAt:true,
+    id:true,status:true,agreedPricePence:true,customerConfirmedAt:true,transporterPaidSeenEventKey:true,deliveryLatitude:true,deliveryLongitude:true,deliveryLocationAccuracyMeters:true,deliveryLocationCapturedAt:true,createdAt:true,
     job:{select:{id:true,collection:true,delivery:true,vehicleMake:true,vehicleModel:true,registration:true,running:true,collectionDate:true}},
     customer:{select:{name:true}},
     trackingEvents:{where:{status:'DELIVERED'},select:{createdAt:true,note:true},orderBy:{createdAt:'desc'},take:1},
     evidence:{select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'asc'}},
     disputes:{select:{id:true,status:true,resolution:true,reason:true,createdAt:true},orderBy:{createdAt:'desc'}},
-    payment:{select:{transporterProceedsPence:true,cancellationDeductionPence:true,payoutStatus:true,status:true,events:{where:{type:'PAYOUT_PAID'},select:{createdAt:true},orderBy:{createdAt:'desc'},take:1}}}
+    payment:{select:{transporterProceedsPence:true,cancellationDeductionPence:true,payoutStatus:true,status:true,events:{where:{type:'PAYOUT_PAID'},select:{id:true,createdAt:true},orderBy:{createdAt:'desc'},take:1}}}
    },
    orderBy:{createdAt:'desc'}
   }),

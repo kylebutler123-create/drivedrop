@@ -10,6 +10,7 @@ type DisputeFeedback={kind:'success'|'error';text:string};
 type CompletedFilter='ALL'|'AWAITING'|'READY'|'PAID';
 const paidActivityStorageKey=(bookingId:string)=>'drivedrop:transporter-paid:v1:'+bookingId;
 const paidActivityValue=(booking:any)=>['PAID',booking?.payment?.events?.[0]?.id||booking?.payment?.events?.[0]?.createdAt||booking?.payment?.updatedAt||''].join(':');
+const persistedPaidActivity=new Set<string>();
 const payoutLabel=(status?:string,confirmed?:string|null,payoutDetailsComplete=true)=>{
  if(status==='PAID')return'Paid';
  if(status==='HELD')return'Held by dispute';
@@ -93,6 +94,8 @@ export default function TransporterDeliveredSummary(){
   const seen:Record<string,string>={};
   for(const booking of bookings){
    if(booking?.payment?.payoutStatus!=='PAID'||typeof booking?.id!=='string')continue;
+   const eventKey=paidActivityValue(booking);
+   if(booking.transporterPaidSeenEventKey===eventKey){seen[booking.id]=eventKey;continue}
    try{const value=localStorage.getItem(paidActivityStorageKey(booking.id));if(value)seen[booking.id]=value}catch{}
   }
   setSeenPaidActivity(seen);
@@ -104,6 +107,13 @@ export default function TransporterDeliveredSummary(){
   const value=paidActivityValue(booking);
   try{localStorage.setItem(paidActivityStorageKey(booking.id),value)}catch{}
   setSeenPaidActivity(current=>current[booking.id]===value?current:{...current,[booking.id]:value});
+  if(booking.transporterPaidSeenEventKey!==value){
+   const persistenceKey=booking.id+'\n'+value;
+   if(!persistedPaidActivity.has(persistenceKey)){
+    persistedPaidActivity.add(persistenceKey);
+    void fetch('/api/transporter/paid-seen',{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({bookingId:booking.id,eventKey:value}),keepalive:true}).then(response=>{if(!response.ok)throw new Error('Unable to save paid-delivery read state')}).catch(()=>persistedPaidActivity.delete(persistenceKey));
+   }
+  }
  };
  async function submitDeliveryDispute(bookingId:string){
   const details=disputeDetails.trim();
