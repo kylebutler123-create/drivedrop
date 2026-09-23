@@ -29,6 +29,12 @@
  .transporterExpandableCard.transporterBooking.isCollapsed>.transporterCollectionAction{margin:0 12px 12px}
 }
 
+/* Replace the completed collection action with delivery on the compact card only. */
+.transporterBooking>.transporterCompactDeliveryAction{display:none!important}
+.transporterExpandableCard.transporterBooking.isCollapsed>.transporterCompactDeliveryAction{display:block!important;margin:0 14px 14px}
+.transporterCompactDeliveryAction .btn.fullBtn{min-height:44px;white-space:normal}
+@media(max-width:760px){.transporterExpandableCard.transporterBooking.isCollapsed>.transporterCompactDeliveryAction{margin:0 12px 12px}}
+
 /* Available Jobs use their polished header; only quote controls expand. */
 .jobOpportunity>.bookingTop{padding-top:0}
 .jobOpportunity .jobOwnQuotePrice{margin:6px 0;color:#183654;font-size:14px;font-weight:800;line-height:1.4}
