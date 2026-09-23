@@ -22,7 +22,7 @@
 .adminHeaderNav .headerStatusLink.isActive,.adminHeaderNav .adminHeaderLink[aria-current="page"],.adminHeaderNav .accountNavBtn[aria-current="page"]{background:rgba(255,255,255,.13)!important;color:#fff!important}
 
 @media(max-width:900px){
- .adminTop{display:grid!important;grid-template-columns:repeat(12,minmax(0,1fr))!important;align-items:center!important;gap:7px!important;padding:6px 12px 12px!important}
+ .adminTop{display:grid!important;grid-template-columns:repeat(12,minmax(0,1fr))!important;align-items:center!important;gap:7px!important;padding:3px 12px 12px!important}
  .adminPrimaryNav{grid-column:1/9!important;grid-row:1!important;width:auto!important;min-width:0!important;justify-content:flex-start!important}
  .adminHeaderLogo img{max-height:36px!important}
  .adminHeaderLabel{display:flex!important;padding:4px 7px!important}
