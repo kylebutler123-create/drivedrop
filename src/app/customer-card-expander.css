@@ -43,12 +43,12 @@
 
 .customerCardSummaryMain .customerDeliveryReference{margin-top:5px;color:#31506b;font-size:9px;font-weight:800;letter-spacing:.02em}
 
-.dashboardSummary.customerDashboardSummary{grid-template-columns:repeat(4,minmax(0,1fr));min-width:490px}
-.dashboardSummary.customerDashboardSummary>[role="button"]:nth-child(4){order:1}
-.dashboardSummary.customerDashboardSummary>[role="button"]:nth-child(3){order:2}
-.dashboardSummary.customerDashboardSummary>[role="button"]:nth-child(1){order:3}
-.dashboardSummary.customerDashboardSummary>[role="button"]:nth-child(2){order:4}
-@media(max-width:760px){.dashboardSummary.customerDashboardSummary{grid-template-columns:repeat(2,minmax(0,1fr));width:100%;min-width:0}}
+.dashboardSummary.customerDashboardSummary{grid-template-columns:repeat(3,minmax(0,1fr));min-width:490px}
+.dashboardSummary.customerDashboardSummary>[role="button"]:nth-child(4){grid-column:1/-1;order:1}
+.dashboardSummary.customerDashboardSummary>[role="button"]:nth-child(1){order:2}
+.dashboardSummary.customerDashboardSummary>[role="button"]:nth-child(2){order:3}
+.dashboardSummary.customerDashboardSummary>[role="button"]:nth-child(3){order:4}
+@media(max-width:760px){.dashboardSummary.customerDashboardSummary{grid-template-columns:repeat(3,minmax(0,1fr));width:100%;min-width:0}}
 
 /* Keep the customer transport request compact without changing other forms. */
 .requestPanel>form>.grid{column-gap:14px;row-gap:4px;margin-top:10px}
