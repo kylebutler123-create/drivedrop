@@ -10,9 +10,9 @@
 .transporterCompletedCard.isPaid>.transporterCompletedSummary{background:#edf8f2}
 .transporterCompletedCard.isPaid>.transporterCompletedSummary:hover{background:#e5f5ec}
 .transporterCompletedCard.isPaid .successPill{border-color:#a8d8be;background:#dff3e8;color:#12633d}
-.transporterCompletedCard.hasUnreadReady{border:2px solid #f28a3b!important;box-shadow:0 0 0 3px rgba(255,122,24,.13),0 12px 30px rgba(173,78,13,.14)!important}
-.transporterCompletedCard.hasUnreadReady>.transporterCompletedSummary{padding-left:9px;border-left:4px solid #ff7a18;background:#fff0e4}
-.transporterCompletedCard.hasUnreadReady>.transporterCompletedSummary:hover{background:#ffe7d4}
+.transporterCompletedCard.hasUnreadReady{border:2px solid #173b5e!important;box-shadow:0 0 0 3px rgba(23,59,94,.12),0 12px 30px rgba(16,47,79,.14)!important}
+.transporterCompletedCard.hasUnreadReady>.transporterCompletedSummary{padding-left:9px;border-left:4px solid #102f4f;background:#e3edf5}
+.transporterCompletedCard.hasUnreadReady>.transporterCompletedSummary:hover{background:#dbe8f1}
 .transporterCompletedCard.hasUnreadPaid{border:2px solid #39a66b!important;box-shadow:0 0 0 3px rgba(57,166,107,.12),0 12px 30px rgba(28,107,66,.14)!important}
 .transporterCompletedCard.hasUnreadPaid>.transporterCompletedSummary{padding-left:9px;border-left:4px solid #2f9c61;background:#ddf3e6}
 .transporterCompletedCard.hasUnreadPaid>.transporterCompletedSummary:hover{background:#d5efdf}
