@@ -33,6 +33,7 @@
 .transporterBooking>.transporterCompactDeliveryAction{display:none!important}
 .transporterExpandableCard.transporterBooking.isCollapsed>.transporterCompactDeliveryAction{display:block!important;margin:0 14px 14px}
 .transporterCompactDeliveryAction .btn.fullBtn{min-height:44px;white-space:normal}
+.transporterCompactDeliveryAction .btn.orange{background:linear-gradient(135deg,var(--green),#20a469);box-shadow:0 8px 22px rgba(22,133,84,.20)}
 @media(max-width:760px){.transporterExpandableCard.transporterBooking.isCollapsed>.transporterCompactDeliveryAction{margin:0 12px 12px}}
 
 /* Available Jobs use their polished header; only quote controls expand. */
