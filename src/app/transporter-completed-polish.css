@@ -33,6 +33,7 @@
 .transporterDisputeForm textarea:focus{border-color:#ff8a2a;outline:3px solid rgba(255,138,42,.14)}
 .transporterDisputeForm .actionButtons{margin-top:10px}
 @media(max-width:800px){.transporterCompletedContact .btn{width:auto;flex:1 1 145px}.transporterDisputeNotice,.transporterDisputeForm{margin-right:11px;margin-left:11px}}
+@media(max-width:800px){.transporterCompletedContact:has(>:nth-child(3)){display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.transporterCompletedContact:has(>:nth-child(3))>.btn{width:100%;min-width:0}.transporterCompletedContact:has(>:nth-child(3))>.btn:nth-child(3){grid-column:1/-1}}
 
 
 /* Keep transporter summary actions in their operational order. */
