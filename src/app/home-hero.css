@@ -560,3 +560,138 @@ body:has(.homePage) > .guestTop{
   .homePage .footerGrid > div:last-child{grid-column:1/-1;}
   .homePage .footerLegal{margin-top:20px;}
 }
+
+/* Desktop-only homepage quote and account-access slider. */
+@media(min-width:761px){
+  .homePage .homeHeroPanelShell{
+    width:100%;
+    max-width:430px;
+    height:450px;
+    justify-self:end;
+    overflow:hidden;
+  }
+  .homePage .homeHeroPanelTrack{
+    width:300%;
+    height:100%;
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    align-items:center;
+    transition:transform .42s cubic-bezier(.22,.72,.2,1);
+    will-change:transform;
+  }
+  .homePage .homeHeroPanelTrack.showQuotes{transform:translateX(0);}
+  .homePage .homeHeroPanelTrack.showCustomerLogin{transform:translateX(-33.333333%);}
+  .homePage .homeHeroPanelTrack.showTransporterLogin{transform:translateX(-66.666667%);}
+  .homePage .homeHeroPanelSlide{
+    width:100%;
+    max-width:none;
+    min-width:0;
+    box-sizing:border-box;
+    justify-self:stretch;
+  }
+  .homePage .homeLoginPanel{
+    padding:20px 24px;
+    color:#10233f;
+  }
+  .homePage .homeLoginTop,
+  .homePage .homePasswordLabel{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .homePage .homeLoginTop>span{
+    color:#75859a;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  .homePage .homeLoginBack{
+    padding:0;
+    border:0;
+    background:transparent;
+    color:#b9560c;
+    font:inherit;
+    font-size:11px;
+    font-weight:800;
+    cursor:pointer;
+  }
+  .homePage .homeLoginHeading{margin:15px 0 12px;}
+  .homePage .homeLoginHeading>strong{
+    display:block;
+    color:#173451;
+    font-size:21px;
+  }
+  .homePage .homeLoginHeading>p{
+    margin:5px 0 0;
+    color:#66798f;
+    font-size:11px;
+    line-height:1.45;
+  }
+  .homePage .homeLoginSwitch{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:3px;
+    padding:3px;
+    border-radius:10px;
+    background:#edf2f7;
+  }
+  .homePage .homeLoginSwitch button{
+    min-height:32px;
+    padding:6px 8px;
+    border:0;
+    border-radius:8px;
+    background:transparent;
+    color:#66798f;
+    font:inherit;
+    font-size:11px;
+    font-weight:800;
+    cursor:pointer;
+  }
+  .homePage .homeLoginSwitch button.active{
+    background:#fff;
+    color:#173451;
+    box-shadow:0 3px 10px rgba(16,35,63,.09);
+  }
+  .homePage .homeLoginPanel .field{margin:11px 0;}
+  .homePage .homeLoginPanel .field label{font-size:9px;letter-spacing:.06em;}
+  .homePage .homeLoginPanel input{padding:11px 12px;border-radius:9px;}
+  .homePage .homePasswordLabel>a{
+    color:#b9560c;
+    font-size:10px;
+    font-weight:800;
+  }
+  .homePage .homeLoginSubmit{
+    width:100%;
+    margin-top:4px;
+    padding:12px;
+  }
+  .homePage .homeLoginPanel .formNotice{
+    margin:8px 0;
+    padding:9px 11px;
+    font-size:10px;
+  }
+  .homePage .homeLoginCreate{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid #e5ebf1;
+    font-size:10px;
+  }
+  .homePage .homeLoginCreate>span{color:#75859a;}
+  .homePage .homeLoginCreate>a{color:#174f80;font-weight:800;}
+}
+
+@media(max-width:760px){
+  .homePage .homeHeroPanelShell{width:100%;min-width:0;}
+  .homePage .homeHeroPanelTrack{display:block;width:100%;}
+  .homePage .homeHeroPanelTrack>.homeHeroPanelSlide:not(:first-child){display:none;}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .homePage .homeHeroPanelTrack{transition:none;}
+}
