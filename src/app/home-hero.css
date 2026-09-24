@@ -570,6 +570,7 @@ body:has(.homePage) > .guestTop{
     justify-self:end;
     overflow:hidden;
   }
+  .homePage .homeHeroPanelShell.isRegistration{height:560px;}
   .homePage .homeHeroPanelTrack{
     width:100%;
     height:100%;
@@ -591,7 +592,8 @@ body:has(.homePage) > .guestTop{
   }
   .homePage .homeHeroPanelTrack.showQuotes>.homeHeroPanelSlide:first-child,
   .homePage .homeHeroPanelTrack.showCustomerLogin>.homeHeroPanelSlide:nth-child(2),
-  .homePage .homeHeroPanelTrack.showTransporterLogin>.homeHeroPanelSlide:nth-child(3){
+  .homePage .homeHeroPanelTrack.showTransporterLogin>.homeHeroPanelSlide:nth-child(3),
+  .homePage .homeHeroPanelTrack.showRegister>.homeHeroPanelSlide:nth-child(4){
     opacity:1;
     visibility:visible;
     pointer-events:auto;
@@ -602,6 +604,13 @@ body:has(.homePage) > .guestTop{
     padding:20px 24px;
     color:#10233f;
   }
+  .homePage .homeRegisterPanel{padding:20px 24px;color:#10233f;}
+  .homePage .homeRegisterPanel .homeLoginHeading{margin:12px 0 10px;}
+  .homePage .homeRegisterPanel .field{margin:8px 0;}
+  .homePage .homeRegisterPanel .field label{font-size:9px;letter-spacing:.06em;}
+  .homePage .homeRegisterPanel input:not([type="hidden"]){padding:10px 12px;border-radius:9px;}
+  .homePage .homeRegisterPanel .formNotice{margin:8px 0;padding:9px 11px;font-size:10px;}
+  .homePage .homeRegisterPanel .homeLoginCreate{margin-top:10px;padding-top:9px;}
   .homePage .homeLoginTop,
   .homePage .homePasswordLabel{
     display:flex;
@@ -692,7 +701,15 @@ body:has(.homePage) > .guestTop{
     font-size:10px;
   }
   .homePage .homeLoginCreate>span{color:#75859a;}
-  .homePage .homeLoginCreate>a{color:#174f80;font-weight:800;}
+  .homePage .homeLoginCreate>button{
+    padding:0;
+    border:0;
+    background:transparent;
+    color:#174f80;
+    font:inherit;
+    font-weight:800;
+    cursor:pointer;
+  }
 }
 
 @media(max-width:760px){
