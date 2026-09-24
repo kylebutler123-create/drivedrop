@@ -561,7 +561,7 @@ body:has(.homePage) > .guestTop{
   .homePage .footerLegal{margin-top:20px;}
 }
 
-/* Desktop-only homepage quote and account-access slider. */
+/* Desktop-only homepage quote and account-access panels. */
 @media(min-width:761px){
   .homePage .homeHeroPanelShell{
     width:100%;
@@ -571,25 +571,34 @@ body:has(.homePage) > .guestTop{
     overflow:hidden;
   }
   .homePage .homeHeroPanelTrack{
-    width:300%;
+    width:100%;
     height:100%;
     display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
+    grid-template-columns:minmax(0,1fr);
     align-items:center;
-    transition:transform .42s cubic-bezier(.22,.72,.2,1);
-    will-change:transform;
   }
-  .homePage .homeHeroPanelTrack.showQuotes{transform:translateX(0);}
-  .homePage .homeHeroPanelTrack.showCustomerLogin{transform:translateX(-33.333333%);}
-  .homePage .homeHeroPanelTrack.showTransporterLogin{transform:translateX(-66.666667%);}
   .homePage .homeHeroPanelSlide{
+    grid-area:1/1;
     width:100%;
     max-width:none;
     min-width:0;
     box-sizing:border-box;
     justify-self:stretch;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .2s ease,visibility 0s linear .2s;
+  }
+  .homePage .homeHeroPanelTrack.showQuotes>.homeHeroPanelSlide:first-child,
+  .homePage .homeHeroPanelTrack.showCustomerLogin>.homeHeroPanelSlide:nth-child(2),
+  .homePage .homeHeroPanelTrack.showTransporterLogin>.homeHeroPanelSlide:nth-child(3){
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+    transition:opacity .2s ease,visibility 0s;
   }
   .homePage .homeLoginPanel{
+    min-height:390px;
     padding:20px 24px;
     color:#10233f;
   }
@@ -693,5 +702,5 @@ body:has(.homePage) > .guestTop{
 }
 
 @media(prefers-reduced-motion:reduce){
-  .homePage .homeHeroPanelTrack{transition:none;}
+  .homePage .homeHeroPanelSlide{transition:none;}
 }
