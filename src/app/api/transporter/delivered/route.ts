@@ -12,7 +12,7 @@ export async function GET(){
   prisma.booking.findMany({
    where:{transporterId:user.id,status:'DELIVERED'},
    select:{
-    id:true,status:true,agreedPricePence:true,customerConfirmedAt:true,transporterReadySeenEventKey:true,transporterPaidSeenEventKey:true,deliveryLatitude:true,deliveryLongitude:true,deliveryLocationAccuracyMeters:true,deliveryLocationCapturedAt:true,createdAt:true,
+    id:true,status:true,agreedPricePence:true,customerConfirmedAt:true,transporterAwaitingSeenEventKey:true,transporterReadySeenEventKey:true,transporterPaidSeenEventKey:true,deliveryLatitude:true,deliveryLongitude:true,deliveryLocationAccuracyMeters:true,deliveryLocationCapturedAt:true,createdAt:true,
     job:{select:{id:true,collection:true,delivery:true,vehicleMake:true,vehicleModel:true,registration:true,running:true,collectionDate:true}},
     customer:{select:{name:true}},
     trackingEvents:{where:{status:'DELIVERED'},select:{createdAt:true,note:true},orderBy:{createdAt:'desc'},take:1},

@@ -10,13 +10,16 @@
 .transporterCompletedCard.isPaid>.transporterCompletedSummary{background:#edf8f2}
 .transporterCompletedCard.isPaid>.transporterCompletedSummary:hover{background:#e5f5ec}
 .transporterCompletedCard.isPaid .successPill{border-color:#a8d8be;background:#dff3e8;color:#12633d}
+.transporterCompletedCard.hasUnreadAwaiting{border:2px solid #e77714!important;box-shadow:0 0 0 3px rgba(231,119,20,.12),0 12px 30px rgba(172,82,12,.14)!important}
+.transporterCompletedCard.hasUnreadAwaiting>.transporterCompletedSummary{padding-left:9px;border-left:4px solid #e77714;background:#fff0e2}
+.transporterCompletedCard.hasUnreadAwaiting>.transporterCompletedSummary:hover{background:#ffe8d3}
 .transporterCompletedCard.hasUnreadReady{border:2px solid #173b5e!important;box-shadow:0 0 0 3px rgba(23,59,94,.12),0 12px 30px rgba(16,47,79,.14)!important}
 .transporterCompletedCard.hasUnreadReady>.transporterCompletedSummary{padding-left:9px;border-left:4px solid #102f4f;background:#e3edf5}
 .transporterCompletedCard.hasUnreadReady>.transporterCompletedSummary:hover{background:#dbe8f1}
 .transporterCompletedCard.hasUnreadPaid{border:2px solid #39a66b!important;box-shadow:0 0 0 3px rgba(57,166,107,.12),0 12px 30px rgba(28,107,66,.14)!important}
 .transporterCompletedCard.hasUnreadPaid>.transporterCompletedSummary{padding-left:9px;border-left:4px solid #2f9c61;background:#ddf3e6}
 .transporterCompletedCard.hasUnreadPaid>.transporterCompletedSummary:hover{background:#d5efdf}
-@media(max-width:800px){.transporterCompletedCard.hasUnreadReady>.transporterCompletedSummary,.transporterCompletedCard.hasUnreadPaid>.transporterCompletedSummary{padding-left:7px}}
+@media(max-width:800px){.transporterCompletedCard.hasUnreadAwaiting>.transporterCompletedSummary,.transporterCompletedCard.hasUnreadReady>.transporterCompletedSummary,.transporterCompletedCard.hasUnreadPaid>.transporterCompletedSummary{padding-left:7px}}
 
 
 /* Delivered-but-unconfirmed dispute action. */

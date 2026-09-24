@@ -223,6 +223,7 @@ model Booking {
   customerConfirmedAt DateTime?
   customerCancellationSeenEventKey String?
   customerCompletedSeenEventKey String?
+  transporterAwaitingSeenEventKey String?
   transporterReadySeenEventKey String?
   transporterPaidSeenEventKey String?
   deliveryLatitude     Float?
