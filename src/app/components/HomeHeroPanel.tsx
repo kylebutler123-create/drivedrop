@@ -34,10 +34,12 @@ export default function HomeHeroPanel(){
       const account=new URL(link.href,window.location.href).searchParams.get('account');
       if(account!=='customer'&&account!=='transporter')return;
       event.preventDefault();
+      event.stopPropagation();
       show(account);
     };
-    document.addEventListener('click',selectLogin);
-    return()=>document.removeEventListener('click',selectLogin);
+    // Capture before Next Link's delegated click handler can start navigation.
+    document.addEventListener('click',selectLogin,true);
+    return()=>document.removeEventListener('click',selectLogin,true);
   },[]);
 
   async function submit(event:FormEvent<HTMLFormElement>){
