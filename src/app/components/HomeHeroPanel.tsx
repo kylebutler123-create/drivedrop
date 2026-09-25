@@ -30,14 +30,15 @@ export default function HomeHeroPanel(){
 
   useEffect(()=>{
     const selectLogin=(event:MouseEvent)=>{
-      if(!window.matchMedia('(min-width: 761px)').matches||window.location.pathname!=='/')return;
-      const link=(event.target as Element|null)?.closest<HTMLAnchorElement>('.guestPrimaryNav a[href^="/login?account="]');
+      if(!window.matchMedia('(min-width: 761px)').matches||window.location.pathname!=='/'||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+      const link=(event.target as Element|null)?.closest<HTMLAnchorElement>('a[data-home-hero-view], .guestPrimaryNav a[href^="/login?account="]');
       if(!link)return;
-      const account=new URL(link.href,window.location.href).searchParams.get('account');
-      if(account!=='customer'&&account!=='transporter')return;
+      const next=link.dataset.homeHeroView??new URL(link.href,window.location.href).searchParams.get('account');
+      if(next!=='quotes'&&next!=='customer'&&next!=='transporter'&&next!=='registerCustomer'&&next!=='registerTransporter')return;
       event.preventDefault();
       event.stopPropagation();
-      show(account);
+      show(next);
+      window.scrollTo(0,0);
     };
     // Capture before Next Link's delegated click handler can start navigation.
     document.addEventListener('click',selectLogin,true);
