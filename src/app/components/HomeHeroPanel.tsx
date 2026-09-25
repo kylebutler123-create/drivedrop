@@ -11,8 +11,8 @@ const viewClass:Record<HeroView,string>={
   quotes:'showQuotes',
   customer:'showCustomerLogin',
   transporter:'showTransporterLogin',
-  registerCustomer:'showRegister',
-  registerTransporter:'showRegister',
+  registerCustomer:'showRegister showRegisterCustomer',
+  registerTransporter:'showRegister showRegisterTransporter',
 };
 
 export default function HomeHeroPanel(){

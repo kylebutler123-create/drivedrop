@@ -99,19 +99,13 @@ body:has(.homePage) > .guestTop{
   .homePage .desktopHeroSlide:first-child{background-image:url('/hero-transporter-coast-mirrored-hq.webp');opacity:1;}
   .homePage .desktopHeroSlide:nth-child(2){background-image:url('/hero-enclosed-classic-mirrored-hq.webp');}
   .homePage .desktopHeroSlide:nth-child(3){background-image:url('/hero-recovery-dusk-mirrored-hq.webp');}
+  .homePage .visualHero:has(.homeHeroPanelTrack.showCustomerLogin, .homeHeroPanelTrack.showRegisterCustomer) .desktopHeroSlide:first-child,
+  .homePage .visualHero:has(.homeHeroPanelTrack.showTransporterLogin, .homeHeroPanelTrack.showRegisterTransporter) .desktopHeroSlide:first-child{opacity:0;}
+  .homePage .visualHero:has(.homeHeroPanelTrack.showCustomerLogin, .homeHeroPanelTrack.showRegisterCustomer) .desktopHeroSlide:nth-child(2){opacity:1;}
+  .homePage .visualHero:has(.homeHeroPanelTrack.showTransporterLogin, .homeHeroPanelTrack.showRegisterTransporter) .desktopHeroSlide:nth-child(3){opacity:1;}
 }
 @media(min-width:761px) and (prefers-reduced-motion:no-preference){
-  .homePage .desktopHeroSlide{animation:desktopHeroPhoto 60s linear infinite both;}
-  .homePage .desktopHeroSlide:first-child{animation-delay:-1.2s;}
-  .homePage .desktopHeroSlide:nth-child(2){animation-delay:-41.2s;}
-  .homePage .desktopHeroSlide:nth-child(3){animation-delay:-21.2s;}
-  @keyframes desktopHeroPhoto{
-    0%{opacity:0;}
-    2%{opacity:1;}
-    32%{opacity:1;}
-    34%{opacity:0;}
-    100%{opacity:0;}
-  }
+  .homePage .desktopHeroSlide{transition:opacity .9s ease;}
 }
 .homePage .heroOverlay{
   background:linear-gradient(90deg,rgba(4,18,37,.96) 0%,rgba(4,18,37,.77) 44%,rgba(4,18,37,.2) 100%);
