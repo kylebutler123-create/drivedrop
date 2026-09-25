@@ -784,3 +784,42 @@ body:has(.homePage) > .guestTop{
 @media(prefers-reduced-motion:reduce){
   .homePage .homeHeroPanelSlide{transition:none;}
 }
+
+/* Match the approved desktop hero layout without changing the mobile view. */
+@media(min-width:761px){
+  body:has(.homePage) > .guestTop{
+    padding:24px clamp(30px,3.5vw,60px);
+    background:linear-gradient(180deg,rgba(4,18,37,.55),transparent);
+  }
+  body:has(.homePage) > .guestTop .guestPrimaryNav{width:100%;max-width:none;gap:9px;}
+  body:has(.homePage) > .guestTop .headerLogo{width:170px;height:52px;}
+  body:has(.homePage) > .guestTop .btn{min-height:34px;padding:8px 12px;font-size:11px;}
+
+  .homePage .visualHero{min-height:max(590px,53.5vw);}
+  .homePage .visualHeroInner{
+    max-width:none;
+    padding:118px clamp(30px,3.5vw,60px) 26px;
+    grid-template-columns:minmax(0,1.08fr) minmax(356px,.82fr);
+    gap:35px;
+  }
+  .homePage .marketHeroCopy h1{max-width:500px;margin:12px 0 15px;font-size:52px;}
+  .homePage .marketHeroCopy p{max-width:470px;font-size:15px;line-height:1.5;}
+  .homePage .heroBubbles{margin-top:22px;gap:7px;}
+  .homePage .heroBubbles span{padding:8px 11px;font-size:11px;}
+
+  .homePage .homeHeroPanelShell{
+    width:min(100%,max(320px,35.6vw),480px);
+    max-width:none;
+    height:400px;
+  }
+  .homePage .homeHeroPanelShell.isRegistration{
+    width:min(100%,max(430px,35.6vw),480px);
+    height:560px;
+  }
+  .homePage .quotePanel{max-width:none;padding:23px;border-radius:19px;}
+  .homePage .quotePanelHeader strong{font-size:19px;}
+  .homePage .quoteForm label{margin:14px 0 6px;}
+  .homePage .quoteForm input,
+  .homePage .quoteForm select{padding:11px 12px;}
+  .homePage .quoteCta{margin-top:18px;padding:12px;}
+}
