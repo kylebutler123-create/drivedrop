@@ -802,7 +802,7 @@ body:has(.homePage) > .guestTop{
   .homePage .eyebrow{font-size:12px;}
   .homePage .marketHeroCopy .eyebrow{font-size:15px;font-weight:600;}
   .homePage .heroBubbles{margin-top:22px;gap:7px;}
-  .homePage .heroBubbles span{padding:10px 14px;font-size:16px;}
+  .homePage .heroBubbles span{padding:10px 14px;font-size:16px;font-weight:600;}
 
   .homePage .homeHeroPanelShell{
     width:min(100%,max(320px,35.6vw),480px);
