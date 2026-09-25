@@ -1,0 +1,113 @@
+/* Keep the transporter header in one ordered row on desktop. */
+@media (min-width: 761px) {
+  .transporterTop {
+    display: grid;
+    grid-template-columns: minmax(245px, 1fr) auto auto auto minmax(16px, .7fr) auto auto;
+    align-items: center;
+    column-gap: 8px;
+    min-height: 94px;
+    padding: 12px clamp(28px, 3.5vw, 58px);
+    background: #071a33;
+  }
+  .transporterTop .transporterPrimaryNav,
+  .transporterTop .nav,
+  .transporterTop .transporterSecondaryNav { display: contents; }
+  .transporterTop .transporterPrimaryNav .headerLogo {
+    grid-column: 1;
+    grid-row: 1;
+    width: 245px;
+    height: 60px;
+    min-width: 0;
+  }
+  .transporterTop .transporterDashboardBtn { grid-column: 2; grid-row: 1; }
+  .transporterTop .messagesHeaderLink { grid-column: 3; grid-row: 1; }
+  .transporterTop .notificationsHeaderLink { grid-column: 4; grid-row: 1; }
+  .transporterTop .transporterPrimaryNav .accountNavBtn { grid-column: 6; grid-row: 1; }
+  .transporterTop .transporterPrimaryNav form { grid-column: 7; grid-row: 1; margin: 0; }
+
+  .transporterTop .transporterDashboardBtn,
+  .transporterTop .transporterSecondaryNav > a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 13px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    box-shadow: none;
+    color: #bdc9d8;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .transporterTop .transporterDashboardBtn.isActive,
+  .transporterTop .transporterSecondaryNav > a.isActive {
+    background: rgba(255,255,255,.1);
+    color: #fff;
+  }
+  .transporterTop .transporterDashboardBtn.isActive::after,
+  .transporterTop .transporterSecondaryNav > a.isActive::after {
+    content: '';
+    position: absolute;
+    right: 16px;
+    bottom: 0;
+    left: 16px;
+    height: 3px;
+    border-radius: 3px;
+    background: #ff7a18;
+  }
+  .transporterTop .mobileNavIcon {
+    display: block;
+    width: 17px;
+    height: 17px;
+    flex: 0 0 17px;
+  }
+  .transporterTop .notificationMobileLabel { display: none; }
+  .transporterTop .notificationDesktopLabel { display: inline; }
+  .transporterTop .navCountBadge { min-width: 18px; height: 18px; padding: 0 5px; font-size: 11px; }
+
+  .transporterTop .transporterPrimaryNav .accountNavBtn,
+  .transporterTop .transporterPrimaryNav form .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 9px;
+    box-shadow: none;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .transporterTop .transporterPrimaryNav .accountNavBtn {
+    border: 1px solid rgba(255,255,255,.2);
+    background: rgba(255,255,255,.07);
+  }
+  .transporterTop .transporterPrimaryNav form .btn {
+    border: 1px solid transparent;
+    background: transparent;
+    color: #bdc9d8;
+  }
+}
+
+/* A narrow desktop still has the same controls without horizontal overflow. */
+@media (min-width: 761px) and (max-width: 1090px) {
+  .transporterTop {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: 60px 44px;
+    row-gap: 4px;
+  }
+  .transporterTop .transporterPrimaryNav .headerLogo { grid-column: 1; grid-row: 1; width: min(225px, 100%); }
+  .transporterTop .transporterPrimaryNav .accountNavBtn { grid-column: 2; grid-row: 1; justify-self: end; }
+  .transporterTop .transporterPrimaryNav form { grid-column: 3; grid-row: 1; justify-self: end; }
+  .transporterTop .transporterDashboardBtn { grid-column: 1; grid-row: 2; justify-self: center; }
+  .transporterTop .messagesHeaderLink { grid-column: 2; grid-row: 2; justify-self: center; }
+  .transporterTop .notificationsHeaderLink { grid-column: 3; grid-row: 2; justify-self: center; }
+}

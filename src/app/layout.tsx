@@ -2,6 +2,7 @@ import './globals.css';
 import './home-hero.css';
 import './mobile-polish.css';
 import './customer-desktop-header.css';
+import './transporter-desktop-header.css';
 import './dashboard-polish.css';
 import './admin-dashboard-polish.css';
 import './admin-header-colors.css';
