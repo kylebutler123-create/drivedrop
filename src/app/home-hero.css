@@ -326,6 +326,7 @@ body:has(.homePage) > .guestTop{
   height:100%;
   object-fit:cover;
 }
+.homePage .deliveryCard:first-child .vehicleThumb img{object-fit:contain;}
 .homePage .deliveryCard h3{margin:1px 0 6px;font-size:16px;}
 .homePage .deliveryRoute{padding:10px 12px;font-size:12px;}
 .homePage .deliveryPrice{align-items:flex-end;margin-top:7px;}
