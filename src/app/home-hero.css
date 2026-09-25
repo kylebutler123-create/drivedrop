@@ -787,7 +787,7 @@ body:has(.homePage) > .guestTop{
   }
   body:has(.homePage) > .guestTop .guestPrimaryNav{width:100%;max-width:none;gap:9px;}
   body:has(.homePage) > .guestTop .headerLogo{width:245px;height:64px;}
-  body:has(.homePage) > .guestTop .btn{min-height:34px;padding:8px 12px;font-size:11px;}
+  body:has(.homePage) > .guestTop .btn{min-height:44px;padding:11px 20px;font-size:15px;}
 
   .homePage .visualHero{min-height:max(640px,47vw);}
   .homePage .visualHeroInner{
