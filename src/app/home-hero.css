@@ -83,12 +83,15 @@ body:has(.homePage) > .guestTop{
 /* Three small desktop hero photos; the existing mobile photo is untouched. */
 .homePage .desktopHeroSlides{display:none;}
 @media(min-width:761px){
-  .homePage .visualHero{background-image:none!important;}
+  .homePage .visualHero{
+    min-height:max(760px,56.28vw);
+    background-image:none!important;
+  }
   .homePage .desktopHeroSlides{display:block;position:absolute;inset:0;overflow:hidden;pointer-events:none;}
   .homePage .desktopHeroSlide{
     position:absolute;
     inset:0;
-    background-position:center 57%;
+    background-position:center;
     background-size:cover;
     background-repeat:no-repeat;
     opacity:0;
@@ -103,11 +106,11 @@ body:has(.homePage) > .guestTop{
   .homePage .desktopHeroSlide:nth-child(2){animation-delay:-19.08s;}
   .homePage .desktopHeroSlide:nth-child(3){animation-delay:-10.08s;}
   @keyframes desktopHeroPhoto{
-    0%{opacity:0;transform:scale(1);}
+    0%{opacity:0;}
     4%{opacity:1;}
     32%{opacity:1;}
-    37%{opacity:0;transform:scale(1.035);}
-    100%{opacity:0;transform:scale(1.035);}
+    37%{opacity:0;}
+    100%{opacity:0;}
   }
 }
 .homePage .heroOverlay{
