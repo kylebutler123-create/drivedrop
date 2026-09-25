@@ -101,15 +101,15 @@ body:has(.homePage) > .guestTop{
   .homePage .desktopHeroSlide:nth-child(3){background-image:url('/hero-recovery-dusk-mirrored-hq.webp');}
 }
 @media(min-width:761px) and (prefers-reduced-motion:no-preference){
-  .homePage .desktopHeroSlide{animation:desktopHeroPhoto 27s linear infinite both;}
-  .homePage .desktopHeroSlide:first-child{animation-delay:-1.08s;}
-  .homePage .desktopHeroSlide:nth-child(2){animation-delay:-19.08s;}
-  .homePage .desktopHeroSlide:nth-child(3){animation-delay:-10.08s;}
+  .homePage .desktopHeroSlide{animation:desktopHeroPhoto 60s linear infinite both;}
+  .homePage .desktopHeroSlide:first-child{animation-delay:-1.2s;}
+  .homePage .desktopHeroSlide:nth-child(2){animation-delay:-41.2s;}
+  .homePage .desktopHeroSlide:nth-child(3){animation-delay:-21.2s;}
   @keyframes desktopHeroPhoto{
     0%{opacity:0;}
-    4%{opacity:1;}
+    2%{opacity:1;}
     32%{opacity:1;}
-    37%{opacity:0;}
+    34%{opacity:0;}
     100%{opacity:0;}
   }
 }
