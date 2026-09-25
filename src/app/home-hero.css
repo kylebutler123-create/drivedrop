@@ -633,7 +633,7 @@ body:has(.homePage) > .guestTop{
     transition:opacity .2s ease,visibility 0s;
   }
   .homePage .homeLoginPanel{
-    min-height:390px;
+    min-height:430px;
     padding:20px 24px;
     color:#10233f;
   }
@@ -821,7 +821,7 @@ body:has(.homePage) > .guestTop{
   }
   .homePage .quotePanel{max-width:none;padding:23px;border-radius:20px;}
   .homePage .homeHeroPanelTrack>.homeHeroPanelSlide:first-child{
-    min-height:400px;
+    min-height:430px;
     display:flex;
     flex-direction:column;
     justify-content:center;
