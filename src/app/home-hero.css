@@ -787,7 +787,7 @@ body:has(.homePage) > .guestTop{
   }
   body:has(.homePage) > .guestTop .guestPrimaryNav{width:100%;max-width:none;gap:9px;}
   body:has(.homePage) > .guestTop .headerLogo{width:245px;height:64px;}
-  body:has(.homePage) > .guestTop .btn{min-height:44px;padding:11px 20px;font-size:15px;}
+  body:has(.homePage) > .guestTop .btn{min-height:52px;padding:12px 26px;font-size:17px;}
 
   .homePage .visualHero{min-height:max(640px,47vw);}
   .homePage .visualHeroInner{
@@ -796,11 +796,12 @@ body:has(.homePage) > .guestTop{
     grid-template-columns:minmax(0,1.08fr) minmax(356px,.82fr);
     gap:35px;
   }
-  .homePage .marketHeroCopy h1{max-width:680px;margin:12px 0 15px;font-size:clamp(42px,4.2vw,60px);font-weight:500;}
-  .homePage .marketHeroCopy p{max-width:535px;font-size:17px;line-height:1.5;}
+  .homePage .marketHeroCopy h1{max-width:720px;margin:12px 0 15px;font-size:clamp(49px,4.9vw,70px);font-weight:500;}
+  .homePage .marketHeroCopy p{max-width:690px;font-size:clamp(18px,1.6vw,22px);line-height:1.5;}
   .homePage .eyebrow{font-size:12px;}
+  .homePage .marketHeroCopy .eyebrow{font-size:15px;}
   .homePage .heroBubbles{margin-top:22px;gap:7px;}
-  .homePage .heroBubbles span{padding:8px 11px;font-size:12px;}
+  .homePage .heroBubbles span{padding:10px 14px;font-size:16px;}
 
   .homePage .homeHeroPanelShell{
     width:min(100%,max(320px,35.6vw),480px);
