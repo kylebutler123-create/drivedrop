@@ -793,7 +793,7 @@ body:has(.homePage) > .guestTop{
     grid-template-columns:minmax(0,1.08fr) minmax(356px,.82fr);
     gap:35px;
   }
-  .homePage .marketHeroCopy h1{max-width:680px;margin:12px 0 15px;font-size:clamp(38px,3.6vw,52px);}
+  .homePage .marketHeroCopy h1{max-width:680px;margin:12px 0 15px;font-size:clamp(42px,4.2vw,60px);font-weight:500;}
   .homePage .marketHeroCopy p{max-width:535px;font-size:17px;line-height:1.5;}
   .homePage .eyebrow{font-size:12px;}
   .homePage .heroBubbles{margin-top:22px;gap:7px;}
