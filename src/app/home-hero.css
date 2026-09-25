@@ -802,8 +802,8 @@ body:has(.homePage) > .guestTop{
     grid-template-columns:minmax(0,1.08fr) minmax(356px,.82fr);
     gap:35px;
   }
-  .homePage .marketHeroCopy h1{max-width:580px;margin:12px 0 15px;font-size:clamp(58px,4.5vw,64px);}
-  .homePage .marketHeroCopy p{max-width:520px;font-size:17px;line-height:1.5;}
+  .homePage .marketHeroCopy h1{max-width:680px;margin:12px 0 15px;font-size:clamp(38px,3.6vw,52px);}
+  .homePage .marketHeroCopy p{max-width:620px;font-size:17px;line-height:1.5;}
   .homePage .eyebrow{font-size:12px;}
   .homePage .heroBubbles{margin-top:22px;gap:7px;}
   .homePage .heroBubbles span{padding:8px 11px;font-size:12px;}
@@ -811,7 +811,7 @@ body:has(.homePage) > .guestTop{
   .homePage .homeHeroPanelShell{
     width:min(100%,max(320px,35.6vw),480px);
     max-width:none;
-    height:520px;
+    height:480px;
     overflow:visible;
   }
   .homePage .homeHeroPanelTrack{grid-template-rows:minmax(0,1fr);}
@@ -821,7 +821,7 @@ body:has(.homePage) > .guestTop{
   }
   .homePage .quotePanel{max-width:none;padding:23px;border-radius:20px;}
   .homePage .homeHeroPanelTrack>.homeHeroPanelSlide:first-child{
-    min-height:460px;
+    min-height:400px;
     display:flex;
     flex-direction:column;
     justify-content:center;
