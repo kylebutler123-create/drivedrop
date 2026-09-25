@@ -800,7 +800,7 @@ body:has(.homePage) > .guestTop{
   .homePage .marketHeroCopy h1{max-width:720px;margin:12px 0 15px;font-size:clamp(49px,4.9vw,70px);font-weight:500;}
   .homePage .marketHeroCopy p{max-width:690px;font-size:clamp(18px,1.6vw,22px);line-height:1.5;}
   .homePage .eyebrow{font-size:12px;}
-  .homePage .marketHeroCopy .eyebrow{font-size:15px;}
+  .homePage .marketHeroCopy .eyebrow{font-size:15px;font-weight:600;}
   .homePage .heroBubbles{margin-top:22px;gap:7px;}
   .homePage .heroBubbles span{padding:10px 14px;font-size:16px;}
 
