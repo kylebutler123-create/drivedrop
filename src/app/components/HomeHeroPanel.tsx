@@ -113,8 +113,10 @@ export default function HomeHeroPanel(){
         <div className="quotePanelHeader"><strong>Get vehicle transport quotes</strong><span>Takes about 60 seconds</span></div>
         <form action="/register" className="quoteForm">
           <input type="hidden" name="account" value="customer"/>
-          <label>VEHICLE TYPE</label>
-          <select name="vehicleType" defaultValue="Car">{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select>
+          <div className="quoteVehicleField">
+            <label>VEHICLE TYPE</label>
+            <select name="vehicleType" defaultValue="Car">{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select>
+          </div>
           <div className="quoteGrid">
             <div><label>COLLECTION POSTCODE</label><input name="collection" placeholder="e.g. M1 1AA"/></div>
             <div><label>DELIVERY POSTCODE</label><input name="delivery" placeholder="e.g. BS1 1AA"/></div>

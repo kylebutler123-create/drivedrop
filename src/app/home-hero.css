@@ -824,11 +824,25 @@ body:has(.homePage) > .guestTop{
     min-height:430px;
     display:flex;
     flex-direction:column;
-    justify-content:center;
+  }
+  .homePage .homeHeroPanelTrack>.homeHeroPanelSlide:first-child .quotePanelHeader{
+    flex-direction:column;
+    gap:4px;
+    margin-bottom:0;
+  }
+  .homePage .homeHeroPanelTrack>.homeHeroPanelSlide:first-child .quoteForm{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-around;
+    padding-top:12px;
   }
   .homePage .quotePanelHeader strong{font-size:19px;}
   .homePage .quoteForm label{margin:14px 0 6px;}
+  .homePage .quoteVehicleField label,
+  .homePage .quoteGrid label{margin-top:0;}
   .homePage .quoteForm input,
   .homePage .quoteForm select{padding:11px 12px;}
-  .homePage .quoteCta{margin-top:18px;padding:12px;}
+  .homePage .quoteCta{margin-top:0;padding:12px;}
+  .homePage .quoteSmall{margin:0;}
 }
