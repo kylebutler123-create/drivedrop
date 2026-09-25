@@ -84,7 +84,7 @@ body:has(.homePage) > .guestTop{
 .homePage .desktopHeroSlides{display:none;}
 @media(min-width:761px){
   .homePage .visualHero{
-    min-height:max(760px,56.28vw);
+    min-height:max(720px,53.5vw);
     background-image:none!important;
   }
   .homePage .desktopHeroSlides{display:block;position:absolute;inset:0;overflow:hidden;pointer-events:none;}
