@@ -1,0 +1,113 @@
+/* Keep the customer header in one ordered row on desktop. */
+@media (min-width: 761px) {
+  .customerTop {
+    display: grid;
+    grid-template-columns: minmax(245px, 1fr) auto auto auto minmax(16px, .7fr) auto auto;
+    align-items: center;
+    column-gap: 8px;
+    min-height: 94px;
+    padding: 12px clamp(28px, 3.5vw, 58px);
+    background: #071a33;
+  }
+  .customerTop .customerPrimaryNav,
+  .customerTop .nav,
+  .customerTop .customerSecondaryNav { display: contents; }
+  .customerTop .customerPrimaryNav .headerLogo {
+    grid-column: 1;
+    grid-row: 1;
+    width: 245px;
+    height: 60px;
+    min-width: 0;
+  }
+  .customerTop .customerDashboardBtn { grid-column: 2; grid-row: 1; }
+  .customerTop .messagesHeaderLink { grid-column: 3; grid-row: 1; }
+  .customerTop .notificationsHeaderLink { grid-column: 4; grid-row: 1; }
+  .customerTop .customerPrimaryNav .accountNavBtn { grid-column: 6; grid-row: 1; }
+  .customerTop .customerPrimaryNav form { grid-column: 7; grid-row: 1; margin: 0; }
+
+  .customerTop .customerDashboardBtn,
+  .customerTop .customerSecondaryNav > a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 13px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    box-shadow: none;
+    color: #bdc9d8;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+  .customerTop .customerDashboardBtn.isActive,
+  .customerTop .customerSecondaryNav > a.isActive {
+    background: rgba(255,255,255,.1);
+    color: #fff;
+  }
+  .customerTop .customerDashboardBtn.isActive::after,
+  .customerTop .customerSecondaryNav > a.isActive::after {
+    content: '';
+    position: absolute;
+    right: 16px;
+    bottom: 0;
+    left: 16px;
+    height: 3px;
+    border-radius: 3px;
+    background: #ff7a18;
+  }
+  .customerTop .mobileNavIcon {
+    display: block;
+    width: 17px;
+    height: 17px;
+    flex: 0 0 17px;
+  }
+  .customerTop .notificationMobileLabel { display: none; }
+  .customerTop .notificationDesktopLabel { display: inline; }
+  .customerTop .navCountBadge { min-width: 18px; height: 18px; padding: 0 5px; font-size: 11px; }
+
+  .customerTop .customerPrimaryNav .accountNavBtn,
+  .customerTop .customerPrimaryNav form .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 9px;
+    box-shadow: none;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .customerTop .customerPrimaryNav .accountNavBtn {
+    border: 1px solid rgba(255,255,255,.2);
+    background: rgba(255,255,255,.07);
+  }
+  .customerTop .customerPrimaryNav form .btn {
+    border: 1px solid transparent;
+    background: transparent;
+    color: #bdc9d8;
+  }
+}
+
+/* A narrow desktop still has the same controls without horizontal overflow. */
+@media (min-width: 761px) and (max-width: 1090px) {
+  .customerTop {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: 60px 44px;
+    row-gap: 4px;
+  }
+  .customerTop .customerPrimaryNav .headerLogo { grid-column: 1; grid-row: 1; width: min(225px, 100%); }
+  .customerTop .customerPrimaryNav .accountNavBtn { grid-column: 2; grid-row: 1; justify-self: end; }
+  .customerTop .customerPrimaryNav form { grid-column: 3; grid-row: 1; justify-self: end; }
+  .customerTop .customerDashboardBtn { grid-column: 1; grid-row: 2; justify-self: center; }
+  .customerTop .messagesHeaderLink { grid-column: 2; grid-row: 2; justify-self: center; }
+  .customerTop .notificationsHeaderLink { grid-column: 3; grid-row: 2; justify-self: center; }
+}
