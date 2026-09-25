@@ -788,11 +788,11 @@ body:has(.homePage) > .guestTop{
 /* Match the approved desktop hero layout without changing the mobile view. */
 @media(min-width:761px){
   body:has(.homePage) > .guestTop{
-    padding:24px clamp(30px,3.5vw,60px);
+    padding:18px clamp(30px,3.5vw,60px);
     background:linear-gradient(180deg,rgba(4,18,37,.55),transparent);
   }
   body:has(.homePage) > .guestTop .guestPrimaryNav{width:100%;max-width:none;gap:9px;}
-  body:has(.homePage) > .guestTop .headerLogo{width:170px;height:52px;}
+  body:has(.homePage) > .guestTop .headerLogo{width:205px;height:64px;}
   body:has(.homePage) > .guestTop .btn{min-height:34px;padding:8px 12px;font-size:11px;}
 
   .homePage .visualHero{min-height:max(590px,53.5vw);}
@@ -811,7 +811,7 @@ body:has(.homePage) > .guestTop{
   .homePage .homeHeroPanelShell{
     width:min(100%,max(320px,35.6vw),480px);
     max-width:none;
-    height:480px;
+    height:520px;
     overflow:visible;
   }
   .homePage .homeHeroPanelTrack{grid-template-rows:minmax(0,1fr);}
@@ -820,6 +820,12 @@ body:has(.homePage) > .guestTop{
     height:560px;
   }
   .homePage .quotePanel{max-width:none;padding:23px;border-radius:20px;}
+  .homePage .homeHeroPanelTrack>.homeHeroPanelSlide:first-child{
+    min-height:460px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
   .homePage .quotePanelHeader strong{font-size:19px;}
   .homePage .quoteForm label{margin:14px 0 6px;}
   .homePage .quoteForm input,
