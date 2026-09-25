@@ -13,6 +13,7 @@
   object-fit:contain;
   object-position:left center;
 }
+.headerLogo picture{display:block;width:100%;height:100%;}
 
 /* Keep public navigation aligned between the homepage and login screens. */
 body:has(.homePage, .loginPage, .registerPage) > .guestTop{
@@ -785,7 +786,7 @@ body:has(.homePage) > .guestTop{
     background:linear-gradient(180deg,rgba(4,18,37,.55),transparent);
   }
   body:has(.homePage) > .guestTop .guestPrimaryNav{width:100%;max-width:none;gap:9px;}
-  body:has(.homePage) > .guestTop .headerLogo{width:205px;height:64px;}
+  body:has(.homePage) > .guestTop .headerLogo{width:245px;height:64px;}
   body:has(.homePage) > .guestTop .btn{min-height:34px;padding:8px 12px;font-size:11px;}
 
   .homePage .visualHero{min-height:max(640px,47vw);}
