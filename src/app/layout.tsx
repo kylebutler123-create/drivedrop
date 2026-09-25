@@ -31,6 +31,7 @@ import './customer-quote-request-details.css';
 import './active-delivery-vehicle-details.css';
 import './customer-completed-summary.css';
 import './customer-quoted-request-highlight.css';
+import './customer-desktop-action-buttons.css';
 import Link from 'next/link';
 import {currentUser} from '@/lib/auth';
 import MessagesNavLink from '@/app/components/MessagesNavLink';
