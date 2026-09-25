@@ -80,7 +80,7 @@ body:has(.homePage) > .guestTop{
   background-repeat:no-repeat;
   background-color:var(--homeNavy);
 }
-/* Three small desktop hero photos; the existing mobile photo is untouched. */
+/* Desktop hero photos follow the visible panel; the mobile photo is untouched. */
 .homePage .desktopHeroSlides{display:none;}
 @media(min-width:761px){
   .homePage .visualHero{
@@ -98,11 +98,8 @@ body:has(.homePage) > .guestTop{
   }
   .homePage .desktopHeroSlide:first-child{background-image:url('/hero-transporter-coast-mirrored-hq.webp');opacity:1;}
   .homePage .desktopHeroSlide:nth-child(2){background-image:url('/hero-enclosed-classic-mirrored-hq.webp');}
-  .homePage .desktopHeroSlide:nth-child(3){background-image:url('/hero-recovery-dusk-mirrored-hq.webp');}
-  .homePage .visualHero:has(.homeHeroPanelTrack.showCustomerLogin, .homeHeroPanelTrack.showRegisterCustomer) .desktopHeroSlide:first-child,
-  .homePage .visualHero:has(.homeHeroPanelTrack.showTransporterLogin, .homeHeroPanelTrack.showRegisterTransporter) .desktopHeroSlide:first-child{opacity:0;}
-  .homePage .visualHero:has(.homeHeroPanelTrack.showCustomerLogin, .homeHeroPanelTrack.showRegisterCustomer) .desktopHeroSlide:nth-child(2){opacity:1;}
-  .homePage .visualHero:has(.homeHeroPanelTrack.showTransporterLogin, .homeHeroPanelTrack.showRegisterTransporter) .desktopHeroSlide:nth-child(3){opacity:1;}
+  .homePage .visualHero:has(.homeHeroPanelTrack.showCustomerLogin, .homeHeroPanelTrack.showTransporterLogin, .homeHeroPanelTrack.showRegisterCustomer, .homeHeroPanelTrack.showRegisterTransporter) .desktopHeroSlide:first-child{opacity:0;}
+  .homePage .visualHero:has(.homeHeroPanelTrack.showCustomerLogin, .homeHeroPanelTrack.showTransporterLogin, .homeHeroPanelTrack.showRegisterCustomer, .homeHeroPanelTrack.showRegisterTransporter) .desktopHeroSlide:nth-child(2){opacity:1;}
 }
 @media(min-width:761px) and (prefers-reduced-motion:no-preference){
   .homePage .desktopHeroSlide{transition:opacity .9s ease;}
