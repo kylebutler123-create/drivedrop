@@ -3,8 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const recent=[
-  {vehicle:'BMW 3 Series',from:'Manchester, M1',to:'Bristol, BS1',price:'£210',image:'/drivedrop-bmw-3-series-rear.webp',imageAlt:'Dark BMW 3 Series seen from the rear on a British country road'},
-  {vehicle:'Ford Transit',from:'Leeds, LS1',to:'London, E16',price:'£295',image:'/drivedrop-ford-transit-side.webp',imageAlt:'White Ford Transit seen from the side on a British business park road'},
+  {vehicle:'BMW 3 Series',from:'Manchester, M1',to:'Bristol, BS1',price:'£210',image:'/drivedrop-bmw-3-series-street.webp',imageAlt:'Dark BMW 3 Series seen close up on a British residential street'},
+  {vehicle:'Ford Transit',from:'Leeds, LS1',to:'London, E16',price:'£295',image:'/drivedrop-ford-transit-roadside.webp',imageAlt:'White Ford Transit parked beside a rural road, seen from a distance'},
   {vehicle:'Porsche 911',from:'Birmingham, B1',to:'Edinburgh, EH1',price:'£465',image:'/drivedrop-porsche-911-real.webp',imageAlt:'Grey Porsche 911 parked on a cobbled road in front of a country estate'},
 ];
 
