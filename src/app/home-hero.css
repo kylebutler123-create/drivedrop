@@ -795,7 +795,7 @@ body:has(.homePage) > .guestTop{
   body:has(.homePage) > .guestTop .headerLogo{width:205px;height:64px;}
   body:has(.homePage) > .guestTop .btn{min-height:34px;padding:8px 12px;font-size:11px;}
 
-  .homePage .visualHero{min-height:max(590px,53.5vw);}
+  .homePage .visualHero{min-height:max(640px,47vw);}
   .homePage .visualHeroInner{
     max-width:none;
     padding:118px clamp(30px,3.5vw,60px) 26px;
