@@ -87,27 +87,27 @@ body:has(.homePage) > .guestTop{
   .homePage .desktopHeroSlides{display:block;position:absolute;inset:0;overflow:hidden;pointer-events:none;}
   .homePage .desktopHeroSlide{
     position:absolute;
-    inset:-3%;
+    inset:0;
     background-position:center 57%;
     background-size:cover;
     background-repeat:no-repeat;
     opacity:0;
   }
-  .homePage .desktopHeroSlide:first-child{background-image:url('/hero-transporter-coast-mirrored.webp');opacity:1;}
-  .homePage .desktopHeroSlide:nth-child(2){background-image:url('/hero-enclosed-classic-mirrored.webp');}
-  .homePage .desktopHeroSlide:nth-child(3){background-image:url('/hero-recovery-dusk-mirrored.webp');}
+  .homePage .desktopHeroSlide:first-child{background-image:url('/hero-transporter-coast-mirrored-hq.webp');opacity:1;}
+  .homePage .desktopHeroSlide:nth-child(2){background-image:url('/hero-enclosed-classic-mirrored-hq.webp');}
+  .homePage .desktopHeroSlide:nth-child(3){background-image:url('/hero-recovery-dusk-mirrored-hq.webp');}
 }
 @media(min-width:761px) and (prefers-reduced-motion:no-preference){
-  .homePage .desktopHeroSlide{animation:desktopHeroPhoto 15s linear infinite both;}
-  .homePage .desktopHeroSlide:first-child{animation-delay:-.5s;}
-  .homePage .desktopHeroSlide:nth-child(2){animation-delay:-10.5s;}
-  .homePage .desktopHeroSlide:nth-child(3){animation-delay:-5.5s;}
+  .homePage .desktopHeroSlide{animation:desktopHeroPhoto 27s linear infinite both;}
+  .homePage .desktopHeroSlide:first-child{animation-delay:-1.08s;}
+  .homePage .desktopHeroSlide:nth-child(2){animation-delay:-19.08s;}
+  .homePage .desktopHeroSlide:nth-child(3){animation-delay:-10.08s;}
   @keyframes desktopHeroPhoto{
-    0%{opacity:0;transform:scale(1.02);}
-    3.33%{opacity:1;}
-    30%{opacity:1;}
-    36.67%{opacity:0;transform:scale(1.09);}
-    100%{opacity:0;transform:scale(1.09);}
+    0%{opacity:0;transform:scale(1);}
+    4%{opacity:1;}
+    32%{opacity:1;}
+    37%{opacity:0;transform:scale(1.035);}
+    100%{opacity:0;transform:scale(1.035);}
   }
 }
 .homePage .heroOverlay{
