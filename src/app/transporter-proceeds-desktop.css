@@ -1,0 +1,13 @@
+/* Let the long Fines/Refunds total stay inside its desktop summary card. */
+@media (min-width: 761px) {
+  .transporterTop + main.dashboardShell nav[aria-label="Filter proceeds"] > a[href*="filter=fines"] {
+    min-width: 0;
+  }
+
+  .transporterTop + main.dashboardShell nav[aria-label="Filter proceeds"] > a[href*="filter=fines"] > strong {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.35;
+  }
+}
