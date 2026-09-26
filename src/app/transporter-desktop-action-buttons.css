@@ -1,0 +1,21 @@
+/* Keep transporter actions compact on desktop without changing mobile controls. */
+@media (min-width: 901px) {
+  .transporterTop + main.dashboardShell #available-jobs .transporterJobFilterActions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .transporterTop + main.dashboardShell #available-jobs .transporterJobFilterActions > .btn {
+    width: auto;
+    min-height: 36px;
+    padding: 7px 14px;
+    font-size: 12px;
+  }
+
+  .transporterTop + main.notificationsPage .notificationActions > .btn {
+    min-height: 36px;
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+}
