@@ -3,8 +3,15 @@
 
 @media (max-width: 760px) {
   .adminUserManagerCard.hasUserAlerts[aria-pressed="false"] {
-    border-color: #e9b687 !important;
+    border: 2px solid #ff7a18 !important;
     background: #fffaf5 !important;
+    box-shadow: 0 8px 24px rgba(185, 86, 12, .12) !important;
+  }
+
+  .adminUserManagerCard.hasUserAlerts[aria-pressed="false"] > span:first-child,
+  .adminUserManagerCard.hasUserAlerts[aria-pressed="false"] > span:last-child {
+    background: #ff7a18 !important;
+    color: #fff !important;
   }
 
   .adminMobileUsersSuffix { display: inline; }
