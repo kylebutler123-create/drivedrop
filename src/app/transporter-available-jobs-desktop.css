@@ -3,7 +3,17 @@
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity {
     border-color: #a9c5da;
     border-left: 4px solid #ff7a18;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
     background: #dbe9f4;
+    box-shadow: none !important;
+    margin: 22px 0 26px;
+  }
+
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity:not(.isCollapsed):not(.hasCustomerCounterDate) {
+    border-color: #a9c5da !important;
+    border-left-color: #ff7a18 !important;
   }
 
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity > .transporterCardToggle,
