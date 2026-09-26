@@ -22,6 +22,11 @@
 .adminHeaderNav .headerStatusLink.isActive,.adminHeaderNav .adminHeaderLink[aria-current="page"],.adminHeaderNav .accountNavBtn[aria-current="page"]{background:rgba(255,255,255,.13)!important;color:#fff!important}
 
 @media(min-width:901px){
+ .adminPrimaryNav{gap:18px!important}
+ .adminPrimaryNav .adminHeaderLogo{width:190px;height:48px;flex:0 0 190px}
+ .adminHeaderLabel{display:grid!important;align-content:center!important;gap:3px!important;min-height:40px;padding:2px 0 2px 16px!important;border:0!important;border-left:1px solid #58728f!important;border-radius:0!important;background:transparent!important;line-height:1!important}
+ .adminHeaderLabel strong{grid-row:1;font-size:14px!important;font-weight:700!important;letter-spacing:.13em!important}
+ .adminHeaderLabel small{display:block!important;grid-row:2;color:#b8c9da!important;font-size:10px!important;font-weight:500!important;letter-spacing:.12em!important;text-transform:uppercase!important}
  .adminHeaderNav .accountNavBtn{order:6}
  .adminHeaderNav .adminSignOutForm{order:7}
 }
