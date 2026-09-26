@@ -10,6 +10,7 @@ import './admin-navigation-polish.css';
 import './admin-mobile-header.css';
 import './admin-overview-desktop.css';
 import './admin-overview-mobile.css';
+import './admin-action-centre-mobile.css';
 import './admin-verification-expander.css';
 import './account-edit.css';
 import './transporter-profile.css';

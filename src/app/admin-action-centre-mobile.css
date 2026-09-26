@@ -1,0 +1,79 @@
+.adminActionMobileDetail { display: none; }
+
+@media (max-width: 760px) {
+  .adminActionCentre .adminActionGrid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .adminActionCentre .adminActionCard {
+    grid-template-columns: 34px minmax(0, 1fr) 16px !important;
+    gap: 10px !important;
+    min-height: 64px !important;
+    padding: 9px 11px !important;
+    box-shadow: none !important;
+  }
+
+  .adminActionCentre .adminActionCard > span:nth-child(2) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 30px;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 3px 8px;
+  }
+
+  .adminActionCentre .adminActionCard > span:nth-child(2) > span:first-child,
+  .adminActionCentre .adminActionDescription { display: none !important; }
+
+  .adminActionCentre .adminActionCard > span:nth-child(2) > b {
+    grid-column: 1;
+    grid-row: 1;
+    color: #173451;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+  }
+
+  .adminActionCentre .adminActionCard .adminActionMobileDetail {
+    display: block;
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    overflow: hidden;
+    color: #667d91;
+    font-size: 10px;
+    line-height: 1.3;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .adminActionCentre .adminActionCard > span:nth-child(2) > strong {
+    display: grid;
+    grid-column: 2;
+    grid-row: 1 / 3;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #f1f4f7;
+    color: #718196 !important;
+    font-size: 13px !important;
+  }
+
+  .adminActionCentre .adminActionCard.needsAction > span:nth-child(2) > strong,
+  .adminActionCentre .adminActionCard.isSelected > span:nth-child(2) > strong {
+    background: #ff7a18;
+    color: #fff !important;
+  }
+
+  .adminActionCentre .adminActionCard > span:last-child {
+    width: 16px !important;
+    height: 22px !important;
+    background: transparent !important;
+    color: #73879a !important;
+    font-size: 15px !important;
+  }
+
+  .adminActionCentre .adminActionCard.isSelected > span:nth-child(2) > b { color: #fff; }
+  .adminActionCentre .adminActionCard.isSelected .adminActionMobileDetail { color: #cad6e4; }
+  .adminActionCentre .adminActionCard.isSelected > span:last-child { color: #fff !important; }
+}
