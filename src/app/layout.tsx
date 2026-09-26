@@ -1,6 +1,7 @@
 import './globals.css';
 import './home-hero.css';
 import './mobile-polish.css';
+import './mobile-brand-logo.css';
 import './customer-desktop-header.css';
 import './transporter-desktop-header.css';
 import './dashboard-polish.css';

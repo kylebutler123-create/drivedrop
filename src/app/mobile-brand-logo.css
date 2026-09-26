@@ -1,0 +1,25 @@
+@media (max-width: 760px) {
+  .customerTop .customerPrimaryNav .headerLogo,
+  .transporterTop .transporterPrimaryNav .headerLogo {
+    width: 100%;
+    height: 34px;
+    align-self: center;
+  }
+
+  .customerTop .customerPrimaryNav .headerLogo img,
+  .transporterTop .transporterPrimaryNav .headerLogo img {
+    height: 100%;
+    object-fit: contain;
+    object-position: left center;
+  }
+
+  .homePage .footerLogo {
+    display: block;
+    width: 205px;
+    height: 48px;
+    font-size: 0;
+    background: url('/drivedrop-logo-route-slanted.webp') left center / contain no-repeat;
+  }
+
+  .homePage .footerLogo span { display: none; }
+}
