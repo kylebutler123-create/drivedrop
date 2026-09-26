@@ -70,7 +70,7 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
    <Link href="/transporter/proceeds?filter=ready" className={filter==='READY'?styles.active:undefined} aria-current={filter==='READY'?'page':undefined}><small>Ready for release</small><strong>{money(ready)}</strong></Link>
    <Link href="/transporter/proceeds?filter=held" className={filter==='HELD'?styles.active:undefined} aria-current={filter==='HELD'?'page':undefined}><small>Held</small><strong>{money(held)}</strong></Link>
    <Link href="/transporter/proceeds?filter=paid" className={filter==='PAID'?styles.active:undefined} aria-current={filter==='PAID'?'page':undefined}><small>Paid</small><strong>{money(paid)}</strong></Link>
-   <Link href="/transporter/proceeds?filter=fines" className={`${styles.adjustments} ${filter==='FINES'?styles.active:''}`} aria-current={filter==='FINES'?'page':undefined}><small>Fines/Refunds</small><strong className={styles.adjustmentsTotal}>−{money(fines)} fines / −{money(refunds)} refunded</strong></Link>
+   <Link href="/transporter/proceeds?filter=fines" className={`${styles.adjustments} ${filter==='FINES'?styles.active:''}`} aria-current={filter==='FINES'?'page':undefined}><small>Fines/Refunds</small><strong className={styles.adjustmentsTotal}><span className="desktopAdjustmentRows"><span><span>Fines</span><b>−{money(fines)}</b></span><span><span>Refunded</span><b>−{money(refunds)}</b></span></span><span className="mobileAdjustmentTotal">−{money(fines)} fines / −{money(refunds)} refunded</span></strong></Link>
   </nav>
   {filter==='FINES'&&<div className={styles.adjustmentControls}>
    <span>Filter Fines / Refunds records</span>

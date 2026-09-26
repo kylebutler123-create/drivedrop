@@ -1,4 +1,8 @@
 /* Let the long Fines/Refunds total stay inside its desktop summary card. */
+.transporterTop + main.dashboardShell nav[aria-label="Filter proceeds"] .desktopAdjustmentRows {
+  display: none;
+}
+
 @media (min-width: 761px) {
   .transporterTop + main.dashboardShell nav[aria-label="Filter proceeds"] > a[href*="filter=fines"] {
     min-width: 0;
@@ -9,5 +13,26 @@
     white-space: normal;
     overflow-wrap: anywhere;
     line-height: 1.35;
+  }
+
+  .transporterTop + main.dashboardShell nav[aria-label="Filter proceeds"] .desktopAdjustmentRows {
+    display: grid;
+    gap: 4px;
+  }
+
+  .transporterTop + main.dashboardShell nav[aria-label="Filter proceeds"] .desktopAdjustmentRows > span {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .transporterTop + main.dashboardShell nav[aria-label="Filter proceeds"] .desktopAdjustmentRows b {
+    min-width: 0;
+    text-align: right;
+  }
+
+  .transporterTop + main.dashboardShell nav[aria-label="Filter proceeds"] .mobileAdjustmentTotal {
+    display: none;
   }
 }
