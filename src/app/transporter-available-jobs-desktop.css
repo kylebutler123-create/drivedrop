@@ -1,0 +1,55 @@
+/* Soft steel blue for transporter Available Jobs cards on desktop only. */
+@media (min-width: 901px) {
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity {
+    border-color: #a9c5da;
+    border-left: 4px solid #ff7a18;
+    background: #dbe9f4;
+  }
+
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity > .transporterCardToggle,
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity:not(.isCollapsed) > .transporterCardToggle {
+    background: #dbe9f4;
+  }
+
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity > .transporterCardToggle:hover {
+    background: #d1e3f1;
+  }
+
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity:not(.isCollapsed) > .transporterCardToggle {
+    border-bottom-color: #b7ccdc;
+  }
+
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterCardSummaryStatus,
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .bookingPartner,
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterCollapsedFacts small,
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .jobQuickFacts span {
+    color: #59758d;
+  }
+
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterCardSummaryMain strong,
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterCollapsedFacts b,
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .jobQuickFacts b {
+    color: #15334e;
+  }
+
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterRouteSummary,
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .compactRoute,
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterCollapsedFacts > span,
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .jobQuickFacts > div {
+    border-color: #c6d9e7;
+    background: #eef5fa;
+  }
+
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterRouteSummary > span {
+    background: #f7fbfe;
+  }
+
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .jobQuoteToggle {
+    border-color: #b8cddd;
+    background: #eef5fa;
+  }
+
+  .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .jobQuoteToggle:hover {
+    background: #e4f0f8;
+  }
+}
