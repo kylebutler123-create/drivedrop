@@ -1,23 +1,37 @@
-.adminUserAttentionBadge { display: none; }
+.adminMobileUsersSuffix,
+.adminUserAlerts { display: none; }
 
 @media (max-width: 760px) {
-  .adminUserNeedsAttention[aria-pressed="false"] {
+  .adminUserManagerCard.hasUserAlerts[aria-pressed="false"] {
     border-color: #e9b687 !important;
     background: #fffaf5 !important;
   }
 
-  .adminUserAttentionBadge {
+  .adminMobileUsersSuffix { display: inline; }
+
+  .adminUserManagerCard .adminUserAlerts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .adminUserManagerCard .adminUserAlert {
     display: inline-flex;
     align-items: center;
-    margin-left: 7px;
-    padding: 4px 8px;
-    border-radius: 999px;
-    background: #ff7a18;
-    color: #fff;
+    padding: 3px 6px;
+    border-radius: 6px;
+    background: #fff0e3;
+    color: #a34d0e;
     font-size: 11px;
     font-weight: 600;
     line-height: 1.2;
-    vertical-align: middle;
     white-space: nowrap;
   }
+
+  .adminUserManagerCard .adminUserAlert.expired {
+    background: #ffe8e5;
+    color: #a42b22;
+  }
+
+  .adminUserManagerCard.hasUserAlerts small { display: none; }
 }
