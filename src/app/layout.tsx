@@ -8,6 +8,7 @@ import './admin-dashboard-polish.css';
 import './admin-header-colors.css';
 import './admin-navigation-polish.css';
 import './admin-mobile-header.css';
+import './admin-mobile-header-two-row.css';
 import './admin-overview-desktop.css';
 import './admin-overview-mobile.css';
 import './admin-action-centre-mobile.css';

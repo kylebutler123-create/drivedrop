@@ -1,0 +1,69 @@
+@media (max-width: 760px) {
+  .adminTop {
+    grid-template-rows: 44px 44px !important;
+    gap: 9px 6px !important;
+    padding-bottom: 12px !important;
+  }
+
+  .adminTop .adminPrimaryNav {
+    grid-column: 1 / 8 !important;
+    grid-row: 1 !important;
+  }
+
+  .adminTop .adminHeaderNav .adminHeaderLink {
+    display: none !important;
+  }
+
+  .adminTop .adminHeaderNav .accountNavBtn {
+    grid-column: 8 / 10 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    padding: 0 4px !important;
+    font-size: 11px !important;
+  }
+
+  .adminTop .adminHeaderNav .adminSignOutForm {
+    grid-column: 10 / 13 !important;
+    grid-row: 1 !important;
+    justify-content: stretch !important;
+  }
+  .adminTop .adminHeaderNav .adminSignOutButton {
+    width: 100% !important;
+    height: 40px !important;
+    padding: 0 5px !important;
+  }
+
+  .adminTop .adminHeaderNav .adminDashboardButton,
+  .adminTop .adminHeaderNav .adminMessagesRow,
+  .adminTop .adminHeaderNav > a.notificationsHeaderLink:not(.adminHeaderLink):not(.accountNavBtn):not(.adminDashboardButton) {
+    grid-row: 2 !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .adminTop {
+    grid-template-rows: 44px 40px 44px !important;
+  }
+  .adminTop .adminPrimaryNav {
+    grid-column: 1 / 13 !important;
+  }
+  .adminTop .adminHeaderNav .accountNavBtn {
+    grid-column: 1 / 7 !important;
+    grid-row: 2 !important;
+  }
+  .adminTop .adminHeaderNav .adminSignOutForm {
+    grid-column: 7 / 13 !important;
+    grid-row: 2 !important;
+  }
+  .adminTop .adminHeaderNav .adminDashboardButton,
+  .adminTop .adminHeaderNav .adminMessagesRow,
+  .adminTop .adminHeaderNav > a.notificationsHeaderLink:not(.adminHeaderLink):not(.accountNavBtn):not(.adminDashboardButton) {
+    grid-row: 3 !important;
+  }
+}
