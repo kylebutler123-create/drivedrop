@@ -41,4 +41,8 @@
     padding: 8px 14px;
     font-size: 12px;
   }
+
+  .transporterTop + main.dashboardShell .insuranceAccountWarning:not(.verificationRejectedWarning) > a.btn[href="/transporter/verification"] {
+    font-weight: 600;
+  }
 }
