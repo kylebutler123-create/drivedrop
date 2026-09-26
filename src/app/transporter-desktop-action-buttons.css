@@ -18,4 +18,27 @@
     padding: 7px 12px;
     font-size: 12px;
   }
+
+  .transporterTop + main.dashboardShell .transporterExpandableCard.transporterBooking.isCollapsed > .transporterCollapsedContact {
+    width: min(360px, calc(100% - 28px)) !important;
+  }
+
+  .transporterTop + main.dashboardShell .transporterBooking > .transporterCollapsedContact > .btn {
+    min-height: 38px;
+    padding: 7px 9px !important;
+    font-size: 11px;
+  }
+
+  .transporterTop + main.dashboardShell .transporterBooking .subHeading > a.btn[href^="/messages?bookingId="] {
+    min-height: 38px;
+    padding: 7px 12px;
+    font-size: 11px;
+  }
+
+  .transporterTop + main.dashboardShell .transporterBooking .transporterCollectionAction [data-poc] > .btn.fullBtn {
+    width: auto;
+    min-height: 38px;
+    padding: 8px 14px;
+    font-size: 12px;
+  }
 }
