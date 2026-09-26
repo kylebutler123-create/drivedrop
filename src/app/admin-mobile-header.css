@@ -1,0 +1,96 @@
+/* Compact admin navigation for phones. Desktop and tablet layouts are unchanged. */
+@media (max-width: 760px) {
+  .adminTop {
+    grid-template-rows: 54px 44px 46px !important;
+    gap: 8px 7px !important;
+    padding: 12px 12px 14px !important;
+  }
+
+  .adminTop .adminPrimaryNav { gap: 8px !important; }
+  .adminTop .adminHeaderLogo { width: 134px; height: 34px; flex: 0 0 134px; }
+  .adminTop .adminHeaderLogo img {
+    width: 134px !important;
+    height: 34px !important;
+    max-height: none !important;
+    object-fit: contain;
+  }
+
+  .adminTop .adminHeaderLabel {
+    display: flex !important;
+    min-height: 34px;
+    padding: 0 0 0 9px !important;
+    border: 0 !important;
+    border-left: 1px solid #58728f !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+  .adminTop .adminHeaderLabel strong { font-size: 10px !important; letter-spacing: .04em !important; }
+
+  .adminHeaderNav .adminSignOutButton {
+    min-height: 40px !important;
+    padding: 0 10px !important;
+    border: 1px solid #3c5670 !important;
+    border-radius: 10px !important;
+    background: #152d49 !important;
+    color: #e3edf8 !important;
+    font-size: 11px !important;
+  }
+
+  .adminHeaderNav .adminNavIcon,
+  .adminHeaderNav .mobileNavIcon { display: none !important; }
+
+  .adminHeaderNav .adminDashboardButton,
+  .adminHeaderNav .notificationsHeaderLink,
+  .adminHeaderNav .accountNavBtn,
+  .adminHeaderNav .adminHeaderLink,
+  .adminHeaderNav .adminMessagesRow {
+    min-height: 44px !important;
+    height: 44px !important;
+    max-height: 44px !important;
+    padding: 0 5px !important;
+    border: 1px solid #39526b !important;
+    border-radius: 10px !important;
+    background: #102b48 !important;
+    box-shadow: none !important;
+    color: #e5edf6 !important;
+    font-size: 11px !important;
+    transform: none !important;
+  }
+
+  .adminHeaderNav .adminDashboardButton {
+    position: relative;
+    background: #223d59 !important;
+    color: #fff !important;
+  }
+  .adminHeaderNav .adminDashboardButton::after {
+    content: '';
+    position: absolute;
+    right: 22%;
+    bottom: -1px;
+    left: 22%;
+    height: 3px;
+    border-radius: 3px;
+    background: #ff7a18;
+  }
+
+  .adminHeaderNav .adminMessagesRow { padding: 0 !important; }
+  .adminHeaderNav .adminMessagesRow > a {
+    min-height: 44px !important;
+    padding: 0 5px !important;
+    font-size: 11px !important;
+  }
+  .adminHeaderNav .notificationsHeaderLink { padding: 0 4px !important; }
+  .adminHeaderNav .navCountBadge { min-width: 17px; height: 17px; padding: 0 4px; font-size: 9px; }
+  .adminHeaderNav .accountNavBtn { grid-column: 1 / 7 !important; }
+  .adminHeaderNav .adminHeaderLink { grid-column: 7 / 13 !important; }
+}
+
+@media (max-width: 360px) {
+  .adminTop .adminHeaderLogo { width: 124px; flex-basis: 124px; }
+  .adminTop .adminHeaderLogo img { width: 124px !important; }
+  .adminHeaderNav .adminDashboardButton,
+  .adminHeaderNav .notificationsHeaderLink,
+  .adminHeaderNav .accountNavBtn,
+  .adminHeaderNav .adminHeaderLink,
+  .adminHeaderNav .adminMessagesRow > a { gap: 3px !important; font-size: 10px !important; }
+}
