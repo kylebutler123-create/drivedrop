@@ -1,0 +1,87 @@
+/* Keep the current mobile flow; join the hero and existing live counters on desktop. */
+.adminOverview { display: contents; }
+
+@media (min-width: 901px) {
+  .adminTop + main.adminShell .adminOverview {
+    display: block;
+    margin-bottom: 24px;
+    padding: 0 30px 28px;
+    overflow: hidden;
+    border-radius: 22px;
+    background: linear-gradient(115deg, #0d3155, #0c2748 70%, #0a213e);
+    color: #fff;
+    box-shadow: 0 14px 34px rgba(7, 26, 51, .16);
+  }
+
+  .adminTop + main.adminShell .adminOverview .adminHero {
+    margin: 0;
+    padding: 30px 0 26px;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .adminTop + main.adminShell .adminOverview .adminHero::after { display: none; }
+
+  .adminTop + main.adminShell .adminOverview .adminHeroBadge {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 14px !important;
+    min-width: 190px !important;
+    padding: 15px 18px !important;
+    border-color: rgba(255, 255, 255, .2) !important;
+    border-radius: 15px !important;
+    background: rgba(255, 255, 255, .11) !important;
+    box-shadow: none !important;
+  }
+
+  .adminTop + main.adminShell .adminOverview .adminHeroBadge span { display: none !important; }
+  .adminTop + main.adminShell .adminOverview .adminHeroBadge strong { font-size: 30px; }
+  .adminTop + main.adminShell .adminOverview .adminHeroBadge small { font-size: 12px; white-space: nowrap; }
+
+  .adminTop + main.adminShell .adminOverview .adminStats {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, .22);
+  }
+
+  .adminTop + main.adminShell .adminOverview .adminStat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    min-height: 114px;
+    padding: 14px 12px;
+    border: 1px solid rgba(255, 255, 255, .15);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, .10);
+  }
+
+  .adminTop + main.adminShell .adminOverview .adminStat > span {
+    display: grid;
+    place-items: center;
+    flex: 0 0 31px;
+    height: 31px;
+    border-radius: 9px;
+    background: rgba(255, 122, 24, .14);
+    color: #ffb888;
+    font-size: 17px;
+  }
+
+  .adminTop + main.adminShell .adminOverview .adminStat > div { display: grid; gap: 5px; min-width: 0; }
+  .adminTop + main.adminShell .adminOverview .adminStat strong {
+    color: #fff;
+    font-size: clamp(18px, 1.7vw, 24px);
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+  .adminTop + main.adminShell .adminOverview .adminStat small {
+    color: #d5e1ee;
+    font-size: 11px;
+    line-height: 1.3;
+  }
+}
