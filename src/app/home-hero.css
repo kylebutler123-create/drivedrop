@@ -845,8 +845,9 @@ body:has(.homePage) > .guestTop{
   .homePage .quoteCta{margin-top:0;padding:12px;}
   .homePage .quoteSmall{margin:0;}
 
-  /* Soften the text on homepage login and quote/join buttons on desktop. */
+  /* Soften the text on homepage login, account, and quote/join buttons on desktop. */
   body:has(.homePage) > .guestTop .btn,
   .homePage .quoteCta,
-  .homePage .largeCta{font-weight:600;}
+  .homePage .largeCta,
+  .homePage .homeLoginSubmit{font-weight:600;}
 }
