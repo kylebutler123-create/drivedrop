@@ -1,8 +1,30 @@
-/* Soft steel blue for transporter Available Jobs cards on desktop only. */
+/* Transporter desktop palette; the header and workspace navigation stay navy. */
 @media (min-width: 901px) {
+  body:has(> .transporterTop + main.dashboardShell) {
+    background: #f6f4fa;
+  }
+
+  .transporterTop + main.dashboardShell .transporterBooking.dashboardCard {
+    background: #fdfcff;
+    border-color: #d6cde6;
+  }
+
   .transporterTop + main.dashboardShell #available-jobs .transporterJobFilters {
     padding: 10px 12px;
+    background: #e9e5f5;
+    border-color: #cfc5e4;
     box-shadow: none;
+  }
+
+  .transporterTop + main.dashboardShell #available-jobs .transporterJobFilterField,
+  .transporterTop + main.dashboardShell #available-jobs .transporterJobFilterSectionLabel {
+    color: #695e82;
+  }
+
+  .transporterTop + main.dashboardShell #available-jobs .transporterJobFilterField > select,
+  .transporterTop + main.dashboardShell #available-jobs .transporterJobFilterField > input {
+    background: #faf8fe;
+    border-color: #cfc6df;
   }
 
   .transporterTop + main.dashboardShell #available-jobs .transporterJobFiltersHeader {
@@ -65,6 +87,7 @@
     grid-column: 1 / -1;
     grid-row: 3;
     margin-top: 2px;
+    background: #cfc5e4;
   }
 
   .transporterTop + main.dashboardShell #available-jobs .transporterJobFiltersFooter {
@@ -74,66 +97,66 @@
   }
 
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity {
-    border-color: #a9c5da;
+    border-color: #d6cde6;
     border-left: 4px solid #ff7a18;
     border-top-width: 2px;
     border-right-width: 2px;
     border-bottom-width: 2px;
-    background: #dbe9f4;
+    background: #fff;
     box-shadow: none !important;
     margin: 22px 0 26px;
   }
 
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity:not(.isCollapsed):not(.hasCustomerCounterDate) {
-    border-color: #a9c5da !important;
+    border-color: #d6cde6 !important;
     border-left-color: #ff7a18 !important;
   }
 
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity > .transporterCardToggle,
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity:not(.isCollapsed) > .transporterCardToggle {
-    background: #dbe9f4;
+    background: #fff;
   }
 
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity > .transporterCardToggle:hover {
-    background: #d1e3f1;
+    background: #faf8fe;
   }
 
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity:not(.isCollapsed) > .transporterCardToggle {
-    border-bottom-color: #b7ccdc;
+    border-bottom-color: #e4dcef;
   }
 
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterCardSummaryStatus,
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .bookingPartner,
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterCollapsedFacts small,
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .jobQuickFacts span {
-    color: #59758d;
+    color: #766c89;
   }
 
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterCardSummaryMain strong,
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterCollapsedFacts b,
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .jobQuickFacts b {
-    color: #15334e;
+    color: #1c304b;
   }
 
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterRouteSummary,
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .compactRoute,
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterCollapsedFacts > span,
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .jobQuickFacts > div {
-    border-color: #c6d9e7;
-    background: #eef5fa;
+    border-color: #e4dcef;
+    background: #f5f2fa;
   }
 
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .transporterRouteSummary > span {
-    background: #f7fbfe;
+    background: #faf8fe;
   }
 
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .jobQuoteToggle {
-    border-color: #b8cddd;
-    background: #eef5fa;
+    border-color: #e4dcef;
+    background: #f5f2fa;
   }
 
   .transporterTop + main.dashboardShell #available-jobs .jobOpportunity .jobQuoteToggle:hover {
-    background: #e4f0f8;
+    background: #eee9f5;
   }
 }
 
