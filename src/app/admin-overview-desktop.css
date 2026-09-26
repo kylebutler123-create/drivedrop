@@ -2,7 +2,7 @@
 .adminOverview { display: contents; }
 
 @media (min-width: 901px) {
-  .adminTop + main.adminShell .adminOverview {
+  main.adminShell .adminOverview {
     display: block;
     margin-bottom: 24px;
     padding: 0 30px 28px;
@@ -13,7 +13,7 @@
     box-shadow: 0 14px 34px rgba(7, 26, 51, .16);
   }
 
-  .adminTop + main.adminShell .adminOverview .adminHero {
+  main.adminShell .adminOverview .adminHero {
     margin: 0;
     padding: 30px 0 26px;
     overflow: visible;
@@ -23,9 +23,9 @@
     box-shadow: none;
   }
 
-  .adminTop + main.adminShell .adminOverview .adminHero::after { display: none; }
+  main.adminShell .adminOverview .adminHero::after { display: none; }
 
-  .adminTop + main.adminShell .adminOverview .adminHeroBadge {
+  main.adminShell .adminOverview .adminHeroBadge {
     flex-direction: row !important;
     align-items: center !important;
     gap: 14px !important;
@@ -37,11 +37,11 @@
     box-shadow: none !important;
   }
 
-  .adminTop + main.adminShell .adminOverview .adminHeroBadge span { display: none !important; }
-  .adminTop + main.adminShell .adminOverview .adminHeroBadge strong { font-size: 30px; }
-  .adminTop + main.adminShell .adminOverview .adminHeroBadge small { font-size: 12px; white-space: nowrap; }
+  main.adminShell .adminOverview .adminHeroBadge span { display: none !important; }
+  main.adminShell .adminOverview .adminHeroBadge strong { font-size: 30px; }
+  main.adminShell .adminOverview .adminHeroBadge small { font-size: 12px; white-space: nowrap; }
 
-  .adminTop + main.adminShell .adminOverview .adminStats {
+  main.adminShell .adminOverview .adminStats {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 10px;
@@ -49,7 +49,7 @@
     border-top: 1px solid rgba(255, 255, 255, .22);
   }
 
-  .adminTop + main.adminShell .adminOverview .adminStat {
+  main.adminShell .adminOverview .adminStat {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -61,7 +61,7 @@
     background: rgba(255, 255, 255, .10);
   }
 
-  .adminTop + main.adminShell .adminOverview .adminStat > span {
+  main.adminShell .adminOverview .adminStat > span {
     display: grid;
     place-items: center;
     flex: 0 0 31px;
@@ -72,14 +72,14 @@
     font-size: 17px;
   }
 
-  .adminTop + main.adminShell .adminOverview .adminStat > div { display: grid; gap: 5px; min-width: 0; }
-  .adminTop + main.adminShell .adminOverview .adminStat strong {
+  main.adminShell .adminOverview .adminStat > div { display: grid; gap: 5px; min-width: 0; }
+  main.adminShell .adminOverview .adminStat strong {
     color: #fff;
     font-size: clamp(18px, 1.7vw, 24px);
     line-height: 1.1;
     overflow-wrap: anywhere;
   }
-  .adminTop + main.adminShell .adminOverview .adminStat small {
+  main.adminShell .adminOverview .adminStat small {
     color: #d5e1ee;
     font-size: 11px;
     line-height: 1.3;
