@@ -1,0 +1,47 @@
+/* Keep the homepage quote panel compact until a visitor opens the complete request. */
+.homePage .homeQuoteHeading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:7px}
+.homePage .homeQuoteHeading>div{min-width:0}
+.homePage .homeQuoteHeading span{display:block;margin-top:3px;font-size:11px;color:#697a90}
+.homePage .homeQuoteExpand{flex:0 0 auto;border:0;border-radius:999px;background:#edf3f8;color:#174f80;padding:7px 10px;font:inherit;font-size:11px;font-weight:800;cursor:pointer}
+.homePage .homeQuoteExpand:disabled{opacity:.6;cursor:default}
+.homePage .homeQuoteLocations .field{margin:0;min-width:0}
+.homePage .homeQuoteLocations .addressField small{display:none}
+.homePage .homeQuoteExtra[hidden]{display:none}
+.homePage .homeQuoteSection{border-top:1px solid #e5ebf1;padding-top:14px;margin-top:14px}
+.homePage .homeQuoteSection>strong{font-size:14px;color:#173451}
+.homePage .homeQuoteFieldGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px;margin-top:10px}
+.homePage .homeQuoteFieldGrid .field{min-width:0;margin:0}
+.homePage .homeQuoteFieldGrid .homeQuoteWide{grid-column:1/-1}
+.homePage .homeQuoteFieldGrid label{margin:0 0 5px;font-size:10px;letter-spacing:.045em}
+.homePage .homeQuoteFieldGrid input,
+.homePage .homeQuoteFieldGrid select{box-sizing:border-box;display:block;width:100%;max-width:100%;min-width:0;height:39px;padding:9px 10px;margin:0;border:1px solid #dce4ed;border-radius:9px;background:#fbfcfd;font:inherit;font-size:13px}
+.homePage .homeQuoteFieldGrid input[type=date]{width:100%;min-width:0;max-width:100%;overflow:hidden}
+.homePage .homeQuoteFieldGrid .password-wrap input{padding-right:66px}
+.homePage .homeQuoteFieldGrid .password-toggle{font-size:11px;padding:6px 8px}
+.homePage .homeQuoteAccountTabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin-top:10px;background:#edf2f7;border-radius:10px}
+.homePage .homeQuoteAccountTabs button{min-height:35px;border:0;border-radius:7px;background:transparent;color:#52647a;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.homePage .homeQuoteAccountTabs button.active{background:#071a33;color:#fff}
+.homePage .homeQuoteAccountReady{font-size:12px;color:#146944;margin:10px 0 0}
+.homePage .homeQuoteRequestLink{display:inline-block;margin-top:10px;color:#174f80;font-size:12px;font-weight:800;text-decoration:underline}
+.homePage .homeQuoteError{font-size:12px;line-height:1.4}
+.homePage .homeQuoteForm .quoteCta{width:100%}
+
+@media(min-width:761px){
+  .homePage .homeHeroPanelShell.isQuoteExpanded{height:auto;min-height:480px;overflow:visible}
+  .homePage .isQuoteExpanded .homeHeroPanelTrack{height:auto;align-items:start}
+  .homePage .isQuoteExpanded .homeHeroPanelTrack>.homeHeroPanelSlide:first-child{min-height:0}
+  .homePage .isQuoteExpanded .homeQuoteForm{justify-content:flex-start!important;padding-top:11px}
+  .homePage .isQuoteExpanded .homeQuoteForm label{margin:0 0 5px}
+  .homePage .isQuoteExpanded .quoteCta{margin-top:15px}
+  .homePage .isQuoteExpanded .quoteSmall{margin-top:9px}
+}
+@media(max-width:760px){
+  .homePage .homeQuoteHeading{display:flex;gap:6px}
+  .homePage .homeQuoteHeading span{font-size:10px}
+  .homePage .homeQuoteExpand{padding:7px 9px;font-size:10px}
+  .homePage .homeQuoteFieldGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 7px}
+  .homePage .homeQuoteFieldGrid input,
+  .homePage .homeQuoteFieldGrid select{font-size:12px;min-width:0;max-width:100%;padding:8px 7px}
+  .homePage .homeQuoteFieldGrid input[type=date]{font-size:12px;padding:8px 7px}
+  .homePage .homeQuoteFieldGrid .field{width:100%;min-width:0}
+}

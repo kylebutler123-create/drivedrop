@@ -44,6 +44,7 @@ import './transporter-desktop-action-buttons.css';
 import './transporter-proceeds-desktop.css';
 import './transporter-available-jobs-desktop.css';
 import './mobile-unified-logo.css';
+import './home-quote-expand.css';
 import Link from 'next/link';
 import {currentUser} from '@/lib/auth';
 import MessagesNavLink from '@/app/components/MessagesNavLink';

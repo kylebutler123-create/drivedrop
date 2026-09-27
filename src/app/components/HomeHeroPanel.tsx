@@ -1,9 +1,9 @@
 'use client';
 
-import {vehicleTypes} from '@/lib/vehicle-types';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {FormEvent,useEffect,useState} from 'react';
+import HomeQuoteRequestPanel from './HomeQuoteRequestPanel';
 
 type HeroView='quotes'|'customer'|'transporter'|'registerCustomer'|'registerTransporter';
 
@@ -21,6 +21,7 @@ export default function HomeHeroPanel({initialView='quotes'}:{initialView?:HeroV
   const[error,setError]=useState('');
   const[showPassword,setShowPassword]=useState(false);
   const[submitting,setSubmitting]=useState(false);
+  const[quoteExpanded,setQuoteExpanded]=useState(false);
 
   function show(next:HeroView){
     setError('');
@@ -108,23 +109,10 @@ export default function HomeHeroPanel({initialView='quotes'}:{initialView?:HeroV
   }
 
   const registering=view==='registerCustomer'||view==='registerTransporter';
-  return <div className={`homeHeroPanelShell${registering?' isRegistration':''}`}>
+  return <div className={`homeHeroPanelShell${registering?' isRegistration':''}${view==='quotes'&&quoteExpanded?' isQuoteExpanded':''}`}>
     <div className={`homeHeroPanelTrack ${viewClass[view]}`}>
       <div className="quotePanel floatingPanel homeHeroPanelSlide" aria-hidden={view!=='quotes'} inert={view!=='quotes'}>
-        <div className="quotePanelHeader"><strong>Get vehicle transport quotes</strong><span>Takes about 60 seconds</span></div>
-        <form action="/register" className="quoteForm">
-          <input type="hidden" name="account" value="customer"/>
-          <div className="quoteVehicleField">
-            <label>VEHICLE TYPE</label>
-            <select name="vehicleType" defaultValue="Car">{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select>
-          </div>
-          <div className="quoteGrid">
-            <div><label>COLLECTION POSTCODE</label><input name="collection" placeholder="e.g. M1 1AA"/></div>
-            <div><label>DELIVERY POSTCODE</label><input name="delivery" placeholder="e.g. BS1 1AA"/></div>
-          </div>
-          <button type="submit" className="btn orange quoteCta">Get My Quotes</button>
-          <p className="quoteSmall">No payment required to request quotes.</p>
-        </form>
+        <HomeQuoteRequestPanel expanded={quoteExpanded} onExpandChange={setQuoteExpanded}/>
       </div>
       <LoginPanel account="customer" active={view==='customer'} error={error} submitting={submitting} showPassword={showPassword} onBack={()=>show('quotes')} onSwitch={show} onCreate={()=>show('registerCustomer')} onSubmit={submit} onTogglePassword={()=>setShowPassword(value=>!value)}/>
       <LoginPanel account="transporter" active={view==='transporter'} error={error} submitting={submitting} showPassword={showPassword} onBack={()=>show('quotes')} onSwitch={show} onCreate={()=>show('registerTransporter')} onSubmit={submit} onTogglePassword={()=>setShowPassword(value=>!value)}/>
