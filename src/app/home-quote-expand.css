@@ -53,7 +53,7 @@
   }
   .homePage .visualHero:has(.homeHeroPanelShell.isQuoteExpanded){z-index:2}
   .homePage .visualHero:has(.homeHeroPanelShell.isQuoteDetails) .visualHeroInner{height:var(--compactHeroHeight);align-items:center}
-  .homePage .visualHero:has(.homeHeroPanelShell.isQuoteDetails) .homeHeroPanelShell{align-self:start}
+  .homePage .visualHero:has(.homeHeroPanelShell.isQuoteDetails) .homeHeroPanelShell{align-self:start;margin-top:max(33px,calc(23.5vw - 287px))}
   .homePage .isQuoteExpanded .homeHeroPanelTrack>.homeHeroPanelSlide:first-child{max-height:none;overflow:visible;position:relative;z-index:3}
   .homePage .homeHeroPanelTrack>.homeHeroPanelSlide:first-child .homeQuoteHeading{display:flex;flex-direction:row;align-items:flex-start;justify-content:space-between}
   .homePage .homeHeroPanelShell.isQuoteDetails{height:auto;min-height:480px;overflow:visible}
