@@ -15,6 +15,8 @@
 }
 .headerLogo picture{display:block;width:100%;height:100%;}
 
+.guestPrimaryNav .mobileGuestLogin{display:none;}
+
 /* Keep public navigation aligned between the homepage and login screens. */
 body:has(.homePage, .loginPage, .registerPage) > .guestTop{
   padding:14px max(4vw,20px);
@@ -414,6 +416,8 @@ body:has(.homePage) > .guestTop{
 .homePage .footerLegal p{margin:0;font-size:10px;color:#8294aa;}
 
 @media(max-width:760px){
+  .guestPrimaryNav .desktopGuestLogin{display:none;}
+  .guestPrimaryNav .mobileGuestLogin{display:inline-flex;}
   body:has(.homePage, .loginPage, .registerPage) > .guestTop{
     display:block;
     padding:8px 12px 13px;

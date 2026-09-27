@@ -15,9 +15,9 @@ const viewClass:Record<HeroView,string>={
   registerTransporter:'showRegister showRegisterTransporter',
 };
 
-export default function HomeHeroPanel(){
+export default function HomeHeroPanel({initialView='quotes'}:{initialView?:HeroView}){
   const router=useRouter();
-  const[view,setView]=useState<HeroView>('quotes');
+  const[view,setView]=useState<HeroView>(initialView);
   const[error,setError]=useState('');
   const[showPassword,setShowPassword]=useState(false);
   const[submitting,setSubmitting]=useState(false);
