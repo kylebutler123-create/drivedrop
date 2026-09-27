@@ -44,6 +44,7 @@
 .homePage .homeQuoteForm .quoteCta{width:100%}
 
 @media(min-width:761px){
+  .homePage .homeHeroPanelTrack>.homeHeroPanelSlide:first-child .homeQuoteHeading{display:flex;flex-direction:row;align-items:flex-start;justify-content:space-between}
   .homePage .homeHeroPanelShell.isQuoteDetails{height:auto;min-height:480px;overflow:visible}
   .homePage .isQuoteDetails .homeHeroPanelTrack{height:auto;align-items:start}
   .homePage .isQuoteDetails .homeHeroPanelTrack>.homeHeroPanelSlide:first-child{min-height:0}
