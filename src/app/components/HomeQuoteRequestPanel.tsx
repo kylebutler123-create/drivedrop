@@ -144,7 +144,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
             <div className="field"><label htmlFor="home-quote-make">MAKE</label><input id="home-quote-make" name="vehicleMake" required disabled={submitting}/></div>
             <div className="field"><label htmlFor="home-quote-model">MODEL</label><input id="home-quote-model" name="vehicleModel" required disabled={submitting}/></div>
             <div className="field"><label htmlFor="home-quote-registration">REGISTRATION</label><input id="home-quote-registration" name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters" disabled={submitting}/></div>
-            <div className="field"><label htmlFor="home-quote-running">RUNNING?</label><select id="home-quote-running" name="running" defaultValue="true" disabled={submitting}><option value="true">Runs and drives</option><option value="false">Non-running</option></select></div>
+            <div className="field"><label htmlFor="home-quote-running">RUNNING CONDITION</label><select id="home-quote-running" name="running" defaultValue="" required disabled={submitting}><option value="" disabled>Select</option><option value="true">Runs and drives</option><option value="false">Non-running</option></select></div>
           </div>
       </div>
       {expanded&&<div className="homeQuoteSection homeQuoteTransport">
