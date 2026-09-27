@@ -19,8 +19,10 @@
 .homePage .homeQuoteFieldGrid .field{min-width:0;margin:0}
 .homePage .homeQuoteFieldGrid .homeQuoteWide{grid-column:1/-1}
 .homePage .homeQuoteFieldGrid label{margin:0 0 5px;font-size:10px;letter-spacing:.045em}
-.homePage #home-quote-vehicle-type:invalid{color:#697a90}
-.homePage #home-quote-vehicle-type option{color:#10233f}
+.homePage #home-quote-vehicle-type:invalid,
+.homePage #home-quote-transport-type:invalid{color:#697a90}
+.homePage #home-quote-vehicle-type option,
+.homePage #home-quote-transport-type option{color:#10233f}
 .homePage .homeQuoteFieldGrid input,
 .homePage .homeQuoteFieldGrid select{box-sizing:border-box;display:block;width:100%;max-width:100%;min-width:0;height:39px;padding:9px 10px;margin:0;border:1px solid #dce4ed;border-radius:9px;background:#fbfcfd;font:inherit;font-size:13px}
 .homePage .homeQuoteDateTransport{margin-top:9px}
