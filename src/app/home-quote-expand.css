@@ -84,4 +84,8 @@
   .homePage .homeQuoteForm select{font-size:16px}
   .homePage .homeQuoteDateButton{height:39px;padding:0 7px;font-size:16px}
   .homePage .homeQuoteFieldGrid .field{width:100%;min-width:0}
+  .homeQuoteCalendar{width:284px;padding:12px}
+  .homeQuoteCalendarHeader{font-size:14px}
+  .homeQuoteCalendarHeader button{width:32px;height:32px}
+  .homeQuoteCalendarDays span,.homeQuoteCalendarDays button{height:32px;font-size:13px}
 }
