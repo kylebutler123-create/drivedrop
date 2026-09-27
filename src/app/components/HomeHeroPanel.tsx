@@ -24,15 +24,8 @@ export default function HomeHeroPanel({initialView='quotes'}:{initialView?:HeroV
   const[quoteExpanded,setQuoteExpanded]=useState(false);
 
   function changeQuoteExpanded(next:boolean){
-    const hero=document.querySelector<HTMLElement>('.homePage .visualHero');
-    if(hero){
-      if(next&&!quoteExpanded)hero.style.setProperty('--quoteHeroHeight',`${hero.getBoundingClientRect().height}px`);
-      if(!next)hero.style.removeProperty('--quoteHeroHeight');
-    }
     setQuoteExpanded(next);
   }
-
-  useEffect(()=>()=>{document.querySelector<HTMLElement>('.homePage .visualHero')?.style.removeProperty('--quoteHeroHeight')},[]);
 
   function show(next:HeroView){
     setError('');
