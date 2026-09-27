@@ -52,7 +52,7 @@
     overflow:visible;
     margin-bottom:max(0px,calc(1081px - var(--compactHeroHeight)));
   }
-  .homePage .visualHero:has(.homeHeroPanelShell.isQuoteExpanded) .visualHeroInner{height:var(--compactHeroHeight);align-items:center}
+  .homePage .visualHero:has(.homeHeroPanelShell.isQuoteExpanded) .visualHeroInner{height:var(--compactHeroHeight);padding-top:132px;padding-bottom:12px;align-items:center}
   .homePage .visualHero:has(.homeHeroPanelShell.isQuoteExpanded) .homeHeroPanelShell{align-self:start}
   .homePage .homeHeroPanelTrack>.homeHeroPanelSlide:first-child .homeQuoteHeading{display:flex;flex-direction:row;align-items:flex-start;justify-content:space-between}
   .homePage .homeHeroPanelShell.isQuoteDetails{height:auto;min-height:480px;overflow:visible}
