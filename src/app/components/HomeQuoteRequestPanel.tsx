@@ -1,6 +1,6 @@
 'use client';
 
-import {FormEvent,useRef,useState} from 'react';
+import {FormEvent,useEffect,useRef,useState} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import AddressAutocomplete from './AddressAutocomplete';
@@ -11,6 +11,32 @@ import {enclosedTransportCompatibilityMessage,isTransportVehicleCompatible} from
 type Props={expanded:boolean;onExpandChange:(expanded:boolean)=>void};
 type AccountMode='create'|'login';
 
+function CollectionDatePicker({value,onChange,disabled}:{value:string;onChange:(date:string)=>void;disabled:boolean}){
+  const [open,setOpen]=useState(false);
+  const [month,setMonth]=useState(()=>{const today=new Date();return new Date(today.getFullYear(),today.getMonth(),1)});
+  const container=useRef<HTMLDivElement>(null);
+  useEffect(()=>{
+    if(!open)return;
+    const outside=(event:PointerEvent)=>{if(event.target instanceof Node&&!container.current?.contains(event.target))setOpen(false)};
+    const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')setOpen(false)};
+    document.addEventListener('pointerdown',outside);
+    document.addEventListener('keydown',escape);
+    return()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',escape)};
+  },[open]);
+  const firstDay=(new Date(month.getFullYear(),month.getMonth(),1).getDay()+6)%7;
+  const days=new Date(month.getFullYear(),month.getMonth()+1,0).getDate();
+  const label=value?new Date(`${value}T12:00:00`).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Select date';
+  return <div className="field homeQuoteCalendarField" ref={container}>
+    <span className="homeQuoteFieldLabel" id="home-quote-date-label">COLLECTION DATE</span>
+    <input type="hidden" name="collectionDate" value={value}/>
+    <button type="button" className="homeQuoteDateButton" aria-label={`Collection date: ${label}`} aria-expanded={open} aria-haspopup="dialog" onClick={()=>setOpen(current=>!current)} disabled={disabled}>{label}<span aria-hidden="true">▦</span></button>
+    {open&&<div className="homeQuoteCalendar" role="dialog" aria-label="Choose collection date">
+      <div className="homeQuoteCalendarHeader"><button type="button" aria-label="Previous month" onClick={()=>setMonth(current=>new Date(current.getFullYear(),current.getMonth()-1,1))}>‹</button><strong>{month.toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</strong><button type="button" aria-label="Next month" onClick={()=>setMonth(current=>new Date(current.getFullYear(),current.getMonth()+1,1))}>›</button></div>
+      <div className="homeQuoteCalendarDays">{['M','T','W','T','F','S','S'].map((day,index)=><span key={index} aria-hidden="true">{day}</span>)}{Array.from({length:firstDay},(_,index)=><span key={`empty-${index}`}/>)}{Array.from({length:days},(_,index)=>{const day=index+1;const date=`${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;return <button type="button" key={day} aria-label={new Date(`${date}T12:00:00`).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})} aria-pressed={value===date} onClick={()=>{onChange(date);setOpen(false)}}>{day}</button>})}</div>
+    </div>}
+  </div>;
+}
+
 export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
   const router=useRouter();
   const [accountMode,setAccountMode]=useState<AccountMode>('create');
@@ -20,6 +46,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
   const [error,setError]=useState('');
   const [vehicleType,setVehicleType]=useState<string>('Car');
   const [transportType,setTransportType]=useState<string>('');
+  const [collectionDate,setCollectionDate]=useState('');
   const requestInFlight=useRef(false);
   const incompatible=transportType!==''&&!isTransportVehicleCompatible(transportType,vehicleType);
 
@@ -29,6 +56,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
     if(requestInFlight.current)return;
     const form=event.currentTarget;
     if(!form.reportValidity())return;
+    if(!collectionDate){setError('Choose a collection date from the calendar.');return}
     const fields=new FormData(form);
     if(!isTransportVehicleCompatible(fields.get('transportType'),fields.get('vehicleType'))){
       return;
@@ -86,27 +114,29 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
   return <>
     <div className="quotePanelHeader homeQuoteHeading">
       <div><strong>Get vehicle transport quotes</strong><span>Takes about 60 seconds</span></div>
-      <button type="button" className="homeQuoteExpand" aria-expanded={expanded} aria-controls="home-quote-extra" disabled={submitting} onClick={()=>{setError('');onExpandChange(!expanded)}}>{expanded?'Collapse ↑':'Expand ↓'}</button>
+      <button type="button" className="homeQuoteExpand" aria-label={expanded?'Collapse account details':'Expand account details'} aria-expanded={expanded} aria-controls="home-quote-extra" disabled={submitting} onClick={()=>{setError('');onExpandChange(!expanded)}}>{expanded?'−':'+'}</button>
     </div>
     <form className="quoteForm homeQuoteForm" onSubmit={submit} aria-busy={submitting}>
-      <div className="quoteVehicleField">
-        <label htmlFor="home-quote-vehicle-type">VEHICLE TYPE</label>
-        <select id="home-quote-vehicle-type" name="vehicleType" value={vehicleType} onChange={event=>setVehicleType(event.target.value)} required disabled={submitting}>{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select>
-      </div>
-      <div className="quoteGrid homeQuoteLocations">
-        <AddressAutocomplete name="collection" label="COLLECTION"/>
-        <AddressAutocomplete name="delivery" label="DELIVERY"/>
-      </div>
-      <div className="homeQuoteSection homeQuoteTransport">
-          <strong>Vehicle & collection details</strong>
+      <div className="homeQuoteSection homeQuoteVehicle">
+          <strong>Vehicle details</strong>
           <div className="homeQuoteFieldGrid">
-            <div className="field homeQuoteWide"><label htmlFor="home-quote-date">COLLECTION DATE</label><input id="home-quote-date" type="date" name="collectionDate" required disabled={submitting}/></div>
-            <div className="field homeQuoteWide"><label htmlFor="home-quote-transport-type">TRANSPORT TYPE</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
+            <div className="field homeQuoteWide"><label htmlFor="home-quote-vehicle-type">VEHICLE TYPE</label><select id="home-quote-vehicle-type" name="vehicleType" value={vehicleType} onChange={event=>setVehicleType(event.target.value)} required disabled={submitting}>{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select></div>
             <div className="field"><label htmlFor="home-quote-make">MAKE</label><input id="home-quote-make" name="vehicleMake" required disabled={submitting}/></div>
             <div className="field"><label htmlFor="home-quote-model">MODEL</label><input id="home-quote-model" name="vehicleModel" required disabled={submitting}/></div>
             <div className="field"><label htmlFor="home-quote-registration">REGISTRATION</label><input id="home-quote-registration" name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters" disabled={submitting}/></div>
             <div className="field"><label htmlFor="home-quote-running">RUNNING?</label><select id="home-quote-running" name="running" defaultValue="true" disabled={submitting}><option value="true">Runs and drives</option><option value="false">Non-running</option></select></div>
           </div>
+      </div>
+      <div className="homeQuoteSection homeQuoteTransport">
+        <strong>Collection &amp; delivery</strong>
+        <div className="quoteGrid homeQuoteLocations">
+          <AddressAutocomplete name="collection" label="COLLECTION"/>
+          <AddressAutocomplete name="delivery" label="DELIVERY"/>
+        </div>
+        <div className="homeQuoteFieldGrid homeQuoteDateTransport">
+          <CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>
+          <div className="field"><label htmlFor="home-quote-transport-type">TRANSPORT TYPE</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
+        </div>
       </div>
       {incompatible&&<div className="formNotice errorNotice homeQuoteCompatibility" role="alert">{enclosedTransportCompatibilityMessage}</div>}
       <div id="home-quote-extra" className="homeQuoteExtra" hidden={!expanded}>
