@@ -421,6 +421,13 @@ body:has(.homePage) > .guestTop{
   body:has(.homePage) > .guestTop{
     background:linear-gradient(180deg,rgba(4,18,37,.9),rgba(4,18,37,.48) 78%,transparent);
   }
+  body:has(.loginPage) > .guestTop{
+    position:absolute;
+    inset:0 0 auto;
+    z-index:20;
+    background:linear-gradient(180deg,rgba(4,18,37,.9),rgba(4,18,37,.48) 78%,transparent);
+    border-bottom:0;
+  }
   body:has(.homePage, .loginPage, .registerPage) > .guestTop .guestPrimaryNav{
     display:grid;
     grid-template-columns:minmax(108px,1fr) auto auto;

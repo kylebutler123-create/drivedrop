@@ -209,7 +209,7 @@
     grid-template-columns:1fr;
   }
   .loginPage .authVisual{
-    min-height:310px;
+    min-height:385px;
   }
   .loginPage .authVisualContent{
     padding:28px 18px;
