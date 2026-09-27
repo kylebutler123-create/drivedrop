@@ -35,8 +35,8 @@
     filter: url('#mobile-brand-lighter-wordmark');
   }
   .homePage .footerLogo {
-    width: 205px;
-    height: 55px;
+    width: 165px;
+    height: 44px;
     background: none;
   }
   .homePage .footerLogo > .mobileBrandLogo {
@@ -44,7 +44,7 @@
     position: relative;
     width: 128px;
     height: 34px;
-    transform: scale(1.55);
+    transform: scale(1.28);
     transform-origin: left top;
   }
   .homePage .footerLogo .mobileBrandWordmark { display: block; }
