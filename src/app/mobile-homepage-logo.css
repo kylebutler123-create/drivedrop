@@ -1,0 +1,34 @@
+.mobileHomepageLogo{display:none}
+
+@media(max-width:760px){
+  body:has(.homePage) > .top .headerLogo{
+    display:flex;
+    align-items:center;
+  }
+  body:has(.homePage) > .top .headerLogo picture,
+  body:has(.homePage) > .top .headerLogo > img{
+    display:none;
+  }
+  body:has(.homePage) > .top .headerLogo .mobileHomepageLogo{
+    display:block;
+    position:relative;
+    width:128px;
+    height:34px;
+    flex:0 0 128px;
+  }
+  body:has(.homePage) > .top .mobileHomepagePin{
+    position:absolute;
+    left:2.6px;
+    top:5.9px;
+    width:22.3px;
+    height:22.3px;
+  }
+  body:has(.homePage) > .top .mobileHomepageWordmark{
+    position:absolute;
+    left:23px;
+    top:0;
+    width:105px;
+    height:34px;
+    background:url('/drivedrop-logo-route-slanted.webp') -54.5px 0 / 159px 33.3px no-repeat;
+  }
+}
