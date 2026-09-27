@@ -19,8 +19,8 @@
     transform-origin: left center;
   }
   .homePage .footerLogo {
-    width: 165px;
-    height: 44px;
+    width: 138px;
+    height: 38px;
     background: none;
   }
   .homePage .footerLogo > .mobileBrandLogo {
@@ -28,7 +28,7 @@
     position: relative;
     width: 128px;
     height: 34px;
-    transform: scale(1.28);
+    transform: scale(1.06);
     transform-origin: left top;
     background: url('/drivedrop-mobile-logo-rebuilt.svg') left center / contain no-repeat;
   }
