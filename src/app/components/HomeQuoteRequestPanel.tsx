@@ -64,11 +64,11 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
   const [showPassword,setShowPassword]=useState(false);
   const [submitting,setSubmitting]=useState(false);
   const [error,setError]=useState('');
-  const [vehicleType,setVehicleType]=useState<string>('Car');
+  const [vehicleType,setVehicleType]=useState<string>('');
   const [transportType,setTransportType]=useState<string>('');
   const [collectionDate,setCollectionDate]=useState('');
   const requestInFlight=useRef(false);
-  const incompatible=transportType!==''&&!isTransportVehicleCompatible(transportType,vehicleType);
+  const incompatible=transportType!==''&&vehicleType!==''&&!isTransportVehicleCompatible(transportType,vehicleType);
 
   async function submit(event:FormEvent<HTMLFormElement>){
     event.preventDefault();
@@ -140,7 +140,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
       <div className="homeQuoteSection homeQuoteVehicle">
           <strong>Vehicle details</strong>
           <div className="homeQuoteFieldGrid">
-            <div className="field homeQuoteWide"><label htmlFor="home-quote-vehicle-type">VEHICLE TYPE</label><select id="home-quote-vehicle-type" name="vehicleType" value={vehicleType} onChange={event=>setVehicleType(event.target.value)} required disabled={submitting}>{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select></div>
+            <div className="field homeQuoteWide"><label htmlFor="home-quote-vehicle-type">VEHICLE TYPE</label><select id="home-quote-vehicle-type" name="vehicleType" value={vehicleType} onChange={event=>setVehicleType(event.target.value)} required disabled={submitting}><option value="" disabled>Select vehicle type</option>{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select></div>
             <div className="field"><label htmlFor="home-quote-make">MAKE</label><input id="home-quote-make" name="vehicleMake" required disabled={submitting}/></div>
             <div className="field"><label htmlFor="home-quote-model">MODEL</label><input id="home-quote-model" name="vehicleModel" required disabled={submitting}/></div>
             <div className="field"><label htmlFor="home-quote-registration">REGISTRATION</label><input id="home-quote-registration" name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters" disabled={submitting}/></div>
