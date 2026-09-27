@@ -10,9 +10,9 @@ const recent=[
 ];
 
 const testimonials=[
-  {quote:'Clear quotes, clear transporter profiles and everything in one place.',name:'Sarah Mitchell',vehicle:'BMW 3 Series',image:'/drivedrop-customer-sarah.webp',imageAlt:'Sarah Mitchell'},
-  {quote:'Seeing verification and reviews before booking makes a huge difference.',name:'Daniel Brooks',vehicle:'Ford Transit',image:'/drivedrop-customer-daniel.webp',imageAlt:'Daniel Brooks'},
-  {quote:'Much easier than ringing around transport companies.',name:'Priya Shah',vehicle:'Porsche 911',image:'/drivedrop-customer-priya.webp',imageAlt:'Priya Shah'},
+  {quote:'Clear quotes, clear transporter profiles and everything in one place.',name:'Sarah Mitchell',vehicle:'Mercedes E-Class',image:'/drivedrop-customer-sarah.webp',imageAlt:'Sarah Mitchell'},
+  {quote:'Seeing verification and reviews before booking makes a huge difference.',name:'Daniel Brooks',vehicle:'Audi A6',image:'/drivedrop-customer-daniel.webp',imageAlt:'Daniel Brooks'},
+  {quote:'Much easier than ringing around transport companies.',name:'Priya Shah',vehicle:'Land Rover Sport',image:'/drivedrop-customer-priya.webp',imageAlt:'Priya Shah'},
 ];
 
 export default async function Home({searchParams}:{searchParams:Promise<{view?:string}>}){const {view}=await searchParams;const initialView=view==='customer'||view==='transporter'?view:'quotes';return <main className="homePage">
