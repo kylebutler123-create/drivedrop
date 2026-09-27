@@ -3,6 +3,7 @@ import './home-hero.css';
 import './mobile-polish.css';
 import './mobile-brand-logo.css';
 import './mobile-homepage-logo.css';
+import './mobile-customer-login-logo.css';
 import './customer-desktop-header.css';
 import './transporter-desktop-header.css';
 import './dashboard-polish.css';

@@ -1,0 +1,33 @@
+.mobileCustomerLoginLogo{display:none}
+
+@media(max-width:760px){
+  body:has(.loginPage.customerLogin) > .guestTop .headerLogo{
+    display:flex;
+    align-items:center;
+  }
+  body:has(.loginPage.customerLogin) > .guestTop .headerLogo picture{
+    display:none;
+  }
+  body:has(.loginPage.customerLogin) > .guestTop .mobileCustomerLoginLogo{
+    display:block;
+    position:relative;
+    width:128px;
+    height:34px;
+    flex:0 0 128px;
+  }
+  body:has(.loginPage.customerLogin) > .guestTop .mobileCustomerLoginPin{
+    position:absolute;
+    left:2.6px;
+    top:5.9px;
+    width:22.3px;
+    height:22.3px;
+  }
+  body:has(.loginPage.customerLogin) > .guestTop .mobileCustomerLoginWordmark{
+    position:absolute;
+    left:23px;
+    top:0;
+    width:105px;
+    height:34px;
+    background:url('/drivedrop-logo-route-slanted.webp') -54.5px 0 / 159px 33.3px no-repeat;
+  }
+}
