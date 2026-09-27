@@ -1,8 +1,9 @@
 'use client';
 
-import {FormEvent,useEffect,useRef,useState} from 'react';
+import {FormEvent,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
+import {createPortal} from 'react-dom';
 import AddressAutocomplete from './AddressAutocomplete';
 import {vehicleTypes} from '@/lib/vehicle-types';
 import {transportTypes} from '@/lib/transport-types';
@@ -14,10 +15,29 @@ type AccountMode='create'|'login';
 function CollectionDatePicker({value,onChange,disabled}:{value:string;onChange:(date:string)=>void;disabled:boolean}){
   const [open,setOpen]=useState(false);
   const [month,setMonth]=useState(()=>{const today=new Date();return new Date(today.getFullYear(),today.getMonth(),1)});
+  const [position,setPosition]=useState({top:0,left:0});
   const container=useRef<HTMLDivElement>(null);
+  const popup=useRef<HTMLDivElement>(null);
+  useLayoutEffect(()=>{
+    if(!open)return;
+    const place=()=>{
+      const rect=container.current?.getBoundingClientRect();
+      if(!rect)return;
+      const width=popup.current?.offsetWidth??250;
+      const height=popup.current?.offsetHeight??250;
+      const roomBelow=window.innerHeight-rect.bottom-12;
+      const roomAbove=rect.top-12;
+      const preferredTop=roomBelow>=height||roomBelow>=roomAbove?rect.bottom+6:rect.top-height-6;
+      setPosition({top:Math.max(12,Math.min(preferredTop,window.innerHeight-height-12)),left:Math.max(12,Math.min(rect.left,window.innerWidth-width-12))});
+    };
+    place();
+    window.addEventListener('resize',place);
+    document.addEventListener('scroll',place,true);
+    return()=>{window.removeEventListener('resize',place);document.removeEventListener('scroll',place,true)};
+  },[open,month]);
   useEffect(()=>{
     if(!open)return;
-    const outside=(event:PointerEvent)=>{if(event.target instanceof Node&&!container.current?.contains(event.target))setOpen(false)};
+    const outside=(event:PointerEvent)=>{if(event.target instanceof Node&&!container.current?.contains(event.target)&&!popup.current?.contains(event.target))setOpen(false)};
     const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')setOpen(false)};
     document.addEventListener('pointerdown',outside);
     document.addEventListener('keydown',escape);
@@ -30,10 +50,10 @@ function CollectionDatePicker({value,onChange,disabled}:{value:string;onChange:(
     <span className="homeQuoteFieldLabel" id="home-quote-date-label">COLLECTION DATE</span>
     <input type="hidden" name="collectionDate" value={value}/>
     <button type="button" className="homeQuoteDateButton" aria-label={`Collection date: ${label}`} aria-expanded={open} aria-haspopup="dialog" onClick={()=>setOpen(current=>!current)} disabled={disabled}>{label}<span aria-hidden="true">▦</span></button>
-    {open&&<div className="homeQuoteCalendar" role="dialog" aria-label="Choose collection date">
+    {open&&createPortal(<div ref={popup} className="homeQuoteCalendar" role="dialog" aria-label="Choose collection date" style={position}>
       <div className="homeQuoteCalendarHeader"><button type="button" aria-label="Previous month" onClick={()=>setMonth(current=>new Date(current.getFullYear(),current.getMonth()-1,1))}>‹</button><strong>{month.toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</strong><button type="button" aria-label="Next month" onClick={()=>setMonth(current=>new Date(current.getFullYear(),current.getMonth()+1,1))}>›</button></div>
       <div className="homeQuoteCalendarDays">{['M','T','W','T','F','S','S'].map((day,index)=><span key={index} aria-hidden="true">{day}</span>)}{Array.from({length:firstDay},(_,index)=><span key={`empty-${index}`}/>)}{Array.from({length:days},(_,index)=>{const day=index+1;const date=`${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;return <button type="button" key={day} aria-label={new Date(`${date}T12:00:00`).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})} aria-pressed={value===date} onClick={()=>{onChange(date);setOpen(false)}}>{day}</button>})}</div>
-    </div>}
+    </div>,document.body)}
   </div>;
 }
 
