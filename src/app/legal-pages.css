@@ -1,0 +1,87 @@
+/* Shared legal page layout, aligned with the public DriveDrop header. */
+body:has(.legalPage) > .guestTop{
+  display:block;
+  min-height:82px;
+  padding:15px clamp(24px,4vw,60px);
+  background:linear-gradient(110deg,#081b35,#123660);
+  border-bottom:0;
+}
+body:has(.legalPage) > .guestTop .guestPrimaryNav{
+  width:min(1180px,100%);
+  margin:auto;
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+body:has(.legalPage) > .guestTop .headerLogo{
+  width:218px;
+  height:50px;
+  margin-right:auto;
+  flex:0 0 auto;
+}
+body:has(.legalPage) > .guestTop .btn{
+  min-height:39px;
+  padding:9px 14px;
+  font-size:12px;
+  white-space:nowrap;
+}
+body:has(.legalPage) > .guestTop .nav{display:none}
+.legalPage{min-height:calc(100vh - 82px);background:#f5f7fa}
+.legalIntro{background:linear-gradient(180deg,#eef5fc,#f7f9fc);padding:45px 20px 78px}
+.legalIntroInner{width:min(1100px,100%);margin:auto}
+.legalIntro .eyebrow{font-size:11px;letter-spacing:.16em}
+.legalIntro h1{margin:13px 0 8px;color:#0a2747;font-size:clamp(31px,3vw,42px);line-height:1.12;letter-spacing:-.035em}
+.legalIntro .muted{margin:0;color:#64758a;font-size:14px}
+.legalContent{padding:0 20px 68px}
+.legalCard{
+  position:relative;
+  width:min(900px,100%);
+  margin:-38px auto 0;
+  padding:32px 38px 38px;
+  background:#fff;
+  border:1px solid #e4eaf1;
+  border-radius:17px;
+  box-shadow:0 12px 35px rgba(16,35,63,.07);
+  color:#263c58;
+}
+.legalCard h2{margin:30px 0 10px;color:#173451;font-size:19px;line-height:1.3}
+.legalCard .legalCardIntroTitle{margin:0 0 10px;font-size:19px}
+.legalCard>p{margin:0 0 15px;font-size:14px;line-height:1.7}
+.legalCard h2:not(.legalCardIntroTitle){padding-top:23px;border-top:1px solid #e7edf3}
+.legalBackLink{display:inline-flex;margin-top:18px;color:#174f80;font-size:13px;font-weight:800}
+.legalBackLink:hover{text-decoration:underline}
+@media(max-width:760px){
+  body:has(.legalPage) > .guestTop{min-height:68px;padding:10px 12px}
+  body:has(.legalPage) > .guestTop .guestPrimaryNav{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto auto;
+    gap:6px;
+  }
+  body:has(.legalPage) > .guestTop .headerLogo{width:100%;height:40px;min-width:0;margin:0}
+  body:has(.legalPage) > .guestTop .headerLogo .mobileBrandLogo{
+    width:100%;
+    max-width:128px;
+    height:34px;
+    flex:0 1 128px;
+    transform:none;
+  }
+  body:has(.legalPage) > .guestTop .desktopGuestLogin{display:none}
+  body:has(.legalPage) > .guestTop .mobileGuestLogin{display:inline-flex}
+  body:has(.legalPage) > .guestTop .btn{
+    min-height:30px;
+    padding:6px clamp(5px,1.5vw,8px);
+    font-size:clamp(8px,2.4vw,10px);
+  }
+  .legalPage{min-height:calc(100vh - 68px)}
+  .legalIntro{padding:35px 18px 75px}
+  .legalIntro .eyebrow{font-size:10px}
+  .legalIntro h1{margin:13px 0 8px;font-size:29px}
+  .legalIntro .muted{font-size:12px}
+  .legalContent{padding:0 12px 40px}
+  .legalCard{margin-top:-31px;padding:22px 18px 28px;border-radius:15px}
+  .legalCard h2,.legalCard .legalCardIntroTitle{font-size:16px}
+  .legalCard h2{margin-top:24px}
+  .legalCard h2:not(.legalCardIntroTitle){padding-top:19px}
+  .legalCard>p{font-size:13px;line-height:1.65}
+  .legalBackLink{font-size:12px}
+}
