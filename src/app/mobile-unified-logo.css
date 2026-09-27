@@ -11,27 +11,12 @@
     width: 128px;
     height: 34px;
     flex: 0 0 128px;
+    background: url('/drivedrop-mobile-logo-rebuilt.svg') left center / contain no-repeat;
   }
   .customerTop .customerPrimaryNav .headerLogo .mobileBrandLogo,
   .transporterTop .transporterPrimaryNav .headerLogo .mobileBrandLogo {
     transform: scale(.875);
     transform-origin: left center;
-  }
-  .mobileBrandPin {
-    position: absolute;
-    left: 2.6px;
-    top: 5.9px;
-    width: 22.3px;
-    height: 22.3px;
-  }
-  .mobileBrandWordmark {
-    display: block;
-    position: absolute;
-    left: 20.3px;
-    top: 0;
-    width: 105px;
-    height: 34px;
-    background: url('/drivedrop-mobile-wordmark-clean.svg') left top / 105px 34px no-repeat;
   }
   .homePage .footerLogo {
     width: 165px;
@@ -45,8 +30,8 @@
     height: 34px;
     transform: scale(1.28);
     transform-origin: left top;
+    background: url('/drivedrop-mobile-logo-rebuilt.svg') left center / contain no-repeat;
   }
-  .homePage .footerLogo .mobileBrandWordmark { display: block; }
 }
 
 @media (max-width: 370px) {
