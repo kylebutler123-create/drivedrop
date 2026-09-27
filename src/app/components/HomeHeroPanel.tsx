@@ -23,6 +23,17 @@ export default function HomeHeroPanel({initialView='quotes'}:{initialView?:HeroV
   const[submitting,setSubmitting]=useState(false);
   const[quoteExpanded,setQuoteExpanded]=useState(false);
 
+  function changeQuoteExpanded(next:boolean){
+    const hero=document.querySelector<HTMLElement>('.homePage .visualHero');
+    if(hero){
+      if(next&&!quoteExpanded)hero.style.setProperty('--quoteHeroHeight',`${hero.getBoundingClientRect().height}px`);
+      if(!next)hero.style.removeProperty('--quoteHeroHeight');
+    }
+    setQuoteExpanded(next);
+  }
+
+  useEffect(()=>()=>{document.querySelector<HTMLElement>('.homePage .visualHero')?.style.removeProperty('--quoteHeroHeight')},[]);
+
   function show(next:HeroView){
     setError('');
     setShowPassword(false);
@@ -112,7 +123,7 @@ export default function HomeHeroPanel({initialView='quotes'}:{initialView?:HeroV
   return <div className={`homeHeroPanelShell${registering?' isRegistration':''}${view==='quotes'?' isQuoteDetails':''}${view==='quotes'&&quoteExpanded?' isQuoteExpanded':''}`}>
     <div className={`homeHeroPanelTrack ${viewClass[view]}`}>
       <div className="quotePanel floatingPanel homeHeroPanelSlide" aria-hidden={view!=='quotes'} inert={view!=='quotes'}>
-        <HomeQuoteRequestPanel expanded={quoteExpanded} onExpandChange={setQuoteExpanded}/>
+        <HomeQuoteRequestPanel expanded={quoteExpanded} onExpandChange={changeQuoteExpanded}/>
       </div>
       <LoginPanel account="customer" active={view==='customer'} error={error} submitting={submitting} showPassword={showPassword} onBack={()=>show('quotes')} onSwitch={show} onCreate={()=>show('registerCustomer')} onSubmit={submit} onTogglePassword={()=>setShowPassword(value=>!value)}/>
       <LoginPanel account="transporter" active={view==='transporter'} error={error} submitting={submitting} showPassword={showPassword} onBack={()=>show('quotes')} onSwitch={show} onCreate={()=>show('registerTransporter')} onSubmit={submit} onTogglePassword={()=>setShowPassword(value=>!value)}/>

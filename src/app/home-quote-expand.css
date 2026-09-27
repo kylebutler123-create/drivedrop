@@ -51,9 +51,10 @@
     align-items:flex-start;
     overflow:visible;
   }
+  .homePage .visualHero:has(.homeHeroPanelShell.isQuoteExpanded){z-index:2}
   .homePage .visualHero:has(.homeHeroPanelShell.isQuoteDetails) .visualHeroInner{height:var(--compactHeroHeight);align-items:center}
   .homePage .visualHero:has(.homeHeroPanelShell.isQuoteDetails) .homeHeroPanelShell{align-self:start}
-  .homePage .isQuoteExpanded .homeHeroPanelTrack>.homeHeroPanelSlide:first-child{max-height:calc(var(--compactHeroHeight) - 144px);overflow-y:auto;overscroll-behavior:contain}
+  .homePage .isQuoteExpanded .homeHeroPanelTrack>.homeHeroPanelSlide:first-child{max-height:none;overflow:visible;position:relative;z-index:3}
   .homePage .homeHeroPanelTrack>.homeHeroPanelSlide:first-child .homeQuoteHeading{display:flex;flex-direction:row;align-items:flex-start;justify-content:space-between}
   .homePage .homeHeroPanelShell.isQuoteDetails{height:auto;min-height:480px;overflow:visible}
   .homePage .isQuoteDetails .homeHeroPanelTrack{height:auto;align-items:start}
@@ -64,6 +65,9 @@
   .homePage .isQuoteDetails .quoteSmall{margin-top:9px}
 }
 @media(max-width:760px){
+  .homePage .visualHero:has(.homeHeroPanelShell.isQuoteExpanded){height:var(--quoteHeroHeight);min-height:0;overflow:visible;align-items:flex-start;z-index:2}
+  .homePage .visualHero:has(.homeHeroPanelShell.isQuoteExpanded) .visualHeroInner{height:var(--quoteHeroHeight);align-content:start}
+  .homePage .isQuoteExpanded .homeHeroPanelTrack>.homeHeroPanelSlide:first-child{position:relative;z-index:3;overflow:visible}
   .homePage .homeQuoteHeading{display:flex;gap:6px}
   .homePage .homeQuoteHeading span{font-size:10px}
   .homePage .homeQuoteExpand{flex-basis:34px;font-size:23px}
