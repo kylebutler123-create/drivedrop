@@ -147,7 +147,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
             <div className="field"><label htmlFor="home-quote-running">RUNNING?</label><select id="home-quote-running" name="running" defaultValue="true" disabled={submitting}><option value="true">Runs and drives</option><option value="false">Non-running</option></select></div>
           </div>
       </div>
-      <div className="homeQuoteSection homeQuoteTransport">
+      {expanded&&<div className="homeQuoteSection homeQuoteTransport">
         <strong>Collection &amp; delivery</strong>
         <div className="quoteGrid homeQuoteLocations">
           <AddressAutocomplete name="collection" label="COLLECTION"/>
@@ -157,8 +157,8 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
           <CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>
           <div className="field"><label htmlFor="home-quote-transport-type">TRANSPORT TYPE</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
         </div>
-      </div>
-      {incompatible&&<div className="formNotice errorNotice homeQuoteCompatibility" role="alert">{enclosedTransportCompatibilityMessage}</div>}
+      </div>}
+      {expanded&&incompatible&&<div className="formNotice errorNotice homeQuoteCompatibility" role="alert">{enclosedTransportCompatibilityMessage}</div>}
       <div id="home-quote-extra" className="homeQuoteExtra" hidden={!expanded}>
         <div className="homeQuoteSection">
           <strong>Your customer account</strong>
