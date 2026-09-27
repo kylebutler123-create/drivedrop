@@ -1,0 +1,55 @@
+/* The approved single-pin logo applies to all headers and the homepage footer on phones. */
+.mobileBrandLogo { display: none; }
+
+@media (max-width: 760px) {
+  .top .headerLogo { display: flex; align-items: center; }
+  .top .headerLogo picture,
+  .top .adminHeaderLogo > img { display: none; }
+  .top .headerLogo .mobileBrandLogo {
+    display: block;
+    position: relative;
+    width: 128px;
+    height: 34px;
+    flex: 0 0 128px;
+  }
+  .customerTop .customerPrimaryNav .headerLogo .mobileBrandLogo,
+  .transporterTop .transporterPrimaryNav .headerLogo .mobileBrandLogo {
+    transform: scale(.875);
+    transform-origin: left center;
+  }
+  .mobileBrandPin {
+    position: absolute;
+    left: 2.6px;
+    top: 5.9px;
+    width: 22.3px;
+    height: 22.3px;
+  }
+  .mobileBrandWordmark {
+    display: block;
+    position: absolute;
+    left: 20.3px;
+    top: 0;
+    width: 105px;
+    height: 34px;
+    background: url('/drivedrop-logo-route-slanted.webp') -54.5px 0 / 159px 33.3px no-repeat;
+    filter: url('#mobile-brand-lighter-wordmark');
+  }
+  .homePage .footerLogo {
+    width: 205px;
+    height: 55px;
+    background: none;
+  }
+  .homePage .footerLogo > .mobileBrandLogo {
+    display: block;
+    position: relative;
+    width: 128px;
+    height: 34px;
+    transform: scale(1.55);
+    transform-origin: left top;
+  }
+  .homePage .footerLogo .mobileBrandWordmark { display: block; }
+}
+
+@media (max-width: 370px) {
+  .top .headerLogo .mobileBrandLogo { transform: scale(.88); transform-origin: left center; }
+}

@@ -1,5 +1,4 @@
-import MobileHomepageLogo from './MobileHomepageLogo';
-import MobileCustomerLoginLogo from './MobileCustomerLoginLogo';
+import MobileBrandLogo from './MobileBrandLogo';
 
 export default function HeaderLogoImage(){
   return <>
@@ -7,7 +6,6 @@ export default function HeaderLogoImage(){
       <source media="(min-width: 761px)" srcSet="/drivedrop-logo-route-slanted.webp"/>
       <img src="/drivedrop-logo-route-slanted.webp" alt="DriveDrop"/>
     </picture>
-    <MobileHomepageLogo/>
-    <MobileCustomerLoginLogo/>
+    <MobileBrandLogo/>
   </>;
 }
