@@ -44,6 +44,16 @@
 .homePage .homeQuoteForm .quoteCta{width:100%}
 
 @media(min-width:761px){
+  .homePage .visualHero:has(.homeHeroPanelShell.isQuoteExpanded){
+    --compactHeroHeight:max(790px,47vw);
+    height:var(--compactHeroHeight);
+    min-height:0;
+    align-items:flex-start;
+    overflow:visible;
+    margin-bottom:max(0px,calc(1081px - var(--compactHeroHeight)));
+  }
+  .homePage .visualHero:has(.homeHeroPanelShell.isQuoteExpanded) .visualHeroInner{height:var(--compactHeroHeight);align-items:center}
+  .homePage .visualHero:has(.homeHeroPanelShell.isQuoteExpanded) .homeHeroPanelShell{align-self:start}
   .homePage .homeHeroPanelTrack>.homeHeroPanelSlide:first-child .homeQuoteHeading{display:flex;flex-direction:row;align-items:flex-start;justify-content:space-between}
   .homePage .homeHeroPanelShell.isQuoteDetails{height:auto;min-height:480px;overflow:visible}
   .homePage .isQuoteDetails .homeHeroPanelTrack{height:auto;align-items:start}
