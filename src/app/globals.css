@@ -342,6 +342,7 @@
 }
 @media(max-width:760px){
   .registerPage .authVisual{
+    min-height:385px;
     background-image:url('/drivedrop-prestige-loading.webp');
     background-position:center;
   }
