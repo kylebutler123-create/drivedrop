@@ -6,6 +6,8 @@
 .homePage .homeQuoteExpand:disabled{opacity:.6;cursor:default}
 .homePage .homeQuoteLocations .field{margin:0;min-width:0}
 .homePage .homeQuoteLocations .addressField small{display:none}
+.homePage .homeQuoteTransport{margin-top:11px;padding-top:11px}
+.homePage .homeQuoteCompatibility{margin:10px 0 0;padding:10px 12px;font-size:12px;line-height:1.4}
 .homePage .homeQuoteExtra[hidden]{display:none}
 .homePage .homeQuoteSection{border-top:1px solid #e5ebf1;padding-top:14px;margin-top:14px}
 .homePage .homeQuoteSection>strong{font-size:14px;color:#173451}
@@ -27,13 +29,13 @@
 .homePage .homeQuoteForm .quoteCta{width:100%}
 
 @media(min-width:761px){
-  .homePage .homeHeroPanelShell.isQuoteExpanded{height:auto;min-height:480px;overflow:visible}
-  .homePage .isQuoteExpanded .homeHeroPanelTrack{height:auto;align-items:start}
-  .homePage .isQuoteExpanded .homeHeroPanelTrack>.homeHeroPanelSlide:first-child{min-height:0}
-  .homePage .isQuoteExpanded .homeQuoteForm{justify-content:flex-start!important;padding-top:11px}
-  .homePage .isQuoteExpanded .homeQuoteForm label{margin:0 0 5px}
-  .homePage .isQuoteExpanded .quoteCta{margin-top:15px}
-  .homePage .isQuoteExpanded .quoteSmall{margin-top:9px}
+  .homePage .homeHeroPanelShell.isQuoteDetails{height:auto;min-height:480px;overflow:visible}
+  .homePage .isQuoteDetails .homeHeroPanelTrack{height:auto;align-items:start}
+  .homePage .isQuoteDetails .homeHeroPanelTrack>.homeHeroPanelSlide:first-child{min-height:0}
+  .homePage .isQuoteDetails .homeQuoteForm{justify-content:flex-start!important;padding-top:10px}
+  .homePage .isQuoteDetails .homeQuoteForm label{margin:0 0 5px}
+  .homePage .isQuoteDetails .quoteCta{margin-top:15px}
+  .homePage .isQuoteDetails .quoteSmall{margin-top:9px}
 }
 @media(max-width:760px){
   .homePage .homeQuoteHeading{display:flex;gap:6px}

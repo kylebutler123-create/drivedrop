@@ -18,7 +18,10 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
   const [showPassword,setShowPassword]=useState(false);
   const [submitting,setSubmitting]=useState(false);
   const [error,setError]=useState('');
+  const [vehicleType,setVehicleType]=useState<string>('Car');
+  const [transportType,setTransportType]=useState<string>('');
   const requestInFlight=useRef(false);
+  const incompatible=transportType!==''&&!isTransportVehicleCompatible(transportType,vehicleType);
 
   async function submit(event:FormEvent<HTMLFormElement>){
     event.preventDefault();
@@ -28,7 +31,6 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
     if(!form.reportValidity())return;
     const fields=new FormData(form);
     if(!isTransportVehicleCompatible(fields.get('transportType'),fields.get('vehicleType'))){
-      setError(enclosedTransportCompatibilityMessage);
       return;
     }
     requestInFlight.current=true;
@@ -89,24 +91,25 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
     <form className="quoteForm homeQuoteForm" onSubmit={submit} aria-busy={submitting}>
       <div className="quoteVehicleField">
         <label htmlFor="home-quote-vehicle-type">VEHICLE TYPE</label>
-        <select id="home-quote-vehicle-type" name="vehicleType" defaultValue="Car" required disabled={submitting}>{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select>
+        <select id="home-quote-vehicle-type" name="vehicleType" value={vehicleType} onChange={event=>setVehicleType(event.target.value)} required disabled={submitting}>{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select>
       </div>
       <div className="quoteGrid homeQuoteLocations">
         <AddressAutocomplete name="collection" label="COLLECTION"/>
         <AddressAutocomplete name="delivery" label="DELIVERY"/>
       </div>
-      <div id="home-quote-extra" className="homeQuoteExtra" hidden={!expanded}>
-        <div className="homeQuoteSection">
+      <div className="homeQuoteSection homeQuoteTransport">
           <strong>Vehicle & collection details</strong>
           <div className="homeQuoteFieldGrid">
-            <div className="field homeQuoteWide"><label htmlFor="home-quote-date">COLLECTION DATE</label><input id="home-quote-date" type="date" name="collectionDate" required={expanded} disabled={submitting}/></div>
-            <div className="field homeQuoteWide"><label htmlFor="home-quote-transport-type">TRANSPORT TYPE</label><select id="home-quote-transport-type" name="transportType" defaultValue="" required={expanded} disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
-            <div className="field"><label htmlFor="home-quote-make">MAKE</label><input id="home-quote-make" name="vehicleMake" required={expanded} disabled={submitting}/></div>
-            <div className="field"><label htmlFor="home-quote-model">MODEL</label><input id="home-quote-model" name="vehicleModel" required={expanded} disabled={submitting}/></div>
+            <div className="field homeQuoteWide"><label htmlFor="home-quote-date">COLLECTION DATE</label><input id="home-quote-date" type="date" name="collectionDate" required disabled={submitting}/></div>
+            <div className="field homeQuoteWide"><label htmlFor="home-quote-transport-type">TRANSPORT TYPE</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
+            <div className="field"><label htmlFor="home-quote-make">MAKE</label><input id="home-quote-make" name="vehicleMake" required disabled={submitting}/></div>
+            <div className="field"><label htmlFor="home-quote-model">MODEL</label><input id="home-quote-model" name="vehicleModel" required disabled={submitting}/></div>
             <div className="field"><label htmlFor="home-quote-registration">REGISTRATION</label><input id="home-quote-registration" name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters" disabled={submitting}/></div>
             <div className="field"><label htmlFor="home-quote-running">RUNNING?</label><select id="home-quote-running" name="running" defaultValue="true" disabled={submitting}><option value="true">Runs and drives</option><option value="false">Non-running</option></select></div>
           </div>
-        </div>
+      </div>
+      {incompatible&&<div className="formNotice errorNotice homeQuoteCompatibility" role="alert">{enclosedTransportCompatibilityMessage}</div>}
+      <div id="home-quote-extra" className="homeQuoteExtra" hidden={!expanded}>
         <div className="homeQuoteSection">
           <strong>Your customer account</strong>
           {authenticated?<p className="homeQuoteAccountReady">Customer account ready. Your request can now be submitted.</p>:<>

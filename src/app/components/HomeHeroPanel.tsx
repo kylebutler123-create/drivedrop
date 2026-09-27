@@ -109,7 +109,7 @@ export default function HomeHeroPanel({initialView='quotes'}:{initialView?:HeroV
   }
 
   const registering=view==='registerCustomer'||view==='registerTransporter';
-  return <div className={`homeHeroPanelShell${registering?' isRegistration':''}${view==='quotes'&&quoteExpanded?' isQuoteExpanded':''}`}>
+  return <div className={`homeHeroPanelShell${registering?' isRegistration':''}${view==='quotes'?' isQuoteDetails':''}${view==='quotes'&&quoteExpanded?' isQuoteExpanded':''}`}>
     <div className={`homeHeroPanelTrack ${viewClass[view]}`}>
       <div className="quotePanel floatingPanel homeHeroPanelSlide" aria-hidden={view!=='quotes'} inert={view!=='quotes'}>
         <HomeQuoteRequestPanel expanded={quoteExpanded} onExpandChange={setQuoteExpanded}/>
