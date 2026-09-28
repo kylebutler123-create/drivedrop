@@ -47,6 +47,7 @@ import './mobile-unified-logo.css';
 import './home-quote-expand.css';
 import './legal-pages.css';
 import './desktop-redesign.css';
+import './desktop-quote-layout.css';
 import DesktopPublicNavigation, {DesktopPublicFooter} from '@/app/components/DesktopPublicNavigation';
 import Link from 'next/link';
 import {currentUser} from '@/lib/auth';

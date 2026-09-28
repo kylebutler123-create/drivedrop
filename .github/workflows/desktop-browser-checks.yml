@@ -57,6 +57,16 @@ jobs:
           npm run build
       - name: Check public pages and compare mobile screenshots
         run: node scripts/desktop-browser-check.mjs "$RUNNER_TEMP/drivedrop-baseline"
+      - name: Include tested source for reproducibility
+        if: ${{ !cancelled() }}
+        run: git archive HEAD -o source-under-test.tar
+      - name: Keep tested source
+        uses: actions/upload-artifact@v5
+        if: ${{ !cancelled() }}
+        with:
+          name: desktop-tested-source-${{ github.sha }}
+          path: source-under-test.tar
+          retention-days: 7
       - name: Keep browser evidence
         uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}

@@ -132,6 +132,10 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
   }
 
   return <>
+    <nav className="desktopQuotePurpose" aria-label="Transport purpose">
+      <span className="isActive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m5 10 2-5h10l2 5M4 10h16v9H4zM7 19v2m10-2v2M6 14h3m6 0h3"/></svg>I need to move a vehicle</span>
+      <Link href="/for-transporters" prefetch={false}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M2 5h12v12H2zM14 9h5l3 4v4h-8"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>I want to deliver vehicles</Link>
+    </nav>
     <div className="quotePanelHeader homeQuoteHeading">
       <div><strong>Get vehicle transport quotes</strong><span>Takes about 60 seconds</span></div>
       <button type="button" className="homeQuoteExpand" aria-label={expanded?'Collapse account details':'Expand account details'} aria-expanded={expanded} aria-controls="home-quote-extra" disabled={submitting} onClick={()=>{setError('');onExpandChange(!expanded)}}>{expanded?'−':'+'}</button>
@@ -147,7 +151,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
             <div className="field"><label htmlFor="home-quote-running">RUNNING CONDITION</label><select id="home-quote-running" name="running" defaultValue="" required disabled={submitting}><option value="" disabled>Select</option><option value="true">Runs and drives</option><option value="false">Non-running</option></select></div>
           </div>
       </div>
-      {expanded&&<div className="homeQuoteSection homeQuoteTransport">
+      <div className={`homeQuoteSection homeQuoteTransport${expanded?'':' desktopCompactLocations'}`}>
         <strong>Collection &amp; delivery</strong>
         <div className="quoteGrid homeQuoteLocations">
           <AddressAutocomplete name="collection" label="COLLECTION"/>
@@ -157,7 +161,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
           <CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>
           <div className="field"><label htmlFor="home-quote-transport-type">TRANSPORT TYPE</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
         </div>
-      </div>}
+      </div>
       {expanded&&incompatible&&<div className="formNotice errorNotice homeQuoteCompatibility" role="alert">{enclosedTransportCompatibilityMessage}</div>}
       <div id="home-quote-extra" className="homeQuoteExtra" hidden={!expanded}>
         <div className="homeQuoteSection">
