@@ -1,6 +1,0 @@
-DriveDrop GitHub connection verification
-Scope: feature/ui-polish only.
-Temporary diagnostic file; not imported by the website.
-Step 1 verified: file created and published in commit 2debec83adb5c6859e81ac5c716d8f8963e48b91, then read back from feature/ui-polish.
-Step 2: edit the existing file using its current blob SHA and publish the update to the remote branch.
-This file will be removed after the updated content and branch commit are verified.
