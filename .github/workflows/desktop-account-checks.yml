@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/desktop-account-checks.yml'
       - 'scripts/desktop-account-*.mjs'
+      - 'scripts/desktop-workspace-interactions.mjs'
       - 'src/app/**'
       - 'src/components/**'
   workflow_dispatch:
@@ -27,7 +28,7 @@ jobs:
           POSTGRES_DB: drivedrop_browser_ci
         ports: ['55432:5432']
         options: >-
-          --health-cmd pg_isready
+          --health-cmd "pg_isready -U ci_only -d drivedrop_browser_ci"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -63,10 +64,11 @@ jobs:
           cd "$RUNNER_TEMP/drivedrop-account-baseline"
           npm run build
       - name: Check authenticated screens and isolated workflows
+        timeout-minutes: 15
         run: node scripts/desktop-account-check.mjs "$RUNNER_TEMP/drivedrop-account-baseline"
       - name: Preserve account screenshots and results
         uses: actions/upload-artifact@v5
-        if: ${{ !cancelled() }}
+        if: ${{ always() }}
         with:
           name: isolated-account-evidence-${{ github.sha }}
           path: account-browser-evidence/
