@@ -1,12 +1,12 @@
 # DriveDrop — Orange design review
 
-Built for Kye from the 28 September 2026 approved orange-pin PDF and readable guide. This is a standalone desktop design preview containing 57 pages/states. It is not the production application.
+Built for Kye from the 28 September 2026 approved orange-pin PDF and readable guide. This is a standalone desktop design preview containing 59 pages/states. It is not the production application.
 
 Open `index.html` or the hosted `/orange-design-preview/index.html` path. Use the page selector and arrows to browse all states. The Reference button opens the corresponding supplied board. On a phone, Fit screen scales the desktop composition; Actual size allows horizontal inspection. These controls are not website UI.
 
 ## Visual source of truth
 
-`app.js`, `supplementary-pages.js`, `style.css`, `legal-content.js`, `assets/*` contain the exact markup, static wording, CSS, fonts and image files displayed. Transfer these assets and visual declarations to existing DriveDrop components after approval; do not reinterpret screenshots. Static images, CSS and text should match the approved preview at the same viewport. Live account records and values must replace illustrative fixture data.
+`app.js`, `supplementary-pages.js`, `review-interactions.js`, `style.css`, `legal-content.js`, `assets/*` contain the exact markup, static wording, CSS, fonts and image files displayed. Transfer these assets and visual declarations to existing DriveDrop components after approval; do not reinterpret screenshots. Static images, CSS and text should match the approved preview at the same viewport. Live account records and values must replace illustrative fixture data.
 
 All photographs are new. No old DriveDrop photographs or old green logo are included. The six new photos were generated with the built-in image tool using the approved boards as references. Their clean compositions closely follow the references; they are reconstructions, not recovered hidden photo layers. The orange-pin SVG is a newly drawn, outlined-vector interpretation. Nimbus Sans is bundled to make typography reproducible; the reference's original font was not supplied. Assets are inventoried and hashed in `ASSETS.sha256`.
 
@@ -14,7 +14,7 @@ Reference boards are JPEG-encoded copies of images embedded in the supplied PDF,
 
 ## Page-specific design decisions
 
-- PA01: white header, orange-pin brand, new London carrier hero, overlapping two-tab quote starter, three process steps and navy footer.
+- PA01: white header, orange-pin brand, new London carrier hero, overlapping two-tab quote card with vehicle-only compact view and an expandable journey/account section, three process steps and navy footer.
 - PA02: four visual quote steps with a persistent summary. Preserve all existing quote fields: collection, delivery, date, vehicle type, running condition, make, model, registration, transport type and customer create/login choice. This preview submits nothing.
 - PA03–PA05: form on the left, newly recreated photo on the right. Customer phone field and password visibility retained. No unsupported Remember me checkbox added.
 - CU01/CU06: navy sidebar; other customer detail/comparison/message pages use the white horizontal header, as drawn.
