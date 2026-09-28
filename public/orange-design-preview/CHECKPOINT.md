@@ -54,3 +54,5 @@ Before any future edit: fetch the current remote branch again, compare its HEAD 
 ## Approved photograph update — 28 September 2026
 
 Six user-approved images applied only to the isolated orange preview: Terms sidebar, Help banner, transporter dashboard, customer dashboard, customer login, transporter registration. See ASSET-NOTES.md for reusable file paths. Homepage and existing production/mobile app remain untouched.
+
+The homepage bottom transporter banner now uses the separately approved `assets/home-transporter-banner.webp`. Banner height and all controls are unchanged; full truck height retained with CSS framing.

@@ -36,3 +36,6 @@ dialog{border:1px solid #d2e1f2;border-radius:12px;padding:0;color:var(--navy);f
 .dashboard-hero:not(.driver){background-image:linear-gradient(90deg,#123551ed 0%,#123551a8 31%,transparent 66%),url('assets/customer-dashboard.webp');background-size:cover;background-position:center 54%}
 .dashboard-hero.driver{background-image:linear-gradient(90deg,#08213ded,#08213d99 35%,transparent 68%),url('assets/transporter-dashboard.webp');background-position:center}
 .auth-photo.approved-account-photo{background-position:center 15%}
+
+/* Approved homepage recruitment photograph: retain full truck height. */
+.transporter-banner{background-color:#08213b;background-image:linear-gradient(90deg,#08213b 30%,#08213bcc 44%,transparent 72%),url('assets/home-transporter-banner.webp');background-size:100% 100%,auto 100%;background-position:center,right center;background-repeat:no-repeat}

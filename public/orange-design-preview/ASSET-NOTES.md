@@ -27,3 +27,7 @@ The user approved six separately generated photographs before replacement. Origi
 | assets/customer-dashboard.webp | Customer Dashboard | 2164 × 727 |
 | assets/customer-login.webp | Customer Login | 1106 × 1422 |
 | assets/transporter-register.webp | Transporter Register | 1106 × 1422 |
+
+## Approved homepage bottom banner
+
+`assets/home-transporter-banner.webp` (2172 × 724): navy multi-car transporter at a British depot in warm morning light. User approved the generated photograph before application. The 1280 × 275 banner fits the complete photo height on the right and blends its left edge into navy, preserving the truck and existing text.
