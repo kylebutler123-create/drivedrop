@@ -15,6 +15,7 @@ const context={
 vm.createContext(context);
 vm.runInContext(fs.readFileSync(path.join(root,'legal-content.js'),'utf8'),context);
 vm.runInContext(fs.readFileSync(path.join(root,'supplementary-pages.js'),'utf8'),context);
+vm.runInContext(fs.readFileSync(path.join(root,'review-interactions.js'),'utf8'),context);
 vm.runInContext(fs.readFileSync(path.join(root,'app.js'),'utf8'),context);
 const screens=vm.runInContext('screens',context);
 let failures=0;
