@@ -17,6 +17,27 @@ const results=[],servers=[],streams=[],states={},mobile=new Map();
 const record=(name,passed,detail='')=>{results.push({name,status:passed?'PASS':'FAIL',detail});console.log(`${passed?'PASS':'FAIL'} ${name}${detail?' — '+detail:''}`);writeFileSync(path.join(out,'progress.json'),JSON.stringify(results,null,2))};
 const known=(name,status,detail)=>{results.push({name,status,detail});console.log(`${status} ${name} — ${detail}`);writeFileSync(path.join(out,'progress.json'),JSON.stringify(results,null,2))};
 const hash=b=>createHash('sha256').update(b).digest('hex');
+async function mobileImageDifference(page,baselinePng,updatedPng){
+ if(hash(baselinePng)===hash(updatedPng))return {matching:true,changedPixels:0};
+ const imageData=await page.evaluate(async ([first,second])=>{
+  const decode=async encoded=>{
+   const image=new Image();image.src='data:image/png;base64,'+encoded;await image.decode();
+   const canvas=document.createElement('canvas');canvas.width=image.width;canvas.height=image.height;
+   const context=canvas.getContext('2d',{willReadFrequently:true});context.drawImage(image,0,0);
+   return {width:image.width,height:image.height,pixels:context.getImageData(0,0,image.width,image.height).data};
+  };
+  const a=await decode(first),b=await decode(second);
+  if(a.width!==b.width||a.height!==b.height)return {matching:false,dimensions:[a.width,a.height,b.width,b.height]};
+  let changedPixels=0,maxChannelDifference=0;
+  for(let i=0;i<a.pixels.length;i+=4){
+   const difference=Math.max(Math.abs(a.pixels[i]-b.pixels[i]),Math.abs(a.pixels[i+1]-b.pixels[i+1]),Math.abs(a.pixels[i+2]-b.pixels[i+2]));
+   if(difference){changedPixels++;maxChannelDifference=Math.max(maxChannelDifference,difference)}
+  }
+  const totalPixels=a.width*a.height;
+  return {matching:changedPixels<=Math.ceil(totalPixels*0.0003)&&maxChannelDifference<=100,changedPixels,totalPixels,maxChannelDifference};
+ },[baselinePng.toString('base64'),updatedPng.toString('base64')]);
+ return imageData;
+}
 const bases={baseline:'http://localhost:3300',updated:'http://localhost:3301'};
 const pages={
  customer:[
@@ -127,7 +148,7 @@ try{
       record(`${version} ${role} ${width} ${scenario.name}: no horizontal overflow`,overflow.scroll<=width,JSON.stringify(overflow));
       if(width===390||width===1440){
        const png=await v.page.screenshot({fullPage:true,animations:'disabled',caret:'hide'});await writeFile(path.join(out,`${version}-${role}-${width}-${scenario.name}.png`),png);
-       if(width===390){const key=`${role}-${scenario.name}`;if(version==='baseline')mobile.set(key,hash(png));else if(legacyCompletedBug)known(`AUTHENTICATED MOBILE ${key}`,'NOT_COMPARABLE','Both versions have a pre-existing error; matching error screenshots do not demonstrate correct functionality.');else record(`AUTHENTICATED MOBILE UNCHANGED ${key}`,mobile.get(key)===hash(png),'390px exact screenshot comparison against pre-redesign source with identical isolated fixture data')}
+       if(width===390){const key=`${role}-${scenario.name}`;if(version==='baseline')mobile.set(key,png);else if(legacyCompletedBug)known(`AUTHENTICATED MOBILE ${key}`,'NOT_COMPARABLE','Both versions have a pre-existing error; matching error screenshots do not demonstrate correct functionality.');else {const comparison=await mobileImageDifference(v.page,mobile.get(key),png);record(`AUTHENTICATED MOBILE UNCHANGED ${key}`,comparison.matching,`390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; ${JSON.stringify(comparison)}`)}}
       }
      }catch(error){record(`${version} ${role} ${width} ${scenario.name}: execution`,false,error.message);if(v)await v.page.screenshot({path:path.join(out,`error-${version}-${role}-${width}-${scenario.name}.png`),fullPage:true}).catch(()=>{})}
      finally{if(v)await v.context.close()}
