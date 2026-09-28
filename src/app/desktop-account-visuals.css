@@ -1,0 +1,14 @@
+/* Desktop account and verification cards follow the compact, pale-surface
+   treatment of the approved board. Upload/crop controls remain unchanged. */
+@media screen and (min-width:1024px){
+  body.desktopRedesign .accountPage .profileImageCard,
+  body.desktopRedesign .verificationShell .dashboardCard{border:1px solid #dce7f1;border-radius:11px;background:#fff;box-shadow:0 4px 18px #10233f08}
+  body.desktopRedesign .accountPage .profileMediaEditorGrid{gap:16px}
+  body.desktopRedesign .accountPage .profileMediaItem{border:1px solid #dce7f1;border-radius:9px;background:#fff}
+  body.desktopRedesign .accountPage .profileMediaPreview{height:175px;aspect-ratio:auto;background:#f1f6fb;font-size:34px}
+  body.desktopRedesign .accountPage .profileMediaPreview.person img{object-fit:contain}
+  body.desktopRedesign .accountPage .profileMediaItemBody{padding:15px 17px 17px}
+  body.desktopRedesign .accountPage .profileMediaItemBody>p{min-height:0;font-size:12px;line-height:1.55}
+  body.desktopRedesign .verificationShell .requiredDocumentUploadCard{background:#fbfdff;border:1px dashed #bdcee2;border-radius:9px}
+  body.desktopRedesign .verificationShell .businessDetailsForm :is(input,textarea){border-radius:7px}
+}
