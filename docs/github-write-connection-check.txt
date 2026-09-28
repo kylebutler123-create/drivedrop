@@ -1,0 +1,4 @@
+DriveDrop GitHub connection verification
+Scope: feature/ui-polish only.
+Temporary diagnostic file; not imported by the website.
+Step 1: create a file and publish its commit to the remote branch.
