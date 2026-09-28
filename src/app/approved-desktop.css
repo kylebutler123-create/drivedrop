@@ -324,3 +324,15 @@
  body.approvedDesktop .transporterHero>div:first-child h1{font-size:47px!important;line-height:1.1;max-width:660px}
  body.approvedDesktop .transporterHero>div:first-child p{font-size:16px!important;max-width:550px}
 }
+@media screen and (min-width:1024px){
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .homeQuoteVehicle{grid-column:1/-1!important;grid-row:1!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .homeQuoteTransport{grid-column:1!important;grid-row:2!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .homeQuoteExtra{grid-column:2!important;grid-row:2!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .quoteCta{grid-column:2!important;grid-row:3!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .quoteSmall{grid-column:1!important;grid-row:3!important;text-align:left!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .homeQuoteForm:has(>.formNotice)>.formNotice{grid-row:3!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .homeQuoteForm:has(>.formNotice)>:is(.quoteCta,.quoteSmall){grid-row:4!important}
+}
+@media screen and (min-width:1024px){
+ body.approvedDesktop .legalCard{margin:0;width:100%}
+}
