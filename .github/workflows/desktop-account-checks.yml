@@ -1,0 +1,74 @@
+name: Isolated desktop account checks
+on:
+  push:
+    branches: ['feature/ui-polish']
+    paths:
+      - '.github/workflows/desktop-account-checks.yml'
+      - 'scripts/desktop-account-*.mjs'
+      - 'src/app/**'
+      - 'src/components/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: isolated-account-checks-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  isolated-accounts:
+    if: github.ref == 'refs/heads/feature/ui-polish'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci_only
+          POSTGRES_PASSWORD: ci_only
+          POSTGRES_DB: drivedrop_browser_ci
+        ports: ['55432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      CI: 'true'
+      DRIVEDROP_ISOLATED_BROWSER_TEST: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+      VERCEL_ENV: preview
+      POSTGRES_PRISMA_URL: postgresql://ci_only:ci_only@127.0.0.1:55432/drivedrop_browser_ci
+      DATABASE_URL: postgresql://ci_only:ci_only@127.0.0.1:55432/drivedrop_browser_ci
+      BASELINE_REF: 9c6f3573c1a5ab319548030da6a53f5b4a073b6a
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Install isolated dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+          npm install --no-save --package-lock=false playwright@1.63.0
+          npx playwright install --with-deps chromium
+      - name: Create schema in disposable local PostgreSQL only
+        run: npx prisma db push --skip-generate
+      - name: Build updated and baseline applications
+        run: |
+          npm run build
+          mkdir -p "$RUNNER_TEMP/drivedrop-account-baseline"
+          git archive "$BASELINE_REF" | tar -x -C "$RUNNER_TEMP/drivedrop-account-baseline"
+          cp -a node_modules "$RUNNER_TEMP/drivedrop-account-baseline/node_modules"
+          cd "$RUNNER_TEMP/drivedrop-account-baseline"
+          npm run build
+      - name: Check authenticated screens and isolated workflows
+        run: node scripts/desktop-account-check.mjs "$RUNNER_TEMP/drivedrop-account-baseline"
+      - name: Preserve account screenshots and results
+        uses: actions/upload-artifact@v5
+        if: ${{ !cancelled() }}
+        with:
+          name: isolated-account-evidence-${{ github.sha }}
+          path: account-browser-evidence/
+          retention-days: 7
+          if-no-files-found: warn
