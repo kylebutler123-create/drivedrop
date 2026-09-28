@@ -1,0 +1,67 @@
+name: Desktop redesign browser checks
+
+on:
+  push:
+    branches: ['feature/ui-polish']
+    paths:
+      - '.github/workflows/desktop-browser-checks.yml'
+      - 'scripts/desktop-browser-check.mjs'
+      - 'src/app/**'
+      - 'src/components/**'
+      - 'public/**'
+  workflow_dispatch:
+
+# Tests can read source only. They cannot push, deploy, or access production settings.
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-browser-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  public-pages:
+    if: github.ref == 'refs/heads/feature/ui-polish'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CI: 'true'
+      NEXT_TELEMETRY_DISABLED: '1'
+      VERCEL_ENV: preview
+      # A deliberately unreachable LOCAL test database, never a real customer database.
+      # This job exercises public pages and client validation only, without signing in.
+      POSTGRES_PRISMA_URL: postgresql://ci_only:ci_only@127.0.0.1:55432/drivedrop_no_live_data
+      DATABASE_URL: postgresql://ci_only:ci_only@127.0.0.1:55432/drivedrop_no_live_data
+      BASELINE_REF: 9c6f3573c1a5ab319548030da6a53f5b4a073b6a
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Install application and isolated browser-test dependencies
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+          npm install --no-save --package-lock=false playwright@1.63.0
+          npx playwright install --with-deps chromium
+      - name: Build the updated application
+        run: npm run build
+      - name: Prepare and build the unchanged mobile baseline
+        run: |
+          mkdir -p "$RUNNER_TEMP/drivedrop-baseline"
+          git archive "$BASELINE_REF" | tar -x -C "$RUNNER_TEMP/drivedrop-baseline"
+          cp -a node_modules "$RUNNER_TEMP/drivedrop-baseline/node_modules"
+          cd "$RUNNER_TEMP/drivedrop-baseline"
+          npm run build
+      - name: Check public pages and compare mobile screenshots
+        run: node scripts/desktop-browser-check.mjs "$RUNNER_TEMP/drivedrop-baseline"
+      - name: Keep browser evidence
+        uses: actions/upload-artifact@v5
+        if: ${{ !cancelled() }}
+        with:
+          name: desktop-browser-evidence-${{ github.sha }}
+          path: browser-evidence/
+          retention-days: 7
+          if-no-files-found: warn
