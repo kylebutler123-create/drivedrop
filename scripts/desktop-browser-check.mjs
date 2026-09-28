@@ -129,6 +129,9 @@ try {
 
   const view = await open(browser, urls.updated, '/get-quotes', 1440);
   await view.page.route('**/api/address/**', request => request.fulfill({status:200,contentType:'application/json',body:'[]'}));
+  const stepLayout = await view.page.locator('.homeQuoteTransport').boundingBox();
+  const formLayout = await view.page.locator('.homeQuoteForm').boundingBox();
+  record('Quote wizard: form fills the content column', stepLayout.width >= formLayout.width * 0.95);
   await view.page.locator('input[name="collection"]').fill('CI collection address');
   await view.page.locator('input[name="delivery"]').fill('CI delivery address');
   await view.page.locator('.homeQuoteDateButton').click();
@@ -145,7 +148,7 @@ try {
   await view.page.locator('#home-quote-make').fill('Ford');
   await view.page.locator('#home-quote-model').fill('Transit');
   await view.page.locator('#home-quote-running').selectOption('true');
-  await view.page.getByRole('button', {name:'Continue →'}).click();
+  await view.page.locator('#home-quote-model').press('Enter');
   record('Quote wizard: transport step', await view.page.locator('#home-quote-transport-type').isVisible());
   record('Quote wizard: transport placeholder', await view.page.locator('#home-quote-transport-type').inputValue() === '');
   await view.page.locator('#home-quote-transport-type').selectOption('ENCLOSED');

@@ -81,7 +81,9 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
         await check('delivery-form', async () => {
           await page.goto(base + '/transporter?view=deliveries', {waitUntil: 'domcontentloaded'});
           const card = page.locator('.transporterBooking[data-booking-id="ci-booking-transit"]');
-          await card.getByRole('button', {name: 'Complete delivery', exact: true}).click();
+          const deliveryAction = card.locator('.transporterCompactDeliveryAction');
+          await deliveryAction.waitFor({state:'visible'});
+          await deliveryAction.getByRole('button', {name: 'Complete delivery', exact: true}).click();
           record('Transporter: delivery signature available', await card.locator('.podMount canvas').isVisible());
           record('Transporter: delivery photos available', await card.locator('.podMount input[type="file"]').isVisible());
           record('Transporter: optional location button available', await card.getByRole('button', {name: 'Share delivery location', exact: true}).isVisible());
@@ -96,9 +98,10 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
             const button = rail.getByRole('button').filter({hasText: title});
             await button.click();
             record(`Admin: existing rail opens ${title}`, await button.getAttribute('aria-pressed') === 'true');
-            const sidebar = await rail.boundingBox();
+            const sidebar = await page.locator('.approvedRail').boundingBox();
+            const actions = await rail.boundingBox();
             const content = await page.locator('.adminWorkspaceContent').boundingBox();
-            record(`Admin: ${title} content does not overlap rail`, Boolean(sidebar && content && content.x >= sidebar.x + sidebar.width && content.x + content.width <= 1441));
+            record(`Admin: ${title} content does not overlap rail`, Boolean(sidebar && content && content.x >= sidebar.x + sidebar.width && content.x + content.width <= 1441 && actions && content.y >= actions.y + actions.height));
           });
         }
       }

@@ -111,7 +111,7 @@
  .approvedCoverage>.approvedIcon{width:48px;height:48px}
  .approvedCoverage h3{font-size:26px;margin:0 0 8px}.approvedCoverage p{font-size:16px;line-height:1.55;margin:0}
  .approvedTransporterBanner{height:275px;border-radius:10px;padding:35px 45px;background:linear-gradient(90deg,#08213b66 0%,#08213b33 40%,transparent 70%),url('/orange-design-preview/assets/home-transporter-wide.webp') center 62%/cover;color:white}
- .approvedTransporterBanner .approvedEyebrow{color:#ffa679}.approvedTransporterBanner h2{font-size:32px;line-height:1.2;color:white;margin:13px 0 20px}
+ body.approvedDesktop .approvedTransporterBanner .approvedEyebrow{color:#ffa679}body.approvedDesktop .approvedTransporterBanner h2{font-size:32px;line-height:1.2;color:white;margin:13px 0 20px}
  /* Shared real account navigation, including live unread indicators. */
  .approvedWorkspaceNav{display:block}
  body.approvedDesktop>.top:not(.guestTop){display:none!important}
@@ -149,7 +149,7 @@
  body.approvedDesktop .dashboardSummary{gap:15px}
  body.approvedDesktop .dashboardSummary>[role=button]{border-radius:8px!important;border:1px solid #e3eaf3!important;background:white!important;box-shadow:0 6px 24px #0b2a5408!important;color:#102749!important;min-height:95px!important;padding:20px!important}
  body.approvedDesktop .dashboardSummary>[role=button] strong{color:#071c43!important;font-size:28px!important}
- body.approvedDesktop .dashboardSummary>[role=button]>span:not([class]){color:#647799!important;font-size:13px!important}
+ body.approvedDesktop .dashboardSummary>[role=button]>span:not([class]){color:#526984!important;font-size:13px!important}
  body.approvedDesktop .dashboardSummary>[role=button][aria-pressed=true]{background:#fff7f0!important;border-color:#ffab78!important}
  body.approvedDesktop .dashboardHero:has(.customerDashboardSummary){display:block!important;padding:0!important;background:transparent!important;min-height:0!important;border:0!important;overflow:visible!important}
  body.approvedDesktop .dashboardHero:has(.customerDashboardSummary)>div:first-child{max-width:none!important;min-height:235px;border-radius:9px;background:linear-gradient(90deg,#123551ed 0%,#123551a8 31%,transparent 66%),url('/orange-design-preview/assets/customer-dashboard.webp') center 54%/cover;padding:35px 38px;color:white}
@@ -277,7 +277,6 @@
  body.approvedDesktop .approvedWizardHost[data-step='4'] .homeQuoteVehicle,body.approvedDesktop .approvedWizardHost[data-step='4'] .homeQuoteTransport{display:none!important}
  body.approvedDesktop .approvedWizardHost[data-step='1'] .homeQuoteDateTransport>.field:last-child{display:none!important}
  body.approvedDesktop .approvedWizardHost[data-step='1'] .homeQuoteDateTransport{grid-template-columns:1fr;margin-top:25px}
- body.approvedDesktop .approvedWizardHost[data-step='3'] .homeQuoteTransport>strong{font-size:0!important}.approvedDesktop .approvedWizardHost[data-step='3'] .homeQuoteTransport>strong:after{content:'Transport Type';font-size:22px}
  body.approvedDesktop .approvedWizardHost[data-step='3'] .homeQuoteLocations,body.approvedDesktop .approvedWizardHost[data-step='3'] .homeQuoteCalendarField{display:none!important}
  body.approvedDesktop .approvedWizardHost[data-step='3'] .homeQuoteDateTransport{grid-template-columns:1fr}
  body.approvedDesktop .approvedWizardHost:not([data-step='4']) .quoteCta{display:none!important}
@@ -299,4 +298,23 @@
  body.approvedDesktop .homePage .isQuoteDetails:not(.isQuoteExpanded) .quoteCta{grid-column:2!important;grid-row:2!important}
  body.approvedDesktop .homePage .isQuoteDetails:not(.isQuoteExpanded) .quoteSmall{grid-column:1!important;grid-row:2!important;display:block!important}
  body.approvedDesktop .authShell .authVisualOverlay{display:none!important}
+}
+@media screen and (min-width:1024px){
+ body.approvedDesktop .homePage .isQuoteExpanded .homeQuoteForm{grid-template-columns:1fr 1fr!important}
+ body.approvedDesktop .desktopQuotePage .approvedWizardHost .homeQuoteForm{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:20px!important}
+ body.approvedDesktop .desktopQuotePage .approvedWizardHost .homeQuoteForm>.homeQuoteSection{width:100%!important}
+}
+
+@media screen and (min-width:1024px){
+ body.approvedDesktop .adminWorkspace .adminSectionGrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;position:static!important;gap:15px!important;margin:22px 0 28px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+ body.approvedDesktop .adminWorkspace .adminSectionCard{min-height:115px!important;padding:18px!important;background:white!important;color:#102749!important;border:1px solid #e3eaf3!important;box-shadow:0 4px 15px #0b2a5407!important}
+ body.approvedDesktop .adminWorkspace .adminSectionCard[aria-pressed=true]{background:#fff4e9!important;border-color:#ffab78!important}
+ body.approvedDesktop .adminWorkspace .adminSectionCard b{font-size:15px!important;color:#102749!important}
+ body.approvedDesktop .adminWorkspace .adminSectionCard strong{color:#32516f!important;font-size:11px!important}
+ body.approvedDesktop .adminWorkspace .adminSectionCard small{display:block!important;font-size:12px!important;color:#526984!important;margin-top:5px}
+ body.approvedDesktop .adminWorkspace .adminSectionCard>span:first-child{background:#edf4ff!important;color:#236297!important;width:35px!important;height:35px!important;flex-basis:35px!important}
+}
+@media screen and (min-width:1024px) and (max-width:1199px){
+ .approvedAccountHeader{padding:0 20px;gap:15px}.approvedAccountBrand{width:175px}.approvedAccountHeader>nav{gap:10px}.approvedAccountHeader>nav>a{font-size:12px}
+ body.approvedDesktop .adminWorkspace .adminSectionGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }

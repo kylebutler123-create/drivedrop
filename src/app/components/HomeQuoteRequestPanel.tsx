@@ -153,7 +153,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
       <div><strong>Get vehicle transport quotes</strong><span>Takes about 60 seconds</span></div>
       <button type="button" className="homeQuoteExpand" aria-label={expanded?'Collapse account details':'Expand account details'} aria-expanded={expanded} aria-controls="home-quote-extra" disabled={submitting} onClick={()=>{setError('');onExpandChange(!expanded)}}>{expanded?'−':'+'}</button>
     </div>
-    <form ref={formRef} className="quoteForm homeQuoteForm" onChange={wizard?updateDraft:undefined} onSubmit={submit} aria-busy={submitting}>
+    <form ref={formRef} noValidate={wizard} className="quoteForm homeQuoteForm" onChange={wizard?updateDraft:undefined} onSubmit={submit} aria-busy={submitting}>
       {wizard&&<section className="approvedWizard approvedWizardReview"><h2>Review your request</h2>{[['collection','Collection'],['delivery','Delivery'],['vehicleType','Vehicle type'],['vehicleMake','Make'],['vehicleModel','Model'],['registration','Registration'],['running','Running condition'],['transportType','Transport type']].map(([key,label])=><div key={key}><span>{label}</span><strong>{key==='running'?(draft[key]==='true'?'Runs and drives':'Non-running'):key==='transportType'?transportTypes.find(type=>type.value===draft[key])?.label:draft[key]||'Not specified'}</strong></div>)}<div><span>Collection date</span><strong>{collectionDate?new Date(collectionDate+'T12:00:00').toLocaleDateString('en-GB'):'Not specified'}</strong></div><button type="button" className="btn light" onClick={()=>setStep(1)}>Edit request</button></section>}
       <div className="homeQuoteSection homeQuoteVehicle">
           <strong>Vehicle details</strong>
@@ -166,7 +166,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
           </div>
       </div>
       <div className={`homeQuoteSection homeQuoteTransport${expanded?'':' desktopCompactLocations'}`}>
-        <strong>Collection &amp; delivery</strong>
+        <strong>{wizard&&step===3?'Transport Type':'Collection & delivery'}</strong>
         <div className="quoteGrid homeQuoteLocations">
           <AddressAutocomplete name="collection" label="COLLECTION"/>
           <AddressAutocomplete name="delivery" label="DELIVERY"/>

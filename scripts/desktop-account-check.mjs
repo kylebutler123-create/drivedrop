@@ -42,6 +42,7 @@ const bases={baseline:'http://localhost:3300',updated:'http://localhost:3301'};
 const pages={
  customer:[
   {name:'dashboard',route:'/customer'},
+  {name:'new-request',route:'/customer?view=request'},
   {name:'quote-requests',route:'/customer?view=quotes'},
   {name:'deliveries',route:'/customer?view=bookings'},
   {name:'completed',route:'/customer',click:'.customerDashboardSummary [role="button"]:has-text("Completed")'},
