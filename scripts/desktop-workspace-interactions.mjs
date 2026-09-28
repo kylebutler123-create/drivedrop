@@ -21,6 +21,30 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
       }
     };
     try {
+      if (role === 'admin' || role === 'transporter') {
+        await check('dashboard-counter-contrast', async () => {
+          await page.goto(base + '/' + role, {waitUntil: 'domcontentloaded'});
+          const selector = role === 'admin' ? '.adminOverview .adminStat strong, .adminOverview .adminStat small' : '.transporterHero .dashboardSummary strong, .transporterHero .dashboardSummary > * > span:not(.dashboardSummaryActivity)';
+          await page.locator(selector).first().waitFor({state: 'visible'});
+          if (role === 'transporter') await page.waitForFunction(() => document.querySelector('[data-booked-proceeds-summary] strong')?.textContent !== '—');
+          const contrasts = await page.locator(selector).evaluateAll(elements => {
+            const rgb = value => (value.match(/[\d.]+/g) || []).map(Number);
+            const luminance = values => values.slice(0, 3).map(v => {const s = v / 255; return s <= .04045 ? s / 12.92 : ((s + .055) / 1.055) ** 2.4;}).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
+            return elements.map(element => {
+              const text = getComputedStyle(element).color;
+              let parent = element, background = [255,255,255];
+              while (parent) {
+                const candidate = rgb(getComputedStyle(parent).backgroundColor);
+                if (candidate.length === 3 || candidate[3] === 1) {background = candidate; break;}
+                parent = parent.parentElement;
+              }
+              const a = luminance(rgb(text)), b = luminance(background);
+              return {text: element.textContent, ratio: (Math.max(a,b)+.05)/(Math.min(a,b)+.05)};
+            });
+          });
+          record(`${role}: dashboard counter text contrast at least 4.5:1`, contrasts.length > 0 && contrasts.every(item => item.ratio >= 4.5), JSON.stringify(contrasts));
+        });
+      }
       await check('conversation', async () => {
         await page.goto(base + '/messages', {waitUntil: 'domcontentloaded'});
         await page.locator('.conversationCard').first().click();

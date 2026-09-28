@@ -50,3 +50,26 @@
   .desktopRedesign .messagesShell .inlineConversationPanel .messageStream{min-height:310px;max-height:440px}
   .desktopRedesign .messagesShell .conversationCard.isActive{border-radius:8px;box-shadow:none}
 }
+
+@media screen and (min-width:1024px){
+  /* Legacy admin styles used white text on navy. Restore contrast after the white-surface redesign. */
+  body.desktopRedesign .adminOverview .adminStat{background:#f3f7fd!important;border:1px solid #dfe8f3!important;border-radius:10px!important;padding:18px!important}
+  body.desktopRedesign .adminOverview .adminStat strong{color:#10274b!important;font-size:25px!important}
+  body.desktopRedesign .adminOverview .adminStat small{color:#526984!important;font-size:11px!important}
+  body.desktopRedesign .adminTop .adminHeaderLabel small{color:#526984!important}
+  body.desktopRedesign .adminTop .adminHeaderLabel strong{color:#10274b!important}
+  body.desktopRedesign .adminWorkspace .adminPayoutCard strong{color:#173a63!important}
+
+  /* A photographic transporter welcome with the same four live summary controls below it. */
+  body.desktopRedesign .dashboardHero.transporterHero{display:block!important;padding:0!important;overflow:hidden;background:#fff!important;border:1px solid #dfe7f1!important}
+  body.desktopRedesign .transporterHero>div:first-child{padding:36px 38px;min-height:255px;background:linear-gradient(90deg,rgba(8,29,57,.97),rgba(8,29,57,.87) 43%,rgba(8,29,57,.12) 78%),url('/hero-transporter-coast-mirrored-hq.webp') center 46%/cover;color:#fff}
+  body.desktopRedesign .transporterHero>div:first-child .dashboardEyebrow{color:#d6e4f5!important}
+  body.desktopRedesign .transporterHero>div:first-child h1{color:#fff!important;font-size:34px;max-width:650px}
+  body.desktopRedesign .transporterHero>div:first-child p{color:#e1eaf6!important;max-width:530px;font-size:14px;line-height:1.65}
+  body.desktopRedesign .transporterHero .dashboardSummary{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;width:100%!important;max-width:none!important;padding:22px!important;gap:14px!important;box-sizing:border-box}
+  body.desktopRedesign .transporterHero .dashboardSummary>[role="button"],body.desktopRedesign .transporterHero .dashboardSummary>[data-booked-proceeds-summary]{display:block;grid-column:auto!important;grid-row:auto!important;min-width:0;width:auto!important;min-height:104px;padding:22px 15px!important;border:1px solid #dfe8f3!important;border-radius:9px!important;background:#f4f8fd!important;text-align:left;box-shadow:none!important}
+  body.desktopRedesign .transporterHero .dashboardSummary>[data-booked-proceeds-summary]{order:4}
+  body.desktopRedesign .transporterHero .dashboardSummary strong{color:#10274b!important;font-size:27px;line-height:1.15}
+  body.desktopRedesign .transporterHero .dashboardSummary>*>span:not(.dashboardSummaryActivity){display:block;color:#526984!important;font-size:12px;margin-top:8px}
+  body.desktopRedesign .transporterHero .dashboardSummary>[aria-pressed="true"]{background:#fff3e9!important;border-color:#ff9b62!important}
+}
