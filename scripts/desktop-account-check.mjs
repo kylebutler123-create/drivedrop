@@ -13,7 +13,7 @@ const database=new URL(process.env.POSTGRES_PRISMA_URL||'');
 if(process.env.CI!=='true'||process.env.DRIVEDROP_ISOLATED_BROWSER_TEST!=='true'||!['127.0.0.1','localhost'].includes(database.hostname)||database.port!=='55432'||database.pathname!=='/drivedrop_browser_ci')throw new Error('Isolated local CI database required.');
 if(!baseline||!path.isAbsolute(baseline))throw new Error('Baseline checkout required');
 await stat(path.join(baseline,'.next','BUILD_ID'));await mkdir(out,{recursive:true});
-const results=[],servers=[],streams=[],states={},mobile=new Map();
+const results=[],servers=[],streams=[],states={},mobile=new Map(),mobileKnownError=new Set();
 const record=(name,passed,detail='')=>{results.push({name,status:passed?'PASS':'FAIL',detail});console.log(`${passed?'PASS':'FAIL'} ${name}${detail?' — '+detail:''}`);writeFileSync(path.join(out,'progress.json'),JSON.stringify(results,null,2))};
 const known=(name,status,detail)=>{results.push({name,status,detail});console.log(`${status} ${name} — ${detail}`);writeFileSync(path.join(out,'progress.json'),JSON.stringify(results,null,2))};
 const hash=b=>createHash('sha256').update(b).digest('hex');
@@ -148,7 +148,7 @@ try{
       record(`${version} ${role} ${width} ${scenario.name}: no horizontal overflow`,overflow.scroll<=width,JSON.stringify(overflow));
       if(width===390||width===1440){
        const png=await v.page.screenshot({fullPage:true,animations:'disabled',caret:'hide'});await writeFile(path.join(out,`${version}-${role}-${width}-${scenario.name}.png`),png);
-       if(width===390){const key=`${role}-${scenario.name}`;if(version==='baseline')mobile.set(key,png);else if(legacyCompletedBug)known(`AUTHENTICATED MOBILE ${key}`,'NOT_COMPARABLE','Both versions have a pre-existing error; matching error screenshots do not demonstrate correct functionality.');else {const comparison=await mobileImageDifference(v.page,mobile.get(key),png);record(`AUTHENTICATED MOBILE UNCHANGED ${key}`,comparison.matching,`390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; ${JSON.stringify(comparison)}`)}}
+       if(width===390){const key=`${role}-${scenario.name}`;if(version==='baseline'){mobile.set(key,png);if(legacyCompletedBug)mobileKnownError.add(key)}else if(mobileKnownError.has(key)||legacyCompletedBug)known(`AUTHENTICATED MOBILE ${key}`,'NOT_COMPARABLE','The baseline delivered page has a known error; the corrected page cannot be compared pixel for pixel with that error screen.');else {const comparison=await mobileImageDifference(v.page,mobile.get(key),png);record(`AUTHENTICATED MOBILE UNCHANGED ${key}`,comparison.matching,`390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; ${JSON.stringify(comparison)}`)}}
       }
      }catch(error){record(`${version} ${role} ${width} ${scenario.name}: execution`,false,error.message);if(v)await v.page.screenshot({path:path.join(out,`error-${version}-${role}-${width}-${scenario.name}.png`),fullPage:true}).catch(()=>{})}
      finally{if(v)await v.context.close()}
