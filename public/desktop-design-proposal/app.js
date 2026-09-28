@@ -11,12 +11,13 @@ const screens=[
  ['Shared','messages','Messages'],['Shared','notifications','Notifications'],['Shared','account','Account'],['Shared','statement','Statement'],['Shared','terms','Terms & Conditions'],['Shared','privacy','Privacy Policy']
 ];
 const lookup=Object.fromEntries(screens.map(([,key,label])=>[key,label]));
+let controlIndex=0;
 const link=(key,label,cls='')=>`<a href="#/${key}" class="${cls}">${label||lookup[key]}</a>`;
 const button=(label,cls='orange',key)=>key?link(key,label,`btn ${cls}`):`<button class="btn ${cls}" type="button" data-preview-action="${label}">${label}</button>`;
-const field=(label,placeholder='',type='text',opts='')=>`<div class="field"><label>${label}</label><input type="${type}" placeholder="${placeholder}" ${opts}></div>`;
-const passwordField=(label,placeholder='Your password')=>`<div class="field"><label>${label}</label><div class="password-field"><input type="password" placeholder="${placeholder}"><button type="button" data-password-toggle aria-label="Show password">Show</button></div></div>`;
-const select=(label,options,defaultLabel='Select')=>`<div class="field"><label>${label}</label><select><option value="">${defaultLabel}</option>${options.map(x=>`<option>${x}</option>`).join('')}</select></div>`;
-const textArea=(label,placeholder='')=>`<div class="field"><label>${label}</label><textarea placeholder="${placeholder}"></textarea></div>`;
+const field=(label,placeholder='',type='text',opts='')=>{const id=`control-${++controlIndex}`;return `<div class="field"><label for="${id}">${label}</label><input id="${id}" type="${type}" placeholder="${placeholder}" ${opts}></div>`};
+const passwordField=(label,placeholder='Your password')=>{const id=`control-${++controlIndex}`;return `<div class="field"><label for="${id}">${label}</label><div class="password-field"><input id="${id}" type="password" placeholder="${placeholder}"><button type="button" data-password-toggle aria-label="Show password">Show</button></div></div>`};
+const select=(label,options,defaultLabel='Select')=>{const id=`control-${++controlIndex}`;return `<div class="field"><label for="${id}">${label}</label><select id="${id}"><option value="">${defaultLabel}</option>${options.map(x=>`<option>${x}</option>`).join('')}</select></div>`};
+const textArea=(label,placeholder='')=>{const id=`control-${++controlIndex}`;return `<div class="field"><label for="${id}">${label}</label><textarea id="${id}" placeholder="${placeholder}"></textarea></div>`};
 const tag=(name,kind='')=>`<span class="tag ${kind}">${name}</span>`;
 const stat=(value,label,active=false)=>`<div class="card summary ${active?'active':''}"><span>${label}</span><strong>${value}</strong></div>`;
 const row=(title,sub,meta,status,action='',screen='')=>`<div class="row"><div><strong>${title}</strong><small>${sub}</small></div><span>${meta}</span><span>${status}</span>${action?button(action,'light small',screen):''}</div>`;
@@ -117,7 +118,8 @@ function render(){
  document.getElementById('screen-select').onchange=e=>{location.hash='/'+e.target.value};document.getElementById('clean-toggle').onclick=()=>{document.body.classList.toggle('is-clean');render()};
  const body=group==='Public'?publicPage(key):group==='Access'?authPage(key):key==='quote'?quoteForm():group==='Customer'?customer(key):group==='Transporter'?transporter(key):group==='Admin'?admin(key):key==='terms'||key==='privacy'?publicPage(key):shared(key,origin);
  const resolved=key==='quote'?`<main class="page-width quote-page">${quoteForm()}</main>${footer()}`:body;
- document.getElementById('app').innerHTML=header(group,key)+resolved;
+ const headerGroup=group==='Shared'&&!['terms','privacy'].includes(key)?origin:group;
+ document.getElementById('app').innerHTML=header(headerGroup,key)+resolved;
  document.title=`${screen[2]} · DriveDrop design proposal`;
  bind();window.scrollTo(0,0);
 }
