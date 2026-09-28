@@ -49,6 +49,7 @@ import './legal-pages.css';
 import './desktop-redesign.css';
 import './desktop-quote-layout.css';
 import './desktop-workspace.css';
+import './desktop-customer-visuals.css';
 import DesktopPublicNavigation, {DesktopPublicFooter} from '@/app/components/DesktopPublicNavigation';
 import Link from 'next/link';
 import {currentUser} from '@/lib/auth';

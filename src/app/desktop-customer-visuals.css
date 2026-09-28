@@ -1,0 +1,31 @@
+/* Desktop customer presentation from the approved journey board. Existing
+   request form, summary counters and card actions remain the sole controls. */
+@media screen and (min-width:1024px){
+  body.desktopRedesign .dashboardShell>.dashboardHero:has(.customerDashboardSummary){
+    min-height:280px;
+    padding:35px 38px;
+    align-items:center;
+    background:linear-gradient(90deg,rgba(8,28,55,.96) 0%,rgba(8,28,55,.89) 35%,rgba(8,28,55,.34) 70%,rgba(8,28,55,.08) 100%),url('/drivedrop-prestige-loading.webp') center 47%/cover no-repeat;
+    border-color:#24405e;
+    color:#fff;
+  }
+  body.desktopRedesign .dashboardShell>.dashboardHero:has(.customerDashboardSummary)>div:first-child{max-width:475px}
+  body.desktopRedesign .dashboardShell>.dashboardHero:has(.customerDashboardSummary) :is(h1,p,.dashboardEyebrow){color:#fff}
+  body.desktopRedesign .dashboardShell>.dashboardHero:has(.customerDashboardSummary) h1{font-size:clamp(31px,2.8vw,41px);line-height:1.1}
+  body.desktopRedesign .dashboardShell>.dashboardHero:has(.customerDashboardSummary) p{color:#e1ebf6;max-width:455px}
+  body.desktopRedesign .customerDashboardSummary>[role="button"]{
+    background:rgba(255,255,255,.96);
+    border:1px solid #dce6ef;
+    border-radius:9px;
+    box-shadow:0 9px 24px #081c3730;
+    color:#10274b;
+  }
+  body.desktopRedesign .customerDashboardSummary>[role="button"] :is(strong,span){color:#10274b}
+  body.desktopRedesign .customerDashboardSummary>[role="button"][aria-pressed="true"]{background:#fff4eb;border-color:#ff812e;color:#10274b}
+  body.desktopRedesign .dashboardShell .requestPanel{border-color:#dce7f1;box-shadow:0 10px 28px #0b22450c}
+  body.desktopRedesign .dashboardShell .requestPanel .field :is(input,select){min-height:44px}
+  body.desktopRedesign .dashboardShell .requestPanel .btn.orange{min-height:44px}
+}
+@media screen and (min-width:1024px) and (max-width:1199px){
+  body.desktopRedesign .dashboardShell>.dashboardHero:has(.customerDashboardSummary){padding:26px;min-height:245px}
+}
