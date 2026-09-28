@@ -1,0 +1,260 @@
+/* Desktop redesign, stage 1. Loaded last; no existing mobile selector is changed.
+   Existing handlers, state, APIs and mobile markup remain the source of truth. */
+.desktopPublicHeader,.desktopPublicFooter,.desktopHeroCopy{display:none}
+
+/* New public routes have their own small-screen layout; these selectors do not
+   affect any pre-existing mobile page. */
+.desktopInformationPage{background:#fff;color:#10233f}
+.desktopInformationPage .informationHero{padding:42px 20px;background-size:cover;background-position:center;min-height:330px}
+.desktopInformationPage .informationHero>div{max-width:600px}
+.desktopInformationPage h1{font-size:34px;line-height:1.12;letter-spacing:-.035em;margin:15px 0}
+.desktopInformationPage p{line-height:1.7;color:#53677f}
+.desktopSectionEyebrow{font-size:11px;font-weight:800;letter-spacing:.12em;color:#173a63}
+.desktopInformationPage .informationBody{max-width:1280px;margin:auto;padding:36px 20px 60px}
+.desktopInformationPage .informationActions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.desktopInformationPage .informationSteps{display:grid;gap:18px}
+.desktopInformationPage .informationSteps article{padding:25px;border:1px solid #e2e9f1;border-radius:12px;background:#fff}
+.desktopInformationPage .informationSteps h2,.desktopInformationPage .informationSteps h3{font-size:19px;line-height:1.3;margin:12px 0}
+.desktopInformationPage .informationStepNumber{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#ff6917;color:#fff;font-weight:800}
+.desktopInformationPage .informationHeading{text-align:center;margin:0 0 30px}
+.desktopInformationPage .informationHeading h2{font-size:30px;letter-spacing:-.03em}
+.desktopInformationPage .informationBand{padding:28px;margin-top:28px;background:#0c2547;color:#fff;border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.desktopInformationPage .informationBand h2{margin:0 0 10px;font-size:25px}
+.desktopInformationPage .informationBand p{color:#dce6f2;max-width:670px;margin:0}
+.desktopInformationPage .informationHelp{display:grid;gap:25px}
+.desktopInformationPage .informationHelp details{border:1px solid #e0e7ef;border-radius:9px;margin-bottom:12px;background:#fff}
+.desktopInformationPage .informationHelp summary{padding:18px 20px;cursor:pointer;font-weight:700}
+.desktopInformationPage .informationHelp details[open] summary{border-bottom:1px solid #e8edf3}
+.desktopInformationPage .informationHelp details p{margin:0;padding:18px 20px}
+.desktopInformationPage .informationHelp aside{padding:28px;background:#f1f6fb;border-radius:12px;align-self:start}
+.desktopInformationPage .informationSupportIcon{display:grid;place-items:center;width:58px;height:58px;background:#e1eaf6;border-radius:50%;font-size:28px;font-weight:700}
+.desktopInformationPage .informationTextLink{display:block;margin-top:20px;font-weight:700;color:#1558a6;text-decoration:underline;text-underline-offset:4px}
+.desktopQuotePage{padding:28px 15px 45px!important;min-height:70vh}
+.desktopQuotePage .desktopQuoteIntro{max-width:1100px;margin:0 auto 26px}
+.desktopQuotePage .desktopQuoteIntro h1{font-size:30px;line-height:1.15;letter-spacing:-.035em;margin:12px 0}
+.desktopQuotePage .desktopQuoteIntro p{line-height:1.6;color:#52677f}
+.desktopQuotePage .desktopHeroTrust{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:#174f80;margin-top:20px}
+.desktopQuotePage .homeHeroPanelShell{max-width:650px;margin:0 auto}
+.desktopQuotePage .homeHeroPanelTrack{display:block}
+.desktopQuotePage .homeHeroPanelSlide{max-width:none!important;opacity:1;visibility:visible}
+
+@media screen and (min-width:761px){
+  body.desktopRedesign{--navy:#0b2245;--navy2:#173a63;--orange:#ff6917;--orange2:#ff7a26;--bg:#f6f8fc;--ink:#10274b;--muted:#65758c;--line:#dfe6ef;background:#f6f8fc}
+  .desktopRedesign :is(a,button,input,select,textarea,summary):focus-visible{outline:3px solid #2468cf;outline-offset:3px}
+  .desktopRedesign .btn{border-radius:7px;font-size:13px;line-height:1.35;padding:12px 20px;box-shadow:none;gap:10px}
+  .desktopRedesign .btn.orange{background:#ff6917;color:#fff}
+  .desktopRedesign .btn.light{background:#f0f4f9;color:#10274b;border:1px solid #dbe4ee}
+  .desktopRedesign .btn.navy{background:#0b2245;color:#fff}
+  .desktopRedesign .btn:hover{transform:none;filter:brightness(.97)}
+  .desktopRedesign .field input,.desktopRedesign .field select,.desktopRedesign .field textarea{border-radius:7px;border-color:#dbe4ee;background:#fff;font-size:14px}
+  .desktopRedesign .field label{color:#1c314e;font-size:11px;letter-spacing:.015em}
+  .desktopRedesign input::placeholder,.desktopRedesign textarea::placeholder{color:#708096;opacity:1}
+  .desktopRedesign select:required:invalid{color:#708096}
+  .desktopRedesign .formNotice{border-radius:8px;font-size:13px;line-height:1.55}
+  .desktopRedesign .statusPill{font-size:11px;font-weight:700;padding:6px 10px}
+
+  /* New static public navigation; no duplicate unread counters or fetches. */
+  body.desktopRedesign>.guestTop{display:none!important}
+  .desktopPublicHeader{display:block;background:#fff;border-bottom:1px solid #e7edf4;color:#10274b;position:relative;z-index:30}
+  .desktopPublicHeaderInner{max-width:1480px;margin:auto;padding:14px clamp(24px,3.5vw,56px);display:flex;align-items:center;gap:30px;min-height:82px}
+  .desktopBrandLink{flex:0 0 235px;display:block}
+  .desktopBrandLink img{display:block;width:235px;height:auto}
+  .desktopPublicLinks{display:flex;justify-content:center;gap:clamp(16px,2.2vw,36px);align-items:center;flex:1;min-width:0}
+  .desktopPublicLinks a,.desktopLoginLink{font-size:13px;line-height:1.3;font-weight:700;white-space:nowrap}
+  .desktopPublicLinks a:hover,.desktopLoginLink:hover{color:#df5410}
+  .desktopPublicAccess{display:flex;align-items:center;gap:26px;flex-shrink:0}
+  .desktopPublicAccess .btn{min-width:133px}
+
+  /* Keep all existing role-specific navigation controls and listeners. */
+  .desktopRedesign>.top:not(.guestTop){background:#fff!important;color:#10274b!important;border-bottom:1px solid #e4ebf3;box-shadow:none}
+  .desktopRedesign>.top .headerLogo{background:url('/drivedrop-desktop-brand.svg') left center/contain no-repeat;width:235px;height:58px}
+  .desktopRedesign>.top .headerLogo>*{visibility:hidden}
+  .desktopRedesign>.top :is(.customerDashboardBtn,.transporterDashboardBtn,.messagesHeaderLink,.notificationsHeaderLink,.accountNavBtn,.adminHeaderLink,.adminSignOutButton,.customerPrimaryNav form .btn,.transporterPrimaryNav form .btn){color:#23405f!important}
+  .desktopRedesign>.top :is(.accountNavBtn,.customerPrimaryNav form .btn,.transporterPrimaryNav form .btn){border-color:#dfe6ef;background:#f4f7fa}
+  .desktopRedesign>.top :is(.customerDashboardBtn,.transporterDashboardBtn,.messagesHeaderLink,.notificationsHeaderLink).isActive{background:#edf3fb!important;color:#123458!important}
+  .desktopRedesign>.top .navCountBadge{background:#ff6917;color:#fff}
+  .desktopRedesign>.top .adminHeaderLabel{color:#10274b}
+
+  /* Homepage: one existing form; desktop copy and layout are isolated. */
+  .desktopRedesign .homePage{--homeNavy:#0b2245;--homeOrange:#ff6917;background:#fff;overflow:visible}
+  .desktopRedesign .homePage .marketHeroCopy{display:none}
+  .desktopRedesign .homePage .desktopHeroCopy{display:block;position:relative;z-index:1;max-width:620px;min-height:360px;padding:12px 0 20px}
+  .desktopHeroEyebrow{display:flex;gap:10px;align-items:center;color:#10274b;font-weight:750;font-size:12px;letter-spacing:.025em}
+  .desktopHeroEyebrow>span{font-size:23px}
+  .desktopRedesign .desktopHeroCopy h1{color:#0b2245;font-size:clamp(38px,3.8vw,58px);line-height:1.1;letter-spacing:-.035em;margin:20px 0 19px}
+  .desktopRedesign .desktopHeroCopy p{color:#24415f;font-size:17px;line-height:1.7;max-width:490px;margin:0}
+  .desktopHeroActions{display:flex;align-items:center;gap:16px;margin-top:25px}
+  .desktopHeroActions .btn{min-width:150px;min-height:47px}
+  .desktopHeroActions .btn.light{background:#fff}
+  .desktopHeroTrust{display:flex;gap:22px;flex-wrap:wrap;margin-top:23px;color:#1b395a;font-size:12px;font-weight:700}
+  .desktopRedesign .homePage .visualHero,
+  .desktopRedesign .homePage .visualHero:has(.homeHeroPanelShell.isQuoteDetails),
+  .desktopRedesign .homePage .visualHero:has(.homeHeroPanelShell.isQuoteExpanded){height:auto;min-height:0;align-items:flex-start;overflow:visible;background-color:#e7eff8;isolation:isolate}
+  .desktopRedesign .homePage .visualHero .heroOverlay{background:linear-gradient(90deg,rgba(241,246,251,.99),rgba(241,246,251,.91) 31%,rgba(241,246,251,.15) 63%,rgba(241,246,251,0));pointer-events:none}
+  .desktopRedesign .homePage .desktopHeroSlides{height:560px;max-height:100%}
+  .desktopRedesign .homePage .desktopHeroSlide{background-position:center;opacity:0!important}
+  .desktopRedesign .homePage .desktopHeroSlide:first-child{opacity:1!important}
+  .desktopRedesign .homePage .visualHero .visualHeroInner,
+  .desktopRedesign .homePage .visualHero:has(.homeHeroPanelShell.isQuoteDetails) .visualHeroInner{max-width:1400px;width:100%;height:auto;margin:0 auto;padding:38px clamp(28px,4vw,58px) 30px;display:grid;grid-template-columns:minmax(0,1fr);gap:26px;align-items:start}
+  .desktopRedesign .homePage .visualHero .homeHeroPanelShell,
+  .desktopRedesign .homePage .visualHero:has(.homeHeroPanelShell.isQuoteDetails) .homeHeroPanelShell{width:100%;max-width:none;height:auto;min-height:0;margin:0;align-self:start;justify-self:stretch;overflow:visible}
+  .desktopRedesign .homePage .homeHeroPanelTrack{height:auto;display:block}
+  .desktopRedesign .homePage .homeHeroPanelSlide[aria-hidden=true]{display:none}
+  .desktopRedesign .homePage .homeHeroPanelSlide[aria-hidden=false]{display:block}
+  .desktopRedesign .homePage .quotePanel{width:100%;max-width:none;min-height:0;padding:23px 27px;border:1px solid #e0e7f0;border-radius:14px;box-shadow:0 12px 35px #132f5012}
+  .desktopRedesign .homePage .homeHeroPanelTrack:not(.showQuotes){max-width:500px;margin:0 0 0 auto}
+  .desktopRedesign .homePage .homeQuoteHeading{margin:0 0 13px!important}
+  .desktopRedesign .homePage .homeQuoteHeading strong{font-size:19px;color:#10274b}
+  .desktopRedesign .homePage .homeQuoteHeading span{font-size:12px}
+  .desktopRedesign .homePage .homeQuoteSection{padding-top:12px;margin-top:0;border-color:#e6edf5;min-width:0}
+  .desktopRedesign .homePage .homeQuoteFieldGrid input,.desktopRedesign .homePage .homeQuoteFieldGrid select,.desktopRedesign .homePage .homeQuoteDateButton{height:43px;font-size:13px;background:#fff;border-radius:7px}
+  .desktopRedesign .homePage .homeQuoteFieldGrid label{font-size:10px;letter-spacing:.035em;margin-bottom:6px}
+  .desktopRedesign .homePage .isQuoteDetails:not(.isQuoteExpanded) .homeQuoteForm{display:grid!important;grid-template-columns:minmax(0,1fr) 180px;align-items:end;gap:5px 20px;padding:0!important}
+  .desktopRedesign .homePage .isQuoteDetails:not(.isQuoteExpanded) .homeQuoteVehicle{padding:0;border:0}
+  .desktopRedesign .homePage .isQuoteDetails:not(.isQuoteExpanded) .homeQuoteVehicle>strong{display:none}
+  .desktopRedesign .homePage .isQuoteDetails:not(.isQuoteExpanded) .homeQuoteFieldGrid{grid-template-columns:1.3fr repeat(4,minmax(0,1fr));margin:0}
+  .desktopRedesign .homePage .isQuoteDetails:not(.isQuoteExpanded) .homeQuoteFieldGrid .homeQuoteWide{grid-column:auto}
+  .desktopRedesign .homePage .isQuoteDetails:not(.isQuoteExpanded) .quoteCta{height:43px;margin:0;padding:10px}
+  .desktopRedesign .homePage .isQuoteDetails:not(.isQuoteExpanded) .quoteSmall{grid-column:1/-1;margin-top:10px;text-align:left}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteForm{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px 24px;align-items:start;padding:0!important}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteVehicle{grid-column:1;grid-row:1}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteTransport{margin-top:0;grid-column:2;grid-row:1}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteExtra{grid-column:3;grid-row:1}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteExtra{min-width:0}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteFieldGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 10px}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteExtra .homeQuoteFieldGrid{grid-template-columns:minmax(0,1fr)}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteForm>.homeQuoteCompatibility,
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteForm>.homeQuoteError{grid-column:1/-1;grid-row:auto}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteForm>.quoteCta{grid-column:3;align-self:end;margin:0}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteForm>.quoteSmall{grid-column:1/-1;text-align:right;margin:0}
+  .desktopRedesign .homePage .homeQuoteExtra[hidden]{display:none!important}
+  .desktopRedesign .homePage .homeQuoteAccountTabs button.active{background:#0b2245;color:#fff}
+  .desktopRedesign .homePage .addressSuggestions{z-index:50}
+  .desktopRedesign .homePage .bubbleGrid{max-width:1280px;padding:23px 24px}
+  .desktopRedesign .homePage .featureBubble{border-radius:0;background:transparent;box-shadow:none}
+  .desktopRedesign .homePage .bubbleIcon{background:#f0f5fa;border-radius:50%}
+  .desktopRedesign .homePage :is(.paleBand,.orangeTint,.paleBlueBand){background:#f7f9fc;padding:65px 0}
+  .desktopRedesign .homePage .sectionWrap{max-width:1280px;padding-left:32px;padding-right:32px}
+  .desktopRedesign .homePage .sectionWrap h2{font-size:32px;line-height:1.2;letter-spacing:-.025em}
+  .desktopRedesign .homePage .eyebrow.dark{color:#139238}
+  .desktopRedesign .homePage .stepCard{border:0;border-radius:0;background:transparent;box-shadow:none;padding:20px 24px}
+  .desktopRedesign .homePage .stepIcon{background:#e9f1fa;border-radius:50%}
+  .desktopRedesign .homePage .stepNo{background:#ff6917}
+  .desktopRedesign .homePage .photoSplit{padding:55px 0;background:#0b2245}
+  .desktopRedesign .homePage .splitPhoto{border-radius:14px}
+  .desktopRedesign .homePage .verifiedCard{border:1px solid #dfe7f0;border-radius:12px;box-shadow:0 8px 24px #10233f0b}
+  .desktopRedesign .homePage .photoBanner{border-radius:0;max-width:none;width:100%;margin:0;box-shadow:none}
+  .desktopRedesign .homePage .deliveryCard,.desktopRedesign .homePage .reviewGrid blockquote{border-radius:12px;box-shadow:none}
+  .desktopRedesign .homePage .reviewGrid blockquote{margin:0}
+  .desktopRedesign .homePage .transporterCta{padding:52px 0;background:#0b2245}
+  .desktopRedesign .homePage .siteFooter{display:none}
+
+  /* Auth screens reuse all existing login/register/recovery controls. */
+  .desktopRedesign :is(.authPage,.authShell){display:grid!important;grid-template-columns:minmax(300px,.9fr) minmax(400px,1.1fr)!important;max-width:1050px;min-height:600px;height:auto;margin:46px auto 64px;padding:0!important;background:#fff!important;border:1px solid #e0e7f0;border-radius:14px;overflow:hidden;box-shadow:0 10px 35px #1734540b}
+  .desktopRedesign :is(.authPage,.authShell) .authVisual{position:relative!important;inset:auto!important;width:auto!important;min-height:100%!important;height:auto!important;margin:0!important;padding:0!important;border-radius:0;background-size:cover;background-position:center}
+  .desktopRedesign :is(.authPage,.authShell) .authVisualContent{position:relative!important;inset:auto!important;max-width:none!important;height:100%;min-height:520px;display:flex;flex-direction:column;justify-content:flex-end;padding:45px 32px!important;color:#fff;z-index:1}
+  .desktopRedesign :is(.authPage,.authShell) .authVisualContent :is(h1,h2){font-size:32px;line-height:1.1;letter-spacing:-.025em;color:#fff;margin:12px 0}
+  .desktopRedesign :is(.authPage,.authShell) .authVisualContent p{font-size:14px;line-height:1.65;color:#e5edf7}
+  .desktopRedesign :is(.authPage,.authShell) .authTrust{display:flex;flex-wrap:wrap;gap:9px;font-size:11px}
+  .desktopRedesign :is(.authPage,.authShell) :is(.authPanel,.authFormSide){display:flex!important;position:relative!important;inset:auto!important;align-items:center;justify-content:center;padding:34px 44px!important;width:auto!important;min-height:0!important;background:#fff!important}
+  .desktopRedesign :is(.authPage,.authShell) .authCard{position:relative!important;inset:auto!important;transform:none!important;max-width:430px!important;width:100%!important;margin:0!important;padding:0!important;min-height:0!important;border:0!important;border-radius:0;box-shadow:none!important;background:#fff}
+  .desktopRedesign :is(.authPage,.authShell) .authCard :is(h1,h2){font-size:27px;letter-spacing:-.025em;color:#10274b;line-height:1.2}
+  .desktopRedesign :is(.authPage,.authShell) .authHeading p,.desktopRedesign :is(.authPage,.authShell) .authIntro{font-size:13px;line-height:1.65;color:#62738b}
+  .desktopRedesign :is(.authPage,.authShell) .field{margin:16px 0}
+  .desktopRedesign :is(.authPage,.authShell) .field input,.desktopRedesign :is(.authPage,.authShell) .field select{min-height:44px;padding:11px 12px;font-size:14px;border-radius:6px}
+  .desktopRedesign :is(.authPage,.authShell) .password-wrap input{padding-right:68px}
+  .desktopRedesign :is(.authPage,.authShell) .authSubmit{width:100%;margin-top:12px;min-height:44px}
+  .desktopRedesign :is(.authPage,.authShell) .authSecondary{display:block;text-align:center;border:1px solid #d8e3f0;border-radius:7px;padding:12px;font-size:13px}
+  .desktopRedesign :is(.authPage,.authShell) .accountSwitch{border-radius:7px;background:#f1f5fb}
+  .desktopRedesign :is(.authPage,.authShell) .accountSwitch .active{background:#0b2245;color:#fff}
+
+  /* Shared workspace presentation; workflow selectors/visibility are not altered. */
+  .desktopRedesign .dashboardShell{max-width:1350px;padding:32px 38px 70px}
+  .desktopRedesign .dashboardHero{background:#fff;color:#10274b;border:1px solid #e0e8f1;border-radius:12px;padding:26px 28px;box-shadow:none;gap:24px;flex-wrap:wrap}
+  .desktopRedesign .dashboardHero h1{font-size:31px;line-height:1.2;letter-spacing:-.03em;margin:7px 0 10px;color:#10274b}
+  .desktopRedesign .dashboardHero p{font-size:13px;color:#63768e;line-height:1.65}
+  .desktopRedesign .dashboardEyebrow{color:#36567b;font-size:10px;letter-spacing:.1em}
+  .desktopRedesign .dashboardEyebrow.dark{color:#36567b}
+  .desktopRedesign .dashboardSummary{gap:10px}
+  .desktopRedesign .dashboardSummary>div{background:#f3f7fc;border:1px solid #dfe8f3;border-radius:9px;color:#10274b;box-shadow:none}
+  .desktopRedesign .dashboardSummary>div>span{color:#526b88}
+  .desktopRedesign .dashboardSummary>[aria-pressed=true]{background:#0b2245;border-color:#ff6917;color:#fff}
+  .desktopRedesign .dashboardSummary>[aria-pressed=true]>span{color:#f1f5fc}
+  .desktopRedesign .dashboardCard{border-radius:11px;border-color:#dfe7f1;box-shadow:0 3px 12px #17345404}
+  .desktopRedesign .dashboardSectionHeading h2{font-size:24px;letter-spacing:-.02em}
+  .desktopRedesign .panelIcon{border-radius:10px;background:#edf3fc;color:#174f80}
+  .desktopRedesign .infoPanel{border-radius:8px;background:#f6f9fd}
+  .desktopRedesign .infoRow{font-size:12px;line-height:1.55}
+  .desktopRedesign .routeVisual{border-radius:9px;background:#f5f8fd}
+  .desktopRedesign .bookingTop h2{font-size:23px}
+  .desktopRedesign .paymentMini{border-radius:9px;background:#f1f6fc}
+  .desktopRedesign .dashboardHero :is(.verificationStatusCard,.accountStatusBadge,.adminHeroBadge){background:#edf3fc!important;border-color:#dae5f3!important;color:#10274b!important;border-radius:10px!important;box-shadow:none!important}
+  .desktopRedesign .dashboardHero :is(.verificationStatusCard,.accountStatusBadge,.adminHeroBadge) :is(span,strong,small){color:#244565!important}
+  .desktopRedesign .adminSectionCard{border-radius:10px!important;box-shadow:none!important}
+  .desktopRedesign .adminStat{border-radius:10px;box-shadow:none;border-color:#dfe7f1}
+  .desktopRedesign .adminActionCentre{border-radius:12px;box-shadow:none}
+  .desktopRedesign .podSignature{background:#fff;border:1px solid #dce5f0;border-radius:8px}
+  .desktopRedesign .podSignature canvas{max-width:100%}
+  .desktopRedesign .documentRow{border-radius:9px}
+  .desktopRedesign .businessDetailsForm textarea{min-height:88px}
+  .desktopRedesign .requiredDocumentUploadCard{border-radius:10px}
+
+  /* Existing legal content is unchanged. */
+  .desktopRedesign .legalIntro{background:#edf3fb;border-bottom:1px solid #dfe7f1;padding:42px 30px}
+  .desktopRedesign .legalIntroInner{max-width:1100px;margin:auto}
+  .desktopRedesign .legalIntro h1{font-size:36px;letter-spacing:-.03em;color:#10274b}
+  .desktopRedesign .legalContent{max-width:1160px;margin:auto;padding:32px 30px 60px}
+  .desktopRedesign .legalCard{border-radius:12px;border:1px solid #dfe7f1;padding:38px 46px;background:#fff;box-shadow:none}
+  .desktopRedesign .legalCard h2{font-size:20px;line-height:1.35;color:#10274b;margin-top:28px}
+  .desktopRedesign .legalCard p{font-size:14px;line-height:1.8;color:#50637b}
+
+  /* New public screens. */
+  .desktopRedesign .desktopInformationPage .informationHero{min-height:465px;padding:80px max(5vw,calc((100vw - 1240px)/2));background-size:cover;background-position:center}
+  .desktopRedesign .desktopInformationPage .informationHero>div{max-width:535px}
+  .desktopRedesign .desktopInformationPage h1{font-size:49px;line-height:1.1;letter-spacing:-.035em;margin:18px 0}
+  .desktopRedesign .desktopInformationPage .informationHero p{font-size:17px;max-width:490px}
+  .desktopRedesign .desktopInformationPage .informationBody{padding:52px 32px 70px}
+  .desktopRedesign .desktopInformationPage .informationSteps{grid-template-columns:repeat(3,minmax(0,1fr));gap:23px}
+  .desktopRedesign .desktopInformationPage .informationHelp{grid-template-columns:minmax(0,1fr) 310px;gap:32px}
+  .desktopRedesign .desktopQuotePage{padding:0 0 60px!important;overflow:visible}
+  .desktopRedesign .desktopQuotePage .desktopQuoteIntro{max-width:none;margin:0;padding:48px max(5vw,calc((100vw - 1220px)/2)) 42px;background:linear-gradient(90deg,#f1f6fc,rgba(241,246,252,.91) 50%,rgba(241,246,252,.4)),url('/drivedrop-prestige-loading.webp') right center/cover}
+  .desktopRedesign .desktopQuotePage .desktopQuoteIntro h1{font-size:38px;max-width:800px}
+  .desktopRedesign .desktopQuotePage .homeHeroPanelShell{max-width:1280px;width:calc(100% - 64px);min-height:0;height:auto;margin:30px auto 0;overflow:visible}
+  .desktopRedesign .desktopQuotePage .homeHeroPanelTrack{display:block;height:auto}
+
+  /* Consistent white footer in the approved boards. */
+  .desktopPublicFooter{display:block;background:#fff;color:#173352;border-top:1px solid #dfe8f2;padding:42px max(32px,calc((100vw - 1216px)/2)) 22px}
+  .desktopFooterGrid{display:grid;grid-template-columns:1.65fr 1fr 1.1fr 1fr;gap:38px}
+  .desktopFooterBrand img{display:block;width:235px;height:auto;max-width:100%}
+  .desktopFooterBrand p{font-size:12px;line-height:1.7;color:#62758e;max-width:280px}
+  .desktopFooterGrid nav{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+  .desktopFooterGrid nav h2{font-size:13px;margin:4px 0 6px}
+  .desktopFooterGrid nav a{font-size:12px;line-height:1.5;color:#506984}
+  .desktopFooterGrid nav a:hover{color:#db5415;text-decoration:underline}
+  .desktopFooterBottom{display:flex;justify-content:space-between;gap:24px;border-top:1px solid #e5ebf3;padding-top:20px;margin-top:32px;font-size:11px;color:#687e97}
+  .desktopFooterBottom strong{color:#173a63;font-weight:650}
+  body.desktopRedesign:has(.dashboardShell)>.desktopPublicFooter{display:none}
+}
+@media screen and (min-width:761px) and (max-width:1100px){
+  .desktopPublicHeaderInner{gap:20px;padding:14px 24px;flex-wrap:wrap}
+  .desktopBrandLink{flex-basis:215px}
+  .desktopBrandLink img{width:215px}
+  .desktopPublicAccess{margin-left:auto}
+  .desktopPublicLinks{flex:1 0 100%;order:3;justify-content:space-between;border-top:1px solid #edf1f5;padding-top:12px;gap:12px}
+  .desktopPublicLinks a{font-size:12px}
+  .desktopRedesign .homePage .isQuoteDetails:not(.isQuoteExpanded) .homeQuoteForm{grid-template-columns:minmax(0,1fr)}
+  .desktopRedesign .homePage .isQuoteDetails:not(.isQuoteExpanded) .quoteCta{width:200px;justify-self:end;margin-top:10px}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteForm{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteExtra{grid-column:1/-1;grid-row:2}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteExtra .homeQuoteFieldGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .desktopRedesign .homePage .isQuoteExpanded .homeQuoteForm>.quoteCta{grid-column:2}
+  .desktopRedesign :is(.authPage,.authShell){margin:30px 24px 45px;grid-template-columns:minmax(250px,.8fr) minmax(330px,1.2fr)!important}
+  .desktopRedesign :is(.authPage,.authShell) :is(.authPanel,.authFormSide){padding:28px!important}
+  .desktopRedesign .dashboardShell{padding:26px 24px 60px}
+  .desktopRedesign .desktopInformationPage .informationSteps{gap:14px}
+  .desktopFooterGrid{gap:22px;grid-template-columns:1.3fr 1fr 1fr 1fr}
+}
+
+@media screen and (max-width:760px){
+  .desktopQuotePage{padding-top:110px!important}
+}
