@@ -10,7 +10,7 @@ export default function DeliveredDeliveries(){
  async function load(){
   try{
    const response=await fetch('/api/transporter/delivered',{cache:'no-store'});
-   if(response.ok)setBookings(await response.json());
+   if(response.ok){const data=await response.json();setBookings(Array.isArray(data)?data:Array.isArray(data?.bookings)?data.bookings:[])}
   }finally{setLoading(false)}
  }
  useEffect(()=>{load()},[]);
