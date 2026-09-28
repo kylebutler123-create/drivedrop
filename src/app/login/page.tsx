@@ -1,4 +1,5 @@
 'use client';
+import ApprovedAuthCopy from '@/app/components/ApprovedAuthCopy';
 
 import Link from 'next/link';
 import {useRouter,useSearchParams} from 'next/navigation';
@@ -26,7 +27,7 @@ export default function Login(){
 
   return <main className={`authPage loginPage ${isTransporter?'transporterLogin':'customerLogin'}`}>
     <section className="authVisual">
-      <div className="authOverlay"/>
+      <ApprovedAuthCopy transporter={isTransporter}/><div className="authOverlay"/>
       <div className="authVisualContent">
         <span className="eyebrow">UK vehicle transport</span>
         <h1>{isTransporter?'Keep your transport business moving.':'Move your vehicle with confidence.'}</h1>

@@ -93,7 +93,7 @@ useEffect(()=>{
  if(new URLSearchParams(window.location.search).get('view')==='deliveries'){
   deepLinkDeliveries.current=true;
   setView('DELIVERIES');
- }
+ }else if(new URLSearchParams(window.location.search).get('view')==='jobs'){setView('JOBS')}
 },[]);
 useEffect(()=>{
  const selectCompleted=(event:Event)=>{

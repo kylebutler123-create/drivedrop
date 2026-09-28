@@ -128,26 +128,42 @@ try {
   }
 
   const view = await open(browser, urls.updated, '/get-quotes', 1440);
-  for (const selector of ['#home-quote-vehicle-type', '#home-quote-make', '#home-quote-model', '#home-quote-registration', '#home-quote-running', '.homeQuoteDateButton', '#home-quote-transport-type', '#home-quote-name', '#home-quote-phone', '#home-quote-email', '#home-quote-password']) {
-    record(`Quote form: ${selector} visible`, await view.page.locator(selector).isVisible());
-  }
-  record('Quote form: vehicle placeholder', await view.page.locator('#home-quote-vehicle-type').inputValue() === '');
-  record('Quote form: transport placeholder', await view.page.locator('#home-quote-transport-type').inputValue() === '');
-  await view.page.locator('#home-quote-transport-type').selectOption('ENCLOSED');
-  await view.page.locator('#home-quote-vehicle-type').selectOption('Van');
-  record('Quote form: incompatible vehicle remains selected', await view.page.locator('#home-quote-vehicle-type').inputValue() === 'Van');
-  record('Quote form: enclosed compatibility warning', await view.page.locator('.homeQuoteCompatibility').isVisible());
-  await view.page.locator('#home-quote-vehicle-type').selectOption('Car');
-  record('Quote form: compatible vehicle removes warning', await view.page.locator('.homeQuoteCompatibility').count() === 0);
+  await view.page.route('**/api/address/**', request => request.fulfill({status:200,contentType:'application/json',body:'[]'}));
+  await view.page.locator('input[name="collection"]').fill('CI collection address');
+  await view.page.locator('input[name="delivery"]').fill('CI delivery address');
   await view.page.locator('.homeQuoteDateButton').click();
-  record('Quote form: calendar opens', await view.page.getByRole('dialog', {name: 'Choose collection date'}).isVisible());
+  record('Quote wizard: calendar opens', await view.page.getByRole('dialog', {name:'Choose collection date'}).isVisible());
   await view.page.keyboard.press('Escape');
-  record('Quote form: calendar closes on Escape', await view.page.getByRole('dialog', {name: 'Choose collection date'}).count() === 0);
-  await view.page.screenshot({path: path.join(out, 'desktop-quote-form-checked.png'), fullPage: true, animations: 'disabled', caret: 'hide'});
+  record('Quote wizard: calendar closes on Escape', await view.page.getByRole('dialog', {name:'Choose collection date'}).count() === 0);
+  await view.page.locator('.homeQuoteDateButton').click();
+  await view.page.getByRole('button', {name:'Next month'}).click();
+  await view.page.locator('.homeQuoteCalendarDays button').first().click();
+  await view.page.getByRole('button', {name:'Continue →'}).click();
+  record('Quote wizard: vehicle step', await view.page.locator('#home-quote-make').isVisible());
+  record('Quote wizard: vehicle placeholder', await view.page.locator('#home-quote-vehicle-type').inputValue() === '');
+  await view.page.locator('#home-quote-vehicle-type').selectOption('Van');
+  await view.page.locator('#home-quote-make').fill('Ford');
+  await view.page.locator('#home-quote-model').fill('Transit');
+  await view.page.locator('#home-quote-running').selectOption('true');
+  await view.page.getByRole('button', {name:'Continue →'}).click();
+  record('Quote wizard: transport step', await view.page.locator('#home-quote-transport-type').isVisible());
+  record('Quote wizard: transport placeholder', await view.page.locator('#home-quote-transport-type').inputValue() === '');
+  await view.page.locator('#home-quote-transport-type').selectOption('ENCLOSED');
+  record('Quote wizard: incompatible vehicle remains selected', await view.page.locator('#home-quote-vehicle-type').inputValue() === 'Van');
+  record('Quote wizard: enclosed compatibility warning', await view.page.locator('.homeQuoteCompatibility').isVisible());
+  await view.page.getByRole('button', {name:'Continue →'}).click();
+  record('Quote wizard: incompatible request cannot proceed', await view.page.locator('.approvedWizardHost').getAttribute('data-step') === '3');
+  await view.page.locator('#home-quote-transport-type').selectOption('OPEN');
+  await view.page.getByRole('button', {name:'Continue →'}).click();
+  record('Quote wizard: review retains details', (await view.page.locator('.approvedWizardReview').innerText()).includes('Transit'));
+  record('Quote wizard: account fields visible', await view.page.locator('#home-quote-phone').isVisible());
+  await view.page.getByRole('button', {name:'← Back',exact:true}).click();
+  record('Quote wizard: back preserves transport choice', await view.page.locator('#home-quote-transport-type').inputValue() === 'OPEN');
+  await view.page.screenshot({path:path.join(out,'desktop-quote-form-checked.png'),fullPage:true,animations:'disabled',caret:'hide'});
   await view.context.close();
 
   const help = await open(browser, urls.updated, '/help', 1440);
-  const question = help.page.locator('.informationHelp details').first();
+  const question = help.page.locator('.approvedHelpBody details').first();
   await question.locator('summary').click();
   record('FAQ opens', await question.getAttribute('open') !== null);
   await question.locator('summary').click();
@@ -157,21 +173,23 @@ try {
   const home = await open(browser, urls.updated, '/', 1440);
   // Autocomplete is stubbed in this client-value-persistence check; no address provider is contacted.
   await home.page.route('**/api/address/**', request => request.fulfill({status: 200, contentType: 'application/json', body: '[]'}));
-  record('Compact desktop bar: collection visible', await home.page.locator('input[name="collection"]').isVisible());
-  record('Compact desktop bar: delivery visible', await home.page.locator('input[name="delivery"]').isVisible());
   record('Compact desktop bar: vehicle visible', await home.page.locator('#home-quote-vehicle-type').isVisible());
-  await home.page.locator('input[name="collection"]').fill('CI collection address');
-  await home.page.locator('input[name="delivery"]').fill('CI delivery address');
+  record('Compact desktop bar: make visible', await home.page.locator('#home-quote-make').isVisible());
+  record('Compact desktop bar: delivery waits for expansion', !await home.page.locator('input[name="delivery"]').isVisible());
+  await home.page.locator('#home-quote-make').fill('Ford');
+  await home.page.locator('#home-quote-model').fill('Focus');
   await home.page.locator('.homeQuoteForm .quoteCta').click();
-  await home.page.locator('.homeHeroPanelShell.isQuoteExpanded').waitFor({state: 'visible'});
-  record('Expanded bar preserves collection', await home.page.locator('input[name="collection"]').inputValue() === 'CI collection address');
-  record('Expanded bar preserves delivery', await home.page.locator('input[name="delivery"]').inputValue() === 'CI delivery address');
-  record('Expanded bar reveals make', await home.page.locator('#home-quote-make').isVisible());
+  await home.page.locator('.homeHeroPanelShell.isQuoteExpanded').waitFor({state:'visible'});
+  record('Expanded bar preserves make', await home.page.locator('#home-quote-make').inputValue() === 'Ford');
+  record('Expanded bar preserves model', await home.page.locator('#home-quote-model').inputValue() === 'Focus');
+  record('Expanded bar reveals collection', await home.page.locator('input[name="collection"]').isVisible());
   record('Expanded bar reveals customer phone', await home.page.locator('#home-quote-phone').isVisible());
+  const banner = await home.page.locator('.approvedTransporterBanner').evaluate(el=>({height:el.getBoundingClientRect().height,image:getComputedStyle(el).backgroundImage}));
+  record('Approved banner: original height and reframed photograph', banner.height === 275 && banner.image.includes('home-transporter-wide.webp'));
   await home.page.screenshot({path: path.join(out, 'desktop-1440-home-expanded.png'), fullPage: true, animations: 'disabled', caret: 'hide'});
   await home.page.locator('.desktopPublicHeader').getByRole('link', {name: 'Get a Quote', exact: true}).click();
   await home.page.waitForURL('**/get-quotes');
-  record('Header Get a Quote navigates to working request form', await home.page.locator('#home-quote-make').isVisible());
+  record('Header Get a Quote navigates to working request form', await home.page.locator('input[name="collection"]').isVisible());
   await home.context.close();
 } catch (error) {
   record('Browser suite execution', false, error.stack || error.message);

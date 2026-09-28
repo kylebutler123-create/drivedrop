@@ -9,7 +9,7 @@ import {vehicleTypes} from '@/lib/vehicle-types';
 import {transportTypes} from '@/lib/transport-types';
 import {enclosedTransportCompatibilityMessage,isTransportVehicleCompatible} from '@/lib/transport-compatibility';
 
-type Props={expanded:boolean;onExpandChange:(expanded:boolean)=>void};
+type Props={expanded:boolean;onExpandChange:(expanded:boolean)=>void;wizard?:boolean};
 type AccountMode='create'|'login';
 
 function CollectionDatePicker({value,onChange,disabled}:{value:string;onChange:(date:string)=>void;disabled:boolean}){
@@ -57,8 +57,19 @@ function CollectionDatePicker({value,onChange,disabled}:{value:string;onChange:(
   </div>;
 }
 
-export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
+export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=false}:Props){
   const router=useRouter();
+  const [step,setStep]=useState(1);
+  const [draft,setDraft]=useState<Record<string,string>>({});
+  const formRef=useRef<HTMLFormElement>(null);
+  function updateDraft(){if(formRef.current)setDraft(Object.fromEntries(Array.from(new FormData(formRef.current).entries()).map(([key,value])=>[key,String(value)])))}
+  function nextStep(){
+    const names=step===1?['collection','delivery']:step===2?['vehicleType','vehicleMake','vehicleModel','running']:step===3?['transportType']:[];
+    for(const name of names){const input=formRef.current?.elements.namedItem(name);if(input instanceof HTMLInputElement||input instanceof HTMLSelectElement){if(!input.reportValidity())return}}
+    if(step===1&&!collectionDate){setError('Choose a collection date from the calendar.');return}
+    if(step===3&&incompatible){setError(enclosedTransportCompatibilityMessage);return}
+    updateDraft();setError('');setStep(current=>Math.min(4,current+1));
+  }
   const [accountMode,setAccountMode]=useState<AccountMode>('create');
   const [authenticated,setAuthenticated]=useState(false);
   const [showPassword,setShowPassword]=useState(false);
@@ -72,6 +83,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
 
   async function submit(event:FormEvent<HTMLFormElement>){
     event.preventDefault();
+    if(wizard&&window.matchMedia('(min-width:1024px)').matches&&step<4){nextStep();return}
     if(!expanded){onExpandChange(true);return}
     if(requestInFlight.current)return;
     const form=event.currentTarget;
@@ -131,7 +143,8 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
     }
   }
 
-  return <>
+  const content = <>
+    {wizard&&<div className="approvedWizard approvedWizardProgress" aria-label="Quote request progress">{['Delivery Details','Vehicle Details','Transport Type','Review & Quote'].map((label,index)=><div key={label} className={step===index+1?'current':step>index+1?'complete':''} aria-current={step===index+1?'step':undefined}><b>{step>index+1?'✓':index+1}</b><span>{label}</span></div>)}</div>}
     <nav className="desktopQuotePurpose" aria-label="Transport purpose">
       <span className="isActive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m5 10 2-5h10l2 5M4 10h16v9H4zM7 19v2m10-2v2M6 14h3m6 0h3"/></svg>I need to move a vehicle</span>
       <Link href="/for-transporters" prefetch={false}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M2 5h12v12H2zM14 9h5l3 4v4h-8"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>I want to deliver vehicles</Link>
@@ -140,7 +153,8 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
       <div><strong>Get vehicle transport quotes</strong><span>Takes about 60 seconds</span></div>
       <button type="button" className="homeQuoteExpand" aria-label={expanded?'Collapse account details':'Expand account details'} aria-expanded={expanded} aria-controls="home-quote-extra" disabled={submitting} onClick={()=>{setError('');onExpandChange(!expanded)}}>{expanded?'−':'+'}</button>
     </div>
-    <form className="quoteForm homeQuoteForm" onSubmit={submit} aria-busy={submitting}>
+    <form ref={formRef} className="quoteForm homeQuoteForm" onChange={wizard?updateDraft:undefined} onSubmit={submit} aria-busy={submitting}>
+      {wizard&&<section className="approvedWizard approvedWizardReview"><h2>Review your request</h2>{[['collection','Collection'],['delivery','Delivery'],['vehicleType','Vehicle type'],['vehicleMake','Make'],['vehicleModel','Model'],['registration','Registration'],['running','Running condition'],['transportType','Transport type']].map(([key,label])=><div key={key}><span>{label}</span><strong>{key==='running'?(draft[key]==='true'?'Runs and drives':'Non-running'):key==='transportType'?transportTypes.find(type=>type.value===draft[key])?.label:draft[key]||'Not specified'}</strong></div>)}<div><span>Collection date</span><strong>{collectionDate?new Date(collectionDate+'T12:00:00').toLocaleDateString('en-GB'):'Not specified'}</strong></div><button type="button" className="btn light" onClick={()=>setStep(1)}>Edit request</button></section>}
       <div className="homeQuoteSection homeQuoteVehicle">
           <strong>Vehicle details</strong>
           <div className="homeQuoteFieldGrid">
@@ -185,8 +199,11 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange}:Props){
         {authenticated&&error&&<Link className="homeQuoteRequestLink" href="/customer?view=quotes">Check Your quote requests →</Link>}
       </div>
       {error&&<div className="formNotice errorNotice homeQuoteError" role="alert">{error}</div>}
+      {wizard&&<div className="approvedWizard approvedWizardControls"><button type="button" className="btn light" onClick={()=>step>1?setStep(current=>current-1):window.location.assign('/')}>← Back</button>{step<4&&<button type="button" className="btn orange" onClick={nextStep}>Continue →</button>}</div>}
       <button type={expanded?'submit':'button'} className="btn orange quoteCta" disabled={submitting} onClick={expanded?undefined:()=>onExpandChange(true)}>{submitting?'Submitting request…':'Get My Quotes'}</button>
       <p className="quoteSmall">No payment required to request quotes.</p>
     </form>
+    {wizard&&<aside className="approvedQuoteSummary"><h2>Your Quote</h2><small>Step {step} of 4</small><hr/>{[['collection','Collection'],['delivery','Delivery'],['vehicleType','Vehicle'],['transportType','Transport type']].map(([key,label])=><div key={key}><strong>{label}</strong><span>{key==='transportType'?(transportTypes.find(type=>type.value===draft[key])?.label||'Not yet specified'):draft[key]||'Not yet specified'}</span></div>)}<p>Compare transport quotes<br/>in your customer account.</p></aside>}
   </>;
+  return wizard?<div className="approvedWizardHost" data-step={step}>{content}</div>:content;
 }

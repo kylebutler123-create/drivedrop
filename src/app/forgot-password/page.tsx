@@ -1,4 +1,5 @@
 'use client';
+import ApprovedAuthCopy from '@/app/components/ApprovedAuthCopy';
 
 import Link from 'next/link';
 import {useSearchParams} from 'next/navigation';
@@ -23,7 +24,7 @@ export default function ForgotPassword(){
   }
 
   return <main className="authShell">
-    <section className="authVisual"><div className="authVisualOverlay"/><div className="authVisualContent"><span className="eyebrow">ACCOUNT RECOVERY</span><h2>Get back into your DriveDrop account.</h2><p>Use the email address linked to your account to start secure password recovery.</p><div className="authTrust"><span>✓ One-time reset link</span><span>✓ 30-minute expiry</span><span>✓ Existing sessions revoked after reset</span></div></div></section>
+    <section className="authVisual"><ApprovedAuthCopy/><div className="authVisualOverlay"/><div className="authVisualContent"><span className="eyebrow">ACCOUNT RECOVERY</span><h2>Get back into your DriveDrop account.</h2><p>Use the email address linked to your account to start secure password recovery.</p><div className="authTrust"><span>✓ One-time reset link</span><span>✓ 30-minute expiry</span><span>✓ Existing sessions revoked after reset</span></div></div></section>
     <section className="authFormSide"><div className="authCard">
       <div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',gap:'18px',marginBottom:'10px'}}><Link className="authBack" href={`/login${account?`?account=${account}`:''}`}>← Back to login</Link><span className="dashboardEyebrow dark">Password recovery</span></div>
       <h1>Forgot your password?</h1>
