@@ -38,7 +38,7 @@
 .desktopQuotePage .homeHeroPanelTrack{display:block}
 .desktopQuotePage .homeHeroPanelSlide{max-width:none!important;opacity:1;visibility:visible}
 
-@media screen and (min-width:761px){
+@media screen and (min-width:1024px){
   body.desktopRedesign{--navy:#0b2245;--navy2:#173a63;--orange:#ff6917;--orange2:#ff7a26;--bg:#f6f8fc;--ink:#10274b;--muted:#65758c;--line:#dfe6ef;background:#f6f8fc}
   .desktopRedesign :is(a,button,input,select,textarea,summary):focus-visible{outline:3px solid #2468cf;outline-offset:3px}
   .desktopRedesign .btn{border-radius:7px;font-size:13px;line-height:1.35;padding:12px 20px;box-shadow:none;gap:10px}
@@ -235,7 +235,7 @@
   .desktopFooterBottom strong{color:#173a63;font-weight:650}
   body.desktopRedesign:has(.dashboardShell)>.desktopPublicFooter{display:none}
 }
-@media screen and (min-width:761px) and (max-width:1100px){
+@media screen and (min-width:1024px) and (max-width:1199px){
   .desktopPublicHeaderInner{gap:20px;padding:14px 24px;flex-wrap:wrap}
   .desktopBrandLink{flex-basis:215px}
   .desktopBrandLink img{width:215px}
@@ -257,4 +257,47 @@
 
 @media screen and (max-width:760px){
   .desktopQuotePage{padding-top:110px!important}
+}
+
+/* The approved account boards use readable, compact records. Keep these changes
+   on desktop and retain the existing components and their live actions. */
+@media screen and (min-width:1024px){
+  .desktopRedesign .accountPage,
+  .desktopRedesign .messagesShell,
+  .desktopRedesign .notificationsPage{max-width:1280px}
+  .desktopRedesign .accountPage .accountHero,
+  .desktopRedesign .messagesShell .messagesHero,
+  .desktopRedesign .notificationsPage .notificationsHero{border:1px solid #dfe8f2;border-radius:12px;background:#fff;color:#10274b;box-shadow:none}
+  .desktopRedesign .accountPage .accountHero :is(h1,p),
+  .desktopRedesign .messagesShell .messagesHero :is(h1,p),
+  .desktopRedesign .notificationsPage .notificationsHero :is(h1,p){color:#10274b}
+  .desktopRedesign .accountPage .accountGrid{gap:20px}
+  .desktopRedesign .accountPage .accountCard{border:1px solid #dfe8f2;border-radius:11px;background:#fff;box-shadow:0 4px 18px #10233f08}
+  .desktopRedesign .accountPage .accountCard .panelHeading h2{font-size:19px}
+  .desktopRedesign .accountPage .accountInfoPanel{border-radius:8px;background:#f8fbfe}
+  .desktopRedesign .accountPage .accountInfoPanel .infoRow{min-height:45px}
+  .desktopRedesign .accountPage .accountInfoPanel .infoRow :is(span,b){font-size:12px}
+  .desktopRedesign .accountPage .accountEditPanel{border-radius:9px;box-shadow:none}
+  .desktopRedesign .accountPage .accountEditPanel strong{font-size:14px}
+  .desktopRedesign .accountPage .accountEditPanel p{font-size:12px}
+  .desktopRedesign .accountPage .accountEditPanel .btn{font-size:12px}
+  .desktopRedesign .messagesShell .messagesLayout{border-radius:12px;border-color:#dfe8f2;background:#fff}
+  .desktopRedesign .messagesShell .messageBubble{border-radius:10px;line-height:1.55}
+  .desktopRedesign .messagesShell .messageComposer{border-top-color:#e3eaf3}
+  .desktopRedesign .notificationsPage .notificationCard{border-radius:9px!important;border-color:#dfe8f2!important}
+  .desktopRedesign .notificationsPage .notificationSummary{padding:16px 18px}
+  .desktopRedesign .notificationsPage .notificationMetaLine>b{font-size:14px}
+  .desktopRedesign .notificationsPage .notificationSummaryCopy>small,
+  .desktopRedesign .notificationsPage .notificationType{font-size:11px}
+  .desktopRedesign .notificationsPage .notificationExpanded p{font-size:13px}
+
+  .desktopRedesign .adminShell{max-width:1440px}
+  .desktopRedesign .adminShell .adminHero{border:1px solid #dfe8f2;background:#fff;color:#10274b;box-shadow:none}
+  .desktopRedesign .adminShell .adminHero :is(h1,p){color:#10274b}
+  .desktopRedesign .adminShell .adminStats{gap:12px}
+  .desktopRedesign .adminShell .adminStat{background:#fff;border:1px solid #dfe8f2}
+  .desktopRedesign .adminShell .adminStat strong{color:#10274b}
+  .desktopRedesign .adminShell .adminSectionGrid{gap:12px}
+  .desktopRedesign .adminShell .adminSectionCard{border-radius:10px!important}
+  .desktopRedesign .adminShell .dashboardSectionHeading{border-bottom-color:#dfe8f2}
 }
