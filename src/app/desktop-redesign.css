@@ -1,6 +1,7 @@
 /* Desktop redesign, stage 1. Loaded last; no existing mobile selector is changed.
    Existing handlers, state, APIs and mobile markup remain the source of truth. */
 .desktopPublicHeader,.desktopPublicFooter,.desktopHeroCopy{display:none}
+.adminWorkspace,.adminWorkspaceContent{display:contents}
 
 /* New public routes have their own small-screen layout; these selectors do not
    affect any pre-existing mobile page. */
@@ -300,4 +301,24 @@
   .desktopRedesign .adminShell .adminSectionGrid{gap:12px}
   .desktopRedesign .adminShell .adminSectionCard{border-radius:10px!important}
   .desktopRedesign .adminShell .dashboardSectionHeading{border-bottom-color:#dfe8f2}
+
+  /* The existing section controls become the board's navy admin rail. Their
+     click handlers, status counts and linked destinations are still the same. */
+  .desktopRedesign .adminWorkspace{display:grid;grid-template-columns:226px minmax(0,1fr);gap:24px;align-items:start;margin-top:22px}
+  .desktopRedesign .adminWorkspaceContent{display:block;min-width:0}
+  .desktopRedesign .adminWorkspace .adminSectionGrid{display:flex!important;flex-direction:column;gap:5px!important;position:sticky;top:20px;margin:0!important;padding:18px 10px;border:1px solid #19355c;border-radius:12px;background:#0b2245;box-shadow:0 14px 30px #0b224518}
+  .desktopRedesign .adminWorkspace .adminSectionCard{display:flex!important;align-items:center;gap:11px;min-height:52px!important;padding:8px 10px!important;border:1px solid transparent!important;border-radius:8px!important;background:transparent!important;box-shadow:none!important;color:#eaf1f9!important}
+  .desktopRedesign .adminWorkspace .adminSectionCard:hover,
+  .desktopRedesign .adminWorkspace .adminSectionCard[aria-pressed=true]{background:#1e426c!important;border-color:#527397!important}
+  .desktopRedesign .adminWorkspace .adminSectionCard>span:first-child{width:30px!important;height:30px!important;flex:0 0 30px;border-radius:7px!important;background:#24486e!important;color:#fff!important;font-size:15px!important}
+  .desktopRedesign .adminWorkspace .adminSectionCard>span:nth-child(2){min-width:0;flex:1}
+  .desktopRedesign .adminWorkspace .adminSectionCard b{font-size:12px!important;color:#fff!important}
+  .desktopRedesign .adminWorkspace .adminSectionCard small{display:none!important}
+  .desktopRedesign .adminWorkspace .adminSectionCard>span:last-child{display:none!important}
+  .desktopRedesign .adminWorkspace .adminSectionCard strong{font-size:10px!important;color:#cbdcf0!important}
+}
+@media screen and (min-width:1024px) and (max-width:1199px){
+  .desktopRedesign .adminWorkspace{grid-template-columns:190px minmax(0,1fr);gap:16px}
+  .desktopRedesign .adminWorkspace .adminSectionCard{gap:7px;padding:7px!important}
+  .desktopRedesign .adminWorkspace .adminSectionCard b{font-size:11px!important}
 }

@@ -40,19 +40,21 @@ export default function AdminSectionSwitcher({userCount,attentionUserCount,expir
  const filterCard=(key:Exclude<View,'ALL'>,icon:string,value:string|number,subtitle:string)=>{const active=view===key;const disputeAttention=key==='DISPUTES'&&openDisputeCount>0;const verificationAttention=key==='VERIFICATION'&&pendingVerificationCount>0;const hasUserAlerts=key==='USERS'&&(attentionUserCount>0||expiredInsuranceCount>0);const displayedValue=disputeAttention?`${openDisputeCount} open`:verificationAttention?`${pendingVerificationCount} to verify`:value;return <button type="button" aria-pressed={active} className={key==='USERS'?`adminSectionCard adminUserManagerCard${hasUserAlerts?' hasUserAlerts':''}`:'adminSectionCard'} onClick={()=>toggle(key)} style={active?activeCard:disputeAttention?attentionCard:verificationAttention?financeAttentionCard:baseCard}><span style={active?activeIcon:disputeAttention?attentionIcon:verificationAttention?financeAttentionIcon:iconStyle}>{icon}</span><span style={copyStyle}><strong style={active?activeKicker:disputeAttention?attentionKicker:verificationAttention?readyPayoutBadge:kickerStyle}>{displayedValue}{key==='USERS'&&<span className="adminMobileUsersSuffix"> users</span>}</strong><b style={titleStyle}>{labels[key]}</b>{hasUserAlerts&&<span className="adminUserAlerts">{attentionUserCount>0&&<span className="adminUserAlert">{attentionUserCount} attention</span>}{expiredInsuranceCount>0&&<span className="adminUserAlert expired">{expiredInsuranceCount} expired insurance</span>}</span>}<small style={active?activeSub:subStyle}>{disputeAttention?'Open disputes require attention':verificationAttention?'Transporter accounts are waiting for verification':subtitle}</small></span><span style={active?activeArrow:disputeAttention?attentionArrow:verificationAttention?financeAttentionArrow:arrowStyle}>{active?'−':'→'}</span></button>};
  const linkCard=(href:string,icon:string,kicker:string,title:string,subtitle:string)=><Link href={href} className="adminSectionCard" style={baseCard}><span style={iconStyle}>{icon}</span><span style={copyStyle}><strong style={kickerStyle}>{kicker}</strong><b style={titleStyle}>{title}</b><small style={subStyle}>{subtitle}</small></span><span style={arrowStyle}>→</span></Link>;
  const payoutLinkCard=()=>{const blocked=blockedPayoutCount>0,held=heldPayoutCount>0,ready=readyPayoutCount>0,attention=held||ready;return <Link href="/admin/payouts" className="adminSectionCard adminPayoutCard" style={blocked?attentionCard:attention?financeAttentionCard:baseCard}><span style={blocked?attentionIcon:attention?financeAttentionIcon:iconStyle}>£</span><span style={copyStyle}><span style={payoutBadgeRow}><strong style={readyPayoutBadge}>{readyPayoutCount} ready</strong><strong style={blockedPayoutBadge}>{blockedPayoutCount} blocked</strong><strong style={heldPayoutBadge}>{heldPayoutCount} held</strong></span><b style={titleStyle}>Payouts</b><small style={subStyle}>{blocked?'Blocked payouts require attention':held?'Held payouts require review':ready?'Payouts are ready to release':'Ready, held & paid transporter funds'}</small></span><span style={blocked?attentionArrow:attention?financeAttentionArrow:arrowStyle}>→</span></Link>};
- return <>
-  <div className="adminSectionGrid" style={gridStyle}>
+ return <div className="adminWorkspace">
+  <nav className="adminSectionGrid" style={gridStyle} aria-label="Admin sections">
    {filterCard('USERS','👥',userCount,'Manage customer & transporter accounts')}
    {filterCard('VERIFICATION','✓',transporterCount,'Review transporter compliance')}
    {filterCard('DISPUTES','🛡️',disputeCount,'Review protected booking disputes')}
    {filterCard('OPERATIONS','🚗','View','Bookings, deliveries & evidence')}
    {payoutLinkCard()}
    {linkCard('/admin/review-disputes','★','Reviews','Review moderation','Moderate challenged customer feedback')}
-  </div>
+  </nav>
+  <div className="adminWorkspaceContent">
   {view!=='ALL'&&<div className="dashboardFilterBar"><span>{actionLabel||`Showing ${labels[view as Exclude<View,'ALL'>].toLowerCase()} only`}</span>{actionLabel?<Link className="textAction" href="/admin">Show everything</Link>:<button className="textAction" onClick={()=>setView('ALL')}>Show everything</button>}</div>}
   {showUsers&&userSection}
   {showVerification&&verificationSection}
   {showDisputes&&disputeSection}
   {showOperations&&operationsSection}
- </>
+  </div>
+ </div>
 }

@@ -79,7 +79,9 @@ try {
   for (const item of ['next', 'react', 'playwright']) versions[item] = JSON.parse(await readFile(path.join(root, 'node_modules', item, 'package.json'), 'utf8')).version;
   await writeFile(path.join(out, 'versions.json'), JSON.stringify(versions, null, 2));
 
-  for (const width of [375, 390, 430, 760]) {
+  // The approved redesign starts at 1024 CSS px. Include the narrow desktop /
+  // tablet range in exact baseline comparisons, not in redesigned navigation checks.
+  for (const width of [375, 390, 430, 760, 761, 844, 932, 1023]) {
     for (const route of oldRoutes) {
       const screenshots = {};
       const expandedScreenshots = {};
@@ -105,7 +107,7 @@ try {
     }
   }
 
-  for (const width of [761, 1024, 1280, 1440, 1920]) {
+  for (const width of [1024, 1280, 1440, 1920]) {
     for (const route of [...oldRoutes, ...newRoutes]) {
       const view = await open(browser, urls.updated, route, width);
       const metrics = await view.page.evaluate(() => ({width: innerWidth, scrollWidth: document.documentElement.scrollWidth}));
