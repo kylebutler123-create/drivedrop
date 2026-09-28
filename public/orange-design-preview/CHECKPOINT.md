@@ -50,3 +50,7 @@ Original clean photos, font identity and editable logo were not supplied. The ac
 Remaining work after design approval: integrate the approved view templates/assets with existing React data/action owners at min-width 1024px, retain current mobile/tablet behaviour, verify all real role/security/payment/report workflows with isolated test records, and run viewport/regression comparisons. This static review does not certify backend parity or production readiness. No production approval is implied.
 
 Before any future edit: fetch the current remote branch again, compare its HEAD with this checkpoint, and preserve later commits. Do not reset or force-push other work.
+
+## Approved photograph update — 28 September 2026
+
+Six user-approved images applied only to the isolated orange preview: Terms sidebar, Help banner, transporter dashboard, customer dashboard, customer login, transporter registration. See ASSET-NOTES.md for reusable file paths. Homepage and existing production/mobile app remain untouched.

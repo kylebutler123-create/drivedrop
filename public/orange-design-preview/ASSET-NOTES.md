@@ -14,3 +14,16 @@ Built-in image generation was used. Reference input files were the four approved
 | assets/drivedrop-sans-regular.woff / drivedrop-sans-bold.woff | Bundled Nimbus Sans from URW Base35. Exact reference font unknown. |
 
 These files, together with the CSS, are the proposed assets for approval. The original image-generation prompts specified no UI, headings, buttons or watermarks in the photos. Photographs have small natural vehicle livery where requested. Generated people, vehicles, ratings and account names in this prototype are illustrative.
+
+## Approved page-specific additions — 28 September 2026
+
+The user approved six separately generated photographs before replacement. Original compositions are preserved in high-quality WebP; CSS controls page framing.
+
+| Asset | Page | Composition |
+|---|---|---|
+| assets/terms-countryside.webp | Terms Countryside | 1106 × 1422 |
+| assets/help-support.webp | Help Support | 2172 × 724 |
+| assets/transporter-dashboard.webp | Transporter Dashboard | 2159 × 728 |
+| assets/customer-dashboard.webp | Customer Dashboard | 2164 × 727 |
+| assets/customer-login.webp | Customer Login | 1106 × 1422 |
+| assets/transporter-register.webp | Transporter Register | 1106 × 1422 |

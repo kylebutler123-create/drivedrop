@@ -29,3 +29,10 @@ dialog{border:1px solid #d2e1f2;border-radius:12px;padding:0;color:var(--navy);f
 #report-form>.field{margin-bottom:20px}#report-form .notice{margin:22px 0}#report-signature{display:block;width:100%;height:175px;border:1px solid #cddbeb;border-radius:7px;background:linear-gradient(transparent 80%,#e7eef8 80%,#e7eef8 81%,transparent 81%);touch-action:none;cursor:crosshair}.report-confirm{display:flex;align-items:flex-start;gap:12px;margin:25px 0}.report-confirm input{width:18px;height:18px;accent-color:var(--orange)}.report-photo-preview{font-size:13px;color:var(--muted);margin:10px 0 20px}.account-security hr{border:0;border-top:1px solid var(--line);margin:25px 0}
 
 .unread-dot{height:7px;width:7px;border-radius:50%;background:var(--orange);flex-shrink:0}
+
+/* Six page-specific photographs approved 28 September 2026. */
+.legal-promo.terms-photo{background-image:linear-gradient(0deg,#061d3ae6,transparent 65%),url('assets/terms-countryside.webp');background-position:center}
+.support-hero{background-image:linear-gradient(90deg,#051b38b8,#051b3866),url('assets/help-support.webp');background-position:center 36%}
+.dashboard-hero:not(.driver){background-image:linear-gradient(90deg,#123551ed 0%,#123551a8 31%,transparent 66%),url('assets/customer-dashboard.webp');background-size:cover;background-position:center 54%}
+.dashboard-hero.driver{background-image:linear-gradient(90deg,#08213ded,#08213d99 35%,transparent 68%),url('assets/transporter-dashboard.webp');background-position:center}
+.auth-photo.approved-account-photo{background-position:center 15%}

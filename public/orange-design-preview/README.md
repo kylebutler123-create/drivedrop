@@ -8,7 +8,7 @@ Open `index.html` or the hosted `/orange-design-preview/index.html` path. Use th
 
 `app.js`, `supplementary-pages.js`, `review-interactions.js`, `style.css`, `legal-content.js`, `assets/*` contain the exact markup, static wording, CSS, fonts and image files displayed. Transfer these assets and visual declarations to existing DriveDrop components after approval; do not reinterpret screenshots. Static images, CSS and text should match the approved preview at the same viewport. Live account records and values must replace illustrative fixture data.
 
-All photographs are new. No old DriveDrop photographs or old green logo are included. The six new photos were generated with the built-in image tool using the approved boards as references. Their clean compositions closely follow the references; they are reconstructions, not recovered hidden photo layers. The orange-pin SVG is a newly drawn, outlined-vector interpretation. Nimbus Sans is bundled to make typography reproducible; the reference's original font was not supplied. Assets are inventoried and hashed in `ASSETS.sha256`.
+All photographs are new. No old DriveDrop photographs or old green logo are included. The original six photos were generated with the built-in image tool using the approved boards as references. Their clean compositions closely follow the references; they are reconstructions, not recovered hidden photo layers. The orange-pin SVG is a newly drawn, outlined-vector interpretation. Nimbus Sans is bundled to make typography reproducible; the reference's original font was not supplied. Assets are inventoried and hashed in `ASSETS.sha256`.
 
 Reference boards are JPEG-encoded copies of images embedded in the supplied PDF, at their original 1448×1086 dimensions. They are comparison aids, never used as webpage backgrounds containing baked-in UI. The unchanged PDF remains separately supplied by the user.
 
@@ -50,3 +50,5 @@ Review this concrete preview and its newly reconstructed assets. After approval,
 ## Validation
 
 `node verify-preview.mjs` renders every state in a minimal DOM and checks local asset paths and navigation targets. Browser review checks real rendering and selected local interactions. This does not claim live-backend end-to-end verification.
+
+Six additional page-specific photographs approved on 28 September are now used for Terms, Help, both dashboards, customer login and transporter registration; see ASSET-NOTES.md.
