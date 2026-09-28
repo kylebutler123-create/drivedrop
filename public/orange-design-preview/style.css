@@ -37,5 +37,5 @@ dialog{border:1px solid #d2e1f2;border-radius:12px;padding:0;color:var(--navy);f
 .dashboard-hero.driver{background-image:linear-gradient(90deg,#08213ded,#08213d99 35%,transparent 68%),url('assets/transporter-dashboard.webp');background-position:center}
 .auth-photo.approved-account-photo{background-position:center 15%}
 
-/* Match the approved 3:1 photograph so the whole transporter remains visible. */
-.transporter-banner{height:auto;aspect-ratio:3/1;display:flex;align-items:center;background-color:#08213b;background-image:linear-gradient(90deg,#08213b66 0%,#08213b33 40%,transparent 70%),url('assets/home-transporter-banner.webp');background-size:cover;background-position:center;background-repeat:no-repeat}
+/* Reframed photograph keeps the full transporter inside the original shallow banner. */
+.transporter-banner{height:275px;background-color:#08213b;background-image:linear-gradient(90deg,#08213b66 0%,#08213b33 40%,transparent 70%),url('assets/home-transporter-wide.webp');background-size:cover;background-position:center 62%;background-repeat:no-repeat}
