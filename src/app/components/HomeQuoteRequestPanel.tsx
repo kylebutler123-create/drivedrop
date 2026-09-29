@@ -201,9 +201,11 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
       {error&&<div className="formNotice errorNotice homeQuoteError" role="alert">{error}</div>}
       {wizard&&<div className="approvedWizard approvedWizardControls"><button type="button" className="btn light" onClick={()=>step>1?setStep(current=>current-1):window.location.assign('/')}>← Back</button>{step<4&&<button type="button" className="btn orange" onClick={nextStep}>Continue →</button>}</div>}
       <button type={expanded?'submit':'button'} className="btn orange quoteCta" disabled={submitting} onClick={expanded?undefined:()=>onExpandChange(true)}>{submitting?'Submitting request…':'Get My Quotes'}</button>
+      {!wizard&&<button type="button" className="homeQuoteExpand approvedInlineExpand" aria-label={expanded?'Collapse quote details':'Expand quote details'} aria-expanded={expanded} aria-controls="home-quote-extra" disabled={submitting} onClick={()=>{setError('');onExpandChange(!expanded)}}>{expanded?'−':'+'}</button>}
       <p className="quoteSmall">No payment required to request quotes.</p>
     </form>
     {wizard&&<aside className="approvedQuoteSummary"><h2>Your Quote</h2><small>Step {step} of 4</small><hr/>{[['collection','Collection'],['delivery','Delivery'],['vehicleType','Vehicle'],['transportType','Transport type']].map(([key,label])=><div key={key}><strong>{label}</strong><span>{key==='transportType'?(transportTypes.find(type=>type.value===draft[key])?.label||'Not yet specified'):draft[key]||'Not yet specified'}</span></div>)}<p>Compare transport quotes<br/>in your customer account.</p></aside>}
   </>;
   return wizard?<div className="approvedWizardHost" data-step={step}>{content}</div>:content;
 }
+

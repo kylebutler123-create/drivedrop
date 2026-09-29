@@ -336,3 +336,54 @@
 @media screen and (min-width:1024px){
  body.approvedDesktop .legalCard{margin:0;width:100%}
 }
+
+
+/* Approved compact homepage: one row, with the remaining fields revealed in place.
+   The original controls and form handlers are retained for every viewport. */
+.approvedInlineExpand{display:none}
+@media screen and (min-width:1024px){
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .desktopHeroSlide:first-child{background-image:linear-gradient(90deg,#07213bbf,transparent 78%),url('/orange-design-preview/assets/westminster-hero-reframed.webp')!important;background-size:cover,126% auto!important;background-position:center,75% 73%!important;background-repeat:no-repeat!important}
+ body.approvedDesktop .desktopHeroEyebrow{display:inline-flex!important;align-items:center!important;gap:7px!important}
+ body.approvedDesktop .desktopHeroEyebrow img{margin:0!important;transform:translateY(-2px)}
+ body.approvedDesktop .approvedHomeSections{padding-top:80px}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell.isQuoteDetails{top:calc(100% - 80px)!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .quotePanel{border-radius:11px!important;border:1px solid #e6eaf0!important;padding:18px 28px!important;box-shadow:0 12px 32px #09223d14!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .desktopQuotePurpose{left:20px!important;height:44px!important;gap:0!important;background:linear-gradient(#fff,#f6f7f9)!important;border-radius:11px 11px 0 0!important;padding:4px 8px 0!important;bottom:100%!important;box-shadow:0 -2px 8px #09223d08!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .desktopQuotePurpose>*{position:relative;padding:11px 20px;border:0;background:transparent;border-radius:8px 8px 0 0;font-size:13px;height:40px}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .desktopQuotePurpose>.isActive{background:#fff}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .desktopQuotePurpose>.isActive:after{content:'';position:absolute;left:10px;right:10px;bottom:0;height:2px;background:#ff681b}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeQuoteHeading,
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .quoteSmall,
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .addressField>small,
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .homeQuoteVehicle>strong,
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .homeQuoteTransport>strong{display:none!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 195px 260px!important;gap:0 18px!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .homeQuoteVehicle,
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .homeQuoteVehicle>.homeQuoteFieldGrid,
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .homeQuoteTransport,
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .homeQuoteLocations{display:contents!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .homeQuoteLocations>.field{grid-row:1!important;grid-column:1!important;margin:0!important;min-width:0}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .homeQuoteLocations>.field:nth-child(2){grid-column:2!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .homeQuoteVehicle>.homeQuoteFieldGrid>.field:first-child{display:block!important;grid-row:1!important;grid-column:3!important;margin:0!important;min-width:0}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .quoteCta{grid-row:1!important;grid-column:4!important;width:210px!important;min-width:0!important;min-height:44px!important;align-self:start!important;justify-self:start!important;margin:23px 0 0 12px!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .approvedInlineExpand{display:block;grid-row:1!important;grid-column:4!important;position:static!important;align-self:start;justify-self:end;margin:27px 0 0!important;width:36px;height:36px;border:1px solid #d8e3ee;background:#f6faff}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteDetails:not(.isQuoteExpanded) .homeQuoteForm .homeQuoteVehicle>.homeQuoteFieldGrid>.field:not(:first-child),
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteDetails:not(.isQuoteExpanded) .homeQuoteDateTransport{display:none!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .homeQuoteVehicle>.homeQuoteFieldGrid>.field:not(:first-child){display:block!important;grid-row:2!important;margin-top:22px!important;min-width:0}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .homeQuoteVehicle>.homeQuoteFieldGrid>.field:nth-child(2){grid-column:1!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .homeQuoteVehicle>.homeQuoteFieldGrid>.field:nth-child(3){grid-column:2!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .homeQuoteVehicle>.homeQuoteFieldGrid>.field:nth-child(4){grid-column:3!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .homeQuoteVehicle>.homeQuoteFieldGrid>.field:nth-child(5){grid-column:4!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .homeQuoteDateTransport{display:grid!important;grid-template-columns:1fr 1fr;grid-row:3!important;grid-column:1/3!important;align-self:start;margin-top:22px;padding-top:22px;border-top:1px solid #e3eaf3}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .isQuoteExpanded .homeQuoteExtra{grid-row:3!important;grid-column:3/5!important;margin-top:22px!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm>.formNotice{grid-row:4!important;grid-column:1/-1!important;margin-top:20px}
+}
+@media screen and (min-width:1024px) and (max-width:1199px){
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 155px 200px!important;gap:0 12px!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell .homeQuoteForm .quoteCta{width:160px!important;margin-left:0!important;padding-left:10px;padding-right:10px}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .desktopHeroSlide:first-child{background-size:cover,auto 126%!important}
+}
+@media screen and (min-width:1024px){
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell.isQuoteExpanded .homeQuoteForm:has(>.formNotice)>.quoteCta{grid-row:1!important;grid-column:4!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell.isQuoteExpanded .homeQuoteForm:has(>.formNotice)>.formNotice{grid-row:auto!important;grid-column:1/-1!important}
+}
