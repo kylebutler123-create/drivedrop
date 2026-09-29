@@ -440,3 +440,8 @@
 @media screen and (min-width:1024px) and (max-width:1199px){
  body.approvedDesktop .homePage:not(.desktopQuotePage) .desktopHeroSlogan{font-size:28px;top:10px;right:15px}
 }
+@media screen and (min-width:1024px){
+ /* Tapered, curved brush accents from the approved reference. */
+ body.approvedDesktop .desktopHeroSlogan:after{height:20px;margin-top:5px;border-radius:0;transform:none;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 28' preserveAspectRatio='none'%3E%3Cpath fill='%23ff681b' d='M2 22C57 7 120 0 178 4C125 4 60 12 3 26Z'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+ body.approvedDesktop .referenceFooterBottom i{width:46px;height:12px;flex-shrink:0;transform:none;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 14'%3E%3Cpath fill='%23ff681b' d='M1 10Q25 0 47 2Q24 4 1 13Z'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+}
