@@ -387,3 +387,46 @@
  body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell.isQuoteExpanded .homeQuoteForm:has(>.formNotice)>.quoteCta{grid-row:1!important;grid-column:4!important}
  body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell.isQuoteExpanded .homeQuoteForm:has(>.formNotice)>.formNotice{grid-row:auto!important;grid-column:1/-1!important}
 }
+
+/* Approved homepage reference: desktop only; quote and account forms stay intact. */
+@font-face{font-family:DriveDropScript;src:url('/orange-design-preview/assets/caveat.ttf') format('truetype');font-style:normal;font-weight:400 700;font-display:swap}
+.desktopHeroSlogan{display:none}
+@media screen and (min-width:1024px){
+ .homePage:not(.desktopQuotePage) .desktopHeroSlogan{display:block;position:absolute;right:35px;top:22px;z-index:2;font:500 43px/.95 DriveDropScript,cursive;color:#092344;transform:rotate(-9deg);text-align:center;pointer-events:none}
+ .desktopHeroSlogan span{display:block}.desktopHeroSlogan:after{content:'';display:block;height:5px;background:#ff681b;border-radius:100% 20%;margin:12px 0 0;transform:rotate(-5deg)}
+ body.approvedDesktop .approvedReferenceHome{padding-top:46px;background:#fbfcfe}
+ .referenceStats{display:flex;justify-content:center;text-align:center;margin:0 auto 28px;gap:0}
+ .referenceStats>div{width:29%;border-right:1px solid #e4e9ef}.referenceStats>div:last-child{border:0}
+ .referenceStats strong{font-size:23px;line-height:1.15;color:#071c43}.referenceStats small{display:block;font-size:12px;color:#53627b;margin-top:3px}.referenceStars{color:#ff681b;letter-spacing:1px}
+ .referenceMain{display:grid;grid-template-columns:minmax(0,2.15fr) minmax(0,1fr);gap:22px;align-items:start}
+ .referenceHow{text-align:left!important;padding:0!important}.referenceMain .approvedEyebrow{font-size:10px;letter-spacing:1.5px}
+ .referenceMain h2{color:#071c43;font-size:26px;line-height:1.15;margin:4px 0 5px;letter-spacing:-.6px}
+ .referenceHow>p{font-size:13px;color:#53627b;margin:0 0 15px}
+ .referenceSteps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+ .referenceSteps article{position:relative;text-align:center;background:#fff;border:1px solid #e3e8ef;border-radius:8px;padding:12px 12px 15px;box-shadow:0 5px 15px #09223d03}
+ .referenceStepNumber{position:absolute;left:12px;top:14px;background:#ff681b;color:white;border-radius:50%;width:27px;height:27px;display:grid;place-items:center;font-size:13px}
+ .referenceStepIcon{display:grid;place-items:center;background:#fff0e6;color:#ff681b;width:48px;height:48px;border-radius:50%;margin:0 auto 9px}.referenceStepIcon svg{width:27px;height:27px}
+ .referenceSteps h3{font-size:13px;margin:0 0 7px;color:#071c43;line-height:1.2}.referenceSteps p{font-size:12px;line-height:1.45;color:#43516a;margin:0}
+ .referenceReviewHeading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.referenceReviewHeading h2{font-size:22px;white-space:nowrap}
+ .referenceReviewControls{display:flex;gap:8px}.referenceReviewControls button{border:1px solid #e4eaf1;background:#fff;color:#10294a;border-radius:50%;width:27px;height:27px;cursor:pointer;font-size:23px;line-height:20px;display:grid;place-items:center}
+ .referenceReviewCard{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:12px;background:white;border:1px solid #e3e8ef;padding:12px 13px;border-radius:8px;min-height:191px}
+ .referenceQuote{font-size:42px;line-height:25px;color:#ff681b;font-weight:bold}.referenceReviewCard p{font-size:12px;line-height:1.45;color:#43516a;margin:0 0 8px;min-height:86px}.referenceReviewCard strong,.referenceReviewCard small{display:block;font-size:12px}.referenceReviewCard small{color:#647799;margin-top:2px}
+ .referenceReviewCard figure{margin:5px 0 0;padding:6px 6px 10px;align-self:center;transform:rotate(-6deg);background:#fff;box-shadow:0 3px 13px #09223d12}.referenceReviewCard img{display:block;width:100%;height:100px;object-fit:cover;border-radius:3px}.referenceReviewCard figcaption{font:500 18px DriveDropScript,cursive;text-align:center;color:#10294a;white-space:nowrap}.referenceReviewCard figcaption:after{content:'';height:2px;background:#ff681b;display:block;width:50%;margin-left:auto}
+ .referenceSampleNote{text-align:center;color:#748092;font-size:10px;margin:9px 0 12px}
+ body.approvedDesktop:has(.approvedReferenceHome)>.desktopPublicFooter{display:none}
+ .referenceFooter{position:relative;overflow:hidden;background:#081f3e;color:#dfe8f3;padding:25px 0 20px}
+ .referenceFooter:after{content:'';position:absolute;width:120px;height:150px;right:6px;top:22px;border:27px solid #ffffff07;border-radius:55% 55% 55% 0;transform:rotate(-45deg);pointer-events:none}
+ .referenceFooterGrid{display:grid;grid-template-columns:1.55fr .9fr .95fr 1.1fr 1.75fr 1.25fr;gap:24px;position:relative;z-index:1;align-items:start}
+ .referenceFooterLogo img{max-width:100%;height:auto;width:190px}.referenceFooter h2{font-size:12px;color:white;margin:0 0 9px}.referenceFooter nav>a{display:block;color:#dfe8f3;font-size:11px;line-height:1.55;text-decoration:none}.referenceFooter a:hover{text-decoration:underline}
+ .referenceNewsletter{border-left:1px solid #ffffff12;padding-left:22px}.referenceNewsletter p{font-size:10px;margin:0 0 11px}.referenceNewsletter>div{display:flex;min-width:0}.referenceNewsletter input{width:100%;min-width:0;height:32px;background:#fff;border:0;border-radius:4px 0 0 4px;padding:8px;font-size:10px;color:#647799;opacity:1}.referenceNewsletter button{border:0;border-radius:0 4px 4px 0;background:#ff681b;color:white;font-size:10px;padding:0 12px;opacity:1}.referenceNewsletter small{font-size:9px;display:block;margin-top:6px;color:#aebbd0}
+ .referenceSocial{border-left:1px solid #ffffff12;padding-left:20px}.referenceSocial>div{display:flex;gap:16px;align-items:center;margin:8px 0 22px}.referenceSocial span{font-weight:bold;font-size:17px;color:white}.referenceSocial>a{color:#dfe8f3;font-size:9px;display:inline-block;margin-right:9px}
+ .referenceFooterBottom{display:flex;justify-content:space-between;align-items:center;margin-top:22px;font-size:10px}.referenceFooterBottom>span:last-child{font-size:8px;letter-spacing:2px;display:flex;align-items:center;gap:12px}.referenceFooterBottom i{display:inline-block;width:42px;height:3px;background:#ff681b;transform:rotate(-9deg)}
+}
+@media screen and (min-width:1024px) and (max-width:1199px){
+ .referenceMain{grid-template-columns:2fr 1fr;gap:16px}.referenceReviewHeading h2{font-size:18px}.referenceReviewControls{gap:4px}.referenceReviewControls button{width:23px;height:23px}.referenceSteps{gap:8px}.referenceSteps article{padding:12px 8px}.referenceStepNumber{left:6px;width:23px;height:23px}.referenceSteps h3{font-size:12px}.referenceFooterGrid{gap:16px;grid-template-columns:1.2fr .8fr 1fr 1.1fr 1.6fr}.referenceSocial{grid-column:5;border:0;padding:0}.referenceSocial>div{margin:0 0 5px}.referenceNewsletter{padding-left:10px}.homePage:not(.desktopQuotePage) .desktopHeroSlogan{font-size:34px;right:23px}
+}
+@media screen and (min-width:1024px){
+ body.approvedDesktop .homePage .referenceFooter h2{color:white!important;font-size:12px!important;margin:0 0 9px!important;text-align:left!important}
+ body.approvedDesktop .homePage .referenceHow>h2,body.approvedDesktop .homePage .referenceHow>.approvedEyebrow{text-align:left!important}
+ .referenceReviews{padding-top:0}.referenceReviewHeading{min-height:73px;align-items:flex-start;padding-top:0}
+}
