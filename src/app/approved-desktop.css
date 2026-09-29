@@ -453,3 +453,7 @@
  .approvedPublic-for-transporters .approvedPublicHero{background-image:linear-gradient(90deg,#08213de6 0%,#08213d88 35%,#08213d12 65%,transparent 80%),url('/orange-design-preview/assets/hero-transporters.webp');background-position:center top;background-size:cover}
  .approvedPublic-about .approvedPublicHero{background-image:linear-gradient(90deg,#08213de6 0%,#08213d88 35%,#08213d12 65%,transparent 80%),url('/orange-design-preview/assets/hero-about.webp');background-position:center top;background-size:cover}
 }
+
+@media screen and (min-width:1024px){
+ .approvedPublic-help .approvedPublicHero.isHelp{background-image:linear-gradient(90deg,#08213db3, #08213d33 50%,transparent 75%),url('/orange-design-preview/assets/hero-help.webp');background-position:center top;background-size:cover}
+}
