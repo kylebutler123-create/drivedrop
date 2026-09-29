@@ -36,7 +36,7 @@
  body.approvedDesktop .approvedFooterCoverage>.approvedIcon{width:30px;height:30px;float:left;margin:0 12px 20px 0}
  body.approvedDesktop:has(.dashboardShell)>.desktopPublicFooter{display:none}
  /* Homepage uses the existing single quote form. */
- body.approvedDesktop .homePage:not(.desktopQuotePage){max-width:1440px;margin:auto;background:linear-gradient(135deg,#fff,#f8fbff 68%,#f1f7fd);padding:0!important}
+ body.approvedDesktop .homePage:not(.desktopQuotePage){width:100%;max-width:none;margin:auto;background:linear-gradient(135deg,#fff,#f8fbff 68%,#f1f7fd);padding:0!important}
  body.approvedDesktop .homePage:not(.desktopQuotePage)>:is(.colourBand,.photoSplit,.photoBanner,.transporterCta,.siteFooter){display:none!important}
  body.approvedDesktop .homePage .visualHero{height:600px!important;min-height:600px!important;max-height:600px!important;margin:0;border-radius:0;overflow:visible;background:none!important;padding:0!important;isolation:auto}
  body.approvedDesktop .homePage .desktopHeroSlides{height:600px!important;max-height:none!important;inset:0;border-radius:0;overflow:hidden}
