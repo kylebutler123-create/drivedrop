@@ -461,3 +461,27 @@
 @media screen and (min-width:1024px){
  .approvedPublic-help .approvedPublicHero.isHelp{background-color:#102943;background-image:linear-gradient(90deg,#102943 0%,#102943 calc(100% - 700px),transparent calc(100% - 360px)),url('/orange-design-preview/assets/hero-help.webp');background-size:cover,auto 100%;background-position:center,right center;background-repeat:no-repeat}
 }
+
+
+/* Detailed desktop How it works journey. The existing mobile content remains separate. */
+@media screen and (min-width:1024px){
+ body.approvedDesktop .howDesktop{background:#fff}
+ body.approvedDesktop .howDesktop .howHero{min-height:300px;padding:38px 0;background-position:center 35%}
+ body.approvedDesktop .howHero h1{font-size:39px;max-width:730px;margin:12px 0 13px;line-height:1.12}
+ body.approvedDesktop .howHero p{max-width:670px;font-size:15px;margin:0 0 22px}
+ .howHeroActions{display:flex;gap:15px}.howHeroActions .btn{font-size:13px;gap:12px}body.approvedDesktop .howDesktop .howHeroActions .btn.light{background:#09234355;border:1px solid white;color:white}
+ .howBenefits{background:#f5f9fe;padding:19px 0}.howBenefits>.approvedPageWidth{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}.howBenefits article{display:flex;align-items:center;gap:15px;border-right:1px solid #d6e3f1;padding-right:24px}.howBenefits article:last-child{border:0}.howBenefits .approvedIcon{width:29px;height:29px;flex-shrink:0;color:#1679e7}
+ body.approvedDesktop .howDesktop h2{font-size:24px;line-height:1.2;margin:0 0 12px;color:#071c43;letter-spacing:-.4px}
+ body.approvedDesktop .howBenefits h2{font-size:14px;margin:0 0 4px;letter-spacing:0}.howBenefits p{font-size:12px;line-height:1.4;margin:0;color:#62748e}
+ .howProcess{padding-top:27px;scroll-margin-top:20px}.howStepGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.howStepGrid article{border:1px solid #e0e8f2;border-radius:6px;padding:16px 15px;background:#fff}.howStepTop{display:flex;gap:24px;align-items:center;margin-bottom:13px}.howStepTop>span{width:31px;height:31px;display:grid;place-items:center;border-radius:50%;background:#ff681b;color:white;font-size:14px;font-weight:700}.howStepTop .approvedIcon{width:29px;height:29px;color:#1679e7}.howStepGrid h3{font-size:15px;line-height:1.2;margin:0 0 10px;color:#071c43}.howStepGrid p{font-size:12px;line-height:1.55;color:#62748e;margin:0}
+ .howPreparation{display:grid;grid-template-columns:1.55fr 1fr 1.1fr;gap:20px;margin-top:20px;margin-bottom:22px;align-items:start}.howPreparation>img{width:100%;height:280px;object-fit:cover;object-position:center 25%;border-radius:6px}
+ .howChecklist,.howFaq{border:1px solid #e0e8f2;border-radius:6px;padding:17px;min-height:280px}
+ body.approvedDesktop .howPreparation h2{font-size:19px;margin:0 0 9px;letter-spacing:-.4px}.howChecklist>p{font-size:12px;line-height:1.5;color:#62748e;margin:0 0 12px}.howChecklist ul{list-style:none;padding:0;margin:0;display:grid;gap:12px}.howChecklist li{display:flex;align-items:flex-start;gap:10px;font-size:12px;line-height:1.4;color:#173754}.howChecklist .approvedIcon{flex-shrink:0;background:#ff681b;color:white;border-radius:50%;width:19px;height:19px;padding:4px}
+ .howFaq details{border:1px solid #e0e8f2;border-radius:5px;margin-top:6px}.howFaq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;font-weight:700;line-height:1.35;padding:10px;color:#071c43}.howFaq summary::-webkit-details-marker{display:none}.howFaq summary>span{color:#1679e7;font-size:18px;line-height:1}.howFaq details[open] summary>span{transform:rotate(180deg)}.howFaq details>p{font-size:12px;line-height:1.5;margin:0;padding:0 10px 11px;color:#62748e}
+ .howAccountStrip{background:#edf5ff;padding:20px 0}.howAccountStrip>.approvedPageWidth{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:24px;align-items:center}.howAccountStrip article{display:flex;gap:15px;align-items:center;border-left:1px solid #c7d9ed;padding-left:22px}.howAccountStrip .approvedIcon{width:29px;height:29px;flex-shrink:0;color:#1679e7}body.approvedDesktop .howAccountStrip h2{font-size:18px;margin:0 0 5px}.howAccountStrip h3{font-size:13px;margin:0 0 6px}.howAccountStrip p{font-size:11px;line-height:1.5;color:#62748e;margin:0}
+ .howFinalCta{background:#081f3e;padding:21px 0;color:#fff}.howFinalCta>.approvedPageWidth{display:flex;align-items:center;gap:25px}body.approvedDesktop .howFinalCta h2{color:white!important;font-size:22px;margin:0;white-space:nowrap}.howFinalCta p{font-size:12px;line-height:1.5;flex:1;margin:0;color:#dce7f5}.howFinalCta .btn{font-size:12px;gap:15px}.howFinalCta small{display:block;text-align:center;font-size:10px;margin-top:7px;color:#dce7f5}.howFinalCta small a{color:#ff8b48;text-decoration:underline}
+ body.approvedDesktop:has(.howDesktop)>.desktopPublicFooter.referenceFooter{margin-top:0;border-top:1px solid #ffffff25}
+}
+@media screen and (min-width:1024px) and (max-width:1199px){
+ .howStepGrid{gap:9px}.howStepGrid article{padding:13px 11px}.howStepGrid h3{font-size:14px}.howPreparation{grid-template-columns:1.15fr 1fr 1.15fr;gap:12px}.howChecklist,.howFaq{padding:13px}.howAccountStrip>.approvedPageWidth{gap:12px;grid-template-columns:1.2fr repeat(3,1fr)}.howAccountStrip article{gap:9px;padding-left:12px}.howFinalCta>.approvedPageWidth{gap:18px}body.approvedDesktop .howFinalCta h2{font-size:20px}
+}
