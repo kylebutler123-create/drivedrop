@@ -40,7 +40,7 @@
  body.approvedDesktop .homePage:not(.desktopQuotePage)>:is(.colourBand,.photoSplit,.photoBanner,.transporterCta,.siteFooter){display:none!important}
  body.approvedDesktop .homePage .visualHero{height:600px!important;min-height:600px!important;max-height:600px!important;margin:0;border-radius:0;overflow:visible;background:none!important;padding:0!important;isolation:auto}
  body.approvedDesktop .homePage .desktopHeroSlides{height:600px!important;max-height:none!important;inset:0;border-radius:0;overflow:hidden}
- body.approvedDesktop .homePage .desktopHeroSlide:first-child{background:linear-gradient(90deg,#07213bbf,transparent 78%),url('/orange-design-preview/assets/london-transporter.webp') center 48%/cover!important;opacity:1!important}
+ body.approvedDesktop .homePage .desktopHeroSlide:first-child{background:linear-gradient(90deg,#07213bbf,transparent 78%),url('/orange-design-preview/assets/approved-westminster-hero.webp') center 48%/cover!important;opacity:1!important}
  body.approvedDesktop .homePage .desktopHeroSlide:nth-child(2),body.approvedDesktop .homePage .heroOverlay{display:none!important}
  body.approvedDesktop .homePage .visualHeroInner{position:relative;display:block;width:100%;max-width:1440px;height:600px!important;min-height:0!important;margin:0 auto;padding:0!important;overflow:visible}
  body.approvedDesktop .homePage .marketHeroCopy{display:none!important}
