@@ -457,3 +457,7 @@
 @media screen and (min-width:1024px){
  .approvedPublic-help .approvedPublicHero.isHelp{background-image:linear-gradient(90deg,#08213db3, #08213d33 50%,transparent 75%),url('/orange-design-preview/assets/hero-help.webp');background-position:center top;background-size:cover}
 }
+
+@media screen and (min-width:1024px){
+ .approvedPublic-help .approvedPublicHero.isHelp{background-color:#102943;background-image:linear-gradient(90deg,#102943 0%,#102943 calc(100% - 700px),transparent calc(100% - 360px)),url('/orange-design-preview/assets/hero-help.webp');background-size:cover,auto 100%;background-position:center,right center;background-repeat:no-repeat}
+}
