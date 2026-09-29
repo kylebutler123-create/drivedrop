@@ -404,8 +404,8 @@
  .referenceHow>p{font-size:13px;color:#53627b;margin:0 0 15px}
  .referenceSteps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
  .referenceSteps article{position:relative;text-align:center;background:#fff;border:1px solid #e3e8ef;border-radius:8px;padding:12px 12px 15px;box-shadow:0 5px 15px #09223d03}
- .referenceStepNumber{position:absolute;left:12px;top:14px;background:#071c43;color:white;border-radius:50%;width:27px;height:27px;display:grid;place-items:center;font-size:13px}
- .referenceStepIcon{display:grid;place-items:center;background:#fff0e6;color:#ff681b;width:48px;height:48px;border-radius:50%;margin:0 auto 9px}.referenceStepIcon svg{width:27px;height:27px}
+ .referenceStepNumber{position:absolute;left:12px;top:14px;background:#ff681b;color:white;border-radius:50%;width:27px;height:27px;display:grid;place-items:center;font-size:13px}
+ .referenceStepIcon{display:grid;place-items:center;background:#fff0e6;color:#071c43;width:48px;height:48px;border-radius:50%;margin:0 auto 9px}.referenceStepIcon svg{width:27px;height:27px}
  .referenceSteps h3{font-size:13px;margin:0 0 7px;color:#071c43;line-height:1.2}.referenceSteps p{font-size:12px;line-height:1.45;color:#43516a;margin:0}
  .referenceReviewHeading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.referenceReviewHeading h2{font-size:22px;white-space:nowrap}
  .referenceReviewControls{display:flex;gap:8px}.referenceReviewControls button{border:1px solid #e4eaf1;background:#fff;color:#10294a;border-radius:50%;width:27px;height:27px;cursor:pointer;font-size:23px;line-height:20px;display:grid;place-items:center}
