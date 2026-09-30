@@ -577,3 +577,16 @@
   background-repeat:no-repeat;
  }
 }
+
+/* Customer FAQ controls match the approved How it works chevrons. */
+@media screen and (min-width:1024px){
+ .customerFaq summary{min-height:50px;gap:12px}
+ .customerFaq summary>.customerFaqChevron{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:8px;background:#edf5ff;color:#081f3e;font-size:0;line-height:0;transition:background-color .18s,color .18s}
+ .customerFaqChevron svg{width:17px;height:17px;transition:transform .18s}
+ .customerFaq details[open] summary>.customerFaqChevron{transform:none;background:#fff0e7;color:#ff681b}
+ .customerFaq details[open] .customerFaqChevron svg{transform:rotate(180deg)}
+ .customerFaq summary:hover>.customerFaqChevron{background:#e0edfd}
+ .customerFaq details[open] summary:hover>.customerFaqChevron{background:#ffe4d2}
+ .customerFaq summary:focus-visible{outline:2px solid #ff681b;outline-offset:2px;border-radius:5px}
+}
+@media (prefers-reduced-motion:reduce){.customerFaqChevron,.customerFaqChevron svg{transition:none!important}}
