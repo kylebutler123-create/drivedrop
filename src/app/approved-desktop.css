@@ -666,7 +666,7 @@
 /* Approved desktop About DriveDrop page. */
 @media screen and (min-width:1024px){
  body.approvedDesktop .aboutDesktop{background:#fff}
- body.approvedDesktop .aboutDesktop .aboutPageHero{min-height:300px;padding:42px 0;background-image:linear-gradient(90deg,#081f3eea 0%,#081f3ebb 30%,#081f3e22 58%,transparent 75%),url('/orange-design-preview/assets/hero-about-countryside.webp');background-color:#081f3e;background-size:cover,96% auto;background-position:center,right 65%;background-repeat:no-repeat}
+ body.approvedDesktop .aboutDesktop .aboutPageHero{min-height:300px;padding:42px 0;background-image:linear-gradient(90deg,#081f3eea 0%,#081f3ebb 30%,#081f3e22 58%,transparent 75%),url('/orange-design-preview/assets/hero-about-countryside-v2.webp');background-color:#081f3e;background-size:cover,96% auto;background-position:center,right 65%;background-repeat:no-repeat}
  body.approvedDesktop .aboutPageHero h1{font-size:40px;line-height:1.1;margin:12px 0;max-width:750px}
  body.approvedDesktop .aboutPageHero p{font-size:17px;line-height:1.4;max-width:550px;margin:0 0 20px}
  .aboutActions{display:flex;gap:18px;align-items:center}.aboutActions .btn{font-size:13px}
