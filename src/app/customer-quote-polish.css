@@ -99,7 +99,7 @@
 @media screen and (min-width:1024px){
  body.approvedDesktop .customerQuotePolish .quoteDateField{position:relative}
  body.approvedDesktop .customerQuotePolish .quoteDateField input:invalid{color:transparent}
- body.approvedDesktop .customerQuotePolish .quoteDateField input:invalid::-webkit-datetime-edit{color:transparent}
+ body.approvedDesktop .customerQuotePolish .quoteDateField input:invalid::-webkit-datetime-edit{color:transparent;opacity:0}
  body.approvedDesktop .customerQuotePolish .quoteDatePlaceholder{pointer-events:none;position:absolute;left:14px;bottom:14px;color:#7389a7;font-size:14px;font-weight:400;line-height:20px}
  body.approvedDesktop .customerQuotePolish .quoteDateField input:valid+.quoteDatePlaceholder{display:none}
 }
