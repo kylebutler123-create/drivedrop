@@ -1,0 +1,45 @@
+// Offline presentation contract: no network requests or real quote submissions.
+const fs = require('node:fs');
+const path = require('node:path');
+const assert = require('node:assert/strict');
+const Module = require('node:module');
+const swc = require('next/dist/build/swc');
+const React = require('react');
+const {renderToStaticMarkup} = require('react-dom/server');
+const root = path.resolve(__dirname, '..');
+const resolve = Module._resolveFilename;
+Module._resolveFilename = function(request, parent, ...args) {
+  return resolve.call(this, request.startsWith('@/') ? path.join(root, 'src', request.slice(2)) : request, parent, ...args);
+};
+for (const ext of ['.ts', '.tsx']) require.extensions[ext] = (module, filename) => {
+  const source = fs.readFileSync(filename, 'utf8');
+  const {code} = swc.transformSync(source, {filename, jsc: {parser: {syntax:'typescript',tsx:true}, transform: {react: {runtime:'automatic'}}}, module: {type:'commonjs'}});
+  module._compile(code, filename);
+};
+const Quote = require('../src/app/components/CustomerQuoteRequest.tsx').default;
+const props = {hidden:false,newJobId:null,selectedVehicleType:'',onVehicleTypeChange(){},onSubmit(){},submitting:false,message:null,onNavigate(){},activity:{QUOTES:0,BOOKINGS:0,COMPLETED:0,CANCELLED:0}};
+const render = overrides => renderToStaticMarkup(React.createElement(Quote, {...props,...overrides}));
+const html = render();
+assert.equal((html.match(/<form\b/g)||[]).length,1,'Exactly one form, not separate desktop/mobile submissions');
+const fields = [...html.matchAll(/<(?:input|select)\b[^>]*\bname="([^"]+)"/g)].map(m=>m[1]);
+assert.deepEqual(fields,['collection','delivery','collectionDate','transportType','vehicleType','vehicleMake','vehicleModel','registration','running']);
+assert.equal((html.match(/\brequired=""/g)||[]).length,7);
+const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
+assert.equal(new Set(ids).size,ids.length,'No duplicate input IDs');
+assert.ok(!/<input[^>]*name="registration"[^>]*required/.test(html));
+for(const wording of ['Get a quote','Collection &amp; delivery','Vehicle details','What happens next?','Receive quotes','Compare your options','Choose your transporter','Request quotes','Help &amp; support','Registration (optional)']) assert.ok(html.includes(wording),wording);
+assert.ok(html.includes('customer-quote-countryside-approved.webp'));
+assert.ok(html.includes('width="419" height="263"'));
+assert.ok(html.includes('aria-label="Quote request guidance"'));
+const busy=render({submitting:true});
+assert.ok(/type="submit"[^>]*disabled=""[^>]*aria-busy="true"/.test(busy));
+assert.ok(busy.includes('Submitting request…'));
+assert.ok(render({message:{type:'error',text:'Compatibility warning'}}).includes('role="alert">Compatibility warning'));
+assert.ok(render({message:{type:'success',text:'Saved'}}).includes('role="status">Saved'));
+assert.ok(render({hidden:true}).includes('hidden=""'));
+assert.ok(render({activity:{...props.activity,COMPLETED:2}}).includes('aria-label="2 updates"'));
+const css=fs.readFileSync(path.join(root,'src/app/customer-quote-polish.css'),'utf8');
+assert.ok(css.includes('@media screen and (min-width:1024px)'));
+assert.ok(css.includes('height:auto;aspect-ratio:419/263;object-fit:contain'));
+assert.ok(css.includes('.customerQuoteRequest .quoteDesktopOnly{display:none}'));
+console.log('PASS: nine original fields, required/optional constraints, unique labels/IDs, exact copy, approved image ratio, busy/error/success states, activity indicators and desktop-scoped styles.');

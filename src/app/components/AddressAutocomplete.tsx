@@ -1,9 +1,18 @@
 'use client';
 import {useEffect,useId,useRef,useState} from 'react';
+import type {ReactNode} from 'react';
 
 type Hit={id:string;suggestion:string};
-export default function AddressAutocomplete({name,label}:{name:string;label:string}){
+export default function AddressAutocomplete({name,label,desktopPlaceholder}:{name:string;label:ReactNode;desktopPlaceholder?:string}){
  const inputId=useId();
+ const [desktopPrompt,setDesktopPrompt]=useState(false);
+ useEffect(()=>{
+  if(!desktopPlaceholder)return;
+  const media=window.matchMedia('(min-width:1024px)');
+  const sync=()=>setDesktopPrompt(media.matches&&document.body.classList.contains('approvedDesktop'));
+  sync();media.addEventListener('change',sync);
+  return()=>media.removeEventListener('change',sync);
+ },[desktopPlaceholder]);
  const hintId=inputId+'-hint';
  const [value,setValue]=useState(''),[hits,setHits]=useState<Hit[]>([]),[open,setOpen]=useState(false),[loading,setLoading]=useState(false);
  const [lookupMessage,setLookupMessage]=useState<string|null>(null);
@@ -71,5 +80,5 @@ export default function AddressAutocomplete({name,label}:{name:string;label:stri
    if(version===requestVersion.current)activeRequest.current=null;
   }
  }
- return <div className="field addressField" ref={field} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget as Node|null))setOpen(false)}} onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();setOpen(false)}}}><label htmlFor={inputId}>{label}</label><input id={inputId} aria-describedby={hintId} name={name} value={value} onChange={e=>change(e.target.value)} onFocus={()=>setOpen(true)} autoComplete="off" placeholder="Start typing an address or postcode" required aria-autocomplete="list"/>{open&&(value.trim().length>0||loading||hits.length>0)&&<div className="addressSuggestions">{value.trim().length>0&&<button type="button" style={{fontWeight:700,color:'#b9560c',background:'#fff8f1'}} onPointerDown={e=>e.preventDefault()} onMouseDown={e=>e.preventDefault()} onClick={useEnteredAddress}>Use address as entered</button>}{loading&&<div className="addressStatus">Finding addresses…</div>}{!loading&&hits.map(h=><button type="button" key={h.id} onPointerDown={e=>e.preventDefault()} onMouseDown={e=>e.preventDefault()} onClick={()=>choose(h)}>{h.suggestion}</button>)}</div>}<small id={hintId} className="muted" role={lookupMessage?'status':undefined}>{lookupMessage||'Can’t find it? Type the full address and choose “Use address as entered”.'}</small></div>
+ return <div className="field addressField" ref={field} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget as Node|null))setOpen(false)}} onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();setOpen(false)}}}><label htmlFor={inputId}>{label}</label><input id={inputId} aria-describedby={hintId} name={name} value={value} onChange={e=>change(e.target.value)} onFocus={()=>setOpen(true)} autoComplete="off" placeholder={desktopPrompt?desktopPlaceholder:"Start typing an address or postcode"} required aria-autocomplete="list"/>{open&&(value.trim().length>0||loading||hits.length>0)&&<div className="addressSuggestions">{value.trim().length>0&&<button type="button" style={{fontWeight:700,color:'#b9560c',background:'#fff8f1'}} onPointerDown={e=>e.preventDefault()} onMouseDown={e=>e.preventDefault()} onClick={useEnteredAddress}>Use address as entered</button>}{loading&&<div className="addressStatus">Finding addresses…</div>}{!loading&&hits.map(h=><button type="button" key={h.id} onPointerDown={e=>e.preventDefault()} onMouseDown={e=>e.preventDefault()} onClick={()=>choose(h)}>{h.suggestion}</button>)}</div>}<small id={hintId} className="muted" role={lookupMessage?'status':undefined}>{lookupMessage||'Can’t find it? Type the full address and choose “Use address as entered”.'}</small></div>
 }
