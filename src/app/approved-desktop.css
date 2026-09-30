@@ -571,9 +571,9 @@
 @media screen and (min-width:1024px){
  body.approvedDesktop .customerDesktop .customerHero{
   background-color:#081f3e;
-  background-image:linear-gradient(90deg,#081f3e 0%,#081f3e calc(100% - 844px),transparent calc(100% - 510px)),url('/orange-design-preview/assets/hero-customers-wide.webp');
-  background-size:100% 100%,auto 100%;
-  background-position:center,right center;
+  background-image:linear-gradient(90deg,#081f3ed9 0%,#081f3e99 32%,#081f3e22 58%,transparent 75%),url('/orange-design-preview/assets/hero-customers-panorama.webp');
+  background-size:cover;
+  background-position:center,center 70%;
   background-repeat:no-repeat;
  }
 }
