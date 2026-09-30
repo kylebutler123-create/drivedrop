@@ -39,15 +39,11 @@ function FieldLabel({mobile, desktop}: {mobile: string; desktop: string}) {
 }
 
 export default function CustomerQuoteRequest(props: Props) {
-  const tabs: [QuoteView, Parameters<typeof QuoteIcon>[0]['name'], string][] = [
-    ['QUOTES', 'file', 'Quote requests'], ['BOOKINGS', 'truck', 'Your deliveries'],
-    ['COMPLETED', 'check', 'Completed'], ['CANCELLED', 'cancel', 'Cancelled'],
-  ];
   return <section className="dashboardCard requestPanel customerQuoteRequest" hidden={props.hidden}>
     <div className="quoteDesktopOnly quotePageIntro">
       <nav className="quoteBreadcrumb" aria-label="Breadcrumb"><Link href="/customer">Customer account</Link><span aria-hidden="true">/</span><span>Get a Quote</span></nav>
       <div className="quotePageHeading"><div><h1>Get a quote</h1><p>Tell us what needs moving and receive quotes from independent transporters.</p></div><span>UK vehicle transport</span></div>
-      <nav className="quoteAccountTabs" aria-label="Your transport requests">{tabs.map(([view, icon, title]) => <button key={view} type="button" onClick={() => props.onNavigate(view)}><QuoteIcon name={icon}/><span>{title}</span>{props.activity[view] > 0 && <span className="quoteActivityDot" aria-label={`${props.activity[view]} updates`}/>}</button>)}</nav>
+
     </div>
     <div className="quoteFormLayout">
       <div className="quoteFormCard">
