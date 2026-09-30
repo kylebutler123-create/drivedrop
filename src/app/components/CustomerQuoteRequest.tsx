@@ -38,6 +38,14 @@ function FieldLabel({mobile, desktop}: {mobile: string; desktop: string}) {
   return <><span className="quoteMobileOnly">{mobile}</span><span className="quoteDesktopOnly">{desktop}</span></>;
 }
 
+function desktopCalendarOnly(){
+  return typeof window !== 'undefined' && window.matchMedia('(min-width:1024px)').matches && document.body.classList.contains('approvedDesktop');
+}
+function openCollectionCalendar(input: HTMLInputElement){
+  if(!desktopCalendarOnly())return;
+  try{input.showPicker?.();}catch{/* The native calendar icon remains available. */}
+}
+
 export default function CustomerQuoteRequest(props: Props) {
   return <section className="dashboardCard requestPanel customerQuoteRequest" hidden={props.hidden}>
     <div className="quoteDesktopOnly quotePageIntro">
@@ -53,7 +61,11 @@ export default function CustomerQuoteRequest(props: Props) {
             <div className="quoteDesktopOnly quoteSectionTitle quoteCollectionTitle"><span className="quoteSectionNumber">1</span><QuoteIcon name="pin"/><div><h2>Collection &amp; delivery</h2><p>Where is your vehicle going?</p></div></div>
             <AddressAutocomplete key={`collection-${props.newJobId || 'draft'}`} name="collection" label={<FieldLabel mobile="COLLECTION" desktop="Collection"/>} desktopPlaceholder="Enter collection address"/>
             <AddressAutocomplete key={`delivery-${props.newJobId || 'draft'}`} name="delivery" label={<FieldLabel mobile="DELIVERY" desktop="Delivery"/>} desktopPlaceholder="Enter delivery address"/>
-            <div className="field"><label htmlFor="request-collection-date"><FieldLabel mobile="COLLECTION DATE" desktop="Collection date"/></label><input id="request-collection-date" type="date" name="collectionDate" required/></div>
+            <div className="field"><label htmlFor="request-collection-date"><FieldLabel mobile="COLLECTION DATE" desktop="Collection date"/></label><input id="request-collection-date" type="date" name="collectionDate" required onClick={event=>openCollectionCalendar(event.currentTarget)} onKeyDown={event=>{
+              if(!desktopCalendarOnly()||event.key==='Tab'||event.key==='Escape')return;
+              event.preventDefault();
+              if(event.key==='Enter'||event.key===' '||event.key==='ArrowDown')openCollectionCalendar(event.currentTarget);
+            }} onBeforeInput={event=>{if(desktopCalendarOnly())event.preventDefault()}} onPaste={event=>{if(desktopCalendarOnly())event.preventDefault()}} onDrop={event=>{if(desktopCalendarOnly())event.preventDefault()}}/></div>
             <div className="field"><label htmlFor="request-transport-type"><FieldLabel mobile="TRANSPORT TYPE" desktop="Transport type"/></label><select id="request-transport-type" name="transportType" required defaultValue=""><option value="" disabled>Select transport type</option>{transportTypes.map(type => <option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
             <div className="quoteDesktopOnly quoteSectionTitle quoteVehicleTitle"><span className="quoteSectionNumber">2</span><QuoteIcon name="car"/><div><h2>Vehicle details</h2><p>Help transporters provide an accurate quote.</p></div></div>
             <div className="field quoteVehicleType"><label htmlFor="request-vehicle-type"><FieldLabel mobile="VEHICLE TYPE" desktop="Vehicle type"/></label><select id="request-vehicle-type" name="vehicleType" required value={props.selectedVehicleType} onChange={event => props.onVehicleTypeChange(event.target.value)}><option value="" disabled>Select vehicle type</option>{vehicleTypes.map(type => <option key={type} value={type}>{type}</option>)}</select></div>
