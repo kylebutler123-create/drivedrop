@@ -541,3 +541,16 @@
  .customerDetails{gap:18px;grid-template-columns:1.15fr 1fr 1fr}.customerChecklist{padding-left:16px}
  body.approvedDesktop .customerDetails h2{font-size:20px}.customerFaq{grid-template-columns:220px 1fr}
 }
+
+/* Refined How it works FAQ controls. */
+@media screen and (min-width:1024px){
+ .howFaq summary{min-height:50px;padding:10px;gap:12px}
+ .howFaq summary>.howFaqChevron{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:8px;background:#edf5ff;color:#081f3e;font-size:0;line-height:0;transition:background-color .18s,color .18s}
+ .howFaqChevron svg{width:17px;height:17px;transition:transform .18s}
+ .howFaq details[open] summary>.howFaqChevron{transform:none;background:#fff0e7;color:#ff681b}
+ .howFaq details[open] .howFaqChevron svg{transform:rotate(180deg)}
+ .howFaq summary:hover>.howFaqChevron{background:#e0edfd}
+ .howFaq details[open] summary:hover>.howFaqChevron{background:#ffe4d2}
+ .howFaq summary:focus-visible{outline:2px solid #ff681b;outline-offset:2px;border-radius:5px}
+}
+@media (prefers-reduced-motion:reduce){.howFaqChevron,.howFaqChevron svg{transition:none!important}}
