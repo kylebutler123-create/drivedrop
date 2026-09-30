@@ -567,3 +567,13 @@
 @media screen and (min-width:1024px) and (max-width:1199px){
  .customerBenefits>.approvedPageWidth{grid-auto-rows:71.2px}
 }
+
+@media screen and (min-width:1024px){
+ body.approvedDesktop .customerDesktop .customerHero{
+  background-color:#081f3e;
+  background-image:linear-gradient(90deg,#081f3e 0%,#081f3e calc(100% - 844px),transparent calc(100% - 510px)),url('/orange-design-preview/assets/hero-customers-wide.webp');
+  background-size:100% 100%,auto 100%;
+  background-position:center,right center;
+  background-repeat:no-repeat;
+ }
+}
