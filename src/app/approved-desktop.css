@@ -599,3 +599,66 @@
   background-repeat:no-repeat;
  }
 }
+
+/* Approved desktop transporter information page. */
+@media screen and (min-width:1024px){
+ body.approvedDesktop .transporterDesktop{background:white}
+ body.approvedDesktop .transporterDesktop .transporterPageHero{min-height:300px;padding:28px 0;background-image:linear-gradient(90deg,#081f3eea 0%,#081f3ebb 30%,#081f3e22 58%,transparent 75%),url('/orange-design-preview/assets/hero-transporters-depot.webp');background-size:cover;background-position:center,center 35%}
+ body.approvedDesktop .transporterPageHero h1{font-size:38px;line-height:1.07;margin:10px 0 12px;max-width:650px}
+ body.approvedDesktop .transporterPageHero p{font-size:15px;line-height:1.5;max-width:520px;margin:0 0 18px;color:white}
+ .transporterActions{display:flex;gap:12px;align-items:center}.transporterActions .btn{font-size:13px;gap:10px}.transporterActions .approvedIcon{width:15px;height:15px}
+ body.approvedDesktop .transporterDesktop .transporterActions .btn.light{background:#081f3e33;color:white;border:1px solid white}
+ body.approvedDesktop .transporterDesktop h2{font-size:25px;line-height:1.2;letter-spacing:-.5px;color:#081f3e;margin:0 0 12px}
+ .transporterDesktop h3{font-size:14px;line-height:1.3;margin:0 0 7px;color:#081f3e}
+ .transporterDesktop p{font-size:12px;line-height:1.5;color:#344c6b;margin:0}
+ .transporterBenefits{background:#e3f2fc;padding:18px 0}
+ .transporterBenefits>.approvedPageWidth{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+ .transporterBenefits article{display:flex;align-items:center;gap:22px;border-right:1px solid #c3d9ee;padding-right:20px}.transporterBenefits article:last-child{border:0}
+ .transporterBenefits .approvedIcon{width:38px;height:38px;flex-shrink:0}
+ body.approvedDesktop .transporterBenefits h2{font-size:15px;letter-spacing:0;margin:0 0 4px}
+ .transporterProcess{padding-top:23px;padding-bottom:17px}
+ .transporterStepGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+ .transporterStepGrid article{display:flex;gap:13px;border:1px solid #d5e3f0;border-radius:6px;padding:17px 12px;align-items:flex-start}
+ .transporterStepGrid article>.approvedIcon{width:32px;height:32px;flex-shrink:0;margin-top:10px}
+ .transporterNumber{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;background:#ff681b;color:white;font-size:14px}
+ .transporterStepGrid h3{font-size:13px}.transporterStepGrid p{font-size:11px}
+ .transporterDetails{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:25px;align-items:center;padding-bottom:20px}
+ .transporterDetails>img{width:100%;height:auto;aspect-ratio:2/1;object-fit:cover;border-radius:5px}
+ body.approvedDesktop .transporterDetails h2{font-size:23px}
+ .transporterDetails ul{margin:0;padding:0;list-style:none;display:grid;gap:12px}
+ .transporterDetails li{display:flex;align-items:center;gap:12px;font-size:12px;line-height:1.45;color:#263e5c}
+ .transporterChecklist li>span{width:25px;height:25px;display:grid;place-items:center;background:#dceeff;border-radius:50%;flex-shrink:0}.transporterChecklist .approvedIcon{width:16px;height:16px}
+ .transporterAccount{border-left:1px solid #c9dced;padding-left:28px}.transporterAccount .approvedIcon{width:28px;height:28px;flex-shrink:0}
+ .transporterProceeds{background:#e1f1fc;padding:18px 0}
+ .transporterProceeds>.approvedPageWidth{display:grid;grid-template-columns:1fr 1.35fr;gap:30px;align-items:center}
+ body.approvedDesktop .transporterProceeds h2{font-size:24px;margin-bottom:7px}
+ .transporterStatus>div{display:grid;grid-template-columns:1fr 1.2fr 1.1fr .7fr;gap:9px}
+ .transporterStatus>div>div{display:flex;align-items:center;gap:9px;border-radius:7px;padding:9px;background:#f2f8ff}
+ .transporterStatus strong{font-size:10px;line-height:1.3;color:#081f3e}
+ .transporterStatus span{display:grid;place-items:center;flex-shrink:0;background:#d0eaff;border-radius:12px;width:34px;height:34px}.transporterStatus .approvedIcon{width:23px;height:23px}
+ .transporterStatus>div>.waiting{background:#fff7f0}.transporterStatus .waiting span{background:#ffe4cc}
+ .transporterStatus>div>.ready{background:#f2fff4}.transporterStatus .ready span{background:#d8f7d9}
+ .transporterStatus>p{font-size:11px;text-align:center;margin-top:9px}
+ .transporterFaq{display:grid;grid-template-columns:1fr 2fr;gap:25px;padding-top:20px;padding-bottom:21px}
+ body.approvedDesktop .transporterFaq h2{font-size:24px;margin-bottom:8px}
+ .transporterFaqGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-items:start}
+ .transporterFaq details{border:1px solid #dbe6f1;border-radius:6px}
+ .transporterFaq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;color:#081f3e;min-height:43px;padding:7px 11px}
+ .transporterFaq summary::-webkit-details-marker{display:none}.transporterFaq details p{padding:0 12px 12px}
+ .transporterFaqChevron{display:grid;place-items:center;flex:0 0 28px;height:28px;border-radius:7px;background:#deeffb}
+ .transporterFaqChevron .approvedIcon{width:15px;height:15px;transition:transform .18s}
+ .transporterFaq details[open] .transporterFaqChevron{background:#fff0e7;color:#ff681b}.transporterFaq details[open] .approvedIcon{transform:rotate(90deg)}
+ .transporterFaq summary:focus-visible{outline:2px solid #ff681b;outline-offset:2px;border-radius:5px}
+ .transporterFinalCta{background:#081f3e;color:white;padding:17px 0}
+ .transporterFinalCta>.approvedPageWidth{display:flex;align-items:center;justify-content:center;gap:24px}
+ body.approvedDesktop .transporterFinalCta h2{font-size:23px;color:white!important;margin:0}
+ .transporterFinalCta .btn{font-size:12px}
+ body.approvedDesktop:has(.transporterDesktop)>.desktopPublicFooter.referenceFooter{margin-top:0;border-top:1px solid #ffffff25}
+}
+@media screen and (min-width:1024px) and (max-width:1199px){
+ .transporterStepGrid{gap:10px}.transporterStepGrid article{gap:9px;padding:13px 10px}.transporterStepGrid article>.approvedIcon{width:25px;height:25px}.transporterNumber{width:25px;height:25px}
+ .transporterDetails{gap:17px;grid-template-columns:1.15fr 1fr 1fr}.transporterAccount{padding-left:17px}
+ body.approvedDesktop .transporterDetails h2{font-size:21px}
+ .transporterProceeds>.approvedPageWidth{grid-template-columns:1fr 1.5fr;gap:20px}.transporterStatus>div{gap:6px}.transporterStatus>div>div{gap:6px;padding:7px}.transporterStatus span{width:27px;height:30px}
+}
+@media (prefers-reduced-motion:reduce){.transporterFaqChevron .approvedIcon{transition:none!important}}
