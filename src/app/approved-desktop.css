@@ -594,8 +594,8 @@
 @media screen and (min-width:1024px){
  body.approvedDesktop .howDesktop .howHero{
   background-image:linear-gradient(90deg,#081f3ed9 0%,#081f3e99 32%,#081f3e22 58%,transparent 75%),url('/orange-design-preview/assets/hero-how-it-works-wide-v2.webp');
-  background-size:cover;
-  background-position:center,center 50%;
+  background-size:cover,112% auto;
+  background-position:center,75% 60%;
   background-repeat:no-repeat;
  }
 }
