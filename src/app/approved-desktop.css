@@ -721,7 +721,7 @@
 /* Approved desktop Help page. */
 @media screen and (min-width:1024px){
  body.approvedDesktop .helpDesktop{background:white}
- body.approvedDesktop .helpDesktop .helpPageHero{min-height:300px;padding:43px 0;background-image:linear-gradient(90deg,#081f3ef0 0%,#081f3ecc 37%,#081f3e33 60%,transparent 78%),url('/orange-design-preview/assets/hero-help-adviser.webp');background-size:cover;background-position:center,center 5%;background-repeat:no-repeat}
+ body.approvedDesktop .helpDesktop .helpPageHero{min-height:300px;padding:43px 0;background-image:linear-gradient(90deg,#081f3ef0 0%,#081f3ecc 37%,#081f3e33 60%,transparent 78%),url('/orange-design-preview/assets/hero-help-adviser-wide.webp');background-size:cover;background-position:center,center 50%;background-repeat:no-repeat}
  body.approvedDesktop .helpPageHero h1{font-size:42px;line-height:1.1;margin:12px 0}
  body.approvedDesktop .helpPageHero p{font-size:17px;line-height:1.4;margin:0 0 20px;max-width:660px}
  .helpPageSearch{display:flex;gap:13px;align-items:center;max-width:610px;background:white;border:1px solid #d0ddeb;border-radius:6px;padding:3px 3px 3px 17px}
