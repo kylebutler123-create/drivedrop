@@ -835,7 +835,7 @@
 /* Approved Contact page, desktop only; shared footer retained. */
 @media screen and (min-width:1024px){
  .contactDesktop{background:white;color:#081f3e}.contactDesktop svg{width:24px;height:24px;flex-shrink:0}
- body.approvedDesktop .contactDesktop .contactPageHero{height:300px;min-height:300px;padding:65px 0;background-image:linear-gradient(90deg,#081f3eeb,#081f3e99 38%,transparent 70%),url('/orange-design-preview/assets/hero-contact-adviser.webp');background-size:cover;background-position:center,center 10%}
+ body.approvedDesktop .contactDesktop .contactPageHero{height:300px;min-height:300px;padding:65px 0;background-image:linear-gradient(90deg,#081f3eeb,#081f3e99 38%,transparent 70%),url('/orange-design-preview/assets/hero-contact-adviser-wide.webp');background-size:cover;background-position:center,center 25%}
  body.approvedDesktop .contactPageHero h1{font-size:42px;line-height:1.15;letter-spacing:-1px;max-width:850px;margin:16px 0 14px}
  body.approvedDesktop .contactPageHero p{font-size:19px;line-height:1.45;max-width:740px;margin:0}
  .contactBody{padding-top:16px;padding-bottom:30px}.contactDesktop h2{color:#081f3e;font-size:24px;line-height:1.2;margin:0 0 12px}.contactDesktop p{font-size:14px;line-height:1.5;color:#415575;margin:0}
