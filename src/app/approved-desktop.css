@@ -826,3 +826,8 @@
 @media screen and (min-width:1024px){
  body.approvedDesktop .homePage:not(.desktopQuotePage) .desktopHeroSlide:first-child{background-image:linear-gradient(90deg,#061e3bd9 0%,#08254370 28%,transparent 60%),url('/orange-design-preview/assets/home-westminster-transporter-v2.webp')!important;background-size:cover,cover!important;background-position:center,right center!important}
 }
+
+/* Approved How It Works photography, retaining the existing image boxes. */
+@media screen and (min-width:1024px){
+ body.approvedDesktop .howDesktop .howHero{background-image:linear-gradient(90deg,#081f3ef0 0%,#081f3ecc 35%,#081f3e22 60%,transparent 75%),url('/orange-design-preview/assets/how-porsche-collection.webp');background-size:cover;background-position:center,center 55%}
+}
