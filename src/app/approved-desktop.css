@@ -489,7 +489,7 @@
 /* Customer information, desktop only. */
 @media screen and (min-width:1024px){
  body.approvedDesktop .customerDesktop{background:#fff}
- body.approvedDesktop .customerDesktop .customerHero{min-height:310px;padding:32px 0}
+ body.approvedDesktop .customerDesktop .customerHero{min-height:300px;padding:27px 0}
  body.approvedDesktop .customerHero h1{font-size:41px;line-height:1.06;max-width:660px;margin:12px 0}
  body.approvedDesktop .customerHero h1 span{color:#ff681b}
  body.approvedDesktop .customerHero p{max-width:535px;font-size:15px;line-height:1.5;margin:0 0 18px}
