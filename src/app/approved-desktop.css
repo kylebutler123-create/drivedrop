@@ -554,3 +554,16 @@
  .howFaq summary:focus-visible{outline:2px solid #ff681b;outline-offset:2px;border-radius:5px}
 }
 @media (prefers-reduced-motion:reduce){.howFaqChevron,.howFaqChevron svg{transition:none!important}}
+
+/* Match the customer benefit strip to the How it works desktop strip. */
+@media screen and (min-width:1024px){
+ .customerBenefits{padding:19px 0}
+ .customerBenefits>.approvedPageWidth{gap:28px;grid-auto-rows:37.6px}
+ .customerBenefits article{gap:15px;height:100%}
+ .customerBenefits .approvedIcon{width:29px;height:29px}
+ body.approvedDesktop .customerBenefits h2{font-size:14px;line-height:1.2;margin:0 0 4px;letter-spacing:0}
+ .customerBenefits p{font-size:12px;line-height:1.4;margin:0}
+}
+@media screen and (min-width:1024px) and (max-width:1199px){
+ .customerBenefits>.approvedPageWidth{grid-auto-rows:71.2px}
+}
