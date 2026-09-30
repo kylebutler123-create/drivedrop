@@ -4,7 +4,7 @@ import Icon from './ApprovedIcon';
 const steps=[
  ['file','Tell us what needs moving','Add collection and delivery addresses, vehicle details, running condition, date and transport type. Create an account or log in to send your request.'],
  ['chat','Compare your quotes','Compare prices, transporter profiles, reviews and proposed dates. Ask questions before choosing a transporter.'],
- ['check','Book your transport','Accept a quote and complete the booking payment. Contact your transporter to agree collection time and handover arrangements.'],
+ ['calendar','Book your transport','Accept a quote and complete the booking payment. Contact your transporter to agree collection time and handover arrangements.'],
  ['truck','Collection and updates','Your transporter records collection details and vehicle condition. Follow status updates and keep in touch through your booking.'],
  ['shield','Confirm delivery','Inspect your vehicle, review the delivery report and confirm receipt. Report any problem through your booking.'],
 ];
