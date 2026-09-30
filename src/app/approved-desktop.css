@@ -829,7 +829,7 @@
 
 /* Approved How It Works photography, retaining the existing image boxes. */
 @media screen and (min-width:1024px){
- body.approvedDesktop .howDesktop .howHero{background-image:linear-gradient(90deg,#081f3ef0 0%,#081f3ecc 35%,#081f3e22 60%,transparent 75%),url('/orange-design-preview/assets/how-porsche-collection-panorama.webp');background-size:cover;background-position:center,center 60%;background-repeat:no-repeat}
+ body.approvedDesktop .howDesktop .howHero{background-image:linear-gradient(90deg,#081f3ef0 0%,#081f3ecc 35%,#081f3e22 60%,transparent 75%),url('/orange-design-preview/assets/how-porsche-collection-v3.webp');background-size:cover;background-position:center,center 60%;background-repeat:no-repeat}
 }
 
 /* Approved Contact page, desktop only; shared footer retained. */
