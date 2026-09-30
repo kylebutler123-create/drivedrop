@@ -662,3 +662,58 @@
  .transporterProceeds>.approvedPageWidth{grid-template-columns:1fr 1.5fr;gap:20px}.transporterStatus>div{gap:6px}.transporterStatus>div>div{gap:6px;padding:7px}.transporterStatus span{width:27px;height:30px}
 }
 @media (prefers-reduced-motion:reduce){.transporterFaqChevron .approvedIcon{transition:none!important}}
+
+/* Approved desktop About DriveDrop page. */
+@media screen and (min-width:1024px){
+ body.approvedDesktop .aboutDesktop{background:#fff}
+ body.approvedDesktop .aboutDesktop .aboutPageHero{min-height:300px;padding:42px 0;background-image:linear-gradient(90deg,#081f3eea 0%,#081f3ebb 30%,#081f3e22 58%,transparent 75%),url('/orange-design-preview/assets/hero-about-countryside.webp');background-size:cover;background-position:center,center 65%}
+ body.approvedDesktop .aboutPageHero h1{font-size:40px;line-height:1.1;margin:12px 0;max-width:750px}
+ body.approvedDesktop .aboutPageHero p{font-size:17px;line-height:1.4;max-width:550px;margin:0 0 20px}
+ .aboutActions{display:flex;gap:18px;align-items:center}.aboutActions .btn{font-size:13px}
+ body.approvedDesktop .aboutDesktop .aboutActions .btn.light{color:white;background:#081f3e33;border:1px solid white}
+ body.approvedDesktop .aboutDesktop h2{font-size:25px;line-height:1.2;letter-spacing:-.5px;margin:0 0 12px;color:#081f3e}
+ .aboutDesktop h3{font-size:17px;line-height:1.2;color:#081f3e;margin:0 0 7px}
+ .aboutDesktop p{font-size:13px;line-height:1.45;color:#34445d;margin:0}
+ .aboutBenefits{padding:18px 0;border-bottom:1px solid #dbe5ee}
+ .aboutBenefits>.approvedPageWidth{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+ .aboutBenefits article{display:flex;align-items:center;gap:22px;padding-right:25px;border-right:1px solid #d2e1ee}.aboutBenefits article:last-child{border:0}
+ .aboutBenefits .approvedIcon{width:39px;height:39px;flex-shrink:0}
+ body.approvedDesktop .aboutBenefits h2{font-size:14px;letter-spacing:0;margin:0 0 5px}.aboutBenefits p{font-size:12px}
+ .aboutIntro{display:grid;grid-template-columns:2fr 1fr 1fr;gap:22px;padding-top:25px;padding-bottom:22px;align-items:start}
+ .aboutIntro>div{padding-right:18px}.aboutIntro>div p+p{margin-top:16px}
+ .aboutIntro article{border:1px solid #dce6f1;border-radius:6px;padding:16px 20px;align-self:stretch}
+ .aboutIntro article>.approvedIcon{width:44px;height:37px;margin-bottom:12px}
+ .aboutIntro article p{font-size:12px}.aboutIntro article a{display:flex;align-items:center;gap:7px;font-size:12px;color:#f66010;margin-top:10px;text-decoration:none}
+ .aboutIntro article a .approvedIcon{width:15px;height:15px}
+ .aboutFeatures{background:#eaf5fe;padding:18px 0}
+ .aboutFeatures .approvedPageWidth>div{display:grid;grid-template-columns:repeat(4,1fr);gap:25px}
+ .aboutFeatures article{display:flex;align-items:center;gap:22px;border-right:1px solid #d1e2f1;padding-right:20px}.aboutFeatures article:last-child{border:0}
+ .aboutFeatures .approvedIcon{width:40px;height:40px;flex-shrink:0}
+ .aboutFeatures h3{font-size:13px;margin-bottom:5px}.aboutFeatures p{font-size:12px}
+ .aboutRole{display:grid;grid-template-columns:1.3fr 1fr;gap:30px;align-items:center;padding-top:18px;padding-bottom:17px}
+ .aboutRole>img{width:100%;height:auto;aspect-ratio:3/1;object-fit:cover;border-radius:5px}
+ body.approvedDesktop .aboutRole h2{font-size:23px}.aboutRole p+p{margin-top:10px}
+ .aboutRole .btn{font-size:12px;margin-top:16px}
+ .aboutFaq{display:grid;grid-template-columns:1fr 2.4fr;gap:25px;padding-bottom:20px}
+ body.approvedDesktop .aboutFaq h2{font-size:23px;margin-bottom:9px}
+ .aboutFaqGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-items:start}
+ .aboutFaq details{border:1px solid #dbe6f1;border-radius:6px}
+ .aboutFaq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;color:#081f3e;min-height:42px;padding:7px 11px}
+ .aboutFaq summary::-webkit-details-marker{display:none}.aboutFaq details p{padding:0 12px 12px;font-size:12px}
+ .aboutFaqChevron{display:grid;place-items:center;flex:0 0 28px;height:28px;border-radius:7px;background:#edf5ff}
+ .aboutFaqChevron .approvedIcon{width:16px;height:16px;transition:transform .18s}
+ .aboutFaq details[open] .aboutFaqChevron{background:#fff0e7;color:#ff681b}.aboutFaq details[open] .approvedIcon{transform:rotate(180deg)}
+ .aboutFaq summary:focus-visible{outline:2px solid #ff681b;outline-offset:2px;border-radius:5px}
+ .aboutFinalCta{background:#081f3e;color:white;padding:18px 0}
+ .aboutFinalCta>.approvedPageWidth{display:flex;align-items:center;justify-content:space-between;gap:25px}
+ body.approvedDesktop .aboutFinalCta h2{font-size:25px;margin:0;color:white!important}
+ .aboutFinalCta .btn{font-size:12px}
+ body.approvedDesktop:has(.aboutDesktop)>.desktopPublicFooter.referenceFooter{margin-top:0;border-top:1px solid #ffffff25}
+}
+@media screen and (min-width:1024px) and (max-width:1199px){
+ .aboutIntro{grid-template-columns:1.6fr 1fr 1fr;gap:15px}.aboutIntro article{padding:14px}
+ .aboutFeatures article{gap:12px;padding-right:13px}.aboutFeatures .approvedIcon{width:32px;height:32px}
+ .aboutRole{grid-template-columns:1.15fr 1fr;gap:22px}
+ body.approvedDesktop .aboutFinalCta h2{font-size:23px}
+}
+@media(prefers-reduced-motion:reduce){.aboutFaqChevron .approvedIcon{transition:none!important}}
