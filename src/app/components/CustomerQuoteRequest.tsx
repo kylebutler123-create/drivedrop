@@ -49,7 +49,6 @@ function openCollectionCalendar(input: HTMLInputElement){
 export default function CustomerQuoteRequest(props: Props) {
   return <section className="dashboardCard requestPanel customerQuoteRequest" hidden={props.hidden}>
     <div className="quoteDesktopOnly quotePageIntro">
-      <nav className="quoteBreadcrumb" aria-label="Breadcrumb"><Link href="/customer">Customer account</Link><span aria-hidden="true">/</span><span>Get a Quote</span></nav>
       <div className="quotePageHeading"><div><h1>Get a quote</h1><p>Tell us what needs moving and receive quotes from independent transporters.</p></div><span>UK vehicle transport</span></div>
 
     </div>
