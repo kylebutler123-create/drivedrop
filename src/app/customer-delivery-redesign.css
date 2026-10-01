@@ -253,3 +253,39 @@
 @media screen and (min-width:1024px){
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard:is(.customerCancelledCompact,[data-completed-summary]).isCollapsed .deliveryDesignPayment{justify-self:center;align-items:center}
 }
+
+/* React-owned compact actions are siblings of the disclosure button. */
+.deliveryCompactActions{display:none}
+@media screen and (min-width:1024px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout #customer-bookings.dashboardSectionHeading{box-sizing:border-box;height:55px;min-height:55px;margin:0;padding:0 0 16px;align-items:center}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout #customer-bookings.dashboardSectionHeading h2{font-size:30px;font-weight:700;line-height:1.3;margin:0;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed{position:relative;display:block;box-sizing:border-box;height:var(--delivery-list-row-height);min-height:var(--delivery-list-row-height);margin:0 0 var(--delivery-list-gap)!important;padding:8px 20px 8px 24px!important;overflow:hidden}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed:before{display:block;content:'';position:absolute;left:0;top:0;bottom:0;width:7px;background:#2188ff}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed>:not(.customerCardToggle):not(.deliveryCompactActions){display:none!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed>.customerCardToggle{height:100%;min-height:0;box-sizing:border-box}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryDesignSummary{grid-template-columns:48px minmax(0,1fr) 145px 310px 130px 18px;gap:18px;height:100%;min-height:0;padding:0;box-sizing:border-box;background:transparent}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryVehicleIcon{width:48px;height:48px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryVehicleIcon svg{width:30px;height:30px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryDesignIdentity strong{font-size:16px;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryDesignIdentity small{display:none}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryDesignIdentity .deliveryHistoryRoute{display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:14px;line-height:1.4;margin:4px 0 0;color:#7987b3}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryHistoryDate{display:flex!important;flex-direction:column;gap:4px;border-left:1px solid #d7e5fa;padding-left:16px;font-size:15px;font-weight:400}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryDesignPayment{grid-column:5;justify-self:center;align-items:center}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryDesignPayment>small,
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryDesignPayment>strong{display:none}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryDesignStatus{min-width:112px;max-width:130px;font-size:14px;line-height:1.3;padding:7px 12px;font-weight:500}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryDesignChevron svg{width:18px;height:18px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed>.deliveryCompactActions{position:absolute;right:205px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:8px;width:310px;z-index:1}
+ body.approvedDesktop .customerLiveWorkspace .deliveryCompactActions>a,
+ body.approvedDesktop .customerLiveWorkspace .deliveryCompactActions>button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:6px 9px;border:1px solid #091650;border-radius:6px;background:#fff;color:#091650;font:600 12px/1.3 Arial,sans-serif;text-decoration:none;white-space:nowrap;cursor:pointer;box-sizing:border-box}
+ body.approvedDesktop .customerLiveWorkspace .deliveryCompactActions .deliveryDesignIcon{width:18px;height:18px}
+ body.approvedDesktop .customerLiveWorkspace .deliveryCompactActions>.deliveryCompactConfirm{flex:1;background:#ff6500;border-color:#ff6500;color:white}
+ body.approvedDesktop .customerLiveWorkspace .deliveryCompactActions>button:disabled{background:#e5e9f1;border-color:#e5e9f1;color:#8b99b7;cursor:not-allowed}
+ body.approvedDesktop .customerLiveWorkspace .deliveryCompactActions>:focus-visible{outline:2px solid #ff681b;outline-offset:2px}
+}
+@media screen and (min-width:1024px) and (max-width:1240px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryDesignSummary{grid-template-columns:48px minmax(0,1fr) 125px 285px 130px 18px;gap:12px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed>.deliveryCompactActions{right:193px;width:285px;gap:5px}
+ body.approvedDesktop .customerLiveWorkspace .deliveryCompactActions>a,
+ body.approvedDesktop .customerLiveWorkspace .deliveryCompactActions>button{padding:6px;font-size:11px}
+}
