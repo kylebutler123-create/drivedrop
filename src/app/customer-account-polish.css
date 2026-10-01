@@ -40,16 +40,15 @@
  .customerAccountFootnote{font-size:12px;line-height:1.5;color:#647799;margin:12px 0 0}
  .customerSecurityCard>h2{display:flex;align-items:center;gap:16px;margin:4px 0 28px}
  .customerSecurityCard>h2>.accountDesignIcon{width:28px;height:28px}
- .customerSecurityItem{display:grid;grid-template-columns:24px minmax(0,1fr);gap:16px;padding:18px 0 28px}
+ .customerSecurityItem{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;padding:18px 0 28px}
  .customerSecurityItem+.customerSecurityItem{border-top:1px solid #dbe5ef;padding-top:28px}
- .customerSecurityItem>.accountDesignIcon{margin-top:2px}
  body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel{display:block;min-width:0;width:100%;padding:0;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none}
  body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>div>strong{display:block;font-size:15px;font-weight:600;line-height:1.4;color:#071c43}
  body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>div>p{font-size:13px;line-height:1.55;color:#647799;margin:7px 0 22px;max-width:none}
  body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>.btn{display:inline-flex;width:230px;max-width:100%;min-height:42px;margin:0;white-space:normal;border:1px solid #071c43;color:#071c43;background:#fff}
- /* Balance both sides of the icon column so security copy and actions share the card centre. */
+ /* Keep each icon and its heading together on the card centre line. */
  body.approvedDesktop .customerAccountPolish .customerSecurityCard>h2{justify-content:center}
- body.approvedDesktop .customerAccountPolish .customerSecurityItem:has(>.accountEditPanel){grid-template-columns:24px minmax(0,1fr) 24px}
+ body.approvedDesktop .customerAccountPolish .customerSecurityLabel{display:inline-flex;align-items:center;justify-content:center;gap:10px;max-width:100%}
  body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel{text-align:center}
  body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>.btn{display:flex;margin-inline:auto}
  .customerAccountClose{display:grid;grid-template-columns:32px minmax(0,1fr);gap:18px;align-items:center;margin-top:22px;padding:20px 24px;border:1px solid #efb4b0;border-radius:8px;background:#fffafa}

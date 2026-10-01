@@ -1,6 +1,7 @@
 'use client';
 
 import {useState} from 'react';
+import Icon from '../components/AccountDesignIcon';
 
 export default function PasswordEditor({customerDesktop=false}:{customerDesktop?:boolean}={}){
   const [open,setOpen]=useState(false);
@@ -21,7 +22,7 @@ export default function PasswordEditor({customerDesktop=false}:{customerDesktop?
     finally{setSaving(false);}
   }
 
-  if(!open)return <div className="accountEditPanel securityPanel"><div><strong>{customerDesktop?'Password':'Account security'}</strong><p>Change your password if you want to update your sign-in security.</p></div><button className="btn light" type="button" onClick={()=>{setOpen(true);setNotice('')}}>Change password</button>{notice&&<div className="formNotice accountEditNotice">{notice}</div>}</div>;
+  if(!open)return <div className="accountEditPanel securityPanel"><div><strong>{customerDesktop?<span className="customerSecurityLabel"><Icon name="lock"/><span>Password</span></span>:'Account security'}</strong><p>Change your password if you want to update your sign-in security.</p></div><button className="btn light" type="button" onClick={()=>{setOpen(true);setNotice('')}}>Change password</button>{notice&&<div className="formNotice accountEditNotice">{notice}</div>}</div>;
 
   return <section className="dashboardCard accountEditCard securityEditCard">
     <div className="panelHeading"><div><span className="panelIcon">🔒</span><div><h2>Change password</h2><p>Enter your current password, then choose a new password of at least 8 characters.</p></div></div></div>
