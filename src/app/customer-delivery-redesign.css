@@ -230,3 +230,7 @@
 @media screen and (min-width:1024px){
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout #completed-deliveries.dashboardSectionHeading h2{font-size:30px;font-weight:700;color:#091650}
 }
+
+@media screen and (min-width:1024px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout #completed-deliveries.dashboardSectionHeading{margin:0;padding-bottom:16px}
+}
