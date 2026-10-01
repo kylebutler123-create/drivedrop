@@ -47,6 +47,11 @@
  body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>div>strong{display:block;font-size:15px;font-weight:600;line-height:1.4;color:#071c43}
  body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>div>p{font-size:13px;line-height:1.55;color:#647799;margin:7px 0 22px;max-width:none}
  body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>.btn{display:inline-flex;width:230px;max-width:100%;min-height:42px;margin:0;white-space:normal;border:1px solid #071c43;color:#071c43;background:#fff}
+ /* Balance both sides of the icon column so security copy and actions share the card centre. */
+ body.approvedDesktop .customerAccountPolish .customerSecurityCard>h2{justify-content:center}
+ body.approvedDesktop .customerAccountPolish .customerSecurityItem:has(>.accountEditPanel){grid-template-columns:24px minmax(0,1fr) 24px}
+ body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel{text-align:center}
+ body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>.btn{display:flex;margin-inline:auto}
  .customerAccountClose{display:grid;grid-template-columns:32px minmax(0,1fr);gap:18px;align-items:center;margin-top:22px;padding:20px 24px;border:1px solid #efb4b0;border-radius:8px;background:#fffafa}
  .customerAccountClose>.accountDesignIcon{color:#ed6159;width:32px;height:32px}
  body.approvedDesktop .customerAccountPolish .customerAccountClose>.accountEditPanel{min-width:0;width:100%;margin:0;padding:0;background:transparent;border:0;border-radius:0;box-shadow:none;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:24px}
