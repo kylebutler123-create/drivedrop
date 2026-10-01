@@ -2,10 +2,11 @@
 
 import {useState} from 'react';
 import {useRouter} from 'next/navigation';
+import Icon from '../components/AccountDesignIcon';
 
-type Props={name:string;email:string;phone:string|null;role:string;business?:{businessName:string;companyNumber:string;businessAddress:string;phone:string;yearsOperating:number|null;website:string}|null};
+type Props={customerDesktop?:boolean;name:string;email:string;phone:string|null;role:string;business?:{businessName:string;companyNumber:string;businessAddress:string;phone:string;yearsOperating:number|null;website:string}|null};
 
-export default function AccountEditor({name,email,phone,role,business}:Props){
+export default function AccountEditor({name,email,phone,role,business,customerDesktop=false}:Props){
   const router=useRouter();
   const [editing,setEditing]=useState(false);
   const [saving,setSaving]=useState(false);
@@ -28,7 +29,7 @@ export default function AccountEditor({name,email,phone,role,business}:Props){
     finally{setSaving(false);}
   }
 
-  if(!editing)return <div className="accountEditPanel"><div><strong>Need to change something?</strong><p>Update your account details without changing your login email or verification documents.</p></div><button className="btn orange" type="button" onClick={()=>setEditing(true)}>Edit account details</button>{notice&&<div className="formNotice accountEditNotice">{notice}</div>}</div>;
+  if(!editing)return <div className="accountEditPanel"><div><strong>Need to change something?</strong><p>Update your account details without changing your login email or verification documents.</p></div><button className="btn orange" type="button" onClick={()=>setEditing(true)}>{customerDesktop&&<Icon name="edit"/>}Edit account details</button>{notice&&<div className="formNotice accountEditNotice">{notice}</div>}</div>;
 
   return <section className="dashboardCard accountEditCard">
     <div className="panelHeading"><div><span className="panelIcon">✏️</span><div><h2>Edit account details</h2><p>Keep your contact and business information accurate.</p></div></div></div>

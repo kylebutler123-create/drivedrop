@@ -2,7 +2,7 @@
 
 import {useState} from 'react';
 
-export default function PasswordEditor(){
+export default function PasswordEditor({customerDesktop=false}:{customerDesktop?:boolean}={}){
   const [open,setOpen]=useState(false);
   const [saving,setSaving]=useState(false);
   const [notice,setNotice]=useState('');
@@ -21,7 +21,7 @@ export default function PasswordEditor(){
     finally{setSaving(false);}
   }
 
-  if(!open)return <div className="accountEditPanel securityPanel"><div><strong>Account security</strong><p>Change your password if you want to update your sign-in security.</p></div><button className="btn light" type="button" onClick={()=>{setOpen(true);setNotice('')}}>Change password</button>{notice&&<div className="formNotice accountEditNotice">{notice}</div>}</div>;
+  if(!open)return <div className="accountEditPanel securityPanel"><div><strong>{customerDesktop?'Password':'Account security'}</strong><p>Change your password if you want to update your sign-in security.</p></div><button className="btn light" type="button" onClick={()=>{setOpen(true);setNotice('')}}>Change password</button>{notice&&<div className="formNotice accountEditNotice">{notice}</div>}</div>;
 
   return <section className="dashboardCard accountEditCard securityEditCard">
     <div className="panelHeading"><div><span className="panelIcon">🔒</span><div><h2>Change password</h2><p>Enter your current password, then choose a new password of at least 8 characters.</p></div></div></div>
