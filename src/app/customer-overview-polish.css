@@ -1,4 +1,4 @@
-/* Approved customer Overview; desktop presentation only. */
+/* Approved shared customer activity layout; desktop presentation only. */
 .customerOverviewIntro,.customerOverviewWelcome,.overviewSummaryDecoration{display:none}
 @media screen and (min-width:1024px){
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader{height:70px!important;gap:20px;padding:0 32px;max-width:1600px}
@@ -8,43 +8,43 @@
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav>a.active:after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:#ff681b}
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountActions{gap:12px}
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountIdentity{max-width:120px}
- body.approvedDesktop .customerLiveWorkspace.approvedOverviewOpen{max-width:1180px;width:calc(100% - 96px);margin:0 auto;padding:28px 0 42px}
- body.approvedDesktop:has(.approvedOverviewOpen){background:#f4f8fd}
- body.approvedDesktop .approvedOverviewOpen .customerOverviewIntro{display:block;margin-bottom:18px}
- body.approvedDesktop .approvedOverviewOpen .customerOverviewIntro>span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#647799}
- body.approvedDesktop .approvedOverviewOpen .customerOverviewIntro h1{font-size:32px;font-weight:700;letter-spacing:-.7px;line-height:1.2;color:#071c43;margin:8px 0 5px}
- body.approvedDesktop .approvedOverviewOpen .customerOverviewIntro p{font-size:14px;line-height:1.5;color:#526984;margin:0}
- body.approvedDesktop .approvedOverviewOpen>.dashboardHero{margin:0!important;padding:0!important}
- body.approvedDesktop .approvedOverviewOpen>.dashboardHero>div:first-child{min-height:240px!important;box-sizing:border-box;display:flex;align-items:center;padding:28px 30px!important;border-radius:8px;background:linear-gradient(90deg,#071c43ed 0%,#071c43a6 29%,transparent 63%),url('/orange-design-preview/assets/customer-dashboard.webp') center 54%/cover no-repeat!important}
- body.approvedDesktop .approvedOverviewOpen>.dashboardHero>div:first-child>:is(.dashboardEyebrow,h1,p){display:none!important}
- body.approvedDesktop .approvedOverviewOpen .customerOverviewWelcome{display:block}
- body.approvedDesktop .approvedOverviewOpen .customerOverviewWelcome h2{font-size:28px;font-weight:700;letter-spacing:-.4px;line-height:1.2;color:#fff;margin:0 0 12px}
- body.approvedDesktop .approvedOverviewOpen .customerOverviewWelcome p{font-size:14px!important;line-height:1.6;max-width:310px!important;margin:0;color:#fff!important}
- body.approvedDesktop .approvedOverviewOpen .customerDashboardSummary{gap:14px!important;margin:16px 0 20px!important}
- body.approvedDesktop .approvedOverviewOpen .customerDashboardSummary>[role=button]{position:relative;min-height:90px!important;padding:16px 70px 16px 20px!important;box-shadow:none!important;border-radius:8px!important;background:#fff!important;border-color:#d5e1ee!important}
- body.approvedDesktop .approvedOverviewOpen .customerDashboardSummary strong{display:block;font-size:28px!important;line-height:1.15}
- body.approvedDesktop .approvedOverviewOpen .customerDashboardSummary>div>span:not([class]){display:block;margin-top:6px;font-size:13px!important;color:#071c43!important}
- body.approvedDesktop .approvedOverviewOpen .customerSummaryActivity{top:22px;left:65px;box-shadow:none}
- body.approvedDesktop .approvedOverviewOpen .overviewSummaryDecoration{display:flex;align-items:center;gap:16px;position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#071c43;pointer-events:none}
- body.approvedDesktop .approvedOverviewOpen .overviewSummaryDecoration>.approvedIcon{width:28px;height:28px}
- body.approvedDesktop .approvedOverviewOpen .overviewSummaryChevron{width:16px;height:20px;color:#7589a6}
- body.approvedDesktop .approvedOverviewOpen .approvedCustomerOverview{display:block}
- body.approvedDesktop .approvedOverviewOpen .approvedRecentDeliveries{padding:20px;border:1px solid #d5e1ee;border-radius:8px;background:#fff;box-shadow:none}
- body.approvedDesktop .approvedOverviewOpen .approvedSectionTitle{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0;padding-bottom:14px}
- body.approvedDesktop .approvedOverviewOpen .approvedSectionTitle h2{font-size:21px;line-height:1.3;margin:0;color:#071c43}
- body.approvedDesktop .approvedOverviewOpen .approvedSectionTitle>a{font-size:12px;white-space:nowrap}
- body.approvedDesktop .approvedOverviewOpen .approvedRecentRow{display:grid;grid-template-columns:42px minmax(0,1fr) 170px 120px 18px;gap:16px;align-items:center;min-height:72px;box-sizing:border-box;padding:12px 0;border-top:1px solid #e3eaf3}
- body.approvedDesktop .approvedOverviewOpen .approvedVehicleSymbol{width:42px;height:38px;background:#edf4ff;border-radius:6px;color:#071c43}
- body.approvedDesktop .approvedOverviewOpen .approvedVehicleSymbol .approvedIcon{width:24px;height:24px}
- body.approvedDesktop .approvedOverviewOpen .overviewVehicleCopy{min-width:0}
- body.approvedDesktop .approvedOverviewOpen .approvedRecentRow strong{font-size:15px;font-weight:600;line-height:1.4;color:#071c43}
- body.approvedDesktop .approvedOverviewOpen .approvedRecentRow small{font-size:12px;line-height:1.4;color:#647799;margin:3px 0 0;overflow-wrap:anywhere}
- body.approvedDesktop .approvedOverviewOpen .overviewDeliveryDate>span{display:block;font-size:13px;line-height:1.4;color:#173451}
- body.approvedDesktop .approvedOverviewOpen .overviewDeliveryDate>small{display:block;margin:0 0 3px}
- body.approvedDesktop .approvedOverviewOpen .approvedLiveStatus{justify-self:start;max-width:100%;white-space:normal;font-size:12px;line-height:1.3;padding:5px 10px;border-radius:16px}
- body.approvedDesktop .approvedOverviewOpen .status-completed{background:#eaf8ec;color:#148742}
- body.approvedDesktop .approvedOverviewOpen .approvedRecentRow>.approvedIcon{width:18px;height:18px;color:#7589a6}
- body.approvedDesktop .approvedOverviewOpen :is(a,[role=button]):focus-visible{outline:2px solid #ff681b;outline-offset:3px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout{max-width:1180px;width:calc(100% - 96px);margin:0 auto;padding:28px 0 42px}
+ body.approvedDesktop:has(.customerActivityLayout){background:#f4f8fd}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewIntro{display:block;margin-bottom:18px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewIntro>span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#647799}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewIntro h1{font-size:32px;font-weight:700;letter-spacing:-.7px;line-height:1.2;color:#071c43;margin:8px 0 5px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewIntro p{font-size:14px;line-height:1.5;color:#526984;margin:0}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout>.dashboardHero{margin:0!important;padding:0!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout>.dashboardHero>div:first-child{min-height:240px!important;box-sizing:border-box;display:flex;align-items:center;padding:28px 30px!important;border-radius:8px;background:linear-gradient(90deg,#071c43ed 0%,#071c43a6 29%,transparent 63%),url('/orange-design-preview/assets/customer-dashboard.webp') center 54%/cover no-repeat!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout>.dashboardHero>div:first-child>:is(.dashboardEyebrow,h1,p){display:none!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewWelcome{display:block}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewWelcome h2{font-size:28px;font-weight:700;letter-spacing:-.4px;line-height:1.2;color:#fff;margin:0 0 12px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewWelcome p{font-size:14px!important;line-height:1.6;max-width:310px!important;margin:0;color:#fff!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary{gap:14px!important;margin:16px 0 20px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>[role=button]{position:relative;min-height:90px!important;padding:16px 70px 16px 20px!important;box-shadow:none!important;border-radius:8px!important;background:#fff!important;border-color:#d5e1ee!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary strong{display:block;font-size:28px!important;line-height:1.15}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>div>span:not([class]){display:block;margin-top:6px;font-size:13px!important;color:#071c43!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerSummaryActivity{top:22px;left:65px;box-shadow:none}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryDecoration{display:flex;align-items:center;gap:16px;position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#071c43;pointer-events:none}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryDecoration>.approvedIcon{width:28px;height:28px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryChevron{width:16px;height:20px;color:#7589a6}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedCustomerOverview{display:block}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentDeliveries{padding:20px;border:1px solid #d5e1ee;border-radius:8px;background:#fff;box-shadow:none}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedSectionTitle{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0;padding-bottom:14px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedSectionTitle h2{font-size:21px;line-height:1.3;margin:0;color:#071c43}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedSectionTitle>a{font-size:12px;white-space:nowrap}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow{display:grid;grid-template-columns:42px minmax(0,1fr) 170px 120px 18px;gap:16px;align-items:center;min-height:72px;box-sizing:border-box;padding:12px 0;border-top:1px solid #e3eaf3}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedVehicleSymbol{width:42px;height:38px;background:#edf4ff;border-radius:6px;color:#071c43}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedVehicleSymbol .approvedIcon{width:24px;height:24px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewVehicleCopy{min-width:0}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow strong{font-size:15px;font-weight:600;line-height:1.4;color:#071c43}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow small{font-size:12px;line-height:1.4;color:#647799;margin:3px 0 0;overflow-wrap:anywhere}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewDeliveryDate>span{display:block;font-size:13px;line-height:1.4;color:#173451}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewDeliveryDate>small{display:block;margin:0 0 3px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedLiveStatus{justify-self:start;max-width:100%;white-space:normal;font-size:12px;line-height:1.3;padding:5px 10px;border-radius:16px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .status-completed{background:#eaf8ec;color:#148742}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow>.approvedIcon{width:18px;height:18px;color:#7589a6}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout :is(a,[role=button]):focus-visible{outline:2px solid #ff681b;outline-offset:3px}
 }
 @media screen and (min-width:1024px) and (max-width:1240px){
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader{padding:0 20px;gap:14px}
@@ -53,8 +53,19 @@
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav>a{font-size:12px}
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountActions{gap:7px}
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountIdentity{max-width:95px;gap:6px;font-size:12px}
- body.approvedDesktop .approvedOverviewOpen .customerDashboardSummary>[role=button]{padding-left:14px!important;padding-right:54px!important}
- body.approvedDesktop .approvedOverviewOpen .overviewSummaryDecoration{gap:6px;right:9px}
- body.approvedDesktop .approvedOverviewOpen .overviewSummaryDecoration>.approvedIcon{width:22px;height:22px}
- body.approvedDesktop .approvedOverviewOpen .approvedRecentRow{grid-template-columns:38px minmax(0,1fr) 140px 105px 16px;gap:12px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>[role=button]{padding-left:14px!important;padding-right:54px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryDecoration{gap:6px;right:9px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryDecoration>.approvedIcon{width:22px;height:22px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow{grid-template-columns:38px minmax(0,1fr) 140px 105px 16px;gap:12px}
+}
+
+@media screen and (min-width:1024px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout>.dashboardFilterBar{display:none!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewIntro{min-height:78px;box-sizing:border-box}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout>.dashboardHero>div:first-child{height:240px!important;flex-shrink:0}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>[role=button]{height:90px!important;box-sizing:border-box}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>[role=button][aria-pressed=true]{background:#fff7f0!important;border-color:#ff681b!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .dashboardSectionHeading{margin:0 0 14px;min-height:28px;align-items:center}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .dashboardSectionHeading h2{font-size:21px;line-height:1.3;margin:0}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .dashboardSectionHeading>span{font-size:12px}
 }
