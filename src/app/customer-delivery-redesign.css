@@ -1,0 +1,176 @@
+/* Approved desktop dashboard and delivery cards. All live content is retained. */
+.deliveryDesktopIcon,.deliveryRouteExtra,.deliveryDesignSummary{display:none}
+.deliveryDesignIcon{width:24px;height:24px;flex:none;vertical-align:middle}
+@media screen and (min-width:1024px){
+ body.approvedDesktop:has(.customerActivityLayout){background:#eff9ff}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout{max-width:1360px;width:calc(100% - 120px);padding-top:40px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout>.dashboardHero>div:first-child{height:275px!important;min-height:275px!important;padding:32px 40px!important;border-radius:10px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewWelcome h2{font-size:42px;line-height:1.2;letter-spacing:-1px;margin-bottom:10px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewWelcome p{font-size:23px!important;line-height:1.45;max-width:410px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;min-width:0;margin:20px 0 38px!important;padding:14px 0;border:1px solid #d4e7fc;border-radius:10px;background:white;box-shadow:0 6px 20px #bedef426}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>[role=button]{order:initial!important;grid-column:auto!important;height:82px!important;min-height:82px!important;border:0!important;border-right:1px solid #cde1f9!important;border-radius:0!important;padding:0 30px 0 110px!important;display:flex!important;flex-direction:column;align-items:flex-start;justify-content:center;position:relative}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>[role=button]:last-child{border-right:0!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>[role=button][aria-pressed=true]{background:#fff4e9!important;box-shadow:inset 0 -3px #ff681b!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary strong{font-size:44px!important;line-height:1;font-weight:700;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>div>span:not([class]){font-size:17px!important;line-height:1.3;margin-top:5px;white-space:nowrap}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryDecoration{inset:0;transform:none;display:block}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryDecoration>.approvedIcon{position:absolute;left:20px;top:0;width:80px;height:80px;box-sizing:border-box;padding:21px;background:#fff0e4;border-radius:12px;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>div:nth-child(2) .overviewSummaryDecoration>.approvedIcon{background:#e7f2ff}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>div:nth-child(3) .overviewSummaryDecoration>.approvedIcon{background:#e2f7ec}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>div:nth-child(4) .overviewSummaryDecoration>.approvedIcon{background:#ffe6e7}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryChevron{position:absolute;right:20px;top:31px;width:15px;height:20px;color:#4e79ca}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerSummaryActivity{left:163px;top:15px;width:12px;height:12px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentDeliveries{padding:0;border:0;border-radius:0;background:transparent}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedSectionTitle{padding-bottom:16px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedSectionTitle h2{font-size:30px;font-weight:700;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedSectionTitle>a{font-size:18px;color:#0656ff}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow{position:relative;overflow:hidden;grid-template-columns:74px minmax(0,1.2fr) minmax(160px,.85fr) 150px 20px;gap:20px;min-height:82px;margin-bottom:12px;padding:9px 22px 9px 30px;background:#fff;border:1px solid #cfe5fe;border-radius:9px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow:before{content:'';position:absolute;left:0;top:0;bottom:0;width:7px;background:#2188ff}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow.deliveryRow-completed:before{background:#35bf88}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow.deliveryRow-cancelled:before{background:#ff6262}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedVehicleSymbol{display:grid;place-items:center;width:74px;height:62px;background:#e8f6ff;border-radius:10px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedVehicleSymbol svg{width:36px;height:36px;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow strong{font-size:18px;color:#091650;font-weight:700}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow small{font-size:16px;color:#7987b3}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewDeliveryDate{border-left:1px solid #d7e5fa;padding-left:32px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewDeliveryDate>small{font-size:14px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewDeliveryDate>span{font-size:17px;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedLiveStatus{justify-self:center;text-align:center;min-width:130px;box-sizing:border-box;font-size:16px;padding:10px 16px;background:#d9eaff;color:#0656ff;border:0}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .status-completed{background:#dff6e9;color:#009e59}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .status-cancelled{background:#ffdddd;color:#dc2222}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow>.deliveryDesignIcon{width:18px;height:18px;color:#4e79ca}
+ /* Existing cards retain their original React-owned sections and action handlers. */
+ body.approvedDesktop .customerLiveWorkspace .deliveryMobileIcon{display:none}
+ body.approvedDesktop .customerLiveWorkspace .deliveryDesktopIcon{display:inline-flex;align-items:center;justify-content:center;flex:none}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.customerExpandableCard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:16px!important;border:1px solid #bfdfff!important;border-radius:10px!important;background:white!important;box-shadow:none!important;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.customerExpandableCard:before{display:none}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.customerExpandableCard>:not(.customerCardToggle){margin:0!important;grid-column:1/-1;min-width:0}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.customerCardToggle{grid-column:1/-1;display:block!important;padding:0!important;border:0!important;background:transparent!important;width:100%}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.customerCardToggle>:not(.deliveryDesignSummary){display:none!important}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard .deliveryDesignSummary{display:grid;grid-template-columns:88px minmax(0,1fr) 185px 26px;gap:24px;align-items:center;padding:0 7px 4px;color:#091650;text-align:left}
+ body.approvedDesktop .customerLiveWorkspace .deliveryVehicleIcon{display:grid;place-items:center;width:88px;height:88px;border-radius:10px;background:#eaf7ff}
+ body.approvedDesktop .customerLiveWorkspace .deliveryVehicleIcon svg{width:46px;height:46px}
+ body.approvedDesktop .customerLiveWorkspace .deliveryDesignIdentity{min-width:0}
+ body.approvedDesktop .customerLiveWorkspace .deliveryDesignIdentity strong{display:block;font-size:25px;line-height:1.3;font-weight:700;overflow-wrap:anywhere}
+ body.approvedDesktop .customerLiveWorkspace .deliveryDesignIdentity small{display:block;font-size:15px;line-height:1.5;margin-top:5px;color:#5e6ca1;overflow-wrap:anywhere}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.isCollapsed .deliveryExpandedPartner{display:none}
+ body.approvedDesktop .customerLiveWorkspace .deliveryDesignPayment{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+ body.approvedDesktop .customerLiveWorkspace .deliveryDesignPayment>small{font-size:15px;color:#596798;margin-top:5px}
+ body.approvedDesktop .customerLiveWorkspace .deliveryDesignPayment>strong{font-size:24px;line-height:1.2}
+ body.approvedDesktop .customerLiveWorkspace .deliveryDesignStatus{padding:6px 14px;min-width:140px;box-sizing:border-box;text-align:center;background:#dceeff;color:#0656ff;font-size:14px;border-radius:24px}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.requiresDeliveryConfirmation .deliveryDesignStatus{background:#ffead5;color:#e75a00}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard[data-completed-summary] .deliveryDesignStatus{background:#dff8e6;color:#008b3e}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.customerCancelledCompact .deliveryDesignStatus{background:#ffe3e3;color:#c63131}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard .deliveryDesignChevron svg{width:22px;height:22px}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard:not(.isCollapsed) .deliveryDesignChevron{transform:rotate(180deg)}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.bookingTop{display:none!important}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.customerDeliveryDetails{display:contents!important}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryDetails>.customerDeliveryDate{display:none!important}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryDetails>.customerCollapsedDeliveryIdentity{display:none!important}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.isCollapsed .customerCollapsedDeliveryIdentity{display:block!important;grid-column:auto;order:3}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.isCollapsed .customerCollapsedDeliveryIdentity>div:nth-child(2){display:none}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.isCollapsed .customerCollapsedDeliveryIdentity>div:first-child{display:block;padding:6px 16px 6px 7px;border-right:1px solid #cfdef7}
+ body.approvedDesktop .customerLiveWorkspace .customerCollapsedDeliveryIdentity span{font-size:14px;color:#6c79a8;font-weight:400}
+ body.approvedDesktop .customerLiveWorkspace .customerCollapsedDeliveryIdentity strong{font-size:16px;color:#091650;font-weight:400}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryDetails>.customerViewTransporterProfile,
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryDetails>.customerTransporterContactActions{order:3;grid-column:auto}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryDetails>.customerTransporterContactActions{display:contents!important}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryDetails .btn{display:flex;align-items:center;justify-content:center;gap:12px;width:auto!important;min-width:0!important;min-height:52px!important;height:auto!important;max-width:100%;padding:10px 14px!important;border:1px solid #729bff!important;border-radius:7px!important;background:#fff!important;color:#091650!important;font-size:14px!important;line-height:1.3!important;font-weight:600!important;box-shadow:none!important;white-space:normal}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryDetails .btn:disabled{opacity:.45;cursor:not-allowed}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryDetails .btn svg{width:27px;height:27px}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryDetails .deliveryActionChevron{margin-left:auto}
+ body.approvedDesktop .customerLiveWorkspace .deliveryActionChevron svg{width:13px!important;height:16px!important}
+ body.approvedDesktop .customerLiveWorkspace .customerTransporterContactActions>.btn{order:3}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual{order:4;display:grid!important;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) minmax(160px,.8fr);align-items:center;gap:22px;background:#eaf6ff!important;border:0!important;border-radius:8px;padding:20px!important}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual>div{display:flex;align-items:center;gap:16px;min-width:0}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual i{width:34px;height:42px;background:none;border:0;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual i svg{width:30px;height:34px}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual small{display:block;font-size:14px;color:#6273a7;font-weight:400;text-transform:none;letter-spacing:0}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual b{display:block;margin-top:5px;font-size:16px;color:#091650;font-weight:400;overflow-wrap:anywhere}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual .routeLine{height:auto;background:none;border:0;width:auto;flex:none}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual .routeLine:before,
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual .routeLine:after{display:none}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual .deliveryRouteExtra{display:flex;border-left:1px solid #aecdf6;padding-left:25px}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual .deliveryRouteRegistration{display:none}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.isCollapsed>.routeVisual{order:2;grid-template-columns:minmax(0,1fr) 26px minmax(0,1fr) minmax(150px,.85fr) minmax(120px,.7fr)}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.isCollapsed>.routeVisual .deliveryRouteRegistration{display:flex}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard:has(.customerTransporterContactActions){grid-template-columns:repeat(3,minmax(0,1fr))}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.isCollapsed:has(.customerTransporterContactActions){grid-template-columns:1.15fr 1fr 1fr .95fr}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.activeVehicleDetails{order:5;padding:16px 18px!important;background:#fff!important;border:1px solid #cfe4fc!important;border-radius:8px}
+ body.approvedDesktop .customerLiveWorkspace .activeVehicleDetailsHeading>span{font-size:20px;font-weight:700;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace .activeVehicleDetailsHeading>small{display:none}
+ body.approvedDesktop .customerLiveWorkspace .activeVehicleDetailsGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 24px}
+ body.approvedDesktop .customerLiveWorkspace .activeVehicleDetailsGrid>span{padding:0 10px;background:none!important;border:0;border-right:1px solid #d5e4fa}
+ body.approvedDesktop .customerLiveWorkspace .activeVehicleDetailsGrid>span:nth-child(3n){border-right:0}
+ body.approvedDesktop .customerLiveWorkspace .activeVehicleDetailsGrid small{font-size:13px;color:#6d7ca9}
+ body.approvedDesktop .customerLiveWorkspace .activeVehicleDetailsGrid b{font-size:15px;font-weight:400;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.bookingColumns{order:6;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+ body.approvedDesktop .customerLiveWorkspace .bookingColumns>section{padding:16px 18px;border:1px solid #cfe4fc;border-radius:8px;background:#fff}
+ body.approvedDesktop .customerLiveWorkspace .bookingColumns h3,
+ body.approvedDesktop .customerLiveWorkspace .podViewer h3{font-size:20px;font-weight:700;color:#091650;margin:0 0 12px;letter-spacing:-.3px}
+ body.approvedDesktop .customerLiveWorkspace .bookingColumns .infoPanel{background:transparent!important;border:0!important;padding:0!important;box-shadow:none}
+ body.approvedDesktop .customerLiveWorkspace .infoRow{padding:12px 0;border-bottom:1px solid #dce9fa;font-size:14px}
+ body.approvedDesktop .customerLiveWorkspace .infoRow>span{color:#7180ae}
+ body.approvedDesktop .customerLiveWorkspace .infoRow>b{color:#091650;font-weight:500;overflow-wrap:anywhere}
+ body.approvedDesktop .customerLiveWorkspace .polishedTimeline{margin:8px 0 0 17px;border-left:1px solid #071650}
+ body.approvedDesktop .customerLiveWorkspace .polishedTimeline .event{padding:0 0 18px 26px}
+ body.approvedDesktop .customerLiveWorkspace .polishedTimeline .event:before{left:-14px;top:0;width:27px;height:27px;background:#0a1756;border:0;box-shadow:none}
+ body.approvedDesktop .customerLiveWorkspace .polishedTimeline .event:after{content:'';position:absolute;left:-6px;top:8px;width:10px;height:6px;border-left:2px solid white;border-bottom:2px solid white;transform:rotate(-45deg)}
+ body.approvedDesktop .customerLiveWorkspace .polishedTimeline .event b{font-size:15px;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace .polishedTimeline .event small,
+ body.approvedDesktop .customerLiveWorkspace .polishedTimeline .event .muted{font-size:13px;color:#7483ae;line-height:1.5}
+ body.approvedDesktop .customerLiveWorkspace .bookingColumns .fullBtn{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px;min-height:46px;font-size:14px;border-radius:6px}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>[data-customer-poc],
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>[data-customer-pod]{order:7;grid-column:auto!important}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard:not(.isCollapsed){grid-template-columns:repeat(6,minmax(0,1fr))}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard:not(.isCollapsed) .customerDeliveryDetails>.customerViewTransporterProfile,
+ body.approvedDesktop .customerLiveWorkspace .bookingCard:not(.isCollapsed) .customerTransporterContactActions>.btn{grid-column:span 2}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard:not(.isCollapsed)>[data-customer-poc],
+ body.approvedDesktop .customerLiveWorkspace .bookingCard:not(.isCollapsed)>[data-customer-pod]{grid-column:span 3!important}
+ body.approvedDesktop .customerLiveWorkspace .podViewer{margin:0!important;padding:16px 18px;border:1px solid #cfe4fc;border-radius:8px;background:#fff;height:100%;box-sizing:border-box}
+ body.approvedDesktop .customerLiveWorkspace .podViewer .subHeading{gap:10px;align-items:start}
+ body.approvedDesktop .customerLiveWorkspace .podViewer .statusPill{font-size:12px;padding:6px 14px;background:#d9f8df;color:#088334;border:0;text-transform:none;letter-spacing:0}
+ body.approvedDesktop .customerLiveWorkspace .podViewer .evidenceRow{padding:11px 0;background:none;border:0;border-top:1px solid #dce9fa;border-radius:0;gap:18px}
+ body.approvedDesktop .customerLiveWorkspace .podViewer .evidenceRow>span{background:none;color:#091650;width:32px}
+ body.approvedDesktop .customerLiveWorkspace .podViewer .evidenceRow small{display:block;font-size:11px;color:#7180ae}
+ body.approvedDesktop .customerLiveWorkspace .podViewer .evidenceRow b{font-size:14px;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace .podViewer .evidenceRow>strong{font-size:13px;color:#0656ff;font-weight:400}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryLocationMap{order:8;grid-column:1/-1;display:grid;grid-template-columns:1.3fr 1fr;gap:10px 24px;padding:16px 18px;border:1px solid #cfe4fc;border-radius:8px;margin:0!important;box-sizing:border-box}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryLocationMap h3{grid-column:1/-1;font-size:20px!important;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryLocationMap iframe{grid-column:1;grid-row:2/5;height:150px!important;border-radius:6px!important}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryLocationMap>p,
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryLocationMap>small{grid-column:2;align-self:center}
+ body.approvedDesktop .customerLiveWorkspace .deliveryConfirmationBanner{order:2;grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:12px 16px;border-radius:8px;background:#fff0e1}
+ body.approvedDesktop .customerLiveWorkspace .deliveryConfirmationBanner>.deliveryDesktopIcon{color:#ff6500}
+ body.approvedDesktop .customerLiveWorkspace .deliveryConfirmationBanner p{flex:1;margin:0;color:#091650;font-size:14px}
+ body.approvedDesktop .customerLiveWorkspace .deliveryConfirmationBanner .btn{background:#ff6500!important;color:white!important;border-color:#ff6500!important;min-height:42px!important}
+ body.approvedDesktop .customerLiveWorkspace .customerStatementButton{grid-column:1/-1;order:9}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.formNotice{order:1}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.isCollapsed :is(.customerDeliveryLocationMap,.customerStatementButton){display:none!important}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard:is(.hasUnreadDeliveryProgress,.hasUnreadCompletedActivity){border-color:#f2aa63!important;box-shadow:0 0 0 2px #ffad4a20!important}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard:is(.hasUnreadDeliveryProgress,.hasUnreadCompletedActivity) .deliveryDesignSummary{background:#fff4e9;border-radius:8px}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.customerCancelledCompact.isCollapsed>.customerDeliveryDetails{display:none!important}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.customerCancelledCompact.isCollapsed>.routeVisual,
+ body.approvedDesktop .customerLiveWorkspace .bookingCard[data-completed-summary].isCollapsed>.routeVisual{display:none!important}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard:is(.customerCancelledCompact,[data-completed-summary]).isCollapsed .deliveryExpandedPartner{display:block}
+ body.approvedDesktop .customerLiveWorkspace :is(.customerCardToggle,.btn,.approvedRecentRow):focus-visible{outline:2px solid #ff681b;outline-offset:3px}
+}
+@media screen and (min-width:1024px) and (max-width:1240px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout{width:calc(100% - 64px)}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>[role=button]{padding-left:80px!important;padding-right:20px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryDecoration>.approvedIcon{left:12px;top:10px;width:56px;height:62px;padding:13px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary strong{font-size:34px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>div>span:not([class]){font-size:14px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerSummaryActivity{left:120px;top:19px;width:9px;height:9px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryChevron{right:10px}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual{gap:14px;padding:16px!important}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual>div{gap:10px}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual .deliveryRouteExtra{padding-left:14px}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard>.routeVisual b{font-size:14px}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryDetails .btn{font-size:12px!important;gap:8px;padding:9px!important}
+ body.approvedDesktop .customerLiveWorkspace .customerDeliveryDetails .btn svg{width:22px;height:22px}
+}
+@media screen and (min-width:1024px){
+ body.approvedDesktop .customerLiveWorkspace .bookingCard:not(.isCollapsed) .deliveryCompactMetadata{display:none}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard.isCollapsed .deliveryCompactMetadata{font-size:12px;color:#6575a3}
+}

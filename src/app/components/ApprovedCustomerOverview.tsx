@@ -1,4 +1,5 @@
 import Icon from './ApprovedIcon';
+import DeliveryDesignIcon from './DeliveryDesignIcon';
 
 const statusLabel=(status:string)=>status.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
 function deliveryDate(booking:any){
@@ -19,12 +20,12 @@ export function OverviewSummaryIcon({name}:{name:string}){
 }
 export default function ApprovedCustomerOverview({bookings,loaded}:{bookings:any[];loaded:boolean}){
  const recent=[...bookings].sort((a,b)=>new Date(b.customerConfirmedAt||b.updatedAt||b.createdAt).getTime()-new Date(a.customerConfirmedAt||a.updatedAt||a.createdAt).getTime()).slice(0,4);
- return <div className="approvedCustomerOverview"><section className="approvedRecentDeliveries"><div className="approvedSectionTitle"><h2>Recent Deliveries</h2><a href="/customer?view=bookings">View All <Icon name="arrow"/></a></div>
- {!loaded?<p role="status">Loading your deliveries…</p>:recent.length===0?<div className="approvedOverviewEmpty"><Icon name="car"/><h3>Your next journey starts here.</h3><p>Choose Get a Quote in the top navigation to arrange your first vehicle delivery.</p></div>:recent.map(b=>{
+ return <div className="approvedCustomerOverview"><section className="approvedRecentDeliveries"><div className="approvedSectionTitle"><h2>Recent deliveries</h2><a href="/customer?view=bookings">View all <Icon name="arrow"/></a></div>
+ {!loaded?<p role="status">Loading your deliveries…</p>:recent.length===0?<div className="approvedOverviewEmpty"><DeliveryDesignIcon name="car"/><h3>Your next journey starts here.</h3><p>Choose Get a Quote in the top navigation to arrange your first vehicle delivery.</p></div>:recent.map(b=>{
  const date=deliveryDate(b);
- return <a key={b.id} className="approvedRecentRow" href={`/customer?view=${b.status==='CANCELLED'?'cancelled':b.customerConfirmedAt?'completed':'bookings'}`}>
- <span className="approvedVehicleSymbol"><Icon name="car"/></span><span className="overviewVehicleCopy"><strong>{b.job?.vehicleMake} {b.job?.vehicleModel}</strong><small>{b.job?.collection} → {b.job?.delivery}</small></span>
+ return <a key={b.id} className={`approvedRecentRow deliveryRow-${b.status==='CANCELLED'?'cancelled':b.customerConfirmedAt?'completed':'active'}`} href={`/customer?view=${b.status==='CANCELLED'?'cancelled':b.customerConfirmedAt?'completed':'bookings'}`}>
+ <span className="approvedVehicleSymbol"><DeliveryDesignIcon name="car"/></span><span className="overviewVehicleCopy"><strong>{b.job?.vehicleMake} {b.job?.vehicleModel}</strong><small>{b.job?.collection} → {b.job?.delivery}</small></span>
  <span className="overviewDeliveryDate"><small>{date.label}</small><span>{date.text}</span></span>
- <span className={`approvedLiveStatus status-${b.customerConfirmedAt?'completed':String(b.status).toLowerCase()}`}>{b.customerConfirmedAt?'Completed':statusLabel(b.status)}</span><Icon name="arrow"/></a>;
+ <span className={`approvedLiveStatus status-${b.customerConfirmedAt?'completed':String(b.status).toLowerCase()}`}>{b.customerConfirmedAt?'Completed':statusLabel(b.status)}</span><DeliveryDesignIcon name="chevron"/></a>;
  })}</section></div>;
 }

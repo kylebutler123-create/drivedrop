@@ -1,6 +1,7 @@
 'use client';
 import {useEffect} from 'react';
 import {usePathname} from 'next/navigation';
+import {deliveryIconMarkup} from './DeliveryDesignIcon';
 
 function text(el:Element|null){return (el?.textContent||'').replace(/\s+/g,' ').trim()}
 function escapeHtml(value:any){return String(value??'').replace(/[&<>'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]||c))}
@@ -134,8 +135,22 @@ function syncCancelledSummary(card:HTMLElement){
  lastCancelledSummary.set(card,signature);
 }
 
+// Desktop-only presentation; the existing toggle retains read-state and expand behaviour.
+const lastDesignSummary=new WeakMap<HTMLElement,string>();
+function syncDesignSummary(card:HTMLElement){
+ const raw=card.dataset.designSummary;
+ const button=card.querySelector<HTMLButtonElement>(':scope > .customerCardToggle');
+ if(!raw||!button)return;
+ let summary=button.querySelector<HTMLElement>('.deliveryDesignSummary');
+ if(summary&&lastDesignSummary.get(card)===raw)return;
+ let data;try{data=JSON.parse(raw)}catch{return}
+ if(!summary){summary=document.createElement('span');summary.className='deliveryDesignSummary';button.appendChild(summary)}
+ summary.innerHTML=`<span class="deliveryVehicleIcon">${deliveryIconMarkup('car')}</span><span class="deliveryDesignIdentity"><strong>${escapeHtml(data.title)}</strong><small class="deliveryExpandedPartner">${escapeHtml(data.transporter)} · ${escapeHtml(data.registration)}</small><small>Delivery reference · ${escapeHtml(bookingReference(card.dataset.bookingId))}</small>${data.compactDetails?`<small class="deliveryCompactMetadata">${escapeHtml(data.compactDetails)}</small>`:''}</span><span class="deliveryDesignPayment"><span class="deliveryDesignStatus">${escapeHtml(data.status)}</span><small>${escapeHtml(data.paymentLabel)}</small><strong>${escapeHtml(data.payment)}</strong></span><span class="deliveryDesignChevron">${deliveryIconMarkup('down')}</span>`;
+ lastDesignSummary.set(card,raw);
+}
+
 function enhance(card:HTMLElement){
- if(card.dataset.customerExpandable==='true'){syncDeliveryProgress(card);syncCompletedSummary(card);syncCompletedActivity(card);syncCancelledSummary(card);return}
+ if(card.dataset.customerExpandable==='true'){syncDeliveryProgress(card);syncCompletedSummary(card);syncCompletedActivity(card);syncCancelledSummary(card);syncDesignSummary(card);return}
  card.dataset.customerExpandable='true';
  card.classList.add('customerExpandableCard','isCollapsed');
  const btn=document.createElement('button');
@@ -158,7 +173,7 @@ function enhance(card:HTMLElement){
  card.insertBefore(btn,card.firstChild);
  syncDeliveryProgress(card);
  syncCompletedSummary(card);
- syncCompletedActivity(card);syncCancelledSummary(card);
+ syncCompletedActivity(card);syncCancelledSummary(card);syncDesignSummary(card);
 }
 
 export default function CustomerCardExpander(){
@@ -170,9 +185,9 @@ export default function CustomerCardExpander(){
   const schedule=()=>{if(frame===null)frame=requestAnimationFrame(scan)};
   scan();
   const observer=new MutationObserver(records=>{
-   for(const record of records){if(record.type==='attributes'&&record.target instanceof HTMLElement){syncDeliveryProgress(record.target);syncCompletedSummary(record.target);syncCompletedActivity(record.target);syncCancelledSummary(record.target)}else schedule()}
+   for(const record of records){if(record.type==='attributes'&&record.target instanceof HTMLElement){syncDeliveryProgress(record.target);syncCompletedSummary(record.target);syncCompletedActivity(record.target);syncCancelledSummary(record.target);syncDesignSummary(record.target)}else schedule()}
   });
-  observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-delivery-progress','data-completed-summary']});
+  observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-delivery-progress','data-completed-summary','data-design-summary']});
   return()=>{observer.disconnect();if(frame!==null)cancelAnimationFrame(frame)};
  },[pathname]);
  return null;
