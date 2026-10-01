@@ -74,3 +74,25 @@
 @media(max-width:760px){
  .customerSummaryActivity,.dashboardSummaryActivity{top:9px;left:9px;width:8px;height:8px}
 }
+
+/* Compact cancelled customer cards: full React-owned details stay intact underneath. */
+.customerCancelledSummary{display:none}
+@media screen and (min-width:1024px){
+ body.approvedDesktop .customerExpandableCard.bookingCard.customerCancelledCompact{border-radius:8px!important}
+ body.approvedDesktop .customerExpandableCard.bookingCard.customerCancelledCompact>.customerCardToggle{display:block;padding:12px 16px}
+ body.approvedDesktop .customerCancelledCompact>.customerCardToggle>:is(.customerCardSummaryMain,.customerCardSummarySide){display:none}
+ body.approvedDesktop .customerCancelledCompact .customerCancelledSummary{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(340px,1fr) 30px;gap:18px;align-items:center}
+ body.approvedDesktop .customerCancelledCompact .customerCancelledIdentity{min-width:0}
+ body.approvedDesktop .customerCancelledCompact .customerCancelledIdentity>:is(strong,small){display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ body.approvedDesktop .customerCancelledCompact .customerCancelledStatus{display:flex;align-items:center;gap:8px;color:#b55332;font-size:9px;line-height:1.3;font-weight:700;text-transform:uppercase;letter-spacing:.055em;margin-bottom:4px}
+ body.approvedDesktop .customerCancelledCompact .customerCancelledIdentity strong{font-size:13px;line-height:1.2;font-weight:600;color:#183654}
+ body.approvedDesktop .customerCancelledCompact .customerCancelledIdentity small{margin-top:3px;color:#62778b;font-size:10px;line-height:1.3}
+ body.approvedDesktop .customerCancelledCompact .customerCancelledQuick{display:grid;grid-template-columns:1fr 1fr;gap:12px;min-width:0}
+ body.approvedDesktop .customerCancelledCompact .customerCancelledQuick>span{min-width:0;border-radius:6px;background:#f1f6fc;padding:9px 12px}
+ body.approvedDesktop .customerCancelledCompact .customerCancelledQuick small{display:block;font-size:10px;line-height:1.3;color:#62778b;margin-bottom:4px}
+ body.approvedDesktop .customerCancelledCompact .customerCancelledQuick b{display:block;font-size:12px;line-height:1.4;color:#183654;font-weight:500;overflow-wrap:anywhere}
+ body.approvedDesktop .customerCancelledCompact .customerCancelledChevron{display:grid;place-items:center;width:30px;height:30px;border-radius:6px;color:#071c43;background:#edf4ff}
+ body.approvedDesktop .customerCancelledCompact>.customerCardToggle[aria-expanded=true] .customerCancelledChevron svg{transform:rotate(180deg)}
+ body.approvedDesktop .customerCancelledCompact.hasUnreadDeliveryProgress .customerCancelledStatus:before{content:'';width:8px;height:8px;flex-shrink:0;border-radius:50%;background:#ff681b}
+ body.approvedDesktop .customerExpandableCard.bookingCard.customerCancelledCompact.isCollapsed>.customerActiveDeliveryDetails{display:none!important}
+}

@@ -107,8 +107,35 @@ function syncCompletedSummary(card:HTMLElement){
  button.innerHTML=`<span class="customerCompletedIdentity"><span class="customerCardSummaryStatus">Completed</span><strong>${escapeHtml(summary.title)}</strong><small>Transporter · ${escapeHtml(summary.transporter)} · ${escapeHtml(summary.registration)}</small>${reference?`<small class="customerDeliveryReference">Delivery reference · ${escapeHtml(reference)}</small>`:''}</span><span class="customerCompletedQuick"><span><small>Delivered</small><b>${escapeHtml(deliveredLabel)}</b></span><span><small>Payment</small><b>${escapeHtml(summary.paymentText)}</b></span><span><small>Confirmation</small><b>Confirmed</b></span><span><small>Evidence</small><b>${summary.evidenceCount} item${summary.evidenceCount===1?'':'s'}</b></span></span><span class="customerCardChevron">${card.classList.contains('isCollapsed')?'+':'−'}</span>`;
 }
 
+
+const lastCancelledSummary=new WeakMap<HTMLElement,string>();
+function syncCancelledSummary(card:HTMLElement){
+ let status='';
+ try{status=JSON.parse(card.dataset.deliveryProgress||'{}').status||''}catch{}
+ const cancelled=status==='CANCELLED';
+ card.classList.toggle('customerCancelledCompact',cancelled);
+ const button=card.querySelector<HTMLButtonElement>(':scope > .customerCardToggle');
+ if(!button)return;
+ let summary=button.querySelector<HTMLElement>('.customerCancelledSummary');
+ if(!cancelled){summary?.remove();lastCancelledSummary.delete(card);return}
+ const title=text(card.querySelector('.bookingTop h2'));
+ const transporter=text(card.querySelector('.bookingPartner b'))||'Not provided';
+ const registration=text(card.querySelector('.customerCollapsedDeliveryIdentity>div:nth-child(2) strong'))||'Not provided';
+ const date=text(card.querySelector('.customerDeliveryDate>strong'))||'To be confirmed';
+ const paymentValue=text(card.querySelector('.paymentMini strong'));
+ const paymentLabel=text(card.querySelector('.paymentMini span'));
+ const paymentStatus=text(card.querySelector('.paymentMini small'));
+ const payment=paymentValue?[(paymentLabel.toLowerCase().includes('refund')?paymentLabel:paymentStatus)||paymentLabel,paymentValue].filter(Boolean).join(' · '):'No payment recorded';
+ const reference=bookingReference(card.dataset.bookingId);
+ const signature=JSON.stringify([title,transporter,registration,date,payment,reference]);
+ if(summary&&lastCancelledSummary.get(card)===signature)return;
+ if(!summary){summary=document.createElement('span');summary.className='customerCancelledSummary';button.appendChild(summary)}
+ summary.innerHTML=`<span class="customerCancelledIdentity"><span class="customerCancelledStatus">Cancelled</span><strong>${escapeHtml(title)}</strong><small>Transporter · ${escapeHtml(transporter)} · ${escapeHtml(registration)}</small><small>Delivery reference · ${escapeHtml(reference)}</small></span><span class="customerCancelledQuick"><span><small>Collection date</small><b>${escapeHtml(date)}</b></span><span><small>Payment</small><b>${escapeHtml(payment)}</b></span></span><span class="customerCancelledChevron"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>`;
+ lastCancelledSummary.set(card,signature);
+}
+
 function enhance(card:HTMLElement){
- if(card.dataset.customerExpandable==='true'){syncDeliveryProgress(card);syncCompletedSummary(card);syncCompletedActivity(card);return}
+ if(card.dataset.customerExpandable==='true'){syncDeliveryProgress(card);syncCompletedSummary(card);syncCompletedActivity(card);syncCancelledSummary(card);return}
  card.dataset.customerExpandable='true';
  card.classList.add('customerExpandableCard','isCollapsed');
  const btn=document.createElement('button');
@@ -131,7 +158,7 @@ function enhance(card:HTMLElement){
  card.insertBefore(btn,card.firstChild);
  syncDeliveryProgress(card);
  syncCompletedSummary(card);
- syncCompletedActivity(card);
+ syncCompletedActivity(card);syncCancelledSummary(card);
 }
 
 export default function CustomerCardExpander(){
@@ -143,7 +170,7 @@ export default function CustomerCardExpander(){
   const schedule=()=>{if(frame===null)frame=requestAnimationFrame(scan)};
   scan();
   const observer=new MutationObserver(records=>{
-   for(const record of records){if(record.type==='attributes'&&record.target instanceof HTMLElement){syncDeliveryProgress(record.target);syncCompletedSummary(record.target);syncCompletedActivity(record.target)}else schedule()}
+   for(const record of records){if(record.type==='attributes'&&record.target instanceof HTMLElement){syncDeliveryProgress(record.target);syncCompletedSummary(record.target);syncCompletedActivity(record.target);syncCancelledSummary(record.target)}else schedule()}
   });
   observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-delivery-progress','data-completed-summary']});
   return()=>{observer.disconnect();if(frame!==null)cancelAnimationFrame(frame)};
