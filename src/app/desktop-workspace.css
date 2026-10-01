@@ -44,11 +44,11 @@
 }
 @media screen and (min-width:1101px){
   /* The same conversation and composer move beside the inbox, not into a second mount. */
-  .desktopRedesign .messagesShell .conversationList:has(.inlineConversationPanel){position:relative;display:block;min-height:710px;padding-right:calc(100% - 310px)}
-  .desktopRedesign .messagesShell .conversationList:has(.inlineConversationPanel) .conversationEntry{display:block;margin-bottom:9px}
-  .desktopRedesign .messagesShell .conversationList:has(.inlineConversationPanel) .inlineConversationPanel{position:absolute;top:0;left:332px;right:0;margin:0;border:1px solid #dfe7f1;border-radius:10px;background:#fff}
-  .desktopRedesign .messagesShell .inlineConversationPanel .messageStream{min-height:310px;max-height:440px}
-  .desktopRedesign .messagesShell .conversationCard.isActive{border-radius:8px;box-shadow:none}
+  .desktopRedesign .messagesShell:not(.customerMessagesPolish) .conversationList:has(.inlineConversationPanel){position:relative;display:block;min-height:710px;padding-right:calc(100% - 310px)}
+  .desktopRedesign .messagesShell:not(.customerMessagesPolish) .conversationList:has(.inlineConversationPanel) .conversationEntry{display:block;margin-bottom:9px}
+  .desktopRedesign .messagesShell:not(.customerMessagesPolish) .conversationList:has(.inlineConversationPanel) .inlineConversationPanel{position:absolute;top:0;left:332px;right:0;margin:0;border:1px solid #dfe7f1;border-radius:10px;background:#fff}
+  .desktopRedesign .messagesShell:not(.customerMessagesPolish) .inlineConversationPanel .messageStream{min-height:310px;max-height:440px}
+  .desktopRedesign .messagesShell:not(.customerMessagesPolish) .conversationCard.isActive{border-radius:8px;box-shadow:none}
 }
 
 @media screen and (min-width:1024px){
