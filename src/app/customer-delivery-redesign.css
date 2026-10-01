@@ -226,3 +226,7 @@
  body.approvedDesktop .customerLiveWorkspace .bookingCard:is(.customerCancelledCompact,[data-completed-summary]).isCollapsed .deliveryDesignStatus{min-width:112px;font-size:14px;padding:7px 12px;font-weight:500}
  body.approvedDesktop .customerLiveWorkspace .bookingCard:is(.customerCancelledCompact,[data-completed-summary]).isCollapsed .deliveryDesignChevron svg{width:18px;height:18px}
 }
+
+@media screen and (min-width:1024px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout #completed-deliveries.dashboardSectionHeading h2{font-size:30px;font-weight:700;color:#091650}
+}
