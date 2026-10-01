@@ -10,7 +10,7 @@
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountIdentity{max-width:120px}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout{max-width:1180px;width:calc(100% - 96px);margin:0 auto;padding:28px 0 42px}
  body.approvedDesktop:has(.customerActivityLayout){background:#f4f8fd}
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewIntro{display:block;margin-bottom:18px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewIntro{position:absolute;width:1px;height:1px;min-height:0!important;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);clip-path:inset(50%);white-space:nowrap;border:0}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewIntro>span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#647799}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewIntro h1{font-size:32px;font-weight:700;letter-spacing:-.7px;line-height:1.2;color:#071c43;margin:8px 0 5px}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewIntro p{font-size:14px;line-height:1.5;color:#526984;margin:0}
