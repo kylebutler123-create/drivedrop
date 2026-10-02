@@ -156,7 +156,9 @@ function syncQuoteSummary(card:HTMLElement){
  if(!button)return;
  const title=text(card.querySelector('.bookingTop h2'));
  const route=Array.from(card.querySelectorAll('.compactRoute b')).map(el=>text(el)).join(' → ');
- const date=text(card.querySelector('.bookingPartner')).replace(/^Requested collection\s*·\s*/, '')||'Date unavailable';
+ const rawDate=text(card.querySelector('.bookingPartner')).replace(/^Requested collection\s*·\s*/, '');
+ const dateParts=rawDate.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+ const date=dateParts?new Date(Date.UTC(Number(dateParts[3]),Number(dateParts[2])-1,Number(dateParts[1]))).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}):rawDate||'Date unavailable';
  const status=text(card.querySelector('.bookingTop .statusPill'));
  const count=Number(text(card.querySelector('.quoteCount strong')))||0;
  const countLabel=count?`${count} quote${count===1?'':'s'} received`:'Awaiting quotes';
