@@ -1,7 +1,7 @@
 'use client';
 import {useEffect} from 'react';
 import {usePathname} from 'next/navigation';
-import {deliveryIconMarkup} from './DeliveryDesignIcon';
+import {deliveryIconMarkup,vehicleTypeIcon} from './DeliveryDesignIcon';
 
 function text(el:Element|null){return (el?.textContent||'').replace(/\s+/g,' ').trim()}
 function escapeHtml(value:any){return String(value??'').replace(/[&<>'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]||c))}
@@ -137,16 +137,22 @@ function syncCancelledSummary(card:HTMLElement){
 
 // Desktop-only presentation; the existing toggle retains read-state and expand behaviour.
 const lastDesignSummary=new WeakMap<HTMLElement,string>();
+function cardVehicleType(card:HTMLElement){
+ const field=Array.from(card.querySelectorAll('.activeVehicleDetailsGrid>span,.customerRequestDetailsGrid>div')).find(el=>text(el.querySelector('small,span')).toLowerCase()==='vehicle type');
+ return text(field?.querySelector('b')||null);
+}
 function syncDesignSummary(card:HTMLElement){
  const raw=card.dataset.designSummary;
  const button=card.querySelector<HTMLButtonElement>(':scope > .customerCardToggle');
  if(!raw||!button)return;
  let summary=button.querySelector<HTMLElement>('.deliveryDesignSummary');
- if(summary&&lastDesignSummary.get(card)===raw)return;
+ const icon=vehicleTypeIcon(cardVehicleType(card));
+ const signature=JSON.stringify([raw,icon]);
+ if(summary&&lastDesignSummary.get(card)===signature)return;
  let data;try{data=JSON.parse(raw)}catch{return}
  if(!summary){summary=document.createElement('span');summary.className='deliveryDesignSummary';button.appendChild(summary)}
- summary.innerHTML=`<span class="deliveryVehicleIcon">${deliveryIconMarkup('car')}</span><span class="deliveryDesignIdentity"><strong>${escapeHtml(data.title)}</strong><small class="deliveryHistoryRoute">${escapeHtml(data.route)}</small><small class="deliveryExpandedPartner">${escapeHtml(data.transporter)} · ${escapeHtml(data.registration)}</small><small>Delivery reference · ${escapeHtml(bookingReference(card.dataset.bookingId))}</small>${data.compactDetails?`<small class="deliveryCompactMetadata">${escapeHtml(data.compactDetails)}</small>`:''}</span><span class="deliveryHistoryDate"><small>${escapeHtml(data.rowDateLabel)}</small><span>${escapeHtml(data.rowDate)}</span></span><span class="deliveryDesignPayment"><span class="deliveryDesignStatus">${escapeHtml(card.hasAttribute('data-active-summary')&&data.status==='Confirmation required'?'Delivered':data.status)}</span><small>${escapeHtml(data.paymentLabel)}</small><strong>${escapeHtml(data.payment)}</strong></span><span class="deliveryDesignChevron">${deliveryIconMarkup('down')}</span>`;
- lastDesignSummary.set(card,raw);
+ summary.innerHTML=`<span class="deliveryVehicleIcon">${deliveryIconMarkup(icon)}</span><span class="deliveryDesignIdentity"><strong>${escapeHtml(data.title)}</strong><small class="deliveryHistoryRoute">${escapeHtml(data.route)}</small><small class="deliveryExpandedPartner">${escapeHtml(data.transporter)} · ${escapeHtml(data.registration)}</small><small>Delivery reference · ${escapeHtml(bookingReference(card.dataset.bookingId))}</small>${data.compactDetails?`<small class="deliveryCompactMetadata">${escapeHtml(data.compactDetails)}</small>`:''}</span><span class="deliveryHistoryDate"><small>${escapeHtml(data.rowDateLabel)}</small><span>${escapeHtml(data.rowDate)}</span></span><span class="deliveryDesignPayment"><span class="deliveryDesignStatus">${escapeHtml(card.hasAttribute('data-active-summary')&&data.status==='Confirmation required'?'Delivered':data.status)}</span><small>${escapeHtml(data.paymentLabel)}</small><strong>${escapeHtml(data.payment)}</strong></span><span class="deliveryDesignChevron">${deliveryIconMarkup('down')}</span>`;
+ lastDesignSummary.set(card,signature);
 }
 
 const lastQuoteSummary=new WeakMap<HTMLElement,string>();
@@ -162,11 +168,12 @@ function syncQuoteSummary(card:HTMLElement){
  const status=text(card.querySelector('.bookingTop .statusPill'));
  const count=Number(text(card.querySelector('.quoteCount strong')))||0;
  const countLabel=count?`${count} quote${count===1?'':'s'} received`:'Awaiting quotes';
- const signature=JSON.stringify([title,route,date,status,count]);
+ const icon=vehicleTypeIcon(cardVehicleType(card));
+ const signature=JSON.stringify([title,route,date,status,count,icon]);
  let summary=button.querySelector<HTMLElement>('.quoteDesignSummary');
  if(summary&&lastQuoteSummary.get(card)===signature)return;
  if(!summary){summary=document.createElement('span');summary.className='quoteDesignSummary';button.appendChild(summary)}
- summary.innerHTML=`<span class="quoteDesignVehicle">${deliveryIconMarkup('car')}</span><span class="quoteDesignIdentity"><strong>${escapeHtml(title)}</strong><small>${escapeHtml(route)}</small></span><span class="quoteDesignDate"><small>Requested collection</small><span>${escapeHtml(date)}</span></span><span class="quoteDesignCount${count?'':' isAwaiting'}">${escapeHtml(countLabel)}</span><span class="quoteDesignStatus">${escapeHtml(status)}</span><span class="quoteDesignChevron">${deliveryIconMarkup('down')}</span>`;
+ summary.innerHTML=`<span class="quoteDesignVehicle">${deliveryIconMarkup(icon)}</span><span class="quoteDesignIdentity"><strong>${escapeHtml(title)}</strong><small>${escapeHtml(route)}</small></span><span class="quoteDesignDate"><small>Requested collection</small><span>${escapeHtml(date)}</span></span><span class="quoteDesignCount${count?'':' isAwaiting'}">${escapeHtml(countLabel)}</span><span class="quoteDesignStatus">${escapeHtml(status)}</span><span class="quoteDesignChevron">${deliveryIconMarkup('down')}</span>`;
  lastQuoteSummary.set(card,signature);
 }
 
