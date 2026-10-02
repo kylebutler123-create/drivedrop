@@ -149,8 +149,27 @@ function syncDesignSummary(card:HTMLElement){
  lastDesignSummary.set(card,raw);
 }
 
+const lastQuoteSummary=new WeakMap<HTMLElement,string>();
+function syncQuoteSummary(card:HTMLElement){
+ if(!card.classList.contains('quoteRequestCard'))return;
+ const button=card.querySelector<HTMLButtonElement>(':scope > .customerCardToggle');
+ if(!button)return;
+ const title=text(card.querySelector('.bookingTop h2'));
+ const route=Array.from(card.querySelectorAll('.compactRoute b')).map(el=>text(el)).join(' → ');
+ const date=text(card.querySelector('.bookingPartner')).replace(/^Requested collection\s*·\s*/, '')||'Date unavailable';
+ const status=text(card.querySelector('.bookingTop .statusPill'));
+ const count=Number(text(card.querySelector('.quoteCount strong')))||0;
+ const countLabel=count?`${count} quote${count===1?'':'s'} received`:'Awaiting quotes';
+ const signature=JSON.stringify([title,route,date,status,count]);
+ let summary=button.querySelector<HTMLElement>('.quoteDesignSummary');
+ if(summary&&lastQuoteSummary.get(card)===signature)return;
+ if(!summary){summary=document.createElement('span');summary.className='quoteDesignSummary';button.appendChild(summary)}
+ summary.innerHTML=`<span class="quoteDesignVehicle">${deliveryIconMarkup('car')}</span><span class="quoteDesignIdentity"><strong>${escapeHtml(title)}</strong><small>${escapeHtml(route)}</small></span><span class="quoteDesignDate"><small>Requested collection</small><span>${escapeHtml(date)}</span></span><span class="quoteDesignCount${count?'':' isAwaiting'}">${escapeHtml(countLabel)}</span><span class="quoteDesignStatus">${escapeHtml(status)}</span><span class="quoteDesignChevron">${deliveryIconMarkup('down')}</span>`;
+ lastQuoteSummary.set(card,signature);
+}
+
 function enhance(card:HTMLElement){
- if(card.dataset.customerExpandable==='true'){syncDeliveryProgress(card);syncCompletedSummary(card);syncCompletedActivity(card);syncCancelledSummary(card);syncDesignSummary(card);return}
+ if(card.dataset.customerExpandable==='true'){syncDeliveryProgress(card);syncCompletedSummary(card);syncCompletedActivity(card);syncCancelledSummary(card);syncDesignSummary(card);syncQuoteSummary(card);return}
  card.dataset.customerExpandable='true';
  card.classList.add('customerExpandableCard','isCollapsed');
  const btn=document.createElement('button');
@@ -173,7 +192,7 @@ function enhance(card:HTMLElement){
  card.insertBefore(btn,card.firstChild);
  syncDeliveryProgress(card);
  syncCompletedSummary(card);
- syncCompletedActivity(card);syncCancelledSummary(card);syncDesignSummary(card);
+ syncCompletedActivity(card);syncCancelledSummary(card);syncDesignSummary(card);syncQuoteSummary(card);
 }
 
 export default function CustomerCardExpander(){
@@ -187,7 +206,7 @@ export default function CustomerCardExpander(){
   const observer=new MutationObserver(records=>{
    for(const record of records){if(record.type==='attributes'&&record.target instanceof HTMLElement){syncDeliveryProgress(record.target);syncCompletedSummary(record.target);syncCompletedActivity(record.target);syncCancelledSummary(record.target);syncDesignSummary(record.target)}else schedule()}
   });
-  observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-delivery-progress','data-completed-summary','data-design-summary']});
+  observer.observe(document.body,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['data-delivery-progress','data-completed-summary','data-design-summary']});
   return()=>{observer.disconnect();if(frame!==null)cancelAnimationFrame(frame)};
  },[pathname]);
  return null;
