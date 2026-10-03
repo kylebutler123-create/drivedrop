@@ -12,55 +12,56 @@
  .customerAccountStatus.isActive{background:#daf3df;color:#116344}
  .customerAccountHeading>.customerAccountStatus{padding:8px 24px;font-size:14px}
  .customerAccountColumns{display:grid;grid-template-columns:minmax(0,1.58fr) minmax(0,1fr);gap:24px}
- .customerPersonalCard,.customerSecurityCard{position:relative;min-width:0;background:#fff;border:1px solid #d5e1ee;border-radius:9px;padding:28px}
- .customerPersonalCard>header{display:flex;align-items:flex-start;gap:14px;padding-right:175px;min-height:58px}
- .customerPersonalCard>header>.accountDesignIcon{width:36px;height:36px;margin-top:1px}
- .customerAccountPolish h2{font-size:24px;line-height:1.25;margin:0;color:#071c43}
+ .customerPersonalCard,.customerSecurityCard{position:relative;min-width:0;background:#fff;border:1px solid #d5e1ee;border-radius:9px;padding:24px}
+ .customerPersonalCard>header{display:flex;align-items:flex-start;gap:14px;padding-right:150px;min-height:52px}
+ .customerPersonalCard>header>.accountDesignIcon{width:24px;height:24px;margin-top:1px}
+ .customerAccountPolish h2{font-size:22px;line-height:1.25;margin:0;color:#071c43}
  .customerPersonalCard>header p{font-size:14px;line-height:1.45;margin:6px 0 0;color:#647799}
- .customerPersonalEditor>.accountEditPanel{position:absolute;top:28px;right:28px;margin:0;padding:0;border:0;background:none;display:block}
+ .customerPersonalEditor>.accountEditPanel{position:absolute;top:24px;right:24px;margin:0;padding:0;border:0;background:none;display:block}
  .customerPersonalEditor>.accountEditPanel>div:not(.accountEditNotice){display:none}
  .customerPersonalEditor .accountEditNotice{position:relative;max-width:220px}
- body.approvedDesktop .customerAccountPolish .btn{min-height:48px;padding:12px 20px;font-size:14px;font-weight:500;line-height:1.4;border-radius:6px;box-shadow:none;gap:8px}
+ body.approvedDesktop .customerAccountPolish .btn{min-height:42px;padding:9px 16px;font-size:14px;font-weight:500;line-height:1.4;border-radius:6px;box-shadow:none;gap:8px}
  .customerAccountPolish .btn .accountDesignIcon{width:18px;height:18px}
  .customerAccountPolish .btn.orange{background:#ff681b;border:1px solid #ff681b;color:#fff}
  .customerAccountPolish .btn.light{background:#fff;border:1px solid #071c43;color:#071c43}
  .customerPersonalCard:has(.accountEditCard) .customerPersonalRead{display:none}
- .customerProfilePhoto{display:flex;align-items:center;gap:20px;padding:24px 0;border-bottom:1px solid #dbe5ef}
- .customerPhotoPreview{width:96px;height:96px;border-radius:50%;background:#edf3fa;display:grid;place-items:center;flex-shrink:0;overflow:hidden;color:#173451;font-size:36px}
+ .customerProfilePhoto{display:flex;align-items:center;gap:18px;padding:16px 0;border-bottom:1px solid #dbe5ef}
+ .customerPhotoPreview{width:72px;height:72px;border-radius:50%;background:#edf3fa;display:grid;place-items:center;flex-shrink:0;overflow:hidden;color:#173451;font-size:28px}
  .customerPhotoPreview img{width:100%;height:100%;object-fit:cover}
- .customerProfilePhoto h3{font-size:16px;line-height:1.4;margin:0;font-weight:600}
+ .customerProfilePhoto h3{font-size:15px;line-height:1.4;margin:0;font-weight:600}
  .customerProfilePhoto h3>span{font-weight:400;color:#647799}
  .customerProfilePhoto p{font-size:14px;line-height:1.5;color:#647799;margin:4px 0 10px}
+ body.approvedDesktop .customerAccountPolish .customerPhotoActions .btn{min-height:40px;padding-block:8px}
  .customerPhotoActions{display:flex;gap:20px;align-items:center}
  .customerPhotoActions .textAction{font-size:14px;font-weight:400;text-decoration:underline;color:#071c43}
  .customerPersonalRead dl{margin:0}
- .customerPersonalRead dl>div{display:grid;grid-template-columns:42% minmax(0,1fr);gap:16px;align-items:center;min-height:52px;padding:14px 0;border-bottom:1px solid #dbe5ef}
+ .customerPersonalRead dl>div{display:grid;grid-template-columns:42% minmax(0,1fr);gap:16px;align-items:center;min-height:44px;padding:10px 0;border-bottom:1px solid #dbe5ef}
  .customerPersonalRead dt{color:#647799;font-size:14px}
- .customerPersonalRead dd{margin:0;font-size:16px;overflow-wrap:anywhere}
- .customerAccountFootnote{font-size:14px;line-height:1.5;color:#647799;margin:20px 0 0}
- .customerSecurityCard>h2{display:flex;align-items:center;gap:16px;margin:4px 0 28px}
- .customerSecurityCard>h2>.accountDesignIcon{width:36px;height:36px}
+ .customerPersonalRead dd{margin:0;font-size:15px;overflow-wrap:anywhere}
+ .customerAccountFootnote{font-size:13px;line-height:1.5;color:#647799;margin:14px 0 0}
+ .customerSecurityCard>h2{display:flex;align-items:center;gap:12px;margin:0 0 16px}
+ .customerSecurityCard>h2>.accountDesignIcon{width:24px;height:24px}
  .customerSecurityItem{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;padding:18px 0 28px}
- .customerSecurityLabel>.accountDesignIcon{width:32px;height:32px}
+ .customerAccountPolish .customerSecurityLabel>.accountDesignIcon{width:22px;height:22px}
  .customerSecurityItem+.customerSecurityItem{border-top:1px solid #dbe5ef;padding-top:28px}
  body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel{display:block;min-width:0;width:100%;padding:0;margin:0;border:0;border-radius:0;background:transparent;box-shadow:none}
- body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>div>strong{display:block;font-size:18px;font-weight:600;line-height:1.4;color:#071c43}
- body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>div>p{font-size:14px;line-height:1.55;color:#647799;margin:7px 0 22px;max-width:none}
- body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>.btn{display:inline-flex;width:250px;max-width:100%;min-height:48px;margin:0;white-space:normal;border:1px solid #071c43;color:#071c43;background:#fff}
- /* Centre the larger security sections, with each icon above its label. */
+ body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>div>strong{display:block;font-size:16px;font-weight:600;line-height:1.4;color:#071c43}
+ body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>div>p{font-size:14px;line-height:1.55;color:#647799;margin:7px 0 16px;max-width:none}
+ body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>.btn{display:inline-flex;width:210px;max-width:100%;min-height:42px;margin:0;white-space:normal;border:1px solid #071c43;color:#071c43;background:#fff}
+ /* Keep compact security sections centred, with icons beside their labels. */
  body.approvedDesktop .customerAccountPolish .customerSecurityCard{display:flex;flex-direction:column}
- body.approvedDesktop .customerAccountPolish .customerSecurityCard>.customerSecurityItem{flex:1;align-content:center;padding-block:28px}
+ body.approvedDesktop .customerAccountPolish .customerSecurityCard>.customerSecurityItem{flex:1;align-content:center;padding-block:20px}
  body.approvedDesktop .customerAccountPolish .customerSecurityCard>.customerSecurityItem:has(>.accountEditCard){align-content:start}
  body.approvedDesktop .customerAccountPolish .customerSecurityCard>h2{justify-content:center}
- body.approvedDesktop .customerAccountPolish .customerSecurityLabel{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;max-width:100%}
+ body.approvedDesktop .customerAccountPolish .customerSecurityLabel{display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;max-width:100%}
  body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel{text-align:center}
  body.approvedDesktop .customerAccountPolish .customerSecurityItem>.accountEditPanel>.btn{display:flex;margin-inline:auto}
- .customerAccountClose{display:grid;grid-template-columns:32px minmax(0,1fr);gap:18px;align-items:center;margin-top:24px;padding:24px 28px;border:1px solid #efb4b0;border-radius:8px;background:#fffafa}
- .customerAccountClose>.accountDesignIcon{color:#ed6159;width:32px;height:32px}
+ .customerAccountClose{display:grid;grid-template-columns:24px minmax(0,1fr);gap:16px;align-items:center;margin-top:18px;padding:18px 24px;border:1px solid #efb4b0;border-radius:8px;background:#fffafa}
+ .customerAccountClose>.accountDesignIcon{color:#ed6159;width:24px;height:24px}
  body.approvedDesktop .customerAccountPolish .customerAccountClose>.accountEditPanel{min-width:0;width:100%;margin:0;padding:0;background:transparent;border:0;border-radius:0;box-shadow:none;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:24px}
- body.approvedDesktop .customerAccountPolish .customerAccountClose>.accountEditPanel>div>strong{display:block;font-size:20px;font-weight:600;line-height:1.4;color:#071c43}
- body.approvedDesktop .customerAccountPolish .customerAccountClose>.accountEditPanel>div>p{font-size:14px;line-height:1.5;color:#647799;margin:5px 0 0;max-width:none}
- body.approvedDesktop .customerAccountPolish .customerAccountClose .dangerButton{color:#c52a23!important;border-color:#dc6a63!important;background:#fff;min-width:180px;min-height:48px;margin:0;white-space:nowrap;flex-shrink:0}
+ body.approvedDesktop .customerAccountPolish .customerAccountClose>.accountEditPanel>div>strong{display:block;font-size:18px;font-weight:600;line-height:1.4;color:#071c43}
+ body.approvedDesktop .customerAccountPolish .customerAccountClose>.accountEditPanel>div>p{font-size:13px;line-height:1.5;color:#647799;margin:5px 0 0;max-width:none}
+ body.approvedDesktop .customerAccountPolish .customerAccountClose .dangerButton{color:#c52a23!important;border-color:#dc6a63!important;background:#fff;min-width:160px;min-height:42px;margin:0;white-space:nowrap;flex-shrink:0}
  .customerAccountPolish .accountEditCard{margin:16px 0 0;padding:0;border:0;background:none;box-shadow:none;min-width:0}
  .customerAccountPolish .accountEditCard .panelHeading{padding-bottom:12px;margin-bottom:16px}
  .customerAccountPolish .accountEditCard .panelIcon{display:none}
@@ -71,7 +72,7 @@
  .customerAccountPolish .customerAccountClose>.accountEditCard{margin:0;border-radius:0;background:transparent!important}
  .customerAccountPolish .accountEditGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
  .customerAccountPolish .accountEditGrid label>span{font-size:14px;color:#173451}
- .customerAccountPolish .accountEditGrid input{width:100%;min-height:48px;font-size:16px;border:1px solid #c4d3e4;border-radius:6px;padding:9px 12px}
+ .customerAccountPolish .accountEditGrid input{width:100%;min-height:44px;font-size:14px;border:1px solid #c4d3e4;border-radius:6px;padding:9px 12px}
  .customerAccountPolish .accountEditWide{grid-column:1/-1}
  .customerAccountPolish .accountEditActions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
  .customerAccountPolish .formNotice{font-size:14px;line-height:1.5;overflow-wrap:anywhere}
