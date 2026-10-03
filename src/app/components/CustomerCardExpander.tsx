@@ -209,7 +209,13 @@ export default function CustomerCardExpander(){
  useEffect(()=>{
   if(pathname!=='/customer')return;
   let frame:number|null=null;
-  const scan=()=>{frame=null;document.querySelectorAll<HTMLElement>('main.dashboardShell .bookingCard, main.dashboardShell .quoteRequestCard').forEach(enhance)};
+  let paymentLinkOpened=false;
+  const scan=()=>{frame=null;document.querySelectorAll<HTMLElement>('main.dashboardShell .bookingCard, main.dashboardShell .quoteRequestCard').forEach(enhance);
+   if(!paymentLinkOpened&&window.location.hash.startsWith('#payment-booking-')){
+    const card=document.getElementById(window.location.hash.slice(1));
+    if(card){paymentLinkOpened=true;const toggle=card.querySelector<HTMLButtonElement>(':scope > .customerCardToggle');if(toggle?.getAttribute('aria-expanded')==='false')toggle.click();card.scrollIntoView({block:'center'});toggle?.focus({preventScroll:true})}
+   }
+  };
   const schedule=()=>{if(frame===null)frame=requestAnimationFrame(scan)};
   scan();
   const observer=new MutationObserver(records=>{

@@ -1,0 +1,42 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const Module=require('node:module');
+const {PDFDocument}=require('pdf-lib');
+function load(path,mocks={}){
+ const filename=require('node:path').resolve(path),m=new Module(filename,module);m.paths=module.paths;
+ m.require=id=>Object.hasOwn(mocks,id)?mocks[id]:require(id);
+ let source=Module.stripTypeScriptTypes(fs.readFileSync(path,'utf8'));
+ const exports=Array.from(source.matchAll(/export\s+(?:async\s+)?(?:function|const)\s+(\w+)/g),m=>m[1]);
+ source=source.replace(/import\s*\{([^}]+)\}\s*from\s*(['"][^'"]+['"]);/g,'const {$1}=require($2);').replace(/import\s+(\w+)\s+from\s*(['"][^'"]+['"]);/g,'const $1=require($2);').replace(/export\s+(?=(?:async\s+)?(?:function|const)\s)/g,'');
+ m._compile(source+'\nmodule.exports={'+exports.join(',')+'};',filename);
+ return m.exports;
+}
+(async()=>{
+ const helpers=load('src/lib/customer-payments.ts');
+ const row={id:'p1',bookingId:'b1',reference:'DD-B1',vehicle:'BMW 3 Series',collection:'Birmingham',delivery:'Manchester',bookingStatus:'CONFIRMED',confirmed:false,currency:'GBP',totalPence:32000,paidPence:32000,refundedPence:0,status:'PAID',createdAt:'2026-10-02T12:00:00Z',paidAt:'2026-10-02T12:00:00Z',test:true};
+ const rows=[row,{...row,id:'p2',bookingId:'b2',reference:'DD-B2',paidPence:12000,refundedPence:5000,status:'PARTIALLY_REFUNDED',vehicle:'=HYPERLINK("bad")',paidAt:'2026-09-20T12:00:00Z'},{...row,id:'p3',paidPence:0,status:'PENDING',paidAt:null}];
+ assert.deepEqual(helpers.paymentTotals(rows),{paid:44000,refunded:5000,net:39000});
+ assert.equal(helpers.filterPayments(rows,{q:'bmw',month:'2026-10',status:'PAID'}).length,1);
+ assert.equal(helpers.filterPayments(rows,{q:'missing'}).length,0);
+ assert.equal(helpers.paymentMonth('2026-09-30T23:30:00Z'),'2026-10');
+ assert.ok(helpers.paymentCsv(rows).includes("\"'=HYPERLINK"));
+ assert.ok(helpers.paymentCsv(rows).includes('Not recorded'));
+ const pdf=load('src/lib/payment-pdf.ts',{'./customer-payments':helpers});
+ const bytes=await pdf.paymentPdf(Array.from({length:35},(_,i)=>({...row,reference:'DD-'+i,collection:'A long collection address '.repeat(8)})),'Customer Ω',false,'All dates');
+ const document=await PDFDocument.load(bytes);assert.ok(document.getPageCount()>1);
+ fs.mkdirSync('/tmp/drivedrop-payment-check',{recursive:true});fs.writeFileSync('/tmp/drivedrop-payment-check/statement.pdf',bytes);
+ const empty=await PDFDocument.load(await pdf.paymentPdf([],'Customer',false,'No matches'));assert.equal(empty.getPageCount(),1);
+ let scope;
+ const data=load('src/lib/customer-payment-data.ts',{'./prisma':{prisma:{bookingPayment:{findMany:async query=>{scope=query.where;return []}}}}});
+ await data.customerPayments('owner','booking');assert.deepEqual(scope,{currency:'GBP',booking:{customerId:'owner',id:'booking'}});
+ let user=null,calls=0,requested;
+ const route=load('src/app/api/customer/payments/download/route.ts',{'@/lib/auth':{currentUser:async()=>user},'@/lib/customer-payment-data':{customerPayments:async(customerId,bookingId)=>{calls++;requested={customerId,bookingId};return bookingId==='foreign'?[]:bookingId==='unpaid'?[{...row,paidPence:0}]:rows}},'@/lib/customer-payments':helpers,'@/lib/payment-pdf':pdf});
+ const get=query=>route.GET(new Request('https://drivedrop.test/api/customer/payments/download?'+query));
+ assert.equal((await get('format=csv')).status,401);assert.equal(calls,0);
+ user={id:'owner',role:'TRANSPORTER',name:'Customer'};assert.equal((await get('format=pdf')).status,403);assert.equal(calls,0);
+ user.role='CUSTOMER';assert.equal((await get('format=exe')).status,400);assert.equal((await get('month=2026-13')).status,400);
+ assert.equal((await get('bookingId=foreign')).status,404);assert.equal((await get('bookingId=unpaid')).status,404);
+ const csv=await get('format=csv&status=PARTIALLY_REFUNDED');assert.equal(csv.status,200);assert.ok((await csv.text()).includes('DD-B2'));assert.equal(requested.customerId,'owner');assert.match(csv.headers.get('Cache-Control'),/no-store/);
+ const receipt=await get('format=pdf&bookingId=b1');assert.equal(receipt.status,200);assert.match(receipt.headers.get('Content-Disposition'),/attachment/);await PDFDocument.load(await receipt.arrayBuffer());
+ console.log('PASS: totals, London date filters, CSV safety, multipage/empty PDF, customer ownership, authentication, receipt eligibility and downloads.');
+})().catch(error=>{console.error(error);process.exit(1)});
