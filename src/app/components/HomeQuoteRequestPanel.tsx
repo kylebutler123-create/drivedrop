@@ -2,6 +2,7 @@
 
 import {FormEvent,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import Link from 'next/link';
+import '../home-quote-approved-polish.css';
 import {useRouter} from 'next/navigation';
 import {createPortal} from 'react-dom';
 import AddressAutocomplete from './AddressAutocomplete';
@@ -47,7 +48,7 @@ function CollectionDatePicker({value,onChange,disabled}:{value:string;onChange:(
   const days=new Date(month.getFullYear(),month.getMonth()+1,0).getDate();
   const label=value?new Date(`${value}T12:00:00`).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Select date';
   return <div className="field homeQuoteCalendarField" ref={container}>
-    <span className="homeQuoteFieldLabel" id="home-quote-date-label">COLLECTION DATE</span>
+    <span className="homeQuoteFieldLabel" id="home-quote-date-label"><span className="homeQuoteDateLegacyLabel">COLLECTION DATE</span><span className="homeQuoteDatePolishLabel">Collection date</span></span>
     <input type="hidden" name="collectionDate" value={value}/>
     <button type="button" className="homeQuoteDateButton" aria-label={`Collection date: ${label}`} aria-expanded={open} aria-haspopup="dialog" onClick={()=>setOpen(current=>!current)} disabled={disabled}>{label}<span aria-hidden="true">▦</span></button>
     {open&&createPortal(<div ref={popup} className="homeQuoteCalendar" role="dialog" aria-label="Choose collection date" style={position}>
@@ -59,6 +60,10 @@ function CollectionDatePicker({value,onChange,disabled}:{value:string;onChange:(
 
 export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=false}:Props){
   const router=useRouter();
+  const [desktop,setDesktop]=useState(false);
+  useEffect(()=>{const media=window.matchMedia('(min-width:1024px)');const sync=()=>setDesktop(media.matches);sync();media.addEventListener('change',sync);return()=>media.removeEventListener('change',sync)},[]);
+  const polished=desktop&&!wizard;
+  const fieldLabel=(label:string)=>polished?label:label.toUpperCase();
   const [step,setStep]=useState(1);
   const [draft,setDraft]=useState<Record<string,string>>({});
   const formRef=useRef<HTMLFormElement>(null);
@@ -153,27 +158,27 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
       <div><strong>Get vehicle transport quotes</strong><span>Takes about 60 seconds</span></div>
       <button type="button" className="homeQuoteExpand" aria-label={expanded?'Collapse account details':'Expand account details'} aria-expanded={expanded} aria-controls="home-quote-extra" disabled={submitting} onClick={()=>{setError('');onExpandChange(!expanded)}}>{expanded?'−':'+'}</button>
     </div>
-    <form ref={formRef} noValidate={wizard} className="quoteForm homeQuoteForm" onChange={wizard?updateDraft:undefined} onSubmit={submit} aria-busy={submitting}>
+    <form ref={formRef} noValidate={wizard} className="quoteForm homeQuoteForm homeQuoteApproved" onChange={wizard?updateDraft:undefined} onSubmit={submit} aria-busy={submitting}>
       {wizard&&<section className="approvedWizard approvedWizardReview"><h2>Review your request</h2>{[['collection','Collection'],['delivery','Delivery'],['vehicleType','Vehicle type'],['vehicleMake','Make'],['vehicleModel','Model'],['registration','Registration'],['running','Running condition'],['transportType','Transport type']].map(([key,label])=><div key={key}><span>{label}</span><strong>{key==='running'?(draft[key]==='true'?'Runs and drives':'Non-running'):key==='transportType'?transportTypes.find(type=>type.value===draft[key])?.label:draft[key]||'Not specified'}</strong></div>)}<div><span>Collection date</span><strong>{collectionDate?new Date(collectionDate+'T12:00:00').toLocaleDateString('en-GB'):'Not specified'}</strong></div><button type="button" className="btn light" onClick={()=>setStep(1)}>Edit request</button></section>}
       <div className="homeQuoteSection homeQuoteVehicle">
           <strong>Vehicle details</strong>
           <div className="homeQuoteFieldGrid">
-            <div className="field homeQuoteWide"><label htmlFor="home-quote-vehicle-type">VEHICLE TYPE</label><select id="home-quote-vehicle-type" name="vehicleType" value={vehicleType} onChange={event=>setVehicleType(event.target.value)} required disabled={submitting}><option value="" disabled>Select vehicle type</option>{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select></div>
-            <div className="field"><label htmlFor="home-quote-make">MAKE</label><input id="home-quote-make" name="vehicleMake" required disabled={submitting}/></div>
-            <div className="field"><label htmlFor="home-quote-model">MODEL</label><input id="home-quote-model" name="vehicleModel" required disabled={submitting}/></div>
-            <div className="field"><label htmlFor="home-quote-registration">REGISTRATION</label><input id="home-quote-registration" name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters" disabled={submitting}/></div>
-            <div className="field"><label htmlFor="home-quote-running">RUNNING CONDITION</label><select id="home-quote-running" name="running" defaultValue="" required disabled={submitting}><option value="" disabled>Select</option><option value="true">Runs and drives</option><option value="false">Non-running</option></select></div>
+            <div className="field homeQuoteWide"><label htmlFor="home-quote-vehicle-type">{fieldLabel('Vehicle type')}</label><select id="home-quote-vehicle-type" name="vehicleType" value={vehicleType} onChange={event=>setVehicleType(event.target.value)} required disabled={submitting}><option value="" disabled>Select vehicle type</option>{vehicleTypes.map(type=><option key={type} value={type}>{type}</option>)}</select></div>
+            <div className="field"><label htmlFor="home-quote-make">{fieldLabel('Make')}</label><input id="home-quote-make" name="vehicleMake" placeholder={polished?'e.g. Ford':undefined} required disabled={submitting}/></div>
+            <div className="field"><label htmlFor="home-quote-model">{fieldLabel('Model')}</label><input id="home-quote-model" name="vehicleModel" placeholder={polished?'e.g. Focus':undefined} required disabled={submitting}/></div>
+            <div className="field"><label htmlFor="home-quote-registration">{fieldLabel('Registration')}</label><input id="home-quote-registration" name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters" disabled={submitting}/></div>
+            <div className="field"><label htmlFor="home-quote-running">{fieldLabel('Running condition')}</label><select id="home-quote-running" name="running" defaultValue="" required disabled={submitting}><option value="" disabled>{polished?'Select running condition':'Select'}</option><option value="true">Runs and drives</option><option value="false">Non-running</option></select></div>
           </div>
       </div>
       <div className={`homeQuoteSection homeQuoteTransport${expanded?'':' desktopCompactLocations'}`}>
         <strong>{wizard&&step===3?'Transport Type':'Collection & delivery'}</strong>
         <div className="quoteGrid homeQuoteLocations">
-          <AddressAutocomplete name="collection" label="COLLECTION"/>
-          <AddressAutocomplete name="delivery" label="DELIVERY"/>
+          <AddressAutocomplete name="collection" label={fieldLabel('Collection')} desktopPlaceholder={!wizard?'Town or postcode':undefined}/>
+          <AddressAutocomplete name="delivery" label={fieldLabel('Delivery')} desktopPlaceholder={!wizard?'Town or postcode':undefined}/>
         </div>
         <div className="homeQuoteFieldGrid homeQuoteDateTransport">
           <CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>
-          <div className="field"><label htmlFor="home-quote-transport-type">TRANSPORT TYPE</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
+          <div className="field"><label htmlFor="home-quote-transport-type">{fieldLabel('Transport type')}</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
         </div>
       </div>
       {expanded&&incompatible&&<div className="formNotice errorNotice homeQuoteCompatibility" role="alert">{enclosedTransportCompatibilityMessage}</div>}
@@ -187,12 +192,12 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
             </div>
             <div className="homeQuoteFieldGrid">
               {accountMode==='create'&&<>
-                <div className="field"><label htmlFor="home-quote-name">NAME</label><input id="home-quote-name" name="name" minLength={2} required={expanded} disabled={submitting}/></div>
-                <div className="field"><label htmlFor="home-quote-phone">PHONE NUMBER</label><input id="home-quote-phone" type="tel" name="phone" autoComplete="tel" inputMode="tel" minLength={7} maxLength={30} required={expanded} disabled={submitting}/></div>
+                <div className="field"><label htmlFor="home-quote-name">{fieldLabel('Name')}</label><input id="home-quote-name" name="name" placeholder={polished?'Your name':undefined} minLength={2} required={expanded} disabled={submitting}/></div>
+                <div className="field"><label htmlFor="home-quote-phone">{fieldLabel('Phone number')}</label><input id="home-quote-phone" type="tel" name="phone" placeholder={polished?'Phone number':undefined} autoComplete="tel" inputMode="tel" minLength={7} maxLength={30} required={expanded} disabled={submitting}/></div>
               </>}
-              <div className={`field${accountMode==='login'?' homeQuoteWide':''}`}><label htmlFor="home-quote-email">EMAIL ADDRESS</label><input id="home-quote-email" type="email" name="email" autoComplete="email" required={expanded} disabled={submitting}/></div>
-              <div className={`field${accountMode==='login'?' homeQuoteWide':''}`}><label htmlFor="home-quote-password">PASSWORD</label><div className="password-wrap"><input id="home-quote-password" type={showPassword?'text':'password'} name="password" autoComplete={accountMode==='login'?'current-password':'new-password'} minLength={accountMode==='create'?8:undefined} required={expanded} disabled={submitting}/><button type="button" className="password-toggle" onClick={()=>setShowPassword(value=>!value)} aria-label={showPassword?'Hide password':'Show password'}>{showPassword?'Hide':'Show'}</button></div></div>
-              {accountMode==='create'&&<div className="field homeQuoteWide"><label htmlFor="home-quote-account-type">ACCOUNT TYPE</label><select id="home-quote-account-type" disabled defaultValue="CUSTOMER"><option value="CUSTOMER">Customer</option></select></div>}
+              <div className={`field${accountMode==='login'?' homeQuoteWide':''}`}><label htmlFor="home-quote-email">{fieldLabel('Email address')}</label><input id="home-quote-email" type="email" name="email" placeholder={polished?'Your email address':undefined} autoComplete="email" required={expanded} disabled={submitting}/></div>
+              <div className={`field${accountMode==='login'?' homeQuoteWide':''}`}><label htmlFor="home-quote-password">{fieldLabel('Password')}</label><div className="password-wrap"><input id="home-quote-password" type={showPassword?'text':'password'} name="password" placeholder={polished?(accountMode==='create'?'Create a password':'Enter your password'):undefined} autoComplete={accountMode==='login'?'current-password':'new-password'} minLength={accountMode==='create'?8:undefined} required={expanded} disabled={submitting}/><button type="button" className="password-toggle" onClick={()=>setShowPassword(value=>!value)} aria-label={showPassword?'Hide password':'Show password'}>{showPassword?'Hide':'Show'}</button></div></div>
+              {accountMode==='create'&&<div className="field homeQuoteWide"><label htmlFor="home-quote-account-type">{fieldLabel('Account type')}</label><select id="home-quote-account-type" disabled defaultValue="CUSTOMER"><option value="CUSTOMER">Customer</option></select></div>}
             </div>
           </>}
         </div>
@@ -202,7 +207,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
       {wizard&&<div className="approvedWizard approvedWizardControls"><button type="button" className="btn light" onClick={()=>step>1?setStep(current=>current-1):window.location.assign('/')}>← Back</button>{step<4&&<button type="button" className="btn orange" onClick={nextStep}>Continue →</button>}</div>}
       <button type={expanded?'submit':'button'} className="btn orange quoteCta" disabled={submitting} onClick={expanded?undefined:()=>onExpandChange(true)}>{submitting?'Submitting request…':'Get My Quotes'}</button>
       {!wizard&&<button type="button" className="homeQuoteExpand approvedInlineExpand" aria-label={expanded?'Collapse quote details':'Expand quote details'} aria-expanded={expanded} aria-controls="home-quote-extra" disabled={submitting} onClick={()=>{setError('');onExpandChange(!expanded)}}>{expanded?'−':'+'}</button>}
-      <p className="quoteSmall">No payment required to request quotes.</p>
+      <p className="quoteSmall">{polished?'Free quotes · No obligation':'No payment required to request quotes.'}</p>
     </form>
     {wizard&&<aside className="approvedQuoteSummary"><h2>Your Quote</h2><small>Step {step} of 4</small><hr/>{[['collection','Collection'],['delivery','Delivery'],['vehicleType','Vehicle'],['transportType','Transport type']].map(([key,label])=><div key={key}><strong>{label}</strong><span>{key==='transportType'?(transportTypes.find(type=>type.value===draft[key])?.label||'Not yet specified'):draft[key]||'Not yet specified'}</span></div>)}<p>Compare transport quotes<br/>in your customer account.</p></aside>}
   </>;
