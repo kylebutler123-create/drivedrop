@@ -4,7 +4,7 @@
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader{height:70px!important;gap:20px;padding:0 32px;max-width:1600px}
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountBrand{width:190px}
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav{gap:22px;min-width:0}
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav>a{height:70px!important;position:relative;font-size:13px;font-weight:600}
+ body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav>a{height:70px!important;position:relative;font-size:16px;font-weight:400}
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav>a.active:after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:#ff681b}
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountActions{gap:12px}
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountIdentity{max-width:120px}
@@ -50,7 +50,7 @@
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader{padding:0 20px;gap:14px}
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountBrand{width:155px}
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav{gap:13px}
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav>a{font-size:12px}
+ body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav>a{font-size:13px}
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountActions{gap:7px}
  body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountIdentity{max-width:95px;gap:6px;font-size:12px}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>[role=button]{padding-left:14px!important;padding-right:54px!important}
