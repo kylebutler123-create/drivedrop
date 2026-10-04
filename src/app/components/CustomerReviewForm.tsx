@@ -1,13 +1,22 @@
 'use client';
 
-import {useRef, useState, type FormEvent} from 'react';
+import {useEffect, useRef, useState, type FormEvent} from 'react';
 
 type Review = {id: string; bookingId: string; rating: number; body?: string | null; verified: boolean};
-type Props = {bookingId: string; onSubmitted: (review: Review) => void};
+type Props = {desktopInline?: boolean; bookingId: string; onSubmitted: (review: Review) => void};
 const scores = [1, 2, 3, 4, 5];
 
-export default function CustomerReviewForm({bookingId, onSubmitted}: Props) {
+export default function CustomerReviewForm({bookingId, onSubmitted, desktopInline = false}: Props) {
   const [editing, setEditing] = useState(false);
+  const [inline, setInline] = useState(false);
+  useEffect(() => {
+    if (!desktopInline) return;
+    const media = window.matchMedia('(min-width:1024px)');
+    const update = () => setInline(media.matches);
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, [desktopInline]);
   const [rating, setRating] = useState(0);
   const [body, setBody] = useState('');
   const [pending, setPending] = useState(false);
@@ -54,17 +63,17 @@ export default function CustomerReviewForm({bookingId, onSubmitted}: Props) {
     }
   }
 
-  if (!editing) return <button type="button" className="btn navy fullBtn" onClick={() => {setError(''); setEditing(true);}}>Leave verified review</button>;
+  if (!editing && !inline) return <button type="button" className="btn navy fullBtn" onClick={() => {setError(''); setEditing(true);}}>Leave verified review</button>;
 
   return <form className="customerReviewForm infoPanel" onSubmit={submit} aria-busy={pending}>
-    <h3>Review your delivery</h3>
+    <h3>{inline?'Review your transporter':'Review your delivery'}</h3>
     <fieldset className="customerReviewRating" disabled={pending}>
       <legend>Your rating</legend>
       <div className="customerReviewStars">
         {scores.map(score => <label key={score} className={`customerReviewStar ${score <= rating ? 'isSelected' : ''}`}>
           <input type="radio" name={`review-rating-${bookingId}`} value={score} checked={rating === score} required
             onChange={() => {setRating(score); setError('');}} />
-          <span aria-hidden="true">★</span>
+          <span aria-hidden="true">{inline?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round"><path d="m12 2.5 2.9 6 6.6 1-4.8 4.6 1.1 6.6-5.8-3.1-5.8 3.1 1.1-6.6L2.5 9.5l6.6-1Z"/></svg>:"★"}</span>
           <span className="customerReviewSrOnly">{score} {score === 1 ? 'star' : 'stars'}</span>
         </label>)}
       </div>
@@ -73,12 +82,12 @@ export default function CustomerReviewForm({bookingId, onSubmitted}: Props) {
     <div className="field">
       <label htmlFor={commentId}>Comment (optional)</label>
       <textarea id={commentId} value={body} onChange={event => setBody(event.target.value)}
-        disabled={pending} maxLength={2000} rows={4} placeholder="How was your vehicle delivery?" />
+        disabled={pending} maxLength={2000} rows={4} placeholder={inline?'Share your experience (optional)':'How was your vehicle delivery?'} />
     </div>
     {error && <p className="formNotice errorNotice" role="alert">{error}</p>}
     <div className="actionButtons">
       <button type="submit" className="btn orange" disabled={pending}>{pending ? 'Submitting…' : 'Submit review'}</button>
-      <button type="button" className="btn light" disabled={pending} onClick={() => {if (!inFlight.current) {setEditing(false); setError('');}}}>Cancel</button>
+      <button type="button" className="btn light reviewCancel" disabled={pending} onClick={() => {if (!inFlight.current) {setEditing(false); setError('');}}}>Cancel</button>
     </div>
   </form>;
 }
