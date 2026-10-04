@@ -217,3 +217,27 @@ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .expandedTransporterStrip>svg{box-sizing:content-box;width:22px;height:22px;padding:6px;background:#e5f5ff;border-radius:5px}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .expandedTransporterStrip>a{color:#0075ff;text-decoration:underline}
 }
+/* Approved single metadata band: vehicle, transporter/profile and delivery reference. */
+.combinedTransporterDetail,.combinedReferenceDetail,.combinedDetailsCopy{display:none!important}
+@media screen and (min-width:1024px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed)>.expandedTransporterStrip{display:none!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid{grid-template-columns:.9fr .85fr .85fr 1fr 1.5fr 1.1fr;gap:0;align-items:start}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid>span:not(:nth-child(6)){padding:0 20px!important;border-right:1px solid #d2e3f3!important;align-self:stretch}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid>span:first-child{padding-left:0!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid>span.combinedReferenceDetail{border-right:0!important;padding-right:0!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) :is(.combinedTransporterDetail,.combinedReferenceDetail){display:block!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .combinedDetailsCopy{display:inline!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .originalRunningCopy{display:none}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid small{color:#405f95;font-size:12px;font-weight:400;line-height:1.45;margin:0 0 2px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid b{color:#081344;font-size:14px;font-weight:400;line-height:1.45}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .combinedTransporterDetail>a{display:inline-flex;gap:8px;align-items:center;color:#0075ff;font-size:13px;line-height:1.45;text-decoration:underline;text-underline-offset:2px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .combinedTransporterDetail>a>svg{width:16px;height:16px;flex:none}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .combinedReferenceDetail>b{white-space:nowrap}
+ /* Collection dates remain available when the header shows a different event date. */
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid>span:nth-child(6):not(.expandedDuplicateDate){order:1;padding-top:10px!important}
+}
+@media screen and (min-width:1024px) and (max-width:1180px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid>span:not(:nth-child(6)){padding-left:12px!important;padding-right:12px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid>span:first-child{padding-left:0!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid b{font-size:13px}
+}
