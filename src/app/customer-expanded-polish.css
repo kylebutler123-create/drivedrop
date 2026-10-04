@@ -242,3 +242,18 @@ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid>span:first-child{padding-left:0!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid b{font-size:13px}
 }
+.cancelledBookingTime{display:none}
+@media screen and (min-width:1024px){
+ /* Cancelled bookings have two detail columns and no collection/delivery proof. */
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.customerCancelledCompact[data-four-column-details]:not(.isCollapsed){grid-template-columns:repeat(2,minmax(0,1fr))}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.customerCancelledCompact[data-four-column-details]:not(.isCollapsed) .expandedProgress{grid-column:1;padding-right:28px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.customerCancelledCompact[data-four-column-details]:not(.isCollapsed) .expandedPaymentDetails{grid-column:2;padding:0 0 0 28px;border-left:1px solid #d2e3f3}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.customerCancelledCompact[data-four-column-details]:not(.isCollapsed)>:is([data-customer-poc],[data-customer-pod],.formNotice){display:none!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.customerCancelledCompact[data-four-column-details]:not(.isCollapsed) .cancelledBookingTime{display:block}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.customerCancelledCompact[data-four-column-details]:not(.isCollapsed) .infoRow>b.expandedRefundAmount{color:#00a85a}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.customerCancelledCompact[data-four-column-details]:not(.isCollapsed) .polishedTimeline .cancelledHistoryEvent::before{background:#ff1626}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.customerCancelledCompact[data-four-column-details]:not(.isCollapsed) .polishedTimeline .cancelledHistoryEvent::after{content:'×';border:0;transform:none;left:-9px;top:1px;width:17px;height:17px;font:400 20px/17px Arial,sans-serif;color:#fff;text-align:center}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.customerCancelledCompact[data-four-column-details]:not(.isCollapsed) .expandedBookingActions:not(:has(.infoPanel)){display:none}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.customerCancelledCompact[data-four-column-details]:not(.isCollapsed) .expandedPaymentDetails>.infoPanel>.infoRow{padding:6px 0}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.customerCancelledCompact[data-four-column-details]:not(.isCollapsed) .expandedPaymentLink{display:flex;align-items:center;gap:10px}
+}
