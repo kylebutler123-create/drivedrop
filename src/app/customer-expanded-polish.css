@@ -221,10 +221,11 @@ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[
 .combinedTransporterDetail,.combinedReferenceDetail,.combinedDetailsCopy{display:none!important}
 @media screen and (min-width:1024px){
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed)>.expandedTransporterStrip{display:none!important}
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid{grid-template-columns:.9fr .85fr .85fr 1fr 1.5fr 1.1fr;gap:0;align-items:start}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid{grid-template-columns:.9fr .85fr .85fr 1fr 1.1fr 1.5fr;gap:0;align-items:start}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid>span:not(:nth-child(6)){padding:0 20px!important;border-right:1px solid #d2e3f3!important;align-self:stretch}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid>span:first-child{padding-left:0!important}
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid>span.combinedReferenceDetail{border-right:0!important;padding-right:0!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid>span.combinedTransporterDetail{grid-column:6;grid-row:1;border-right:0!important;padding-right:0!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .activeVehicleDetailsGrid>span.combinedReferenceDetail{grid-column:5;grid-row:1}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) :is(.combinedTransporterDetail,.combinedReferenceDetail){display:block!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .combinedDetailsCopy{display:inline!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .originalRunningCopy{display:none}
