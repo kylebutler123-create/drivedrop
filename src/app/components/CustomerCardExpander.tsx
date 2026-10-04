@@ -198,10 +198,6 @@ function enhance(card:HTMLElement){
  btn.innerHTML=`<span class="customerCardSummaryMain"><span class="customerCardSummaryStatus">${status}</span><strong>${title}</strong><small>${meta}</small>${reference?`<small class="customerDeliveryReference">Delivery reference · ${escapeHtml(reference)}</small>`:''}</span><span class="customerCardSummarySide"><b>${stat||'View details'}</b><span class="customerCardChevron">+</span></span>`;
  const toggle=()=>{const collapsed=card.classList.toggle('isCollapsed');btn.setAttribute('aria-expanded',collapsed?'false':'true');const chevron=btn.querySelector('.customerCardChevron');if(chevron)chevron.textContent=collapsed?'+':'−';if(!collapsed){syncDeliveryProgress(card,true);syncCompletedActivity(card,true)}};
  btn.addEventListener('click',toggle);
- const collapse=document.createElement('button');
- collapse.type='button';collapse.className='expandedCollapse';collapse.textContent='Collapse details';
- collapse.addEventListener('click',()=>{if(!card.classList.contains('isCollapsed')){toggle();btn.focus({preventScroll:true})}});
- card.appendChild(collapse);
  card.insertBefore(btn,card.firstChild);
  syncDeliveryProgress(card);
  syncCompletedSummary(card);
