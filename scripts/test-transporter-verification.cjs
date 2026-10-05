@@ -34,6 +34,16 @@ async function main(){
  const forms=nodes(t,e=>e.type==='form');assert.equal(forms.length,3);
  const fileInputs=nodes(t,e=>e.type==='input'&&e.props.type==='file');assert.equal(fileInputs.length,2);assert(fileInputs.every(e=>e.props.required&&e.props.accept.includes('application/pdf')));
  const expiry=nodes(t,e=>e.props?.name==='expiresAt')[0];assert(expiry.props.required);assert.equal(expiry.props.type,'date');
+ assert.equal(expiry.props.inputMode,'none');assert.notEqual(expiry.props.readOnly,true);
+ let pickerCalls=0;const input={showPicker(){pickerCalls++}};
+ expiry.props.onClick({currentTarget:input});assert.equal(pickerCalls,1);
+ for(const key of ['1','Backspace','Delete','ArrowUp','ArrowLeft','ArrowRight']){let blocked=false;expiry.props.onKeyDown({key,currentTarget:input,preventDefault(){blocked=true}});assert(blocked)}
+ for(const key of ['Enter',' ','ArrowDown']){let blocked=false;expiry.props.onKeyDown({key,currentTarget:input,preventDefault(){blocked=true}});assert(blocked)}
+ assert.equal(pickerCalls,4);
+ for(const key of ['Tab','Escape']){let blocked=false;expiry.props.onKeyDown({key,currentTarget:input,preventDefault(){blocked=true}});assert(!blocked)}
+ for(const handler of ['onBeforeInput','onPaste','onDrop']){let blocked=false;expiry.props[handler]({preventDefault(){blocked=true}});assert(blocked)}
+ assert.doesNotThrow(()=>expiry.props.onClick({currentTarget:{}}));
+ assert.doesNotThrow(()=>expiry.props.onClick({currentTarget:{showPicker(){throw new Error('Native icon fallback')}}}));
  await forms[0].props.onSubmit({preventDefault(){},currentTarget:{fields:{businessName:'Saved business',phone:'123',yearsOperating:'7',businessAddress:'Address'}}});assert.equal(calls[0].options.method,'PUT');assert.equal(JSON.parse(calls[0].options.body).yearsOperating,7);
  tree(populated);await forms[1].props.onSubmit({preventDefault(){},currentTarget:{fields:{type:'DRIVING_LICENCE'}}});assert.equal(states[1],'Choose a document to upload');assert.equal(calls.length,0);
  const invalid=new File(['bad'],'bad.txt',{type:'text/plain'});await forms[1].props.onSubmit({preventDefault(){},currentTarget:{fields:{type:'DRIVING_LICENCE',file:invalid}}});assert.equal(states[1],'Only PDF, JPG/JPEG, PNG and HEIC/HEIF files are allowed');assert.equal(calls.length,0);
