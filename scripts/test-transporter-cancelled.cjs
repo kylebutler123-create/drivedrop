@@ -72,7 +72,7 @@ async function main(){await testApi();await testComponent();
  assert.doesNotMatch(component,/createPortal|setTarget/);
  const button=page.match(/<button[^>]*data-cancelled-summary[^>]*>[\s\S]*?<\/button>/);
  assert.ok(button,'Cancelled must have a real button with its own children');
- for(const child of ['cancelledSummaryIcon','cancelledCount','<span>Cancelled</span>'])assert.ok(button[0].includes(child));
+ for(const child of ['<TransporterSummaryDecoration icon="cancelled"/>','cancelledCount','<span>Cancelled</span>'])assert.ok(button[0].includes(child));
  assert.match(page,/onCountChange=\{setCancelledCount\}/);
  const completed=fs.readFileSync(path.join(root,'src/app/components/TransporterDeliveredSummary.tsx'),'utf8');
  assert.match(completed,/standardBoxes.forEach\(box=>box.addEventListener\('click',clearDelivered\)\)/);

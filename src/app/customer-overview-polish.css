@@ -1,13 +1,13 @@
 /* Approved shared customer activity layout; desktop presentation only. */
 .customerOverviewIntro,.customerOverviewWelcome,.overviewSummaryDecoration{display:none}
 @media screen and (min-width:1024px){
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader{height:70px!important;gap:20px;padding:0 32px;max-width:1600px}
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountBrand{width:190px}
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav{gap:22px;min-width:0}
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav>a{height:70px!important;position:relative;font-size:16px;font-weight:400}
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav>a.active:after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:#ff681b}
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountActions{gap:12px}
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountIdentity{max-width:120px}
+ body.approvedDesktop .approvedWorkspaceNav:is([data-role="customer"],[data-role="transporter"]) .approvedAccountHeader{height:70px!important;gap:20px;padding:0 32px;max-width:1600px}
+ body.approvedDesktop .approvedWorkspaceNav:is([data-role="customer"],[data-role="transporter"]) .approvedAccountBrand{width:190px}
+ body.approvedDesktop .approvedWorkspaceNav:is([data-role="customer"],[data-role="transporter"]) .approvedAccountHeader>nav{gap:22px;min-width:0}
+ body.approvedDesktop .approvedWorkspaceNav:is([data-role="customer"],[data-role="transporter"]) .approvedAccountHeader>nav>a{height:70px!important;position:relative;font-size:16px;font-weight:400}
+ body.approvedDesktop .approvedWorkspaceNav:is([data-role="customer"],[data-role="transporter"]) .approvedAccountHeader>nav>a.active:after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:#ff681b}
+ body.approvedDesktop .approvedWorkspaceNav:is([data-role="customer"],[data-role="transporter"]) .approvedAccountActions{gap:12px}
+ body.approvedDesktop .approvedWorkspaceNav:is([data-role="customer"],[data-role="transporter"]) .approvedAccountIdentity{max-width:120px}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout{max-width:1180px;width:calc(100% - 96px);margin:0 auto;padding:28px 0 42px}
  body.approvedDesktop:has(.customerActivityLayout){background:#f4f8fd}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerOverviewIntro{position:absolute;width:1px;height:1px;min-height:0!important;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);clip-path:inset(50%);white-space:nowrap;border:0}
@@ -47,12 +47,12 @@
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout :is(a,[role=button]):focus-visible{outline:2px solid #ff681b;outline-offset:3px}
 }
 @media screen and (min-width:1024px) and (max-width:1240px){
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader{padding:0 20px;gap:14px}
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountBrand{width:155px}
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav{gap:13px}
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountHeader>nav>a{font-size:13px}
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountActions{gap:7px}
- body.approvedDesktop .approvedWorkspaceNav[data-role="customer"] .approvedAccountIdentity{max-width:95px;gap:6px;font-size:12px}
+ body.approvedDesktop .approvedWorkspaceNav:is([data-role="customer"],[data-role="transporter"]) .approvedAccountHeader{padding:0 20px;gap:14px}
+ body.approvedDesktop .approvedWorkspaceNav:is([data-role="customer"],[data-role="transporter"]) .approvedAccountBrand{width:155px}
+ body.approvedDesktop .approvedWorkspaceNav:is([data-role="customer"],[data-role="transporter"]) .approvedAccountHeader>nav{gap:13px}
+ body.approvedDesktop .approvedWorkspaceNav:is([data-role="customer"],[data-role="transporter"]) .approvedAccountHeader>nav>a{font-size:13px}
+ body.approvedDesktop .approvedWorkspaceNav:is([data-role="customer"],[data-role="transporter"]) .approvedAccountActions{gap:7px}
+ body.approvedDesktop .approvedWorkspaceNav:is([data-role="customer"],[data-role="transporter"]) .approvedAccountIdentity{max-width:95px;gap:6px;font-size:12px}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>[role=button]{padding-left:14px!important;padding-right:54px!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryDecoration{gap:6px;right:9px}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryDecoration>.approvedIcon{width:22px;height:22px}

@@ -1,0 +1,31 @@
+.transporterSummaryDecoration{display:none}
+@media screen and (min-width:1024px){
+ body.approvedDesktop.role-transporter:has(:is(.notificationsPage,.messagesShell)){background:#f3f8fd}
+ /* Match the customer summary row without changing its click targets. */
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary{gap:14px!important;margin:16px 0 20px!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[role=button]{position:relative;display:block!important;height:90px!important;min-height:90px!important;padding:16px 70px 16px 20px!important;box-sizing:border-box;box-shadow:none!important;border-radius:8px!important;background:#fff!important;border:1px solid #d5e1ee!important;text-align:left;color:#071c43}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[role=button] strong{display:block;font-size:28px!important;line-height:1.15;color:#071c43!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[role=button]>span:not([class]){display:block;margin-top:6px!important;font-size:13px!important;color:#071c43!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[role=button][aria-pressed=true]{background:#fff7f0!important;border-color:#ff681b!important;box-shadow:none!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[role=button]:not([data-available-jobs-summary]):not([data-delivered-summary]):not([data-cancelled-summary]){order:1!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[data-available-jobs-summary]{order:2!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[data-delivered-summary]{order:3!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[data-cancelled-summary]{order:4!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[role=button]>.transporterSummaryDecoration{display:flex!important;align-items:center;gap:16px;position:absolute;right:14px;top:50%;transform:translateY(-50%);margin:0!important;color:#071c43!important;pointer-events:none}
+ body.approvedDesktop.role-transporter .transporterSummaryDecoration>.approvedIcon{width:28px;height:28px}
+ body.approvedDesktop.role-transporter .transporterSummaryChevron{width:16px;height:20px;color:#7589a6}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary .dashboardSummaryActivity{top:22px;left:65px;right:auto;box-shadow:none}
+}
+@media screen and (min-width:1024px) and (max-width:1240px){
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[role=button]{padding-left:14px!important;padding-right:54px!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[role=button]>.transporterSummaryDecoration{gap:6px;right:9px}
+ body.approvedDesktop.role-transporter .transporterSummaryDecoration>.approvedIcon{width:22px;height:22px}
+}
+/* Six transporter links need tighter gaps while retaining customer font sizes. */
+@media screen and (min-width:1241px) and (max-width:1440px){
+ body.approvedDesktop .approvedWorkspaceNav[data-role=transporter] .approvedAccountHeader{padding:0 20px;gap:14px}
+ body.approvedDesktop .approvedWorkspaceNav[data-role=transporter] .approvedAccountBrand{width:155px}
+ body.approvedDesktop .approvedWorkspaceNav[data-role=transporter] .approvedAccountHeader>nav{gap:13px}
+ body.approvedDesktop .approvedWorkspaceNav[data-role=transporter] .approvedAccountActions{gap:7px}
+ body.approvedDesktop .approvedWorkspaceNav[data-role=transporter] .approvedAccountIdentity{max-width:95px;gap:6px;font-size:12px}
+}

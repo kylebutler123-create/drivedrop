@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import '../customer-overview-polish.css';
+import '../transporter-account-polish.css';
 import {usePathname,useSearchParams} from 'next/navigation';
 import Icon from './ApprovedIcon';
 import MessagesNavLink from './MessagesNavLink';
