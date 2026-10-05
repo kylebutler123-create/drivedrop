@@ -1,0 +1,52 @@
+@media screen and (min-width:1024px){
+ body.approvedDesktop .transporterAccountPolish .accountHero{margin-right:200px!important;margin-bottom:14px!important}
+ .transporterAccountPolish .accountHero>.accountStatusBadge{display:none!important}
+ .transporterAccountPolish .accountTitleLine{display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px;margin-bottom:8px}
+ body.approvedDesktop .transporterAccountPolish .accountTitleLine h1{margin:0!important}
+ .transporterAccountPolish .accountTitleStatus{display:inline-flex;align-items:center;gap:8px;border:1px solid #b2e9cc;border-radius:7px;background:#e0f9ec;color:#087c48;padding:6px 10px;font-size:12px;font-weight:600;white-space:nowrap}
+ .transporterAccountPolish .accountTitleStatus>i{width:9px;height:9px;border-radius:50%;background:currentColor}
+ .transporterAccountPolish .accountTitleStatus:not([data-account-state=ACTIVE]){background:#fff0d7;border-color:#efcf97;color:#8c520d}
+ body.approvedDesktop .transporterAccountPolish .accountGrid>:is(.personalAccountCard,.businessAccountCard){display:flex;flex-direction:column;align-self:stretch;padding:0!important;overflow:hidden}
+ .transporterAccountPolish :is(.personalAccountCard,.businessAccountCard)>.panelHeading{background:#f0f7fe;padding:20px 24px;margin:0;min-height:90px;gap:12px}
+ .transporterAccountPolish :is(.personalAccountCard,.businessAccountCard)>.panelHeading>div:first-child{gap:16px;min-width:0}
+ .transporterAccountPolish :is(.personalAccountCard,.businessAccountCard) .panelIcon{width:48px;height:48px;flex-shrink:0;border-radius:50%;background:#dcecff;display:grid;place-items:center;color:#071c43}
+ .transporterAccountPolish :is(.personalAccountCard,.businessAccountCard) .panelIcon>.transporterAccountIcon{width:28px;height:28px}
+ .transporterAccountPolish :is(.personalAccountCard,.businessAccountCard) .panelHeading p.transporterDesktopOnly{display:block;font-size:12px;line-height:1.4;color:#647799;margin:5px 0 0}
+ .transporterAccountPolish .accountBusinessStatus{display:flex;flex-direction:column;align-items:flex-start;gap:4px;flex-shrink:0;font-size:12px}
+ .transporterAccountPolish .accountBusinessStatus small{font-size:11px;color:#647799}
+ .transporterAccountPolish .accountBusinessStatus>span{border-radius:6px;padding:4px 8px;background:#fff0d7;color:#8c520d;font-weight:600;font-size:12px}
+ .transporterAccountPolish .accountBusinessStatus>[data-verification-state=APPROVED]{background:#e0f9ec;color:#087c48!important}
+ .transporterAccountPolish .accountBusinessStatus>[data-verification-state=APPROVED]:before{content:'✓';margin-right:6px}
+ .transporterAccountPolish .accountIdentityBlock{display:flex;align-items:center;gap:16px;padding:20px 24px;min-height:100px}
+ .transporterAccountPolish .accountIdentityInitial{display:grid;place-items:center;flex-shrink:0;width:54px;height:54px;border-radius:50%;background:#dcecff;color:#071c43;font-size:26px;font-weight:600}
+ .transporterAccountPolish .accountIdentityBlock>div{display:grid;gap:5px;min-width:0;flex:1}
+ .transporterAccountPolish .accountIdentityBlock>div>strong{font-size:18px;color:#071c43;overflow-wrap:anywhere}
+ .transporterAccountPolish .accountIdentityBlock>div>span{font-size:12px;color:#647799;overflow-wrap:anywhere}
+ .transporterAccountPolish .accountRoleTag{padding:5px 9px;border:1px solid #83b4eb;border-radius:6px;color:#174878;font-size:11px;font-weight:600}
+ .transporterAccountPolish .personalAccountCard .accountIdentityLegacyRow,.transporterAccountPolish .businessAccountCard .accountVerificationLegacyRow{display:none!important}
+ .transporterAccountPolish :is(.personalAccountCard,.businessAccountCard)>.accountInfoPanel{margin:0 24px!important;display:flex;flex-direction:column}
+ .transporterAccountPolish .personalAccountCard>.accountInfoPanel{flex:1}
+ .transporterAccountPolish :is(.personalAccountCard,.businessAccountCard) .infoRow{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);align-items:center;gap:20px;min-height:43px;padding:11px 0;border-bottom:1px solid #dbe5ef;font-size:13px}
+ .transporterAccountPolish :is(.personalAccountCard,.businessAccountCard) .infoRow>b{justify-self:end;text-align:right;color:#071c43;font-size:13px;line-height:1.5}
+ .transporterAccountPolish .businessAccountCard .infoRow>b[data-missing=true]{color:#7b8fae}
+ .transporterAccountPolish .personalAccountCard .infoRow{min-height:58px;border-top:1px solid #dbe5ef;border-bottom:0;flex:1}
+ .transporterAccountPolish .personalAccountCard .accountMemberRow{order:3}
+ .transporterAccountPolish .personalAccountCard [data-account-state=ACTIVE]{background:#e0f9ec;border:1px solid #b2e9cc;border-radius:7px;color:#087c48!important;padding:4px 9px;font-weight:600}
+ .transporterAccountPolish .personalAccountCard [data-account-state=ACTIVE]:before{content:'●';margin-right:7px;font-size:10px}
+ .transporterAccountPolish .personalAccountCard [data-work-restricted=false]{color:#087c48!important;font-weight:600}
+ .transporterAccountPolish .personalAccountCard [data-work-restricted=false]:before{content:'✓';display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#087c48;color:#fff;margin-right:8px}
+ .transporterAccountPolish .personalAccountCard [data-work-restricted=true]{color:#ad3429!important}
+ .transporterAccountPolish .accountSecurityHint{display:flex;align-items:center;gap:12px;background:#f0f7fe;border-radius:7px;padding:16px;margin:18px 24px 22px;font-size:12px;line-height:1.5;color:#647799}
+ .transporterAccountPolish .accountSecurityHint>.transporterAccountIcon{width:22px;height:22px;color:#174878}
+ .transporterAccountPolish .businessAccountCard .accountActions{margin:auto 24px 22px;padding-top:18px}
+ .transporterAccountPolish .businessAccountCard .accountActions>.btn{display:flex;align-items:center;gap:10px;min-height:42px;text-align:left;justify-content:flex-start;font-size:13px!important}
+ .transporterAccountPolish .accountManageShield{display:inline-flex}.transporterAccountPolish .accountManageShield>.transporterAccountIcon{width:21px;height:21px}
+ .transporterAccountPolish .accountManageArrow{margin-left:auto;font-size:25px;line-height:1}
+ .transporterAccountPolish .businessAccountCard>.formNotice{margin:12px 24px}
+}
+@media screen and (min-width:1024px) and (max-width:1199px){
+ .transporterAccountPolish :is(.personalAccountCard,.businessAccountCard)>.panelHeading{padding:18px 16px;gap:8px}
+ .transporterAccountPolish :is(.personalAccountCard,.businessAccountCard)>.panelHeading>div:first-child{gap:10px}
+ .transporterAccountPolish :is(.personalAccountCard,.businessAccountCard) .panelIcon{width:40px;height:40px}
+ .transporterAccountPolish .accountIdentityBlock{gap:10px;padding:20px 16px}
+}
