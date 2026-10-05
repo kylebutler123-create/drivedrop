@@ -22,6 +22,8 @@ async function main(){
  let html=renderToStaticMarkup(await Page());assert(html.includes('transporterAccountPolish'));assert(html.includes('Actual account'));assert(html.includes('transporterSecurityHost'));assert(html.includes('Set up transporter verification'));assert(!html.includes('kye@example.com'));assert.equal(captured.EmailEditor.transporterDesktop,true);
  verification={id:'v',businessName:'Actual company',companyNumber:'123',businessAddress:'Actual address',phone:'01234567890',yearsOperating:3,website:'',status:'PENDING',documents:[]};
  html=renderToStaticMarkup(await Page());assert(html.includes('Actual company'));assert(html.includes('data-verification-state="PENDING"'));assert(html.includes('Manage documents'));assert(html.includes('No verification documents have been uploaded yet.'));assert(captured.ProfileImageEditor);
+ verification.documents=Array.from({length:6},(_,i)=>({id:'doc-'+i,type:'DOCUMENT_'+i,status:i===0?'PENDING':'APPROVED',expiresAt:i<3?new Date('2027-09-30'):null}));
+ html=renderToStaticMarkup(await Page());assert.equal((html.match(/class="accountDocumentRow"/g)||[]).length,6);assert.equal((html.match(/No expiry recorded/g)||[]).length,3);assert(html.includes('Expires 30 Sept 2027')||html.includes('Expires 30 Sep 2027'));assert(html.includes('data-verification-state="PENDING"'));
  for(const nextRole of ['CUSTOMER','ADMIN']){role=nextRole;html=renderToStaticMarkup(await Page());assert(!html.includes('transporterAccountPolish'));assert(!html.includes('transporterSecurityHost'));assert.equal(captured.EmailEditor.transporterDesktop,undefined)}
  for(const file of ['EmailEditor','PasswordEditor']){
   for(const open of [false,true]){

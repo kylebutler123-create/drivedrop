@@ -82,9 +82,16 @@
  .transporterAccountPolish .payoutFormActions{margin:0;display:flex;gap:8px;flex-wrap:wrap}
  .transporterAccountPolish .accountGrid>.accountDocumentsCard{grid-column:1/-1;order:5}
  .transporterAccountPolish .accountManageDocuments{font-size:12px;color:#ff681b;text-decoration:underline;white-space:nowrap}
- .transporterAccountPolish .accountDocumentList{display:grid;gap:0}
- .transporterAccountPolish .accountDocumentRow{display:flex;justify-content:space-between;align-items:center;gap:16px;border:0;border-top:1px solid #e2ebf4;padding:10px 0;border-radius:0;background:none}
- .transporterAccountPolish .accountDocumentRow strong{font-size:12px;color:#071c43}.transporterAccountPolish .accountDocumentRow small{display:block;font-size:12px;color:#647799;margin-top:4px}
+ .transporterAccountPolish .accountDocumentsCard .panelHeading p{display:block;font-size:13px;line-height:1.5;color:#647799;margin:6px 0 0}
+ .transporterAccountPolish .accountDocumentList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px;row-gap:14px;margin-top:20px}
+ .transporterAccountPolish .accountDocumentRow{display:grid;grid-template-columns:42px minmax(0,1fr) minmax(110px,auto);align-items:center;gap:14px;min-height:110px;border:1px solid #c8dced;padding:18px;border-radius:8px;background:#f8fbff}
+ .transporterAccountPolish .accountDocumentIcon{display:grid;place-items:center;width:42px;height:52px;border-radius:7px;background:#e5f1fd;color:#071c43}
+ .transporterAccountPolish .accountDocumentIcon>.transporterAccountIcon{width:28px;height:28px}
+ .transporterAccountPolish .accountDocumentRow>div{min-width:0}
+ .transporterAccountPolish .accountDocumentRow>div:last-child{align-items:flex-end;text-align:right;justify-self:end}
+ .transporterAccountPolish .accountDocumentRow strong{font-size:14px;line-height:1.4;font-weight:600;color:#071c43;overflow-wrap:anywhere}
+ .transporterAccountPolish .accountDocumentRow small{display:block;font-size:12px;line-height:1.5;color:#647799;margin-top:4px;overflow-wrap:anywhere}
+ .transporterAccountPolish .accountDocumentRow .statusPill{font-size:12px;line-height:1.4;padding:6px 12px;border-radius:20px}
  body.approvedDesktop .transporterAccountPolish .accountCloseHost>:is(.dangerPanel,.dangerCard){grid-column:1/-1;order:6;margin:0;padding:16px 20px;border:1px solid #ffb8b8;border-radius:8px;background:#fff8f8;box-shadow:none}
  .transporterAccountPolish .dangerPanel{display:flex;align-items:center;justify-content:space-between;gap:20px}
  .transporterAccountPolish .dangerPanel>div{position:relative;padding-left:44px}
