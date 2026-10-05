@@ -1,0 +1,80 @@
+.verificationDesktopPolish .verificationDesktopOnly,
+.verificationDesktopPolish .verificationDesignIcon{display:none}
+
+@media screen and (min-width:1024px){
+ body.approvedDesktop:has(.verificationDesktopPolish){background:#f3f8fd}
+ body.approvedDesktop .verificationDesktopPolish{max-width:1180px;width:calc(100% - 96px);margin:0 auto;padding:34px 0 42px;color:#071c43}
+ .verificationDesktopPolish *{box-sizing:border-box}
+ .verificationDesktopPolish .verificationDesktopOnly{display:block}
+ .verificationDesktopPolish .verificationLegacyOnly,.verificationDesktopPolish>.backLink,.verificationDesktopPolish .verificationStatusCard,.verificationDesktopPolish .dashboardEyebrow{display:none!important}
+ .verificationDesktopPolish .verificationDesignIcon{display:block;width:30px;height:30px;flex-shrink:0}
+ body.approvedDesktop .verificationDesktopPolish>.verificationHero{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0 0 32px!important;padding:0!important;min-height:80px!important;border:0!important;background:none!important;box-shadow:none!important;overflow:visible}
+ .verificationDesktopPolish .verificationHero::before,.verificationDesktopPolish .verificationHero::after{content:none!important;display:none!important}
+ .verificationDesktopPolish .verificationTitleLine{display:flex;align-items:center;flex-wrap:wrap;gap:12px 18px;margin-bottom:9px}
+ body.approvedDesktop .verificationDesktopPolish .verificationTitleLine h1{margin:0!important;font-size:32px!important;font-weight:700;line-height:1.2;letter-spacing:-.5px;color:#071c43!important}
+ body.approvedDesktop .verificationDesktopPolish .verificationHero p{margin:0;max-width:850px;font-size:14px!important;line-height:1.5;color:#647799!important}
+ .verificationDesktopPolish .verificationDocumentCount{flex-shrink:0;color:#647799;font-size:12px;white-space:nowrap;align-self:flex-start;padding-top:17px}
+ body.approvedDesktop .verificationDesktopPolish .verificationSection{margin:0 0 24px;padding:10px 10px 22px;border:1px solid #c8dced;border-radius:8px;background:#fff;box-shadow:none}
+ .verificationDesktopPolish .verificationSection>.verificationHeading{display:flex;align-items:center;gap:18px;padding:14px 18px;margin:0 0 18px;min-height:90px;border:0;border-radius:7px;background:#f0f7fe}
+ .verificationDesktopPolish .verificationHeading .panelIcon,.verificationDesktopPolish .requiredDocumentUploadHeading>span{display:grid;place-items:center;flex:0 0 60px;width:60px;height:60px;border:0;border-radius:50%;background:#dceeff;color:#071c43}
+ .verificationDesktopPolish .verificationHeading h2{font-size:18px;line-height:1.3;font-weight:700;letter-spacing:0;color:#071c43;margin:0}
+ .verificationDesktopPolish .verificationHeading p{font-size:13px;line-height:1.5;color:#647799;margin:4px 0 0}
+ .verificationDesktopPolish .businessDetailsForm{display:flow-root;padding:0 10px}
+ body.approvedDesktop .verificationDesktopPolish .businessDetailsForm>.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 36px}
+ .verificationDesktopPolish .verificationSection .field,.verificationDesktopPolish .businessDetailsForm .field{margin:0 0 18px}
+ .verificationDesktopPolish .verificationSection .field label{font-size:12px;line-height:1.4;letter-spacing:0;font-weight:600;text-transform:lowercase;color:#405779;margin:0 0 6px}
+ .verificationDesktopPolish .verificationSection .field label::first-letter{text-transform:uppercase}
+ body.approvedDesktop .verificationDesktopPolish .verificationSection :is(input,textarea,select){font-family:inherit;font-size:13px;line-height:1.4;font-weight:400;min-height:42px;padding:10px 12px;border:1px solid #c3d2e4;border-radius:4px;background:#fff;color:#203453;box-shadow:none}
+ body.approvedDesktop .verificationDesktopPolish .businessDetailsForm textarea{min-height:76px;height:76px;resize:vertical}
+ .verificationDesktopPolish input::placeholder,.verificationDesktopPolish textarea::placeholder{color:#647799;opacity:1}
+ body.approvedDesktop .verificationDesktopPolish .verificationSection :is(input,textarea,select):focus-visible{outline:2px solid #427bb3;outline-offset:2px}
+ body.approvedDesktop .verificationDesktopPolish .btn.orange{min-height:42px;min-width:0;padding:10px 20px;border:1px solid #ff681b;border-radius:5px;background:#ff681b;color:#fff;font-size:13px;font-weight:600;line-height:1.4;box-shadow:none;white-space:normal}
+ .verificationDesktopPolish .businessDetailsForm>.btn{float:right;margin:0}
+ .verificationDesktopPolish .btn:disabled{opacity:.5;cursor:not-allowed}
+ .verificationDesktopPolish .btn:focus-visible,.verificationDesktopPolish .documentRow:focus-visible{outline:2px solid #427bb3;outline-offset:3px}
+ .verificationDesktopPolish .requiredDocumentUploads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin:0 10px}
+ body.approvedDesktop .verificationDesktopPolish .requiredDocumentUploadCard{min-width:0;display:flex;flex-direction:column;padding:18px;border:1px solid #c8dced;border-radius:5px;background:#f3f9ff;box-shadow:none}
+ .verificationDesktopPolish .requiredDocumentUploadHeading{display:flex;align-items:flex-start;gap:18px;min-height:82px;margin:0 0 12px;padding:0;border:0}
+ .verificationDesktopPolish .requiredDocumentUploadHeading h3{font-size:15px;line-height:1.4;font-weight:700;color:#071c43;margin:0}
+ .verificationDesktopPolish .requiredDocumentUploadHeading p{font-size:13px;line-height:1.5;color:#647799;margin:6px 0 0}
+ .verificationDesktopPolish .requiredDocumentUploadCard>.grid{display:grid;grid-template-columns:1fr;align-content:start;gap:0;flex:1}
+ .verificationDesktopPolish .requiredDocumentUploadCard .field{margin:0 0 12px}
+ body.approvedDesktop .verificationDesktopPolish .requiredDocumentUploadCard input[type=file]{background:transparent;border:0;padding:0;min-height:42px;border-radius:0;font-size:12px;color:#647799}
+ .verificationDesktopPolish input[type=file]::file-selector-button{font-family:inherit;font-weight:600;font-size:12px;color:#071c43;background:#f8fbff;border:1px solid #9cacc3;border-radius:4px;min-height:40px;margin-right:16px;padding:8px 22px;cursor:pointer}
+ .verificationDesktopPolish .requiredDocumentUploadCard>.btn{align-self:flex-start;margin:0}
+ .verificationDesktopPolish .verificationDocumentsTitle{display:flex;align-items:center;gap:12px;margin:24px 10px 16px;padding-top:16px;border-top:1px solid #d6e2ef;font-size:18px;line-height:1.4;font-weight:700;color:#071c43}
+ .verificationDesktopPolish .verificationDocumentsTitle>span{display:inline-grid;place-items:center;min-width:32px;padding:3px 9px;border-radius:16px;background:#dceeff;color:#174878;font-size:13px;font-weight:600}
+ .verificationDesktopPolish .documentList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px;margin:0 10px}
+ body.approvedDesktop .verificationDesktopPolish .documentRow{display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:start;gap:14px;padding:16px;min-height:138px;border:1px solid #c8dced;border-radius:5px;background:#fff;box-shadow:none;text-decoration:none;transform:none}
+ .verificationDesktopPolish .documentRow:hover{border-color:#7ba6d0!important;background:#f8fbff!important}
+ .verificationDesktopPolish .documentIcon{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:#e8f4ff;color:#071c43}
+ .verificationDesktopPolish .documentRow b{font-size:14px;line-height:1.4;font-weight:600;color:#071c43}
+ .verificationDesktopPolish .documentRow div>span:not(.verificationDesignBadge){font-size:12px;line-height:1.5;color:#647799;margin-top:2px;white-space:normal;overflow-wrap:anywhere}
+ .verificationDesktopPolish .documentRow>strong{font-size:13px;font-weight:400;color:#286cde;line-height:1.5;padding-top:9px;white-space:nowrap}
+ .verificationDesktopPolish .verificationDesignBadge{display:inline-flex;align-items:center;gap:6px;width:fit-content;padding:6px 10px;margin-top:8px;border:0;border-radius:18px;background:#fff0cf;color:#8c4708;font-size:12px;font-weight:600;line-height:1.35;white-space:nowrap}
+ .verificationDesktopPolish .verificationTitleLine>.verificationDesignBadge{margin:0;font-size:12px}
+ .verificationDesktopPolish .verificationDesignBadge>.verificationDesignIcon{display:block;width:15px;height:15px}
+ .verificationDesktopPolish .verificationDesignBadge[data-status=APPROVED]{background:#dcf4e5;color:#087c48}
+ .verificationDesktopPolish .verificationDesignBadge:is([data-status=EXPIRED],[data-status=REJECTED]){background:#ffe2e4;color:#c13743}
+ .verificationDesktopPolish .documentRow .verificationExpiry{margin-top:7px;font-size:12px;line-height:1.4;color:#647799}
+ .verificationDesktopPolish .emptyDocuments{grid-column:1/-1;min-height:100px;border:1px dashed #c8dced;border-radius:5px;background:#f8fbff}
+ .verificationDesktopPolish .emptyDocuments b{font-size:14px}.verificationDesktopPolish .emptyDocuments p{font-size:13px}
+ .verificationDesktopPolish .submitReviewPanel{align-items:flex-start;gap:20px;margin:18px 10px 0;padding:20px;border:1px solid #c8dced;border-radius:5px;background:#f0f7fe}
+ .verificationDesktopPolish .submitReviewPanel b{color:#071c43;font-size:16px;line-height:1.4}
+ .verificationDesktopPolish .verificationChecklist{display:grid;gap:7px;margin:10px 0}
+ .verificationDesktopPolish .verificationChecklist>span{display:flex;align-items:center;gap:9px;font-size:13px;color:#071c43}
+ .verificationDesktopPolish .verificationChecklist i{display:inline-grid;place-items:center;width:21px;height:21px;border-radius:50%;background:#e1e9f2;color:#647799;font-style:normal;font-size:14px}
+ .verificationDesktopPolish .verificationChecklist [data-ready=true]>i{color:#fff;background:#088644}
+ .verificationDesktopPolish .submitReviewPanel small{display:block;font-size:12px;line-height:1.5;color:#647799}
+ .verificationDesktopPolish .submitReviewPanel>.btn{flex-shrink:0}
+ .verificationDesktopPolish .reviewNote{font-size:13px;margin:0 0 18px}
+ .verificationDesktopPolish .reviewNote :is(b,span){font-size:13px}
+ .verificationDesktopPolish .insuranceAccountWarning{margin:0 0 18px;font-size:13px;line-height:1.6}
+}
+@media screen and (min-width:1024px) and (max-width:1199px){
+ body.approvedDesktop .verificationDesktopPolish{width:calc(100% - 48px)}
+ .verificationDesktopPolish .verificationHero{flex-wrap:wrap}
+ .verificationDesktopPolish .verificationDocumentCount{padding-top:0}
+ .verificationDesktopPolish .requiredDocumentUploadHeading{gap:12px}
+ .verificationDesktopPolish .requiredDocumentUploadHeading>span{width:48px;height:48px;flex-basis:48px}
+}
