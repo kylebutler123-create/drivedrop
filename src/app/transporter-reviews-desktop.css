@@ -1,0 +1,67 @@
+.reviewRatingIcon,.reviewRatingStars,.reviewListHeading,.reviewCustomerIcon,.reviewVerifiedIcon,.reviewDesktopDate,.reviewDesktopChevron{display:none}
+.reviewResponseRow{display:contents}
+@media screen and (min-width:1024px){
+ body.approvedDesktop.role-transporter:has(.transporterReviewsPage){background:#f3f8fd}
+ body.approvedDesktop.role-transporter .transporterReviewsPage{width:calc(100% - 96px);max-width:1180px;margin:0 auto;padding:34px 0 42px;color:#071c43}
+ body.approvedDesktop.role-transporter .transporterReviewsPage>.backLink{display:none}
+ body.approvedDesktop.role-transporter .transporterReviewsPage>.dashboardHero{display:flex!important;align-items:center;justify-content:space-between;gap:30px;background:none!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0 0 24px!important}
+ .transporterReviewsPage>.dashboardHero>div:first-child{min-width:0;flex:1}
+ body.approvedDesktop .transporterReviewsPage .dashboardEyebrow{font-size:11px;line-height:1.4;color:#7587a1!important;letter-spacing:.09em;margin-bottom:7px}
+ body.approvedDesktop .transporterReviewsPage h1{font-size:32px!important;line-height:1.2!important;letter-spacing:-.7px;margin:0 0 8px!important;color:#071c43!important}
+ body.approvedDesktop .transporterReviewsPage .dashboardHero p{font-size:14px!important;line-height:1.5;color:#647799!important;max-width:750px;margin:0}
+ body.approvedDesktop .transporterReviewsPage .transporterRatingBadge{display:grid!important;grid-template-columns:62px auto;grid-template-rows:auto auto auto;column-gap:18px!important;row-gap:3px!important;align-items:center!important;min-width:250px;padding:18px!important;border:1px solid #c8dced!important;border-radius:8px!important;background:white!important;box-shadow:none!important}
+ .transporterRatingBadge>.reviewRatingIcon{grid-column:1;grid-row:1/4;display:grid;place-items:center;width:60px;height:60px;border:1px solid #ff681b;border-radius:7px;color:#ff681b}
+ .reviewRatingIcon>.approvedIcon{width:38px;height:38px}
+ .transporterRatingBadge>.reviewRatingLegacyLabel{display:none}
+ body.approvedDesktop .transporterRatingBadge>strong{grid-column:2;grid-row:1;font-size:34px!important;line-height:1.1;color:#071c43}
+ .transporterRatingBadge>.reviewRatingStars{display:block;grid-column:2;grid-row:2;font-size:23px;letter-spacing:2px;color:#ff681b}
+ .transporterRatingBadge>small{grid-column:2;grid-row:3;color:#647799;font-size:12px}
+ body.approvedDesktop .transporterReviewsPage .transporterReviewList{display:grid;gap:12px;margin:0;padding:16px;border:1px solid #c8dced;border-radius:8px;background:#fff}
+ .reviewListHeading{display:flex;align-items:center;justify-content:space-between;padding:0 6px 4px;gap:20px}
+ .reviewListHeading h2{font-size:21px;line-height:1.3;color:#071c43;margin:0}
+ .reviewListHeading>span{font-size:13px;color:#071c43}
+ body.approvedDesktop .transporterReviewsPage .transporterReviewList>.transporterReviewCard{margin:0!important;padding:0!important;border:1px solid #c8dced!important;border-radius:8px!important;box-shadow:none!important;background:white!important}
+ body.approvedDesktop .transporterReviewsPage .transporterReviewCard.isExpanded{border-color:#ff681b!important}
+ .transporterReviewsPage .transporterReviewSummary{display:grid;grid-template-columns:42px minmax(250px,1.4fr) minmax(390px,1.8fr) 20px;gap:18px;align-items:center;padding:14px 16px;min-height:70px;color:#071c43}
+ .transporterReviewsPage .isExpanded>.transporterReviewSummary{background:#fff5ef}
+ .reviewCustomerIcon{display:grid;place-items:center;width:42px;height:42px;border-radius:7px;background:#eaf5fd;color:#174878}
+ .reviewCustomerIcon>.approvedIcon{width:26px;height:26px}
+ .transporterReviewsPage .transporterReviewIdentity{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:14px;align-items:center}
+ .transporterReviewsPage .transporterReviewIdentity>strong{grid-column:1;grid-row:1;font-size:15px;font-weight:600;line-height:1.4;color:#071c43}
+ .transporterReviewsPage .transporterReviewIdentity>small{grid-column:1;grid-row:2;font-size:12px;line-height:1.4;color:#647799;margin-top:3px}
+ .transporterReviewsPage .transporterReviewIdentity>.statusPill{grid-column:2;grid-row:1/3;display:inline-flex;align-items:center;gap:6px;margin:0;padding:5px 8px;border-radius:6px;font-size:11px;line-height:1.3;background:#eaf5fd;color:#174878;white-space:normal}
+ .transporterReviewsPage .statusPill[data-verified=true]{background:#e1f5e9;color:#14794c}
+ .transporterReviewsPage .statusPill[data-review-status=UNDER_REVIEW]{background:#fff0d8;color:#935b0d}
+ .transporterReviewsPage .statusPill[data-review-status=HIDDEN]{background:#ffe6e6;color:#b42323}
+ .reviewVerifiedIcon{display:inline-flex}.reviewVerifiedIcon>.approvedIcon{width:15px;height:15px}
+ .transporterReviewsPage .transporterReviewQuick{grid-template-columns:1.1fr .9fr 1.25fr;gap:18px;align-items:center}
+ .transporterReviewsPage .transporterReviewQuick>span{padding:0;background:none;border-radius:0}
+ .transporterReviewsPage .transporterReviewQuick small{display:none}
+ .transporterReviewsPage .transporterReviewQuick b{font-size:12px;font-weight:400;color:#647799;white-space:normal;overflow:visible;text-overflow:clip}
+ .transporterReviewsPage .transporterReviewQuick .reviewStars{font-size:20px;color:#ff681b!important;white-space:nowrap;letter-spacing:0}
+ .transporterReviewsPage .reviewStars em{font-size:12px;color:#071c43;margin-left:8px}
+ .reviewLegacyDate,.reviewLegacyChevron{display:none}.reviewDesktopDate{display:inline}
+ .transporterReviewsPage .transporterReviewQuick .reviewResponseStatus{display:flex;align-items:center;gap:8px;color:#071c43}
+ .reviewResponseStatus>i{width:10px;height:10px;border-radius:50%;background:#a8bdd3;flex-shrink:0}
+ .reviewResponseStatus[data-published=true]>i{background:#18a667}
+ .transporterReviewsPage .transporterReviewChevron{width:20px;height:20px;background:none;border-radius:0;color:#071c43}
+ .reviewDesktopChevron{display:block;width:20px;height:20px}.isExpanded .reviewDesktopChevron{transform:rotate(180deg)}
+ .transporterReviewsPage .transporterReviewExpanded{padding:16px 22px;border-top:1px solid #dbe5ef;background:#fff}
+ .transporterReviewsPage .reviewContext{display:none}
+ .transporterReviewsPage .reviewTextPanel{padding:0;border:0;border-radius:0;background:none;box-shadow:none;margin:0!important}
+ .transporterReviewsPage .reviewTextPanel>b{font-size:12px;color:#405779;font-weight:600}
+ .transporterReviewsPage .reviewTextPanel p{font-size:13px;color:#071c43;line-height:1.6;margin:5px 0 0}
+ .transporterReviewsPage .reviewResponseRow{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:14px}
+ .transporterReviewsPage .reviewResponseRow:has(.responsePanel){padding:14px;border:1px solid #d5e5f5;border-radius:6px;background:#eaf3fd}
+ .transporterReviewsPage .responsePanel{flex:1 1 300px}
+ .transporterReviewsPage .responsePanel>small{font-size:12px;color:#7b94b5;margin-top:6px}
+ .transporterReviewsPage .reviewActionButton{display:inline-flex;align-items:center;justify-content:center;margin:0!important;min-height:38px;padding:8px 16px;border:1px solid #ff681b;border-radius:6px;background:#ff681b;color:#fff;font-size:12px;font-weight:600;box-shadow:none}
+ .transporterReviewsPage .reviewActionButton.secondary{background:#fff;color:#071c43;border-color:#071c43}
+ .transporterReviewsPage .reviewResponseRow>:is(.reviewActionPanel,.formNotice){flex-basis:100%;width:100%;box-sizing:border-box;margin:0!important}
+ .transporterReviewsPage :is(button,input,textarea):focus-visible{outline:2px solid #ff681b;outline-offset:2px}
+}
+@media screen and (min-width:1024px) and (max-width:1199px){
+ body.approvedDesktop.role-transporter .transporterReviewsPage{width:calc(100% - 48px)}
+ .transporterReviewsPage .transporterReviewSummary{grid-template-columns:36px minmax(230px,1.2fr) minmax(360px,1.8fr) 18px;gap:12px;padding:14px}
+ .reviewCustomerIcon{width:36px;height:36px}.transporterReviewsPage .transporterReviewQuick{gap:10px}
+}
