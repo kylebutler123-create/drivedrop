@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { currentUser } from '@/lib/auth';
-import { downloadVerificationFile } from '@/lib/supabase-storage';
+import { createVerificationDownloadUrl } from '@/lib/supabase-storage';
 
 export async function GET(_request: Request, context: { params: Promise<{ id: string }> }) {
   const user = await currentUser();
@@ -20,15 +20,11 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
     return NextResponse.json({ error: 'Access denied' }, { status: 403 });
   }
 
-  const stored = await downloadVerificationFile(document.documentUrl);
-  if (!stored.ok || !stored.body) {
-    console.error('Verification document download failed', stored.status, await stored.text().catch(() => ''));
+  try {
+    // A 60-second private link avoids routing a 20 MB response through Vercel.
+    const url = await createVerificationDownloadUrl(document.documentUrl);
+    return new Response(null, {status:307,headers:{Location:url,'Cache-Control':'private, no-store','Referrer-Policy':'no-referrer'}});
+  } catch {
     return NextResponse.json({ error: 'Unable to retrieve document' }, { status: 502 });
   }
-
-  const headers = new Headers();
-  headers.set('Content-Type', stored.headers.get('content-type') || 'application/octet-stream');
-  headers.set('Cache-Control', 'private, no-store');
-  headers.set('Content-Disposition', 'inline');
-  return new Response(stored.body, { status: 200, headers });
 }

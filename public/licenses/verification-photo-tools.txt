@@ -1,0 +1,7 @@
+DriveDrop verification photo conversion uses heic-to 1.6.5 by Hopper Gee.
+Source: https://github.com/hoppergee/heic-to
+Package: https://www.npmjs.com/package/heic-to/v/1.6.5
+License: LGPL-3.0, reproduced in heic-to-LICENSE.txt in this directory.
+The package includes a WebAssembly build of libheif and its decoder dependencies.
+Build instructions and dependency attribution are provided in the upstream source.
+No changes have been made to the package. It is loaded separately, only when a HEIC/HEIF file is selected.

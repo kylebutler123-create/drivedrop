@@ -14,11 +14,13 @@ class MockFormData {
  get(key){return this.values[key]??null}
  [Symbol.iterator](){return Object.entries(this.values)[Symbol.iterator]()}
 }
+const policyExports={};
+vm.runInNewContext(swc.transformSync(fs.readFileSync(path.join(root,'src/lib/verification-file-policy.ts'),'utf8'),{filename:'policy.ts',jsc:{parser:{syntax:'typescript'},target:'es2022'},module:{type:'commonjs'}}).code,{exports:policyExports});
 const exportsObject={};
 vm.runInNewContext(code,{
  exports:exportsObject,console,Date,File,FormData:MockFormData,setTimeout:()=>1,clearTimeout:()=>{},
  fetch:async(url,options)=>{calls.push({url,options});return {ok:true,json:async()=>current}},
- require:name=>name==='react'?{...React,useState:initial=>{const i=index++;if(!(i in states))states[i]=i===0?current:initial;return [states[i],value=>{states[i]=typeof value==='function'?value(states[i]):value}]},useEffect:()=>{},useRef:()=>({current:null})}:name==='next/link'?(props=>React.createElement('a',{href:props.href},props.children)):name.endsWith('.css')?{}:require(name)
+ require:name=>name==='@/lib/verification-file-policy'?policyExports:name==='react'?{...React,useState:initial=>{const i=index++;if(!(i in states))states[i]=i===0?current:initial;return [states[i],value=>{states[i]=typeof value==='function'?value(states[i]):value}]},useEffect:()=>{},useRef:()=>({current:null})}:name==='next/link'?(props=>React.createElement('a',{href:props.href},props.children)):name.endsWith('.css')?{}:require(name)
 });
 function tree(value){current=value;states=[];index=0;calls=[];return exportsObject.default()}
 function nodes(element,predicate,result=[]){if(!element||typeof element!=='object')return result;if(predicate(element))result.push(element);React.Children.forEach(element.props?.children,child=>nodes(child,predicate,result));return result}
@@ -34,8 +36,8 @@ async function main(){
  const expiry=nodes(t,e=>e.props?.name==='expiresAt')[0];assert(expiry.props.required);assert.equal(expiry.props.type,'date');
  await forms[0].props.onSubmit({preventDefault(){},currentTarget:{fields:{businessName:'Saved business',phone:'123',yearsOperating:'7',businessAddress:'Address'}}});assert.equal(calls[0].options.method,'PUT');assert.equal(JSON.parse(calls[0].options.body).yearsOperating,7);
  tree(populated);await forms[1].props.onSubmit({preventDefault(){},currentTarget:{fields:{type:'DRIVING_LICENCE'}}});assert.equal(states[1],'Choose a document to upload');assert.equal(calls.length,0);
- const invalid=new File(['bad'],'bad.txt',{type:'text/plain'});await forms[1].props.onSubmit({preventDefault(){},currentTarget:{fields:{type:'DRIVING_LICENCE',file:invalid}}});assert.equal(states[1],'Only PDF, JPG/JPEG and PNG files are allowed');assert.equal(calls.length,0);
- const tooLarge=new File([new Uint8Array(4*1024*1024+1)],'large.pdf',{type:'application/pdf'});await forms[1].props.onSubmit({preventDefault(){},currentTarget:{fields:{type:'DRIVING_LICENCE',file:tooLarge}}});assert.equal(states[1],'File must be 4 MB or smaller');assert.equal(calls.length,0);
+ const invalid=new File(['bad'],'bad.txt',{type:'text/plain'});await forms[1].props.onSubmit({preventDefault(){},currentTarget:{fields:{type:'DRIVING_LICENCE',file:invalid}}});assert.equal(states[1],'Only PDF, JPG/JPEG, PNG and HEIC/HEIF files are allowed');assert.equal(calls.length,0);
+ const tooLarge=new File([new Uint8Array(20*1024*1024+1)],'large.pdf',{type:'application/pdf'});await forms[1].props.onSubmit({preventDefault(){},currentTarget:{fields:{type:'DRIVING_LICENCE',file:tooLarge}}});assert.equal(states[1],'File must be 20 MB or smaller');assert.equal(calls.length,0);
  const ready=tree(populated);const submit=nodes(ready,e=>e.type==='button'&&e.props.onClick)[0];assert.equal(submit.props.disabled,false);await submit.props.onClick();assert.equal(calls[0].options.method,'POST');assert.equal(calls[0].url,'/api/transporter/verification');
  html=render({...populated,status:'APPROVED'});assert(!html.includes('Submit documents'));assert(html.includes('Upload insurance certificate'));
  html=render({...populated,reviewNote:'Replace unreadable licence',insuranceStatus:{state:'EXPIRED',expiresAt:'2020-01-01',replacementPending:true}});assert(html.includes('Insurance expired'));assert(html.includes('Your replacement document is awaiting DriveDrop approval.'));assert(html.includes('Replace unreadable licence'));

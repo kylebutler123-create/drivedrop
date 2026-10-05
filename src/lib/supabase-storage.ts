@@ -1,10 +1,12 @@
 import { randomUUID } from 'crypto';
+import { StorageClient } from '@supabase/storage-js';
+import { MAX_VERIFICATION_UPLOAD_SIZE } from './verification-file-policy';
 
 export const VERIFICATION_BUCKET = 'transporter-verification';
 export const EVIDENCE_BUCKET = 'delivery-evidence';
 export const PROFILE_BUCKET = 'transporter-profiles';
 export const MESSAGE_BUCKET = 'message-attachments';
-export const MAX_VERIFICATION_FILE_SIZE = 4 * 1024 * 1024;
+export const MAX_VERIFICATION_FILE_SIZE = MAX_VERIFICATION_UPLOAD_SIZE;
 export const MAX_EVIDENCE_FILE_SIZE = 8 * 1024 * 1024;
 export const MAX_PROFILE_FILE_SIZE = 2 * 1024 * 1024;
 export const MAX_MESSAGE_FILE_SIZE = 8 * 1024 * 1024;
@@ -27,6 +29,41 @@ export function validateVerificationFile(file:File){return validateWithSignature
 export function createVerificationStoragePath(userId:string,verificationId:string,extension:string){return `${userId}/${verificationId}/${randomUUID()}.${extension}`}
 export async function uploadVerificationFile(path:string,file:File){return upload(VERIFICATION_BUCKET,path,file)}
 export async function downloadVerificationFile(path:string){return download(VERIFICATION_BUCKET,path)}
+
+// Signed URLs only grant access to one private object; the service key stays server-side.
+function verificationStorage(){const {url,serviceRoleKey}=config();return new StorageClient(`${url}/storage/v1`,{apikey:serviceRoleKey,Authorization:`Bearer ${serviceRoleKey}`}).from(VERIFICATION_BUCKET)}
+export async function createVerificationUploadUrl(path:string){
+  const {data,error}=await verificationStorage().createSignedUploadUrl(path,{upsert:false});
+  if(error||!data)throw new Error('Unable to prepare private upload');
+  return data.signedUrl;
+}
+export async function createVerificationDownloadUrl(path:string){
+  const {data,error}=await verificationStorage().createSignedUrl(path,60);
+  if(error||!data)throw new Error('Unable to retrieve private document');
+  return data.signedUrl;
+}
+export async function removeVerificationFile(path:string){return remove(VERIFICATION_BUCKET,path)}
+export async function validateStoredVerificationFile(path:string,expectedType:string,expectedSize:number){
+  const response=await downloadVerificationFile(path);
+  if(!response.ok||!response.body)return {ok:false as const,error:'Upload not found. Please select the document and try again.'};
+  const reader=response.body.getReader();
+  const declaredSize=Number(response.headers.get('content-length'));
+  const contentType=response.headers.get('content-type')?.split(';')[0].trim().toLowerCase();
+  if(contentType!==expectedType||(declaredSize>0&&declaredSize!==expectedSize)){
+    await reader.cancel();return {ok:false as const,error:'Uploaded file does not match the selected document.'};
+  }
+  const parts:Uint8Array<ArrayBuffer>[]=[];let size=0;
+  try{
+    while(true){
+      const {done,value}=await reader.read();if(done)break;
+      size+=value.byteLength;
+      if(size>MAX_VERIFICATION_FILE_SIZE||size>expectedSize){await reader.cancel();return {ok:false as const,error:'File must be 20 MB or smaller and match the selected document.'};}
+      parts.push(new Uint8Array(value));
+    }
+  }finally{reader.releaseLock()}
+  if(size!==expectedSize)return {ok:false as const,error:'The upload was incomplete. Please try again.'};
+  return validateVerificationFile(new File(parts,'verification-document',{type:expectedType}));
+}
 
 export function validateEvidenceFile(file:File){return validateWithSignature(file,evidenceTypes,MAX_EVIDENCE_FILE_SIZE,'JPG/JPEG, PNG and WebP image')}
 export function createEvidenceStoragePath(bookingId:string,userId:string,extension:string){return `${bookingId}/${userId}/${randomUUID()}.${extension}`}

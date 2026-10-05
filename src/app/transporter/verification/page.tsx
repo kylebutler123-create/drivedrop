@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import './verification-desktop.css';
+import {VERIFICATION_FILE_ACCEPT,verificationInputError} from '@/lib/verification-file-policy';
 
 function VerificationIcon({name}:{name:'business'|'shield'|'licence'|'document'|'check'|'clock'|'cross'}) {
   const paths = {
@@ -19,8 +20,6 @@ function VerificationBadge({status,title=false}:{status:string;title?:boolean}) 
   return <span className="verificationDesktopOnly verificationDesignBadge" data-status={status}><VerificationIcon name={status==='APPROVED'?'check':status==='EXPIRED'||status==='REJECTED'?'cross':'clock'}/>{title&&status==='PENDING'?'Pending review':label(status)}</span>;
 }
 
-const MAX_FILE_SIZE = 4 * 1024 * 1024;
-const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
 const label = (s: string) => s.replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 
 export default function Verification() {
@@ -29,6 +28,8 @@ export default function Verification() {
   const [uploading, setUploading] = useState(false);
   const [submittingReview, setSubmittingReview] = useState(false);
   const [submittedFeedback, setSubmittedFeedback] = useState(false);
+  const [uploadStage, setUploadStage] = useState('Uploading securely…');
+  const uploadLock = useRef(false);
   const submittedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   async function load() {
@@ -48,24 +49,35 @@ export default function Verification() {
   }
 
   async function addDocument(event: any) {
-    event.preventDefault(); setMessage('');
+    event.preventDefault();
+    if (uploadLock.current) return;
+    setMessage('');
     const formElement = event.currentTarget as HTMLFormElement;
     const form = new FormData(formElement); const file = form.get('file');
     if (!(file instanceof File) || !file.size) return setMessage('Choose a document to upload');
-    if (!ALLOWED_TYPES.includes(file.type)) return setMessage('Only PDF, JPG/JPEG and PNG files are allowed');
-    if (file.size > MAX_FILE_SIZE) return setMessage('File must be 4 MB or smaller');
+    const validationError = verificationInputError(file);
+    if (validationError) return setMessage(validationError);
+    uploadLock.current = true;
     setUploading(true);
     try {
-      const response = await fetch('/api/transporter/verification/documents', { method: 'POST', body: form });
-      const body = await response.json().catch(() => ({}));
+      const {uploadVerificationDocument} = await import('@/lib/upload-verification-document');
+      const body = await uploadVerificationDocument(file, {
+        type: String(form.get('type')),
+        expiresAt: String(form.get('expiresAt') || '') || undefined,
+      }, setUploadStage);
       const documentName = form.get('type') === 'DRIVING_LICENCE' ? 'Driving licence' : 'Insurance certificate';
-      setMessage(response.ok ? `${documentName} uploaded securely` : body.error || `Unable to upload ${documentName.toLowerCase()}`);
-      if (response.ok) {
-        formElement.reset();
-        setVerification((current:any)=>current?{...current,documents:[body,...(current.documents||[])]}:current);
-        await load();
-      }
-    } finally { setUploading(false); }
+      setMessage(`${documentName} uploaded securely`);
+      formElement.reset();
+      setVerification((current:any)=>current?{...current,documents:[body,...(current.documents||[]).filter((document:any)=>document.id!==body.id)]}:current);
+      // The upload is already confirmed: a failed refresh must not report it as failed.
+      await load().catch(()=>{});
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Unable to upload this document. Please try again.');
+    } finally {
+      uploadLock.current = false;
+      setUploading(false);
+      setUploadStage('Uploading securely…');
+    }
   }
 
   async function submit() {
@@ -100,9 +112,9 @@ export default function Verification() {
     <header className="dashboardHero verificationHero"><div><span className="dashboardEyebrow">Trust & compliance</span><div className="verificationTitleLine"><h1>DriveDrop Verification</h1>{verification&&<VerificationBadge status={verification.status} title/>}</div><p>Build customer confidence by keeping your business, insurance and verification documents up to date.</p></div><div className="verificationStatusCard"><span>Verification status</span><strong>{verification ? label(verification.status) : 'Loading…'}</strong><small>{docs.length} document{docs.length===1?'':'s'} uploaded</small></div><span className="verificationDesktopOnly verificationDocumentCount">{docs.length} document{docs.length===1?'':'s'} uploaded</span></header>
     {insuranceNeedsAttention && <div className="formNotice errorNotice insuranceAccountWarning" role="alert"><div><strong>{insuranceState === 'EXPIRED' ? '⚠ Insurance expired — replacement insurance required' : '⚠ No valid insurance — replacement insurance required'}</strong><div>{insuranceState === 'EXPIRED' && insuranceExpiry ? `Your approved insurance expired on ${insuranceExpiry}. ` : ''}{replacementPending ? 'Your replacement document is awaiting DriveDrop approval.' : 'Upload current insurance below for DriveDrop approval.'} New quote submissions remain blocked until valid insurance is approved.</div></div></div>}
     {verification?.reviewNote && <div className="reviewNote"><b>DriveDrop review note</b><span>{verification.reviewNote}</span></div>}
-    {message && <div className="formNotice successNotice">{message}</div>}
+    {message && <div className="formNotice successNotice" role="status" aria-live="polite">{message}</div>}
     <section className="dashboardCard verificationSection businessDetailsSection"><div className="verificationHeading"><div className="panelIcon"><span className="verificationLegacyOnly">1</span><VerificationIcon name="business"/></div><div><h2>Business details</h2><p>Tell customers who they are booking their vehicle transport with.</p></div></div><form className="businessDetailsForm" onSubmit={save}><div className="grid"><div className="field"><label htmlFor="business-name">BUSINESS/NAME</label><input id="business-name" name="businessName" defaultValue={verification?.businessName || ''} required /></div><div className="field"><label htmlFor="business-phone">PHONE</label><input id="business-phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" defaultValue={verification?.phone || ''} required /></div><div className="field"><label htmlFor="business-years">YEARS OPERATING</label><input id="business-years" name="yearsOperating" type="number" inputMode="numeric" min="0" step="1" defaultValue={verification?.yearsOperating ?? ''} /></div></div><div className="field"><label htmlFor="business-address">ADDRESS</label><textarea id="business-address" name="businessAddress" rows={3} defaultValue={verification?.businessAddress || ''} required /></div><button className="btn orange">Save business details</button></form></section>
-    <section className="dashboardCard verificationSection"><div className="verificationHeading"><div className="panelIcon"><span className="verificationLegacyOnly">2</span><VerificationIcon name="shield"/></div><div><h2>Verification documents</h2><p>Insurance and a driving licence are required. Upload PDF, JPG/JPEG or PNG files, maximum 4 MB each.</p></div></div><div className="requiredDocumentUploads"><form className="documentUploadForm requiredDocumentUploadCard" onSubmit={addDocument}><input type="hidden" name="type" value="DRIVING_LICENCE"/><div className="requiredDocumentUploadHeading"><span aria-hidden="true"><span className="verificationLegacyOnly">🪪</span><VerificationIcon name="licence"/></span><div><h3>Upload driving licence</h3><p>Upload a clear PDF or image of the driving licence for Admin verification.</p></div></div><div className="grid"><div className="field fileField"><input name="file" type="file" aria-label="Choose file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" required /></div></div><button className="btn orange" disabled={uploading}>{uploading ? 'Uploading securely…' : 'Upload driving licence'}</button></form><form className="documentUploadForm requiredDocumentUploadCard insuranceUploadCard" onSubmit={addDocument}><input type="hidden" name="type" value="INSURANCE"/><div className="requiredDocumentUploadHeading"><span aria-hidden="true"><span className="verificationLegacyOnly">🛡️</span><VerificationIcon name="shield"/></span><div><h3>Upload insurance certificate</h3><p>Upload the current insurance certificate and enter its expiry date.</p></div></div><div className="grid"><div className="field fileField"><input name="file" type="file" aria-label="Choose file" accept="application/pdf,image/jpeg,image/png,.pdf,.jpg,.jpeg,.png" required /></div><div className="field"><label htmlFor="insurance-expiry">EXPIRY DATE</label><input id="insurance-expiry" name="expiresAt" type="date" required /></div></div><button className="btn orange" disabled={uploading}>{uploading ? 'Uploading securely…' : 'Upload insurance certificate'}</button></form></div>
+    <section className="dashboardCard verificationSection"><div className="verificationHeading"><div className="panelIcon"><span className="verificationLegacyOnly">2</span><VerificationIcon name="shield"/></div><div><h2>Verification documents</h2><p>Insurance and a driving licence are required. Upload PDF, JPG/JPEG, PNG or HEIC/HEIF files, maximum 20 MB each. Photos are optimised automatically; PDFs stay unchanged.</p></div></div><div className="requiredDocumentUploads"><form className="documentUploadForm requiredDocumentUploadCard" onSubmit={addDocument}><input type="hidden" name="type" value="DRIVING_LICENCE"/><div className="requiredDocumentUploadHeading"><span aria-hidden="true"><span className="verificationLegacyOnly">🪪</span><VerificationIcon name="licence"/></span><div><h3>Upload driving licence</h3><p>Upload a clear PDF or image of the driving licence for Admin verification.</p></div></div><div className="grid"><div className="field fileField"><input name="file" type="file" aria-label="Choose file" accept={VERIFICATION_FILE_ACCEPT} disabled={uploading} required /></div></div><button className="btn orange" disabled={uploading}>{uploading ? uploadStage : 'Upload driving licence'}</button></form><form className="documentUploadForm requiredDocumentUploadCard insuranceUploadCard" onSubmit={addDocument}><input type="hidden" name="type" value="INSURANCE"/><div className="requiredDocumentUploadHeading"><span aria-hidden="true"><span className="verificationLegacyOnly">🛡️</span><VerificationIcon name="shield"/></span><div><h3>Upload insurance certificate</h3><p>Upload the current insurance certificate and enter its expiry date.</p></div></div><div className="grid"><div className="field fileField"><input name="file" type="file" aria-label="Choose file" accept={VERIFICATION_FILE_ACCEPT} disabled={uploading} required /></div><div className="field"><label htmlFor="insurance-expiry">EXPIRY DATE</label><input id="insurance-expiry" name="expiresAt" type="date" required /></div></div><button className="btn orange" disabled={uploading}>{uploading ? uploadStage : 'Upload insurance certificate'}</button></form></div>
     <h3 className="verificationDesktopOnly verificationDocumentsTitle">Uploaded documents <span>{docs.length}</span></h3>
     <div className="documentList">{docs.length===0?<div className="emptyDocuments"><span>📄</span><div><b>No verification documents yet</b><p>Upload your first document above.</p></div></div>:docs.map((document:any)=>{const documentStatus=document.expiresAt&&new Date(document.expiresAt)<new Date()?'EXPIRED':document.status;return <a className="documentRow" key={document.id} href={`/api/verification-documents/${document.id}`} target="_blank" rel="noreferrer"><div className="documentIcon"><span className="verificationLegacyOnly">📄</span><VerificationIcon name="document"/></div><div><b>{label(document.type)}</b><span>{document.insurer || document.policyNumber || 'Secure verification document'}</span><VerificationBadge status={documentStatus}/>{document.expiresAt&&<><small className="verificationLegacyOnly">Expires {new Date(document.expiresAt).toLocaleDateString('en-GB')}</small><small className="verificationDesktopOnly verificationExpiry">Expires {new Date(document.expiresAt).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'})}</small></>}</div><span className="statusPill verificationLegacyOnly">{label(documentStatus)}</span><strong><span className="verificationLegacyOnly">View →</span><span className="verificationDesktopOnly">View ↗</span></strong></a>})}</div>
     {verification && verification.status!=='APPROVED' && <div className="submitReviewPanel"><div><b>Required verification documents</b><p className="verificationLegacyOnly">{hasInsuranceDocument?'✓':'○'} Insurance certificate &nbsp; {hasDrivingLicenceDocument?'✓':'○'} Driving licence</p><div className="verificationDesktopOnly verificationChecklist"><span data-ready={hasInsuranceDocument}><i aria-hidden="true">{hasInsuranceDocument?'✓':'○'}</i>Insurance certificate</span><span data-ready={hasDrivingLicenceDocument}><i aria-hidden="true">{hasDrivingLicenceDocument?'✓':'○'}</i>Driving licence</span></div><small>Both documents must be uploaded before you can submit your account for DriveDrop review.</small></div><button type="button" className="btn orange" onClick={submit} disabled={uploading||submittingReview||!requiredDocumentsReady} title={!requiredDocumentsReady?'Upload both required documents before submitting':undefined}>{submittedFeedback?'Submitted':submittingReview?'Submitting…':'Submit documents'}</button></div>}</section>
