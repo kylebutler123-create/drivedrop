@@ -3,9 +3,9 @@
 import {useState} from 'react';
 import Icon from '../components/AccountDesignIcon';
 
-type Props={email:string;customerDesktop?:boolean};
+type Props={email:string;customerDesktop?:boolean;transporterDesktop?:boolean};
 
-export default function EmailEditor({email,customerDesktop=false}:Props){
+export default function EmailEditor({email,customerDesktop=false,transporterDesktop=false}:Props){
   const [open,setOpen]=useState(false);
   const [newEmail,setNewEmail]=useState('');
   const [currentPassword,setCurrentPassword]=useState('');
@@ -24,7 +24,7 @@ export default function EmailEditor({email,customerDesktop=false}:Props){
     finally{setSaving(false);}
   }
 
-  if(!open)return <div className="accountEditPanel accountSecurityPanel"><div><strong>{customerDesktop?<span className="customerSecurityLabel"><Icon name="mail"/><span>Login email</span></span>:'Login email'}</strong><p>{customerDesktop?'':email+' · '}Change this only after verifying the new address.</p></div><button className="btn light" type="button" onClick={()=>setOpen(true)}>Change email</button></div>;
+  if(!open)return <div className="accountEditPanel accountSecurityPanel"><div><strong>{customerDesktop?<span className="customerSecurityLabel"><Icon name="mail"/><span>Login email</span></span>:'Login email'}</strong><p className={transporterDesktop?'transporterLegacyCopy':undefined}>{customerDesktop?'':email+' · '}Change this only after verifying the new address.</p>{transporterDesktop&&<div className="transporterDesktopOnly accountEmailCopy"><span>{email}</span><small>Your current email stays active until the new address is verified.</small></div>}</div><button className="btn light" type="button" onClick={()=>setOpen(true)}>Change email</button></div>;
 
   return <section className="dashboardCard accountEditCard">
     <div className="panelHeading"><div><span className="panelIcon">✉️</span><div><h2>Change login email</h2><p>Your current email remains active until the new address is verified.</p></div></div></div>

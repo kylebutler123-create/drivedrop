@@ -2,6 +2,7 @@
 
 import {useEffect,useState} from 'react';
 import {useRouter} from 'next/navigation';
+import AccountIcon from '@/app/components/TransporterAccountIcon';
 
 type Blockers={liveJobs:number;activeBookings:number;openDisputes:number;unsettledTransporterPayments:number};
 
@@ -39,7 +40,7 @@ export default function CloseAccount(){
     finally{setClosing(false);}
   }
 
-  if(!open)return <div className="accountEditPanel dangerPanel"><div><strong>Close account</strong><p>Permanently deactivate this DriveDrop account once all active work and financial matters are finished.</p></div><button className="btn light dangerButton" type="button" onClick={()=>setOpen(true)}>Close account</button></div>;
+  if(!open)return <div className="accountEditPanel dangerPanel"><div><AccountIcon name="trash"/><strong>Close account</strong><p>Permanently deactivate this DriveDrop account once all active work and financial matters are finished.</p></div><button className="btn light dangerButton" type="button" onClick={()=>setOpen(true)}>Close account</button></div>;
 
   return <section className="dashboardCard accountEditCard dangerCard">
     <div className="panelHeading"><div><span className="panelIcon">⚠️</span><div><h2>Close your account</h2><p>This permanently disables sign-in. DriveDrop keeps historic booking, payment and dispute records where required.</p></div></div></div>

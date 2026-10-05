@@ -2,6 +2,7 @@
 
 import {useEffect,useRef,useState} from 'react';
 import {useRouter} from 'next/navigation';
+import AccountIcon from '@/app/components/TransporterAccountIcon';
 
 type ProfileImageKind='logo'|'transporter'|'truck';
 type Images={logo:string|null;transporter:string|null;truck:string|null};
@@ -103,10 +104,10 @@ function MediaUpload({kind,title,description,icon,initialUrl,businessName,shape}
   const alt=kind==='logo'?businessName+' business logo':kind==='transporter'?businessName+' transporter':'Transport vehicle';
   const cropTitle=kind==='transporter'?'Crop your photo':'Crop your truck photo';
 
-  return <article className="profileMediaItem">
-    <div className={'profileMediaPreview '+shape}>{url?<img src={url} alt={alt}/>:<span aria-hidden="true">{icon}</span>}</div>
+  return <article className="profileMediaItem" data-media-kind={kind}>
+    <div className={'profileMediaPreview '+shape}>{url?<img src={url} alt={alt}/>:<span aria-hidden="true"><span className="transporterLegacyIcon">{icon}</span><AccountIcon name={kind==='transporter'?'user':'truck'}/></span>}</div>
     <div className="profileMediaItemBody">
-      <h3>{title}</h3>
+      <h3>{kind==='transporter'?<><span className="transporterLegacyCopy">{title}</span><span className="transporterDesktopOnly">Transporter photo</span></>:title}</h3>
       <p>{description}</p>
       <div className="actionButtons">
         <label className={'btn orange'+(busy?' disabled':'')}>{busy?'Uploading…':url?'Change photo':'Upload photo'}<input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden disabled={busy} onChange={e=>{const file=e.target.files?.[0];if(file)chooseFile(file)}}/></label>
@@ -136,7 +137,7 @@ function MediaUpload({kind,title,description,icon,initialUrl,businessName,shape}
 
 export default function ProfileImageEditor({initialImages,businessName}:Props){
   return <section className="dashboardCard profileImageCard">
-    <div className="panelHeading"><div><span className="panelIcon">📷</span><div><h2>Profile photos</h2><p>Help customers recognise you, your transport business and the vehicle that will collect their vehicle.</p></div></div></div>
+    <div className="panelHeading"><div><span className="panelIcon"><span className="transporterLegacyIcon">📷</span><AccountIcon name="image"/></span><div><h2>Profile photos</h2><p className="transporterLegacyCopy">Help customers recognise you, your transport business and the vehicle that will collect their vehicle.</p><p className="transporterDesktopOnly">Help customers recognise you and your transport business.</p></div></div></div>
     <p className="profileMediaHelp">Upload JPG, PNG or WebP images. Personal and truck photos can be repositioned and cropped before saving.</p>
     <div className="profileMediaEditorGrid">
       <MediaUpload kind="transporter" title="Your photo" description="A clear, professional photo of you. This will be your main display photo when customers compare quotes." icon="👤" initialUrl={initialImages.transporter} businessName={businessName} shape="person"/>
