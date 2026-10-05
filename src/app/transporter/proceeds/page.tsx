@@ -53,11 +53,20 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
   select:{
    id:true,status:true,customerConfirmedAt:true,createdAt:true,
    customer:{select:{name:true}},
-   job:{select:{vehicleType:true,vehicleMake:true,vehicleModel:true,registration:true,collection:true,delivery:true,collectionDate:true}},
+   job:{select:{id:true,vehicleMake:true,vehicleModel:true,registration:true,collection:true,delivery:true,collectionDate:true}},
    payment:{select:{transporterProceedsPence:true,cancellationDeductionPence:true,refundedPence:true,payoutStatus:true,updatedAt:true,events:{where:{type:'PAYOUT_PAID'},select:{createdAt:true},orderBy:{createdAt:'desc'},take:1}}}
   },
   orderBy:{createdAt:'desc'}
  });
+ // Vehicle type is stored as an extension column, outside the generated Prisma model.
+ // Match the existing jobs/deliveries lookup, scoped to this transporter's booking IDs.
+ const jobIds=[...new Set(bookings.map(booking=>booking.job.id))];
+ let vehicleTypeRows:Array<{id:string;vehicleType:string|null}>=[];
+ if(jobIds.length){
+  try{vehicleTypeRows=await prisma.$queryRawUnsafe<Array<{id:string;vehicleType:string|null}>>(`SELECT "id", "vehicleType" FROM "TransportJob" WHERE "id" IN (${jobIds.map((_,i)=>`${i+1}`).join(',')})`,...jobIds)}
+  catch{console.warn('Proceeds vehicle icons unavailable; showing default icons')}
+ }
+ const vehicleTypeById=new Map(vehicleTypeRows.map(row=>[row.id,row.vehicleType]));
  const allRows=bookings.filter(booking=>booking.payment);
  const rows=allRows.filter(booking=>booking.status!=='CANCELLED'&&booking.payment?.payoutStatus!=='CANCELLED');
  const total=rows.reduce((sum,booking)=>sum+proceedsBeforeFine(booking),0);
@@ -101,7 +110,7 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
   </div>}
   <div className={styles.heading}><div><h2>{breakdownTitle}</h2><p>Newest bookings first</p></div><span>{visibleRows.length} record{visibleRows.length===1?'':'s'}</span></div>
   {visibleRows.length===0?<section className="dashboardCard emptyState"><div>£</div><h3>No {breakdownTitle.toLowerCase()}</h3><p>{filter==='BOOKED'?'Proceeds will appear here after a customer accepts and pays for a delivery.':'No proceeds currently match this status.'}</p></section>:<section className={styles.list}>{visibleRows.map(booking=>{const payment=booking.payment!;const fine=payment.cancellationDeductionPence||0;const refund=payment.refundedPence||0;const net=payment.payoutStatus==='CANCELLED'?0:payment.transporterProceedsPence||0;const beforeFine=net+fine;const paidAt=payment.events[0]?.createdAt;return <article className={styles.card} key={booking.id}>
-   <div className={styles.cardTop}><div><div className={styles.pills}><span data-delivery-status={booking.status}>{label(booking.status)}</span><span data-payout-status={payment.payoutStatus} className={payment.payoutStatus==='PAID'?styles.paid:payment.payoutStatus==='HELD'?styles.held:''}>{payoutLabel(booking)}</span></div><div className={styles.identity}><span className={styles.vehicleIcon}><ProceedsIcon name={/van|motorhome|plant|other/i.test(booking.job.vehicleType)?'van':'car'}/></span><h3>{booking.job.vehicleMake} {booking.job.vehicleModel}</h3><p>{booking.customer.name}{booking.job.registration?` · ${booking.job.registration}`:''}</p><small>Delivery reference · {reference(booking.id)}</small></div></div><strong className={filter==='FINES'?styles.adjustmentAmount:undefined}>{filter==='FINES'?`−${money(fine+refund)}`:money(net)}</strong></div>
+   <div className={styles.cardTop}><div><div className={styles.pills}><span data-delivery-status={booking.status}>{label(booking.status)}</span><span data-payout-status={payment.payoutStatus} className={payment.payoutStatus==='PAID'?styles.paid:payment.payoutStatus==='HELD'?styles.held:''}>{payoutLabel(booking)}</span></div><div className={styles.identity}><span className={styles.vehicleIcon}><ProceedsIcon name={/van|motorhome|plant|other/i.test(vehicleTypeById.get(booking.job.id)||'')?'van':'car'}/></span><h3>{booking.job.vehicleMake} {booking.job.vehicleModel}</h3><p>{booking.customer.name}{booking.job.registration?` · ${booking.job.registration}`:''}</p><small>Delivery reference · {reference(booking.id)}</small></div></div><strong className={filter==='FINES'?styles.adjustmentAmount:undefined}>{filter==='FINES'?`−${money(fine+refund)}`:money(net)}</strong></div>
    <div className={styles.route}><div><small>Collection</small><b><ProceedsIcon name="pin"/>{booking.job.collection}</b></div><span>→</span><div><small>Delivery</small><b><ProceedsIcon name="pin"/>{booking.job.delivery}</b></div></div>
    <div className={styles.cardBottom}><div className={styles.breakdown}>
     {fine>0&&<><div><span>Proceeds before fine</span><b>{money(beforeFine)}</b></div><div><span>Fine deducted</span><b className={styles.deduction}>−{money(fine)}</b></div></>}
