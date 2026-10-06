@@ -76,6 +76,17 @@
  body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary]) .dashboardSummaryActivity{left:60px}
 }
 
+.cancellationPolicyIcon,.cancellationPolicyCopy{display:none}
+@media(min-width:1024px){
+ body.approvedDesktop.role-transporter .cancellationPolicyWarning{display:flex;align-items:center;gap:22px;margin:0 0 14px;padding:10px 16px;border:1px solid #f2cc88;border-radius:8px;background:#fff7e8;color:#07134e;box-shadow:none}
+ body.approvedDesktop.role-transporter .cancellationPolicyWarning .cancellationPolicyLegacyIcon,body.approvedDesktop.role-transporter .cancellationPolicyWarning .cancellationPolicyLegacyText{display:none}
+ body.approvedDesktop.role-transporter .cancellationPolicyWarning .cancellationPolicyIcon{display:flex;align-items:center;justify-content:center;width:56px;height:56px;flex:0 0 56px;border-radius:10px;background:#ffe6b8;color:#985600}
+ body.approvedDesktop.role-transporter .cancellationPolicyIcon svg{width:36px;height:36px}
+ body.approvedDesktop.role-transporter .cancellationPolicyWarning .cancellationPolicyCopy{display:block;min-width:0}
+ body.approvedDesktop.role-transporter .cancellationPolicyCopy>strong{display:block;font-size:16px;line-height:1.4;font-weight:700;color:#07134e}
+ body.approvedDesktop.role-transporter .cancellationPolicyCopy>p{margin:3px 0 0;font-size:14px;line-height:1.5;font-weight:400;color:#07134e}
+ body.approvedDesktop.role-transporter .cancellationPolicyCopy>p>b{font-weight:700}
+}
 .insuranceWarningIcon{display:none}
 @media(min-width:1024px){
  body.approvedDesktop.role-transporter .dashboardInsuranceWarning{display:flex;align-items:center;gap:16px;margin:14px 0 16px;padding:10px 16px;border:1px solid #ff4054;border-radius:8px;background:#fff0f2;box-shadow:none;color:#07134e}
