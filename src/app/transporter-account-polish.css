@@ -76,6 +76,15 @@
  body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary]) .dashboardSummaryActivity{left:60px}
 }
 
+.insuranceWarningIcon{display:none}
+@media(min-width:1024px){
+ body.approvedDesktop.role-transporter .dashboardInsuranceWarning{display:flex;align-items:center;gap:16px;margin:14px 0 16px;padding:10px 16px;border:1px solid #ff4054;border-radius:8px;background:#fff0f2;box-shadow:none;color:#07134e}
+ body.approvedDesktop.role-transporter .dashboardInsuranceWarning .insuranceWarningIcon{display:block;width:36px;height:36px;flex:0 0 36px;color:#ff334c}
+ body.approvedDesktop.role-transporter .dashboardInsuranceWarning .insuranceWarningCopy{flex:1;min-width:0;font-size:13px;line-height:1.45}
+ body.approvedDesktop.role-transporter .dashboardInsuranceWarning strong{display:block;color:#c90000;font-size:15px;line-height:1.4;font-weight:700}
+ body.approvedDesktop.role-transporter .dashboardInsuranceWarning .btn.orange{background:#ff6500!important;border:1px solid #ff6500!important;border-radius:9px;color:#fff!important;padding:12px 16px!important;font-size:13px!important;font-weight:500!important;box-shadow:none;white-space:nowrap}
+}
+
 /* Joined desktop navigation; visual end caps follow the displayed tile order. */
 @media(min-width:1024px){
  body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary])>[role=button]{border-radius:0!important;border:1px solid #9cddff!important;border-right-width:0!important;box-shadow:none!important}
