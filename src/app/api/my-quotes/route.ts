@@ -14,7 +14,8 @@ export async function GET(){
     include:{
       job:{select:{
         id:true,status:true,vehicleMake:true,vehicleModel:true,collection:true,delivery:true,collectionDate:true,
-        customer:{select:{name:true}}
+        customer:{select:{name:true}},
+        _count:{select:{quotes:{where:{status:{not:'WITHDRAWN'}}}}}
       }},
       booking:{select:{id:true,status:true,customerConfirmedAt:true}}
     },
