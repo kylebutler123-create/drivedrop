@@ -11,6 +11,9 @@ assert.deepEqual(helpers.sortQuotes([c,b,a]).map(q=>q.id),['late','early','middl
 const View=load(path.join(root,'src/app/transporter/quotes/QuotesDesktop.tsx')).default;
 const html=renderToStaticMarkup(React.createElement(View,{quotes:[c,b,a],loading:false,error:'',onUpdate(){},onCancel(){},onRetry(){}}));
 assert.equal((html.match(/Adjust quote<\/button>/g)||[]).length,2);assert.equal((html.match(/Cancel quote<\/button>/g)||[]).length,2);assert(html.includes('View active delivery'));assert(html.includes('5 transporter'));assert(html.includes('including you'));assert(html.includes('7 October 2026'));assert(!html.includes('DriveDrop fee'));
+assert.equal(helpers.dashboardQuotedJobs([a,b,c,{...b,status:'WITHDRAWN'},{...b,job:{...b.job,status:'CANCELLED'}}]).length,2);
+const embedded=renderToStaticMarkup(React.createElement(View,{embedded:true,quotes:helpers.dashboardQuotedJobs([a,b,c]),loading:false,error:'',onUpdate(){},onCancel(){},onRetry(){}}));
+assert(embedded.includes('Jobs you have quoted on'));assert(embedded.includes('Already quoted'));assert(!embedded.includes('Filter quotes'));assert(!embedded.includes('<main'));assert.equal((embedded.match(/Adjust quote<\/button>/g)||[]).length,2);
 const route=load(path.join(root,'src/app/api/my-quotes/route.ts'));assert.equal((await route.GET()).status,200);assert.equal(query.where.transporterId,'owner');assert.equal(query.include.job.select._count.select.quotes.where.status.not,'WITHDRAWN');
 const models=require('@prisma/client').Prisma.dmmf.datamodel.models;assert(models.find(m=>m.name==='TransportJob').fields.some(f=>f.name==='quotes'));
 user=null;assert.equal((await route.GET()).status,403);
