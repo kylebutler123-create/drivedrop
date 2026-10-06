@@ -1,7 +1,7 @@
 .transporterSummaryDecoration{display:none}
 @media screen and (min-width:1024px){
- /* Match the customer dashboard's 1180px container and 240px photo banner. */
- body.approvedDesktop.role-transporter .dashboardShell:has(>.transporterHero [data-cancelled-summary]){max-width:1180px!important;width:calc(100% - 96px)!important;margin:0 auto!important;padding:28px 0 42px!important}
+ /* Match the customer dashboard's content width; retain the 240px photo banner. */
+ body.approvedDesktop.role-transporter .dashboardShell:has(>.transporterHero [data-cancelled-summary]){max-width:1360px!important;width:calc(100% - 120px)!important;margin:0 auto!important;padding:28px 0 42px!important}
  body.approvedDesktop.role-transporter .transporterHero:has([data-cancelled-summary])>div:first-child{height:240px!important;min-height:240px!important;box-sizing:border-box;padding:28px 30px!important;border-radius:8px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
  body.approvedDesktop.role-transporter .transporterHero:has([data-cancelled-summary])>div:first-child .dashboardEyebrow{font-size:11px;line-height:1.4;letter-spacing:.12em;margin:0 0 8px}
  body.approvedDesktop.role-transporter .transporterHero:has([data-cancelled-summary])>div:first-child h1{font-size:28px!important;line-height:1.2!important;letter-spacing:-.4px;margin:0 0 10px!important;max-width:100%}
@@ -25,6 +25,7 @@
  body.approvedDesktop.role-transporter .transporterHero .dashboardSummary .dashboardSummaryActivity{top:22px;left:65px;right:auto;box-shadow:none}
 }
 @media screen and (min-width:1024px) and (max-width:1240px){
+ body.approvedDesktop.role-transporter .dashboardShell:has(>.transporterHero [data-cancelled-summary]){width:calc(100% - 64px)!important}
  body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[role=button]{padding-left:14px!important;padding-right:54px!important}
  body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[role=button]>.transporterSummaryDecoration{gap:6px;right:9px}
  body.approvedDesktop.role-transporter .transporterSummaryDecoration>.approvedIcon{width:22px;height:22px}
