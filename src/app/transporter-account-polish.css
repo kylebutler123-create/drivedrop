@@ -32,6 +32,24 @@
  body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFilterActions>.btn{padding:8px 10px;font-size:12px}
  body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFilterField>select,body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFilterField>input{font-size:12px;padding-left:9px}
 }
+/* Approved shorter filter: the distance caption shares the heading row. */
+@media(min-width:1024px){
+ body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFilters{padding:10px 20px;margin-bottom:14px}
+ body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFiltersHeader{margin-bottom:6px;min-height:24px}
+ body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFiltersHeader>strong{font-size:16px;gap:10px;line-height:24px}
+ body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .jobFilterHeadingIcon{width:22px;height:22px}
+ body.approvedDesktop.role-transporter main.dashboardShell #available-jobs [data-filter-result]{padding:3px 12px;line-height:18px}
+ body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFiltersBody{row-gap:0}
+ body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFilterSectionLabel{grid-row:2;align-self:start;transform:translateY(-26px);line-height:20px;pointer-events:none}
+ body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFilterField{gap:4px;font-size:12px;line-height:17px}
+ body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFilterField>select,body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFilterField>input{height:36px;min-height:36px;padding-top:6px;padding-bottom:6px}
+ body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFilterActions>.btn{height:36px;min-height:36px;padding-top:7px;padding-bottom:7px}
+ body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFiltersFooter{margin-top:6px;gap:8px;font-size:11px;line-height:16px}
+ body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .jobFilterHelperIcon{width:14px;height:16px}
+}
+@media(min-width:1024px) and (max-width:1240px){
+ body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFilters{padding:10px 16px}
+}
 @media screen and (min-width:1024px){
  /* Match the customer dashboard's content width; retain the 240px photo banner. */
  body.approvedDesktop.role-transporter .dashboardShell:has(>.transporterHero [data-cancelled-summary]){max-width:1360px!important;width:calc(100% - 120px)!important;margin:0 auto!important;padding:28px 0 42px!important}
