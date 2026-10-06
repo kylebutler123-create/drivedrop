@@ -66,7 +66,7 @@ export default function TransporterCancelledDeliveries({selected,onCountChange}:
    {bookings?.map(booking=>{
     const open=expanded===booking.id;
     const detailsId=`cancelled-details-${booking.id}`;
-    return <article className="transporterCancelledCard" key={booking.id}>
+    return <article className="transporterCancelledCard" key={booking.id} id={'booking-'+booking.id} ref={node=>{if(node&&window.location.hash==='#booking-'+booking.id)node.scrollIntoView({block:'center'})}}>
      <button type="button" className="transporterCancelledToggle" aria-expanded={open} aria-controls={detailsId} onClick={()=>setExpanded(open?null:booking.id)}>
       <Icon name="car"/>
       <span className="transporterCancelledIdentity"><strong>{booking.job.vehicleMake} {booking.job.vehicleModel}</strong><span className="transporterCancelledBadge">Cancelled</span><small>Delivery reference: {reference(booking.id)}</small></span>

@@ -25,6 +25,7 @@ const mocks={
  '@/lib/auth':{currentUser:async()=>user},
  '@/lib/prisma':{prisma:{booking:{findMany:async args=>{validateSelection('Booking',args.select);query=args;return bookings}},$queryRawUnsafe:async(sql,...ids)=>{assert(sql.includes('"vehicleType"'));assert(sql.includes('$1'));assert(ids.every(id=>bookings.some(b=>b.job.id===id)));if(iconLookupFails)throw Error('Optional metadata unavailable');return bookings.map(b=>({id:b.job.id,vehicleType:b.id==='paid'?'Van':'Car'}))}}},
  './proceeds.module.css':styles,
+ './ProceedsDesktop':()=>null,
 };
 function loadTs(file,extra={}){
  const source=fs.readFileSync(path.join(root,file),'utf8');
@@ -61,16 +62,28 @@ async function main(){
  assert.throws(()=>data.proceedsPeriod({year:'NaN'}));
  const dangerous=row('csv','DELIVERED','PAID',10000,5000,2000);dangerous.customer.name='=HYPERLINK("bad")';
  const csv=data.proceedsCsv([dangerous]);assert(csv.includes("'=HYPERLINK"));assert(csv.includes('"150.00","50.00","100.00","20.00"'));assert(!csv.includes('DriveDrop fee'));
+ const periodHelpers=loadTs('src/lib/payment-period.ts');
+ const filters=loadTs('src/lib/proceeds-filters.ts',{'./payment-period':periodHelpers});
+ assert.equal(filters.filterProceeds(bookings,{q:'old'}).length,1);
+ assert.equal(filters.filterProceeds(bookings,{status:'PAID'}).length,1);
+ assert.equal(filters.filterProceeds(bookings,{status:'IN_PROGRESS'}).length,1);
+ assert.equal(filters.filterProceeds([dangerous],{status:'FINES',adjustment:'REFUNDS'}).length,1);
+ assert.equal(filters.filterProceeds([dangerous],{month:'2026-09'}).length,0);
+ const ui=loadTs('src/app/transporter/proceeds/ProceedsDesktop.tsx',{'@/lib/payment-period':periodHelpers,'@/lib/proceeds-filters':filters,'@/lib/customer-payments':loadTs('src/lib/customer-payments.ts'),'../../payments/payments.module.css':styles,'./desktop.module.css':styles});
+ const desktopHtml=renderToStaticMarkup(React.createElement(ui.default,{bookings:[dangerous],initial:{year:'2026'}}));
+ assert(desktopHtml.includes('Proceeds history'));assert(desktopHtml.includes('Proceeds breakdown'));assert(desktopHtml.includes('Download statement (PDF)'));assert(desktopHtml.includes('bookingId=csv'));assert(!desktopHtml.includes('DriveDrop fee'));
  const pdf=loadTs('src/lib/proceeds-pdf.ts',{'./transporter-proceeds':data});
  const bytes=await pdf.proceedsPdf(Array.from({length:15},()=>dangerous),'Test Transporter',data.proceedsPeriod({year:'2026'}));
  const document=await require('pdf-lib').PDFDocument.load(bytes);assert(document.getPageCount()>1);
- const route=loadTs('src/app/api/transporter/proceeds/export/route.ts',{'@/lib/proceeds-pdf':pdf});
+ const route=loadTs('src/app/api/transporter/proceeds/export/route.ts',{'@/lib/proceeds-pdf':pdf,'@/lib/proceeds-filters':filters});
  bookings=[old,dangerous];
  let response=await route.GET(new Request('https://example.com/api/transporter/proceeds/export?year=2025&format=csv'));
  assert.equal(response.status,200);assert.equal(query.where.transporterId,'owner');assert.equal(response.headers.get('cache-control'),'private, no-store');
  const downloaded=await response.text();assert(downloaded.includes('old'));assert(!downloaded.includes('HYPERLINK'));
  response=await route.GET(new Request('https://example.com/api/transporter/proceeds/export?year=2026&format=pdf'));assert.equal(response.headers.get('content-type'),'application/pdf');assert((await response.arrayBuffer()).byteLength>1000);
  response=await route.GET(new Request('https://example.com/api/transporter/proceeds/export?year=oops&format=csv'));assert.equal(response.status,400);
+ response=await route.GET(new Request('https://example.com/api/transporter/proceeds/export?year=2026&format=pdf&bookingId=foreign'));assert.equal(response.status,404);
+ response=await route.GET(new Request('https://example.com/api/transporter/proceeds/export?year=2026&format=csv&status=IN_PROGRESS'));assert(!(await response.text()).includes('HYPERLINK'));
  user=null;response=await route.GET(new Request('https://example.com/api/transporter/proceeds/export?format=csv'));assert.equal(response.status,401);
  user={id:'customer',role:'CUSTOMER'};response=await route.GET(new Request('https://example.com/api/transporter/proceeds/export?format=csv'));assert.equal(response.status,403);
  user=null;await assert.rejects(render,/redirect/);user={id:'customer',role:'CUSTOMER'};await assert.rejects(render,/notFound/);

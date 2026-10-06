@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import ProceedsDesktop from './ProceedsDesktop';
 import {notFound,redirect} from 'next/navigation';
 import {currentUser} from '@/lib/auth';
 import {prisma} from '@/lib/prisma';
@@ -85,7 +86,7 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
  const selectedAdjustments=adjustmentFilter==='FINES'?fineRows:adjustmentFilter==='REFUNDS'?refundRows:adjustmentRows;
  const visibleRows=filter==='BOOKED'?rows:filter==='IN_PROGRESS'?rows.filter(inProgress):filter==='FINES'?selectedAdjustments:rows.filter(booking=>booking.payment?.payoutStatus===filter);
  const breakdownTitle=filter==='IN_PROGRESS'?'In progress':filter==='READY'?'Ready for release':filter==='HELD'?'Held proceeds':filter==='PAID'?'Paid proceeds':filter==='FINES'?(adjustmentFilter==='FINES'?'Fines':adjustmentFilter==='REFUNDS'?'Refunds':'Fines / Refunds'):'Booked proceeds';
- return <main className={`shell dashboardShell ${styles.page}`}>
+ return <><ProceedsDesktop bookings={JSON.parse(JSON.stringify(allBookings))} initial={params}/><main className={`shell dashboardShell ${styles.page} ${styles.legacyLayout}`}>
   <Link className="backLink" href="/transporter">← Back to transporter dashboard</Link>
   <header className={styles.hero}>
    <div><span>Transporter finances</span><h1>Booked proceeds</h1><p>See the proceeds attached to every active and completed delivery, including payout progress and any fine deductions.</p></div>
@@ -132,5 +133,5 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
    {booking.status==='DELIVERED'&&<div className={styles.actions}><Link className="btn light" target="_blank" rel="noreferrer" href={`/bookings/${encodeURIComponent(booking.id)}/statement`}>View printable statement</Link></div>}</div>
   </article>})}</section>}
   <p className={styles.archiveNote}>A new year starts automatically. Previous years stay available to view and download.</p>
- </main>;
+ </main></>;
 }

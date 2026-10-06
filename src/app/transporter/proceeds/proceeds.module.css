@@ -133,3 +133,4 @@
  .yearHeading{gap:10px}
  .downloadBar>div:first-child{gap:6px}
 }
+@media(min-width:1024px){.page.legacyLayout{display:none!important}}
