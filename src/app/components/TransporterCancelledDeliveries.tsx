@@ -1,13 +1,14 @@
 'use client';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import Icon from './ApprovedIcon';
+import CompactRow from './TransporterCompactRow';
 import {transportTypeDisplay} from '@/lib/transport-types';
 import '../transporter-cancelled.css';
 
 type CancelledBooking={
  id:string;cancelledAt:string|null;cancellationNote:string|null;
  customer:{name:string};
- job:{vehicleMake:string;vehicleModel:string;collection:string;delivery:string;registration:string|null;running:boolean;transportType:string;collectionDate:string};
+ job:{vehicleType?:string|null;vehicleMake:string;vehicleModel:string;collection:string;delivery:string;registration:string|null;running:boolean;transportType:string;collectionDate:string};
 };
 const date=(value:string|null)=>{
  const parsed=value?new Date(value):null;
@@ -68,6 +69,7 @@ export default function TransporterCancelledDeliveries({selected,onCountChange}:
     const detailsId=`cancelled-details-${booking.id}`;
     return <article className="transporterCancelledCard" key={booking.id} id={'booking-'+booking.id} ref={node=>{if(node&&window.location.hash==='#booking-'+booking.id)node.scrollIntoView({block:'center'})}}>
      <button type="button" className="transporterCancelledToggle" aria-expanded={open} aria-controls={detailsId} onClick={()=>setExpanded(open?null:booking.id)}>
+      <CompactRow kind="cancelled" job={booking.job} date={booking.job.collectionDate} status="Cancelled" open={open}/>
       <Icon name="car"/>
       <span className="transporterCancelledIdentity"><strong>{booking.job.vehicleMake} {booking.job.vehicleModel}</strong><span className="transporterCancelledBadge">Cancelled</span><small>Delivery reference: {reference(booking.id)}</small></span>
       <span className="transporterCancelledStop"><small>Collection</small><b>{booking.job.collection}</b></span><span className="transporterCancelledArrow"><Icon name="arrow"/></span>
@@ -76,6 +78,7 @@ export default function TransporterCancelledDeliveries({selected,onCountChange}:
       <svg className="transporterCancelledChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
      </button>
      <div className="transporterCancelledDetails" id={detailsId} hidden={!open}>
+      <p><strong>Delivery reference</strong><span>{reference(booking.id)}</span><strong>Cancelled on</strong><span>{date(booking.cancelledAt)}</span></p>
       <dl><div><dt>Transport type</dt><dd>{transportTypeDisplay(booking.job.transportType)}</dd></div><div><dt>Registration</dt><dd>{booking.job.registration||'Not provided'}</dd></div><div><dt>Running condition</dt><dd>{booking.job.running?'Runs & drives':'Non-running'}</dd></div><div><dt>Requested collection date</dt><dd>{date(booking.job.collectionDate)}</dd></div><div><dt>Customer</dt><dd>{booking.customer.name}</dd></div></dl>
       {booking.cancellationNote&&<p><strong>Cancellation note</strong><span>{booking.cancellationNote}</span></p>}
      </div>

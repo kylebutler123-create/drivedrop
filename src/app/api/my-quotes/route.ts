@@ -22,5 +22,8 @@ export async function GET(){
     orderBy:{createdAt:'desc'}
   });
 
-  return NextResponse.json(quotes,{headers:{'Cache-Control':'no-store, max-age=0'}});
+  const ids=[...new Set(quotes.map(q=>q.job.id))];
+  const vehicleRows=ids.length?await prisma.$queryRawUnsafe<Array<{id:string;vehicleType:string|null}>>(`SELECT "id", "vehicleType" FROM "TransportJob" WHERE "id" IN (${ids.map((_,i)=>`$${i+1}`).join(',')})`,...ids):[];
+  const types=new Map(vehicleRows.map(row=>[row.id,row.vehicleType]));
+  return NextResponse.json(quotes.map(q=>({...q,job:{...q.job,vehicleType:types.get(q.job.id)||null}})),{headers:{'Cache-Control':'no-store, max-age=0'}});
 }

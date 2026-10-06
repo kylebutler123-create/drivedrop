@@ -10,13 +10,13 @@ function moduleFrom(file,mocks,globals={}){
  vm.runInNewContext(code,{exports,require:name=>name in mocks?mocks[name]:require(name),console,AbortController,...globals},{filename:file});
  return exports;
 }
-const sample=(id,when)=>({id,createdAt:new Date('2026-09-01'),job:{vehicleMake:'BMW',vehicleModel:'3 Series',collection:'Birmingham',delivery:'Manchester',registration:'AB12 CDE',running:true,transportType:'OPEN',collectionDate:'2026-10-07'},customer:{name:'Example customer'},trackingEvents:when?[{createdAt:new Date(when),note:'Change of plans'}]:[]});
+const sample=(id,when)=>({id,createdAt:new Date('2026-09-01'),job:{id:'job-'+id,vehicleMake:'BMW',vehicleModel:'3 Series',collection:'Birmingham',delivery:'Manchester',registration:'AB12 CDE',running:true,transportType:'OPEN',collectionDate:'2026-10-07'},customer:{name:'Example customer'},trackingEvents:when?[{createdAt:new Date(when),note:'Change of plans'}]:[]});
 async function testApi(){
  let user=null,query=null,fail=false;
  const api=moduleFrom('src/app/api/transporter/cancelled/route.ts',{
   'next/server':{NextResponse:{json:(body,options)=>({body,...options})}},
   '@/lib/auth':{currentUser:async()=>user},
-  '@/lib/prisma':{prisma:{booking:{findMany:async args=>{query=args;if(fail)throw Error('Database failed');return[sample('older','2026-10-01'),sample('unknown',null),sample('newer','2026-10-03')]}}}}
+  '@/lib/prisma':{prisma:{$queryRawUnsafe:async(sql,...ids)=>{assert.match(sql,/WHERE "id" IN \(\$1,\$2,\$3\)/);assert.deepEqual(ids,['job-older','job-unknown','job-newer']);return ids.map(id=>({id,vehicleType:'Van'}))},booking:{findMany:async args=>{query=args;if(fail)throw Error('Database failed');return[sample('older','2026-10-01'),sample('unknown',null),sample('newer','2026-10-03')]}}}}
  });
  for(const role of [null,'CUSTOMER','ADMIN']){
   user=role?{id:'someone',role}:null;
@@ -27,6 +27,7 @@ async function testApi(){
  assert.equal(query.where.transporterId,user.id);assert.equal(query.where.status,'CANCELLED');
  assert.equal(result.body.bookings.map(b=>b.id).join(','),'newer,older,unknown');
  assert.equal(result.body.bookings[2].cancelledAt,null);
+ assert.equal(result.body.bookings[0].job.vehicleType,'Van');
  assert.equal(query.select.payment,undefined);assert.equal(query.select.evidence,undefined);
  assert.equal(result.headers['Cache-Control'],'no-store, max-age=0');
  fail=true;assert.equal((await api.GET()).status,500);
@@ -47,7 +48,7 @@ async function testComponent(){
  const win=new EventTarget();win.matchMedia=()=>media;
  const component=moduleFrom('src/app/components/TransporterCancelledDeliveries.tsx',{
   react,
-  './ApprovedIcon':{default:()=>null},'@/lib/transport-types':{transportTypeDisplay:v=>v},'../transporter-cancelled.css':{}
+  './ApprovedIcon':{default:()=>null},'./TransporterCompactRow':{default:()=>null},'@/lib/transport-types':{transportTypeDisplay:v=>v},'../transporter-cancelled.css':{}
  },{window:win,document:{querySelector:()=>({})},fetch:async()=>{calls++;if(failed)throw Error('Offline');return{ok:true,json:async()=>response}}}).default;
  async function render(next=props){props=next;for(let i=0;i<15;i++){dirty=false;cursor=0;effects=[];tree=component({...props,onCountChange});effects.forEach(effect=>effect());await new Promise(resolve=>setImmediate(resolve));if(!dirty)return}throw Error('Render did not settle')}
  function nodes(value=tree){if(value==null||typeof value==='boolean')return[];if(Array.isArray(value))return value.flatMap(x=>nodes(x??null));if(typeof value!=='object')return[value];return[value,...nodes(value.props?.children??null)]}
