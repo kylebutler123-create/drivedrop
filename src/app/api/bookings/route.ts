@@ -5,6 +5,8 @@ import {z} from 'zod';
 import {calculateFinance} from '@/lib/finance';
 import {createNotificationSafely} from '@/lib/notifications';
 
+import {collectionDateIsCurrent} from '@/lib/job-expiry';
+
 const S=z.object({quoteId:z.string()});
 const money=(pence:number)=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(pence/100);
 
@@ -17,7 +19,9 @@ export async function POST(r:Request){
   const saved=await prisma.$transaction(async(tx:any)=>{
    const q=await tx.quote.findUniqueOrThrow({where:{id:quoteId},include:{job:true,transporter:{include:{transporterVerification:{select:{status:true}}}}}});
    if(q.job.customerId!==u.id)throw new Error('Forbidden');
-   if(q.status!=='PENDING')throw new Error('Quote unavailable');
+   if(q.status!=='PENDING'||!['OPEN','QUOTED'].includes(q.job.status))throw new Error('Quote unavailable');
+   const collectionDate=q.dateNegotiationStatus==='ACCEPTED'&&q.proposedCollectionDate?q.proposedCollectionDate:q.job.collectionDate;
+   if(!collectionDateIsCurrent(collectionDate))throw new Error('This collection date has passed. Agree a new collection date before booking.');
    if(['PROPOSED','COUNTERED'].includes(q.dateNegotiationStatus))throw new Error('Collection date must be agreed before accepting this quote');
    if(q.transporter.accountStatus!=='ACTIVE'||q.transporter.workRestricted||q.transporter.transporterVerification?.status!=='APPROVED')throw new Error('This transporter is no longer available for booking');
    const previous=await tx.booking.findUnique({where:{jobId:q.jobId},include:{payment:true}});

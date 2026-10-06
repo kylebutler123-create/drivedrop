@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';import { prisma } from '@/lib/prisma';import { currentUser } from '@/lib/auth';import { z } from 'zod';import {apiError,parseJson} from '@/lib/api';import {sendTransactionalEmailSafely} from '@/lib/email';import {createNotificationSafely} from '@/lib/notifications';import {calculateCustomerPrice} from '@/lib/finance';import {insuranceStatusForVerification} from '@/lib/insurance-expiry-notifications'
+import {isQuoteRequestOpen,pendingCollectionDates,collectionDateIsCurrent,parseCollectionDateInput} from '@/lib/job-expiry';
 const S=z.object({jobId:z.string().min(1),pricePence:z.number().int().min(1000).max(10_000_000),message:z.string().trim().max(1000).optional(),proposedCollectionDate:z.string().optional()})
 const W=z.object({quoteId:z.string().min(1)})
 export async function POST(r:Request){
@@ -12,12 +13,13 @@ export async function POST(r:Request){
   if(insuranceStatus.state==='MISSING'||insuranceStatus.state==='EXPIRED')return NextResponse.json({error:insuranceStatus.replacementPending?'Your replacement insurance is awaiting DriveDrop approval. New quotes remain blocked until it is approved.':'Your approved insurance is missing or expired. Upload replacement insurance and wait for DriveDrop approval before submitting new quotes'},{status:403});
   const d=await parseJson(r,S);
   const result=await prisma.$transaction(async (tx: any)=>{
-   const job=await tx.transportJob.findUnique({where:{id:d.jobId},include:{customer:{select:{id:true,email:true,name:true}}}});
+   const job=await tx.transportJob.findUnique({where:{id:d.jobId},include:{customer:{select:{id:true,email:true,name:true}},quotes:pendingCollectionDates}});
    if(!job)throw new Error('Not found');
-   if(!['OPEN','QUOTED'].includes(job.status))throw new Error('Job is no longer accepting quotes');
+   if(!isQuoteRequestOpen(job))throw new Error('Job has expired or is no longer accepting quotes');
    const existing=await tx.quote.findFirst({where:{jobId:d.jobId,transporterId:u.id}});
    if(existing&&!['PENDING','WITHDRAWN'].includes(existing.status))throw new Error('This quote can no longer be revised');
-   const proposed=d.proposedCollectionDate?new Date(`${d.proposedCollectionDate}T12:00:00`):null;
+   const proposed=d.proposedCollectionDate?parseCollectionDateInput(d.proposedCollectionDate):null;
+   if(!collectionDateIsCurrent(proposed||job.collectionDate))throw new Error('Choose a collection date today or later');
    const q=existing
     ?await tx.quote.update({where:{id:existing.id},data:{status:'PENDING',pricePence:d.pricePence,message:d.message||null,proposedCollectionDate:proposed,dateNegotiationStatus:proposed?'PROPOSED':'ORIGINAL'}})
     :await tx.quote.create({data:{jobId:d.jobId,pricePence:d.pricePence,message:d.message,transporterId:u.id,proposedCollectionDate:proposed,dateNegotiationStatus:proposed?'PROPOSED':'ORIGINAL'}});

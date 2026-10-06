@@ -5,7 +5,7 @@ import {after,NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
 import {z} from 'zod';
-import {quoteRequestExpiryCutoff} from '@/lib/job-expiry';
+import {openQuoteRequestsWhere} from '@/lib/job-expiry';
 import {sendTransactionalEmailBatchSafely} from '@/lib/email';
 import {insuranceStatusForVerification} from '@/lib/insurance-expiry-notifications';
 
@@ -55,12 +55,15 @@ export async function POST(r:Request){
  return NextResponse.json({...job,vehicleType},{status:201});
 }
 
+export const dynamic='force-dynamic';
+export const revalidate=0;
+
 export async function GET(){
  const u=await currentUser();
  if(!u||!['TRANSPORTER','ADMIN'].includes(u.role))return NextResponse.json({error:'Forbidden'},{status:403});
- const jobs=await prisma.transportJob.findMany({where:{status:{in:['OPEN','QUOTED']},createdAt:{gte:quoteRequestExpiryCutoff()}},include:{_count:{select:{quotes:{where:{status:{not:'WITHDRAWN'}}}}},quotes:{where:u.role==='TRANSPORTER'?{transporterId:u.id,status:'PENDING'}:undefined,select:{id:true,pricePence:true,status:true,transporterId:true,proposedCollectionDate:true,dateNegotiationStatus:true,message:true}},customer:{select:{name:true}}},orderBy:{createdAt:'desc'}});
+ const jobs=await prisma.transportJob.findMany({where:{...openQuoteRequestsWhere()},include:{_count:{select:{quotes:{where:{status:{not:'WITHDRAWN'}}}}},quotes:{where:u.role==='TRANSPORTER'?{transporterId:u.id,status:'PENDING'}:undefined,select:{id:true,pricePence:true,status:true,transporterId:true,proposedCollectionDate:true,dateNegotiationStatus:true,message:true}},customer:{select:{name:true}}},orderBy:{createdAt:'desc'}});
  const ids=jobs.map(j=>j.id);
  const rows=ids.length?await prisma.$queryRawUnsafe<Array<{id:string;vehicleType:string|null}>>(`SELECT "id", "vehicleType" FROM "TransportJob" WHERE "id" IN (${ids.map((_,i)=>`$${i+1}`).join(',')})`,...ids):[];
  const types=new Map(rows.map(r=>[r.id,r.vehicleType]));
- return NextResponse.json(jobs.map(j=>({...j,vehicleType:types.get(j.id)||null})));
+ return NextResponse.json(jobs.map(j=>({...j,vehicleType:types.get(j.id)||null})),{headers:{'Cache-Control':'no-store, max-age=0'}});
 }
