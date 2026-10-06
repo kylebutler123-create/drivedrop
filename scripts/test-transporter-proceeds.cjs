@@ -23,12 +23,19 @@ const mocks={
  'next/link':({children,...props})=>React.createElement('a',props,children),
  'next/navigation':{redirect:()=>{throw Error('redirect')},notFound:()=>{throw Error('notFound')}},
  '@/lib/auth':{currentUser:async()=>user},
- '@/lib/prisma':{prisma:{booking:{findMany:async args=>{validateSelection('Booking',args.select);query=args;return bookings}},$queryRawUnsafe:async(sql,...ids)=>{assert(sql.includes('"vehicleType"'));assert.equal(ids.length,bookings.length);assert(ids.every(id=>bookings.some(b=>b.job.id===id)));if(iconLookupFails)throw Error('Optional metadata unavailable');return bookings.map(b=>({id:b.job.id,vehicleType:b.id==='paid'?'Van':'Car'}))}}},
+ '@/lib/prisma':{prisma:{booking:{findMany:async args=>{validateSelection('Booking',args.select);query=args;return bookings}},$queryRawUnsafe:async(sql,...ids)=>{assert(sql.includes('"vehicleType"'));assert(sql.includes('$1'));assert(ids.every(id=>bookings.some(b=>b.job.id===id)));if(iconLookupFails)throw Error('Optional metadata unavailable');return bookings.map(b=>({id:b.job.id,vehicleType:b.id==='paid'?'Van':'Car'}))}}},
  './proceeds.module.css':styles,
 };
-const exportsObject={};vm.runInNewContext(code,{exports:exportsObject,require:n=>n in mocks?mocks[n]:require(n),Date,Intl,console:{warn(){}}});
+function loadTs(file,extra={}){
+ const source=fs.readFileSync(path.join(root,file),'utf8');
+ const {code}=swc.transformSync(source,{filename:file,jsc:{parser:{syntax:'typescript',tsx:true},target:'es2022',transform:{react:{runtime:'automatic'}}},module:{type:'commonjs'}});
+ const out={};new Function('exports','require',code)(out,n=>n in extra?extra[n]:n in mocks?mocks[n]:require(n));return out;
+}
+const data=loadTs('src/lib/transporter-proceeds.ts',{'./prisma':mocks['@/lib/prisma']});
+mocks['@/lib/transporter-proceeds']=data;
+const exportsObject={};vm.runInNewContext(code,{exports:exportsObject,require:n=>n in mocks?mocks[n]:require(n),Date,Intl,URLSearchParams,console:{warn(){}}});
 const Page=exportsObject.default;
-async function render(params={}){return renderToStaticMarkup(await Page({searchParams:Promise.resolve(params)}))}
+async function render(params={}){return renderToStaticMarkup(await Page({searchParams:Promise.resolve({year:'2026',...params})}))}
 async function main(){
  bookings=[row('progress','IN_TRANSIT','PENDING',32000),row('ready','DELIVERED','READY',45000),row('held','DELIVERED','HELD',18000),row('paid','DELIVERED','PAID',25000,5000),row('cancelled','CANCELLED','CANCELLED',0,0,12000)];
  assert.throws(()=>validateSelection('TransportJob',{vehicleType:true}),/Unknown Prisma field/);
@@ -41,6 +48,31 @@ async function main(){
  iconLookupFails=true;html=await render();assert.equal((html.match(/<article/g)||[]).length,4);assert(html.includes('£1,250.00'));iconLookupFails=false;
  bookings=[row('awaiting','DELIVERED','PENDING',12500)];html=await render();assert(html.includes('Awaiting customer confirmation'));
  bookings=[];html=await render();assert(html.includes('No booked proceeds'));assert(html.includes('£0.00'));
+ // Year selection, custom dates and rollover keep previous records accessible.
+ const old=row('old','DELIVERED','PAID',9900);old.createdAt=new Date('2025-12-31T23:59:59Z');
+ bookings=[old,row('new','IN_TRANSIT','PENDING',10000)];
+ html=await render();assert(html.includes('2025'));assert(!html.includes('Actual make<!-- -->old'));assert(html.includes('year=2026&amp;filter=paid'));
+ html=await render({year:'2025'});assert(html.includes('£99.00'));assert.equal((html.match(/<article/g)||[]).length,1);
+ html=await render({start:'2025-12-31',end:'2026-01-01'});assert(html.includes('Showing Custom date range'));assert(html.includes('start=2025-12-31&amp;end=2026-01-01'));
+ assert.equal(data.proceedsPeriod({},new Date('2027-01-01T00:00:00Z')).year,2027);
+ assert.equal(data.londonDate('2026-06-30T23:30:00Z'),'2026-07-01');
+ assert.throws(()=>data.proceedsPeriod({start:'2026-02-30',end:'2026-03-01'}));
+ assert.throws(()=>data.proceedsPeriod({start:'2026-12-31',end:'2026-01-01'}));
+ assert.throws(()=>data.proceedsPeriod({year:'NaN'}));
+ const dangerous=row('csv','DELIVERED','PAID',10000,5000,2000);dangerous.customer.name='=HYPERLINK("bad")';
+ const csv=data.proceedsCsv([dangerous]);assert(csv.includes("'=HYPERLINK"));assert(csv.includes('"150.00","50.00","100.00","20.00"'));assert(!csv.includes('DriveDrop fee'));
+ const pdf=loadTs('src/lib/proceeds-pdf.ts',{'./transporter-proceeds':data});
+ const bytes=await pdf.proceedsPdf(Array.from({length:15},()=>dangerous),'Test Transporter',data.proceedsPeriod({year:'2026'}));
+ const document=await require('pdf-lib').PDFDocument.load(bytes);assert(document.getPageCount()>1);
+ const route=loadTs('src/app/api/transporter/proceeds/export/route.ts',{'@/lib/proceeds-pdf':pdf});
+ bookings=[old,dangerous];
+ let response=await route.GET(new Request('https://example.com/api/transporter/proceeds/export?year=2025&format=csv'));
+ assert.equal(response.status,200);assert.equal(query.where.transporterId,'owner');assert.equal(response.headers.get('cache-control'),'private, no-store');
+ const downloaded=await response.text();assert(downloaded.includes('old'));assert(!downloaded.includes('HYPERLINK'));
+ response=await route.GET(new Request('https://example.com/api/transporter/proceeds/export?year=2026&format=pdf'));assert.equal(response.headers.get('content-type'),'application/pdf');assert((await response.arrayBuffer()).byteLength>1000);
+ response=await route.GET(new Request('https://example.com/api/transporter/proceeds/export?year=oops&format=csv'));assert.equal(response.status,400);
+ user=null;response=await route.GET(new Request('https://example.com/api/transporter/proceeds/export?format=csv'));assert.equal(response.status,401);
+ user={id:'customer',role:'CUSTOMER'};response=await route.GET(new Request('https://example.com/api/transporter/proceeds/export?format=csv'));assert.equal(response.status,403);
  user=null;await assert.rejects(render,/redirect/);user={id:'customer',role:'CUSTOMER'};await assert.rejects(render,/notFound/);
  const css=fs.readFileSync(path.join(root,'src/app/transporter/proceeds/proceeds.module.css'),'utf8');require('postcss').parse(css);assert(css.includes('min-width:1024px'));assert(css.includes('grid-template-columns:repeat(6,minmax(0,1fr))'));assert(css.includes('.cardBottom{display:contents}'));
  console.log('PASS: owner access, totals before fines, all proceeds/adjustment filters, cancelled refunds, actual data, payout states, dates, statement links and desktop-only layout.');

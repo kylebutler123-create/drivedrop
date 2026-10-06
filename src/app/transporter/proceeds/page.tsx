@@ -3,12 +3,16 @@ import {notFound,redirect} from 'next/navigation';
 import {currentUser} from '@/lib/auth';
 import {prisma} from '@/lib/prisma';
 import styles from './proceeds.module.css';
+import {loadProceeds,proceedsPeriod,inProceedsPeriod,periodQuery,periodDescription,londonDate,type PeriodParams} from '@/lib/transporter-proceeds';
 
 export const dynamic='force-dynamic';
 export const revalidate=0;
 
-function ProceedsIcon({name}:{name:'booked'|'progress'|'ready'|'held'|'paid'|'adjustments'|'car'|'van'|'pin'}) {
+function ProceedsIcon({name}:{name:'booked'|'progress'|'ready'|'held'|'paid'|'adjustments'|'car'|'van'|'pin'|'folder'|'download'|'calendar'}) {
  const paths={
+  folder:'M2 7V4h7l3 3h10v3M2 7h19l-4 13H2ZM2 7v13',
+  download:'M12 2v13m-5-5 5 5 5-5M3 16v5h18v-5',
+  calendar:'M4 4h16v18H4ZM8 2v5m8-5v5M4 10h16',
   booked:'M21 5c0 2-4 3-9 3S3 7 3 5s4-3 9-3 9 1 9 3ZM3 5v14c0 2 4 3 9 3s9-1 9-3V5M3 10c0 2 4 3 9 3s9-1 9-3M3 15c0 2 4 3 9 3s9-1 9-3',
   progress:'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0M12 6v6l4 3',
   ready:'M5 2h14v20H5ZM8 7h1m3 0h4M8 12h1m3 0h4M8 17h1m3 0h4',
@@ -25,7 +29,6 @@ const desktopDate=(value:Date|string)=>new Date(value).toLocaleDateString('en-GB
 const money=(pence:number)=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format((pence||0)/100);
 const label=(value:string)=>value.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,character=>character.toUpperCase());
 const reference=(id:string)=>'DD-'+id.slice(-8).toUpperCase();
-const proceedsStatuses=['CONFIRMED','COLLECTION_SCHEDULED','COLLECTED','IN_TRANSIT','ARRIVING_SOON','DELIVERED','CANCELLED'] as const;
 type ProceedsFilter='BOOKED'|'IN_PROGRESS'|'READY'|'HELD'|'PAID'|'FINES';
 type AdjustmentFilter='ALL'|'FINES'|'REFUNDS';
 const payoutLabel=(booking:any)=>{
@@ -40,7 +43,7 @@ const payoutLabel=(booking:any)=>{
 const inProgress=(booking:any)=>!['READY','HELD','PAID','CANCELLED'].includes(booking.payment?.payoutStatus);
 const proceedsBeforeFine=(booking:any)=>(booking.payment?.transporterProceedsPence||0)+(booking.payment?.cancellationDeductionPence||0);
 
-export default async function TransporterProceeds({searchParams}:{searchParams:Promise<{filter?:string;adjustment?:string}>}){
+export default async function TransporterProceeds({searchParams}:{searchParams:Promise<PeriodParams & {filter?:string;adjustment?:string}>}){
  const[user,params]=await Promise.all([currentUser(),searchParams]);
  if(!user)redirect('/login?account=transporter');
  if(user.role!=='TRANSPORTER')notFound();
@@ -48,22 +51,22 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
  const filter:ProceedsFilter=requested==='IN_PROGRESS'||requested==='READY'||requested==='HELD'||requested==='PAID'||requested==='FINES'?requested:'BOOKED';
  const requestedAdjustment=String(params.adjustment||'').toUpperCase();
  const adjustmentFilter:AdjustmentFilter=requestedAdjustment==='FINES'||requestedAdjustment==='REFUNDS'?requestedAdjustment:'ALL';
- const bookings=await prisma.booking.findMany({
-  where:{transporterId:user.id,status:{in:[...proceedsStatuses]}},
-  select:{
-   id:true,status:true,customerConfirmedAt:true,createdAt:true,
-   customer:{select:{name:true}},
-   job:{select:{id:true,vehicleMake:true,vehicleModel:true,registration:true,collection:true,delivery:true,collectionDate:true}},
-   payment:{select:{transporterProceedsPence:true,cancellationDeductionPence:true,refundedPence:true,payoutStatus:true,updatedAt:true,events:{where:{type:'PAYOUT_PAID'},select:{createdAt:true},orderBy:{createdAt:'desc'},take:1}}}
-  },
-  orderBy:{createdAt:'desc'}
- });
+ let period;let periodError='';
+ try{period=proceedsPeriod(params)}catch(error){period=proceedsPeriod({});periodError=(error as Error).message}
+ const allBookings=await loadProceeds(user.id);
+ const years=[...new Set([period.currentYear,...allBookings.filter(b=>b.payment).map(b=>Number(londonDate(b.createdAt).slice(0,4)))])].sort((a,b)=>b-a);
+ const bookings=allBookings.filter(b=>inProceedsPeriod(b,period));
+ const href=(filter?:string,adjustment?:string)=>{
+  const query=periodQuery(period);if(filter)query.set('filter',filter);if(adjustment)query.set('adjustment',adjustment);
+  return '/transporter/proceeds?'+query.toString();
+ };
+ const exportHref=(format:string)=>'/api/transporter/proceeds/export?'+periodQuery(period).toString()+'&format='+format;
  // Vehicle type is stored as an extension column, outside the generated Prisma model.
  // Match the existing jobs/deliveries lookup, scoped to this transporter's booking IDs.
  const jobIds=[...new Set(bookings.map(booking=>booking.job.id))];
  let vehicleTypeRows:Array<{id:string;vehicleType:string|null}>=[];
  if(jobIds.length){
-  try{vehicleTypeRows=await prisma.$queryRawUnsafe<Array<{id:string;vehicleType:string|null}>>(`SELECT "id", "vehicleType" FROM "TransportJob" WHERE "id" IN (${jobIds.map((_,i)=>`${i+1}`).join(',')})`,...jobIds)}
+  try{vehicleTypeRows=await prisma.$queryRawUnsafe<Array<{id:string;vehicleType:string|null}>>(`SELECT "id", "vehicleType" FROM "TransportJob" WHERE "id" IN (${jobIds.map((_,i)=>`$${i+1}`).join(',')})`,...jobIds)}
   catch{console.warn('Proceeds vehicle icons unavailable; showing default icons')}
  }
  const vehicleTypeById=new Map(vehicleTypeRows.map(row=>[row.id,row.vehicleType]));
@@ -88,13 +91,19 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
    <div><span>Transporter finances</span><h1>Booked proceeds</h1><p>See the proceeds attached to every active and completed delivery, including payout progress and any fine deductions.</p></div>
    <div className={styles.total}><small>Total booked proceeds before fines</small><strong>{money(total)}</strong><span>{rows.length} booking{rows.length===1?'':'s'}</span></div><span className={styles.desktopBookingCount}>{rows.length} booking{rows.length===1?'':'s'}</span>
   </header>
+  <section className={styles.yearSection} aria-label="Yearly statements">
+   <div className={styles.yearHeading}><h2>Yearly statements</h2><details className={styles.dateRange}><summary><ProceedsIcon name="calendar"/>Custom date range <span>⌄</span></summary><form action="/transporter/proceeds" method="get"><label>Start date<input type="date" name="start" defaultValue={period.start} required/></label><label>End date<input type="date" name="end" defaultValue={period.end} required/></label><button type="submit">Apply date range</button></form></details></div>
+   {periodError&&<p role="alert">{periodError}</p>}
+   <nav className={styles.yearCards} aria-label="Select proceeds year">{years.map(year=><Link key={year} href={'/transporter/proceeds?year='+year} className={year===period.year?styles.selectedYear:undefined} aria-current={year===period.year?'page':undefined}><ProceedsIcon name="folder"/><div className={styles.yearIdentity}><strong>{year}</strong><span className={year===period.currentYear?styles.currentYear:styles.archivedYear}>{year===period.currentYear?'Current year':'Archived'}</span><small>1 January – 31 December {year}</small></div><small className={styles.yearCount}>{allBookings.filter(b=>b.payment&&Number(londonDate(b.createdAt).slice(0,4))===year).length} bookings</small><span className={styles.viewYear}>View year <span>→</span></span></Link>)}</nav>
+   <div className={styles.downloadBar}><div><strong>Showing {period.title}</strong><span>{periodDescription(period)}</span></div><div className={styles.downloadActions}><a href={exportHref('pdf')}><ProceedsIcon name="download"/>Download PDF</a><a href={exportHref('csv')}><ProceedsIcon name="download"/>Export CSV</a></div></div>
+  </section>
   <nav className={styles.summary} aria-label="Filter proceeds">
-   <Link href="/transporter/proceeds" className={filter==='BOOKED'?styles.active:undefined} aria-current={filter==='BOOKED'?'page':undefined}><ProceedsIcon name="booked"/><small>Booked proceeds</small><strong>{money(total)}</strong></Link>
-   <Link href="/transporter/proceeds?filter=in_progress" className={filter==='IN_PROGRESS'?styles.active:undefined} aria-current={filter==='IN_PROGRESS'?'page':undefined}><ProceedsIcon name="progress"/><small>In progress</small><strong>{money(inProgressTotal)}</strong></Link>
-   <Link href="/transporter/proceeds?filter=ready" className={filter==='READY'?styles.active:undefined} aria-current={filter==='READY'?'page':undefined}><ProceedsIcon name="ready"/><small>Ready for release</small><strong>{money(ready)}</strong></Link>
-   <Link href="/transporter/proceeds?filter=held" className={filter==='HELD'?styles.active:undefined} aria-current={filter==='HELD'?'page':undefined}><ProceedsIcon name="held"/><small>Held</small><strong>{money(held)}</strong></Link>
-   <Link href="/transporter/proceeds?filter=paid" className={filter==='PAID'?styles.active:undefined} aria-current={filter==='PAID'?'page':undefined}><ProceedsIcon name="paid"/><small>Paid</small><strong>{money(paid)}</strong></Link>
-   <Link href="/transporter/proceeds?filter=fines" className={`${styles.adjustments} ${filter==='FINES'?styles.active:''}`} aria-current={filter==='FINES'?'page':undefined}><ProceedsIcon name="adjustments"/><small><span className={styles.legacyCopy}>Fines/Refunds</span><span className={styles.desktopCopy}>Fines / Refunds</span></small><strong className={styles.adjustmentsTotal}><span className="desktopAdjustmentRows"><span><span>Fines</span><b>−{money(fines)}</b></span><span><span>Refunded</span><b>−{money(refunds)}</b></span></span><span className="mobileAdjustmentTotal">−{money(fines)} fines / −{money(refunds)} refunded</span></strong></Link>
+   <Link href={href()} className={filter==='BOOKED'?styles.active:undefined} aria-current={filter==='BOOKED'?'page':undefined}><ProceedsIcon name="booked"/><small>Booked proceeds</small><strong>{money(total)}</strong></Link>
+   <Link href={href("in_progress")} className={filter==='IN_PROGRESS'?styles.active:undefined} aria-current={filter==='IN_PROGRESS'?'page':undefined}><ProceedsIcon name="progress"/><small>In progress</small><strong>{money(inProgressTotal)}</strong></Link>
+   <Link href={href("ready")} className={filter==='READY'?styles.active:undefined} aria-current={filter==='READY'?'page':undefined}><ProceedsIcon name="ready"/><small>Ready for release</small><strong>{money(ready)}</strong></Link>
+   <Link href={href("held")} className={filter==='HELD'?styles.active:undefined} aria-current={filter==='HELD'?'page':undefined}><ProceedsIcon name="held"/><small>Held</small><strong>{money(held)}</strong></Link>
+   <Link href={href("paid")} className={filter==='PAID'?styles.active:undefined} aria-current={filter==='PAID'?'page':undefined}><ProceedsIcon name="paid"/><small>Paid</small><strong>{money(paid)}</strong></Link>
+   <Link href={href("fines")} className={`${styles.adjustments} ${filter==='FINES'?styles.active:''}`} aria-current={filter==='FINES'?'page':undefined}><ProceedsIcon name="adjustments"/><small><span className={styles.legacyCopy}>Fines/Refunds</span><span className={styles.desktopCopy}>Fines / Refunds</span></small><strong className={styles.adjustmentsTotal}><span className="desktopAdjustmentRows"><span><span>Fines</span><b>−{money(fines)}</b></span><span><span>Refunded</span><b>−{money(refunds)}</b></span></span><span className="mobileAdjustmentTotal">−{money(fines)} fines / −{money(refunds)} refunded</span></strong></Link>
   </nav>
   <p className={styles.totalsNote}>Proceeds totals shown before fines.</p>
   {filter==='FINES'&&<div className={styles.adjustmentControls}>
@@ -102,9 +111,9 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
    <details>
     <summary>{adjustmentFilter==='FINES'?'Fines only · −'+money(fines):adjustmentFilter==='REFUNDS'?'Refunds only · −'+money(refunds):'All fines and refunds · '+adjustmentRows.length}</summary>
     <div>
-     <Link className={adjustmentFilter==='ALL'?styles.selectedAdjustment:undefined} href="/transporter/proceeds?filter=fines">All fines and refunds <b>{adjustmentRows.length}</b></Link>
-     <Link className={adjustmentFilter==='FINES'?styles.selectedAdjustment:undefined} href="/transporter/proceeds?filter=fines&adjustment=fines">Fines <b>−{money(fines)}</b></Link>
-     <Link className={adjustmentFilter==='REFUNDS'?styles.selectedAdjustment:undefined} href="/transporter/proceeds?filter=fines&adjustment=refunds">Refunds <b>−{money(refunds)}</b></Link>
+     <Link className={adjustmentFilter==='ALL'?styles.selectedAdjustment:undefined} href={href("fines")}>All fines and refunds <b>{adjustmentRows.length}</b></Link>
+     <Link className={adjustmentFilter==='FINES'?styles.selectedAdjustment:undefined} href={href("fines","fines")}>Fines <b>−{money(fines)}</b></Link>
+     <Link className={adjustmentFilter==='REFUNDS'?styles.selectedAdjustment:undefined} href={href("fines","refunds")}>Refunds <b>−{money(refunds)}</b></Link>
     </div>
    </details>
   </div>}
@@ -122,5 +131,6 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
    </div>
    {booking.status==='DELIVERED'&&<div className={styles.actions}><Link className="btn light" target="_blank" rel="noreferrer" href={`/bookings/${encodeURIComponent(booking.id)}/statement`}>View printable statement</Link></div>}</div>
   </article>})}</section>}
+  <p className={styles.archiveNote}>A new year starts automatically. Previous years stay available to view and download.</p>
  </main>;
 }
