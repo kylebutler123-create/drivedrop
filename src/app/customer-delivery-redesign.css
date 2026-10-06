@@ -340,3 +340,27 @@
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.isCollapsed .quoteDesignDate{font-size:14px}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.isCollapsed .quoteDesignDate small{font-size:11px;white-space:nowrap}
 }
+
+/* Full addresses on customer compact cards, including recent deliveries. */
+.customerCompactAddresses{display:none}
+@media(min-width:1024px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout :is(.approvedRecentRow,.quoteRequestCard.isCollapsed,.bookingCard[data-active-summary].isCollapsed,.bookingCard[data-completed-summary].isCollapsed,.bookingCard.customerCancelledCompact.isCollapsed){height:auto!important;min-height:84px!important;padding-top:10px!important;padding-bottom:10px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout :is(.quoteRequestCard,.bookingCard).isCollapsed>.customerCardToggle{height:auto!important;min-height:0!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow,
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.isCollapsed .quoteDesignSummary,
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.isCollapsed .deliveryDesignSummary{height:auto!important;grid-template-columns:48px minmax(220px,1fr) 400px 130px 18px!important;gap:18px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerCompactAddresses{display:grid!important;gap:2px;margin-top:3px;min-width:0;text-align:left}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerCompactAddress{display:grid!important;grid-template-columns:15px minmax(0,1fr);align-items:start;gap:7px;margin:0;font-size:13px;line-height:1.4;font-weight:400;letter-spacing:normal;text-transform:none;white-space:normal;overflow:visible;color:#52658e}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerCompactAddress>svg{width:15px;height:17px;margin-top:1px;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerCompactAddress>span{min-width:0;white-space:normal;overflow-wrap:anywhere;overflow:visible;text-overflow:clip}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerCompactAddress b{font-size:inherit;font-weight:600;color:inherit}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout :is(.overviewVehicleCopy,.quoteDesignIdentity,.deliveryDesignIdentity)>strong{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryHistoryDate{align-self:center;display:flex!important;flex-direction:column;align-items:flex-start;padding-top:0;padding-right:238px;gap:4px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed>.deliveryCompactActions{top:50%;bottom:auto;transform:translateY(-50%)}
+}
+@media(min-width:1024px) and (max-width:1240px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow,
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.isCollapsed .quoteDesignSummary,
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.isCollapsed .deliveryDesignSummary{grid-template-columns:48px minmax(180px,1fr) 320px 130px 18px!important;gap:12px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerCompactAddress{font-size:12px;gap:5px}
+}
