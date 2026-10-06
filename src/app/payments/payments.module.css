@@ -4,3 +4,99 @@
 @media(min-width:1024px) and (max-width:1199px){.page{width:calc(100% - 48px)}.page .heading h1{font-size:40px}.columns{grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr)}.history,.breakdown{padding:18px}.filters{grid-template-columns:1fr 1fr}.filters input{grid-column:1/-1}}
 @media(max-width:1023px){.page{width:calc(100% - 32px);padding-top:24px}.page .heading h1{font-size:32px}.heading p{font-size:14px}.columns{grid-template-columns:1fr}.heading{align-items:flex-start;flex-wrap:wrap}.summary article{padding:16px;gap:12px}.summary svg{width:26px;height:26px}.summary strong{font-size:22px}.footer{flex-wrap:wrap}}
 @media(max-width:600px){.summary{gap:8px}.summary article{display:block;padding:12px}.summary svg{width:22px;height:22px;margin-bottom:8px}.summary strong{font-size:19px}.summary span{font-size:12px}.filters{grid-template-columns:1fr 1fr}.filters input{grid-column:1/-1}.history,.breakdown{padding:16px}.history table{min-width:610px}.page .heading h1{font-size:30px}.page h2{font-size:20px}}
+/* Annual statements use the approved navy/orange desktop palette. */
+.yearSection{margin:0 0 10px}
+.yearHeading{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:12px}
+.yearHeading h2{margin:0;color:#071c43;font-size:17px;font-weight:700}
+.dateRange{position:relative;color:#071c43;font-size:12px}
+.dateRange summary{display:flex;align-items:center;gap:9px;cursor:pointer;list-style:none}
+.dateRange summary::-webkit-details-marker{display:none}
+.page .dateRange svg{display:block;width:16px;height:16px}
+.dateRange form{position:absolute;right:0;top:28px;z-index:30;display:grid;gap:12px;padding:18px;width:280px;border:1px solid #c8dced;border-radius:6px;background:white;box-shadow:0 10px 25px #071c4320}
+.dateRange label{display:grid;gap:5px}
+.dateRange input{width:100%;padding:9px;border:1px solid #c8dced;border-radius:4px;color:#071c43;background:#fff}
+.dateRange button{padding:10px;background:#071c43;color:#fff;border:0;border-radius:4px;cursor:pointer}
+.yearCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-height:270px;overflow:auto}
+.yearCards>button{display:grid;grid-template-columns:40px 1fr;gap:12px 14px;padding:16px 18px;border:1px solid #c8dced;border-radius:6px;background:#fff;text-decoration:none;color:#071c43}
+.yearCards>button.selectedYear{border-color:#ff681b;background:#fff5ed}
+.yearCards>button:hover{border-color:#ff681b}
+.page .yearCards svg{display:block;width:34px;height:34px;align-self:center}
+.yearIdentity{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;min-width:0}
+.yearIdentity strong{font-size:20px;line-height:1.2}
+.yearIdentity>span{padding:4px 8px;border-radius:5px;font-size:10px;font-weight:600}
+.currentYear{background:#ffebcd;color:#e26308}
+.archivedYear{background:#e8eef5;color:#071c43}
+.yearIdentity small{flex-basis:100%;font-size:11px;color:#647799}
+.yearCount{grid-column:1/2;white-space:nowrap;align-self:center;color:#647799;font-size:11px}
+.viewYear{justify-self:end;font-size:12px;color:#ff681b}
+.viewYear span{padding-left:9px;font-size:19px}
+.downloadBar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:14px;padding:8px 0 0;border-top:1px solid #c8dced}
+.downloadBar>div:first-child{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.downloadBar strong{font-size:17px;color:#071c43}
+.downloadBar span{font-size:11px;color:#647799}
+.downloadActions{display:flex;gap:10px}
+.downloadActions a{display:flex;align-items:center;justify-content:center;gap:9px;white-space:nowrap;padding:9px 13px;border:1px solid #071c43;border-radius:5px;background:#071c43;color:white;font-size:12px;font-weight:600;text-decoration:none}
+.downloadActions a:last-child{background:#fff;border-color:#ff681b;color:#ff681b}
+.page .downloadActions svg{display:block;width:17px;height:17px}
+.archiveNote{font-size:11px;line-height:1.5;color:#647799;margin:9px 0}
+@media(min-width:1024px){
+ .page .hero{margin-bottom:14px!important}
+ .page .desktopBookingCount{display:none}
+}
+@media(max-width:1023px){
+ .yearCards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .downloadBar{align-items:flex-start;flex-direction:column}
+}
+@media(max-width:600px){
+ .yearCards{grid-template-columns:1fr;max-height:230px}
+ .yearHeading{gap:10px}
+ .downloadBar>div:first-child{gap:6px}
+}
+
+.yearCards>button{font-family:inherit;text-align:left;cursor:pointer}
+.bookingLabel{display:block;color:#647799;font-size:12px;margin-bottom:4px}
+.selectRow>svg{display:none}
+.sectionHeading h2{display:flex;align-items:center;gap:10px}
+@media(min-width:1024px){
+ .page{max-width:1180px;padding-top:30px;color:#071c43}
+ .page .heading h1{font-size:32px;letter-spacing:-.5px;margin-bottom:7px;color:#071c43}
+ .heading p{font-size:14px;color:#647799}
+ .heading{margin-bottom:18px}.heading>.button{display:none}
+ .page .yearHeading h2{font-size:17px}
+ .summary{gap:10px;margin-top:10px;margin-bottom:16px}
+ .summary article{padding:18px 22px;gap:24px;border-radius:6px;border-color:#c8dced}
+ .summary svg,.summary article:nth-child(2) svg{color:#071c43;width:40px;height:40px}
+ .summary span{font-size:13px}.summary strong{font-size:28px}
+ .columns{grid-template-columns:minmax(0,1.95fr) minmax(340px,1fr);gap:12px;align-items:stretch}
+ .history,.breakdown{padding:16px;border-radius:6px;border-color:#c8dced}
+ .page h2{font-size:21px;color:#071c43}
+ .sectionHeading{justify-content:space-between;margin-bottom:14px}
+ .filters{gap:10px;margin-bottom:14px;grid-template-columns:minmax(0,1.5fr) 1fr 1fr}
+ .page .filters input,.page .filters select{font-size:12px;height:38px;border-color:#c8dced}
+ .history table{font-size:12px}.history th{padding:12px 9px;font-weight:400;background:#eef7ff;color:#405779}
+ .history td{padding:14px 9px;color:#071c43}.history td:nth-child(3){font-weight:700}
+ .selected{background:#e3f4ff;box-shadow:none}
+ .selectRow{grid-template-columns:48px 1fr;column-gap:9px;row-gap:2px}
+ .selectRow>svg{display:block;grid-row:1/3;width:46px;height:34px;align-self:center}
+ .selectRow strong{font-size:13px}.selectRow span{grid-column:2;color:#647799;font-size:12px}
+ .status{border-radius:5px;padding:5px 10px;font-size:11px}
+ .paid{background:#dff6e9;color:#087c48}.refunded{background:#fff0d4;color:#e26308}
+ .breakdown h2{font-size:20px;gap:10px;margin-bottom:16px}.breakdown h2 svg{width:24px;height:24px}
+ .breakdown>strong{font-size:14px}.vehicle{font-size:13px;color:#071c43}
+ .journey{grid-template-columns:1fr 1fr;gap:30px;border-top:0;margin:14px 0;padding:0 0 18px;position:relative}
+ .journey:after{content:'→';position:absolute;left:48%;top:15px;color:#071c43;font-size:20px}
+ .journey>div{gap:6px;align-items:flex-end}.journey svg{width:18px;height:22px}
+ .journey small{font-size:11px}.journey span{font-size:13px;color:#071c43;font-weight:600}
+ .amounts{font-size:12px;gap:8px}.amounts dt{color:#647799;font-weight:400}.amounts dd{font-weight:700}
+ .meta{grid-template-columns:1fr 1fr;font-size:12px;margin:16px 0;padding-top:14px;gap:12px}
+ .meta>div{display:block}.meta dt{font-size:11px;color:#647799;margin-bottom:6px}.meta dd{text-align:left}
+ .meta>div+div{border-left:1px solid #c8dced;padding-left:16px}
+ .breakdown>.button{display:inline-flex;width:calc(60% - 5px);margin:0 5px 0 0;font-size:11px;padding:9px 7px;min-height:40px;border:1px solid #ff681b;color:#ff681b;background:white;gap:6px;vertical-align:top}
+ .breakdown>.viewBooking{width:calc(40% - 5px);margin:0}.breakdown>.button svg{width:17px;height:17px}
+ .history>.footnote,.footer{display:none}.archiveNote{margin-top:28px;font-size:11px}
+}
+@media(min-width:1024px) and (max-width:1199px){
+ .columns{grid-template-columns:minmax(0,1.8fr) minmax(310px,1fr)}
+ .selectRow{grid-template-columns:1fr}.selectRow>svg{display:none}.selectRow span{grid-column:1}
+ .filters input{grid-column:auto}
+}

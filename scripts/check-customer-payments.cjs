@@ -12,6 +12,7 @@ function load(path,mocks={}){
  return m.exports;
 }
 (async()=>{
+ const periods=load('src/lib/payment-period.ts');
  const helpers=load('src/lib/customer-payments.ts');
  const row={id:'p1',bookingId:'b1',reference:'DD-B1',vehicle:'BMW 3 Series',collection:'Birmingham',delivery:'Manchester',bookingStatus:'CONFIRMED',confirmed:false,currency:'GBP',totalPence:32000,paidPence:32000,refundedPence:0,status:'PAID',createdAt:'2026-10-02T12:00:00Z',paidAt:'2026-10-02T12:00:00Z',test:true};
  const rows=[row,{...row,id:'p2',bookingId:'b2',reference:'DD-B2',paidPence:12000,refundedPence:5000,status:'PARTIALLY_REFUNDED',vehicle:'=HYPERLINK("bad")',paidAt:'2026-09-20T12:00:00Z'},{...row,id:'p3',paidPence:0,status:'PENDING',paidAt:null}];
@@ -30,12 +31,21 @@ function load(path,mocks={}){
  const data=load('src/lib/customer-payment-data.ts',{'./prisma':{prisma:{bookingPayment:{findMany:async query=>{scope=query.where;return []}}}}});
  await data.customerPayments('owner','booking');assert.deepEqual(scope,{currency:'GBP',booking:{customerId:'owner',id:'booking'}});
  let user=null,calls=0,requested;
- const route=load('src/app/api/customer/payments/download/route.ts',{'@/lib/auth':{currentUser:async()=>user},'@/lib/customer-payment-data':{customerPayments:async(customerId,bookingId)=>{calls++;requested={customerId,bookingId};return bookingId==='foreign'?[]:bookingId==='unpaid'?[{...row,paidPence:0}]:rows}},'@/lib/customer-payments':helpers,'@/lib/payment-pdf':pdf});
+ const route=load('src/app/api/customer/payments/download/route.ts',{'@/lib/auth':{currentUser:async()=>user},'@/lib/customer-payment-data':{customerPayments:async(customerId,bookingId)=>{calls++;requested={customerId,bookingId};return bookingId==='foreign'?[]:bookingId==='unpaid'?[{...row,paidPence:0}]:rows}},'@/lib/customer-payments':helpers,'@/lib/payment-pdf':pdf,'@/lib/payment-period':periods});
  const get=query=>route.GET(new Request('https://drivedrop.test/api/customer/payments/download?'+query));
  assert.equal((await get('format=csv')).status,401);assert.equal(calls,0);
  user={id:'owner',role:'TRANSPORTER',name:'Customer'};assert.equal((await get('format=pdf')).status,403);assert.equal(calls,0);
  user.role='CUSTOMER';assert.equal((await get('format=exe')).status,400);assert.equal((await get('month=2026-13')).status,400);
  assert.equal((await get('bookingId=foreign')).status,404);assert.equal((await get('bookingId=unpaid')).status,404);
+ assert.equal((await get('format=csv&year=invalid')).status,400);
+ assert.equal((await get('format=csv&start=2026-02-30&end=2026-03-01')).status,400);
+ assert.equal((await get('format=csv&start=2026-10-01&end=2026-09-01')).status,400);
+ const archive=await get('format=csv&year=2025');assert(!((await archive.text()).includes('DD-B1')));
+ const custom=await get('format=csv&start=2026-09-01&end=2026-09-30');
+ const customText=await custom.text();assert(customText.includes('DD-B2'));assert(!customText.includes('DD-B1'));
+ assert.equal(periods.proceedsPeriod({},new Date('2027-01-01T00:00:00Z')).year,2027);
+ assert(periods.inProceedsPeriod({createdAt:'2026-09-30T23:30:00Z'},periods.proceedsPeriod({start:'2026-10-01',end:'2026-10-01'})));
+ const annual=await get('format=pdf&year=2026');assert.match(annual.headers.get('Content-Disposition'),/2026-01-01-to-2026-12-31/);await PDFDocument.load(await annual.arrayBuffer());
  const csv=await get('format=csv&status=PARTIALLY_REFUNDED');assert.equal(csv.status,200);assert.ok((await csv.text()).includes('DD-B2'));assert.equal(requested.customerId,'owner');assert.match(csv.headers.get('Cache-Control'),/no-store/);
  const receipt=await get('format=pdf&bookingId=b1');assert.equal(receipt.status,200);assert.match(receipt.headers.get('Content-Disposition'),/attachment/);await PDFDocument.load(await receipt.arrayBuffer());
  console.log('PASS: totals, London date filters, CSV safety, multipage/empty PDF, customer ownership, authentication, receipt eligibility and downloads.');
