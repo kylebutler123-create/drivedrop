@@ -50,3 +50,28 @@
  body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>button.transporterQuotesSummary:focus-visible{outline:2px solid #ff681b;outline-offset:3px}
 }
 @media(min-width:1024px){body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>button.transporterQuotesSummary[data-my-quotes-summary]{order:2!important;cursor:pointer;font-family:inherit}body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>button.transporterQuotesSummary[aria-pressed=true]{background:#fff5ed!important;border-color:#ff681b!important}body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>button.transporterQuotesSummary[aria-pressed=true] strong{color:#ff681b!important}}
+
+/* Approved customer-style transporter navigation: left colour blocks, navy icons. */
+@media(min-width:1024px){
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary]){gap:10px!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary])>[role=button]{padding:16px 26px 16px 88px!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary])>[role=button]>.transporterSummaryDecoration{display:block!important;position:absolute;inset:0!important;transform:none!important;margin:0!important;pointer-events:none}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary]) .transporterSummaryDecoration>.approvedIcon{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:56px;height:56px;box-sizing:border-box;padding:12px;border-radius:12px;background:#2188ff;color:#07134e!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[data-available-jobs-summary] .transporterSummaryDecoration>.approvedIcon{background:#ff6500}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[data-my-quotes-summary] .transporterSummaryDecoration>.approvedIcon{background:#a78bfa}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[data-delivered-summary] .transporterSummaryDecoration>.approvedIcon{background:#35bf88}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>[data-cancelled-summary] .transporterSummaryDecoration>.approvedIcon{background:#ff6262}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary]) .transporterSummaryChevron{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:12px;height:18px;color:#07134e}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary])>[role=button] strong{font-size:30px!important;color:#071c43!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary])>[role=button]>span:not([class]){font-size:13px!important;margin-top:4px!important;white-space:nowrap}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary])>[role=button][aria-pressed=true]{background:#fff5ed!important;border-color:#ff681b!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary]) .dashboardSummaryActivity{left:82px;top:13px;right:auto}
+}
+@media(min-width:1024px) and (max-width:1199px){
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary]){gap:8px!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary])>[role=button]{padding-left:64px!important;padding-right:20px!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary]) .transporterSummaryDecoration>.approvedIcon{left:10px;width:44px;height:44px;padding:9px;border-radius:10px}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary])>[role=button]>span:not([class]){font-size:11px!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary]) .transporterSummaryChevron{right:6px;width:10px}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary]) .dashboardSummaryActivity{left:60px}
+}
