@@ -100,3 +100,13 @@
  .selectRow{grid-template-columns:1fr}.selectRow>svg{display:none}.selectRow span{grid-column:1}
  .filters input{grid-column:auto}
 }
+.periodToolbar{display:flex;align-items:center;gap:18px;padding:0 0 12px;margin:0 0 12px;border-bottom:1px solid #c8dced;color:#071c43}
+.yearSelect{display:flex;align-items:center;gap:18px;font-size:13px;font-weight:600;white-space:nowrap}
+.page .yearSelect select{width:174px;height:40px;padding:8px 30px 8px 14px;border:1px solid #c8dced;border-radius:4px;background-color:#fff;color:#071c43;font-family:inherit;font-size:13px;font-weight:400;margin:0;cursor:pointer}
+.periodDates{font-size:12px;color:#647799;white-space:nowrap}
+.periodToolbar .dateRange{margin-left:14px;white-space:nowrap}
+.periodToolbar .downloadActions{margin-left:auto}
+.periodToolbar .downloadActions a{height:38px;padding:8px 12px}
+@media(min-width:1024px) and (max-width:1199px){.periodToolbar{gap:10px}.yearSelect{gap:10px}.page .yearSelect select{width:150px}.periodToolbar .dateRange{margin-left:0}.periodDates{font-size:11px}.periodToolbar .downloadActions{gap:6px}.periodToolbar .downloadActions a{font-size:11px;padding:8px}}
+@media(max-width:1023px){.periodToolbar{flex-wrap:wrap}.periodToolbar .dateRange{margin-left:0}}
+@media(max-width:600px){.periodToolbar{gap:12px}.periodDates{order:3;width:100%}.periodToolbar .downloadActions{margin-left:0;order:4}.periodToolbar .dateRange{margin-left:auto}}
