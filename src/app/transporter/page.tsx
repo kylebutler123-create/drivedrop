@@ -102,12 +102,16 @@ useEffect(()=>{
 },[]);
 useEffect(()=>{
  const media=window.matchMedia('(min-width:1024px)');
+ if(media.matches&&!new URLSearchParams(window.location.search).has('view'))setView('JOBS');
  if(media.matches&&new URLSearchParams(window.location.search).get('view')==='cancelled')setView('CANCELLED');
  if(media.matches&&new URLSearchParams(window.location.search).get('view')==='quotes')setView('QUOTES');
  const resetMobile=()=>{if(!media.matches)setView(current=>current==='CANCELLED'||current==='QUOTES'?'ALL':current)};
  media.addEventListener('change',resetMobile);
  return()=>media.removeEventListener('change',resetMobile);
 },[]);
+useEffect(()=>{
+ if(view==='JOBS'&&jobsLoaded&&jobActivityReady)markAvailableJobsSeen(jobs);
+},[view,jobsLoaded,jobActivityReady,jobs]);
 useEffect(()=>{
  const selectCompleted=(event:Event)=>{
   const detail=(event as CustomEvent<{show?:boolean}>).detail;
