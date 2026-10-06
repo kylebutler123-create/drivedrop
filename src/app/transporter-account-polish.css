@@ -1,7 +1,13 @@
 .transporterSummaryDecoration{display:none}
-/* Approved option 1; fixed-ratio image viewport preserves photograph proportions. */
+/* Approved plate photograph: preserve vehicle framing in the shallow desktop hero. */
 @media(min-width:1024px){
- body.approvedDesktop.role-transporter .transporterHero:has([data-cancelled-summary])>div:first-child{background:linear-gradient(90deg,#08213ded,#08213d99 35%,transparent 68%),url('/orange-design-preview/assets/transporter-dashboard-option-1.svg') right center/cover!important}
+ body.approvedDesktop.role-transporter .transporterHero:has([data-cancelled-summary])>div:first-child{
+  background-color:#08213d!important;
+  background-image:linear-gradient(90deg,#08213d 0%,#08213dfa 25%,#08213d99 43%,transparent 68%),url('/orange-design-preview/assets/transporter-dashboard-drivedrop-plate.png')!important;
+  background-repeat:no-repeat!important;
+  background-size:100% 100%,auto clamp(280px,24.324vw,360px)!important;
+  background-position:center,right 62.5%!important;
+ }
 }
 .jobFilterHeadingIcon,.jobFilterHelperIcon{display:none}
 @media(min-width:1024px){
@@ -159,4 +165,8 @@
  body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary])>[data-cancelled-summary]{border-radius:0 8px 8px 0!important;border-right-width:1px!important}
  body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary])>[role=button][aria-pressed=true]{border-color:#ff681b!important;background:#fff5ed!important;box-shadow:inset -1px 0 #ff681b!important;z-index:1}
  body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary])>[role=button]:focus-visible{outline:2px solid #ff681b!important;outline-offset:-3px;z-index:2}
+}
+/* Keep the approved copy clear of the loaded car on smaller desktops. */
+@media(min-width:1024px) and (max-width:1240px){
+ body.approvedDesktop.role-transporter .transporterHero:has([data-cancelled-summary])>div:first-child p{max-width:420px!important}
 }
