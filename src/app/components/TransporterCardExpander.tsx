@@ -124,7 +124,7 @@ function ensureJobFilters(){const section=document.getElementById('available-job
  bar.className='transporterJobFilters';
  bar.innerHTML=`
   <div class="transporterJobFiltersHeader">
-   <strong>Filter available jobs</strong>
+   <strong><svg class="jobFilterHeadingIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 5h18M3 12h18M3 19h18"/><circle cx="8" cy="5" r="2" fill="#eaf1f8"/><circle cx="16" cy="12" r="2" fill="#eaf1f8"/><circle cx="10" cy="19" r="2" fill="#eaf1f8"/></svg>Filter available jobs</strong>
    <span data-filter-result aria-live="polite"></span>
   </div>
   <div class="transporterJobFiltersBody">
@@ -152,7 +152,7 @@ function ensureJobFilters(){const section=document.getElementById('available-job
     <select data-sort-select aria-label="Sort available jobs"><option value="DEFAULT">Default order</option><option value="NEAREST">Nearest collection</option><option value="COLLECTION_DATE">Collection date soonest</option><option value="NEWEST">Newest request</option><option value="VEHICLE">Vehicle type</option></select>
    </label>
    <div class="transporterJobFiltersFooter">
-    <span data-distance-message>Filters update the cards below</span>
+    <svg class="jobFilterHelperIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/></svg><span data-distance-message>Vehicle and transport filters update automatically. Apply distance to filter by postcode.</span>
     <strong data-filter-footer-count></strong>
    </div>
   </div>`;
