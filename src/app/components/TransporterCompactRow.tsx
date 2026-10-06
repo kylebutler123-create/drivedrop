@@ -11,7 +11,7 @@ export const compactDate=(value:unknown)=>{
 export default function TransporterCompactRow({job,date,dateLabel='Collection',status,count,price,kind,open=false}:{job:any;date:unknown;dateLabel?:string;status?:string;count?:number;price?:number;kind:'jobs'|'quotes'|'active'|'completed'|'cancelled';open?:boolean}){
  return <span className={`tdCompactRow tdCompact-${kind}`}>
   <span className="tdCompactVehicle"><Icon name={vehicleTypeIcon(job.vehicleType)}/></span>
-  <span className="tdCompactIdentity"><strong>{job.vehicleMake} {job.vehicleModel}</strong><small title={`${job.collection} → ${job.delivery}`}>{job.collection} → {job.delivery}</small></span>
+  <span className="tdCompactIdentity"><strong>{job.vehicleMake} {job.vehicleModel}</strong><span className="tdCompactAddresses"><span className="tdCompactAddress"><Icon name="pin"/><span><b>Collection:</b> {job.collection}</span></span><span className="tdCompactAddress"><Icon name="pin"/><span><b>Delivery:</b> {job.delivery}</span></span></span></span>
   <span className="tdCompactDate"><small>{dateLabel}</small><span>{compactDate(date)}</span></span>
   <span className="tdCompactMeta">{typeof count==='number'&&<span>{count} quote{count===1?'':'s'}</span>}{typeof price==='number'&&<span className="tdCompactPrice"><small>Your quote</small><strong>{new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP',maximumFractionDigits:2}).format(price/100)}</strong></span>}</span>
   <span className="tdCompactStatusSlot">{status&&<span className="tdCompactStatus">{status}</span>}</span>
