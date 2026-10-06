@@ -1,4 +1,8 @@
 .transporterSummaryDecoration{display:none}
+/* Approved option 1; fixed-ratio image viewport preserves photograph proportions. */
+@media(min-width:1024px){
+ body.approvedDesktop.role-transporter .transporterHero:has([data-cancelled-summary])>div:first-child{background:linear-gradient(90deg,#08213ded,#08213d99 35%,transparent 68%),url('/orange-design-preview/assets/transporter-dashboard-option-1.svg') right center/cover!important}
+}
 .jobFilterHeadingIcon,.jobFilterHelperIcon{display:none}
 @media(min-width:1024px){
  body.approvedDesktop.role-transporter main.dashboardShell #available-jobs .transporterJobFilterField>select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23091650' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-size:16px;background-position:right 10px center}
