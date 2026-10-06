@@ -37,3 +37,15 @@
  body.approvedDesktop .approvedWorkspaceNav[data-role=transporter] .approvedAccountActions{gap:7px}
  body.approvedDesktop .approvedWorkspaceNav[data-role=transporter] .approvedAccountIdentity{max-width:95px;gap:6px;font-size:12px}
 }
+.transporterQuotesSummary{display:none!important}
+@media(min-width:1024px){
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary]){grid-template-columns:repeat(5,minmax(0,1fr))!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>a.transporterQuotesSummary{position:relative;display:block!important;order:3!important;height:90px!important;min-height:90px!important;padding:16px 60px 16px 16px!important;box-sizing:border-box;box-shadow:none!important;border-radius:8px!important;background:#fff!important;border:1px solid #d5e1ee!important;text-align:left;color:#071c43;text-decoration:none}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>a.transporterQuotesSummary strong{display:block;font-size:28px!important;line-height:1.15;color:#071c43!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>a.transporterQuotesSummary>span:not([class]){display:block;margin-top:6px!important;font-size:13px!important;color:#071c43!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>a.transporterQuotesSummary>.transporterSummaryDecoration{display:flex!important;align-items:center;gap:8px;position:absolute;right:10px;top:50%;transform:translateY(-50%);margin:0!important;color:#071c43!important;pointer-events:none}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary])>[data-delivered-summary]{order:4!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary:has([data-my-quotes-summary])>[data-cancelled-summary]{order:5!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>a.transporterQuotesSummary:hover{border-color:#ff681b!important;background:#fff7f0!important}
+ body.approvedDesktop.role-transporter .transporterHero .dashboardSummary>a.transporterQuotesSummary:focus-visible{outline:2px solid #ff681b;outline-offset:3px}
+}
