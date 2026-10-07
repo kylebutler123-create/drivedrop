@@ -1,0 +1,46 @@
+
+.ddCollection.ddCollection{font-family:Arial,sans-serif;color:#193047;padding:24px 14px;color-scheme:light dark}
+.ddCollection.ddCollection *{box-sizing:border-box}
+.ddCollection.ddCollection .dd-surface{max-width:680px;margin:auto;background:#fff;border:1px solid #dce4eb;border-radius:18px;padding:26px;box-shadow:0 8px 28px #1024350b}
+.ddCollection.ddCollection header{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.ddCollection.ddCollection .dd-icon{display:grid;place-items:center;background:#fff2e8;color:#d87524;width:44px;height:44px;border-radius:12px;flex-shrink:0}
+.ddCollection.ddCollection h2{font-size:20px;font-weight:500;margin:0 0 5px}
+.ddCollection.ddCollection p{font-size:13px;color:#66788a;margin:0;line-height:1.5}
+.ddCollection.ddCollection .dd-date{display:flex;align-items:center;gap:10px;background:#f3f6f9;border-radius:9px;padding:12px 14px;font-size:13px;margin-bottom:22px}
+.ddCollection.ddCollection .dd-date svg{width:17px;height:17px;color:#61788c}
+.ddCollection.ddCollection .dd-zone{margin-left:auto;color:#66788a;font-size:12px;white-space:nowrap}
+.ddCollection.ddCollection .dd-fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ddCollection.ddCollection label{display:block;font-size:13px;font-weight:500;margin-bottom:8px}
+.ddCollection.ddCollection button{font:inherit}
+.ddCollection.ddCollection .dd-field{display:flex;align-items:center;gap:10px;width:100%;height:48px;padding:0 13px;border-radius:9px;border:1px solid #cad5e0;background:#fff;color:#6a7b8a;font-size:14px;text-align:left}
+.ddCollection.ddCollection .dd-field svg{width:17px;height:17px;flex-shrink:0}
+.ddCollection.ddCollection .dd-field svg:last-child{margin-left:auto;width:14px}
+.ddCollection.ddCollection .dd-field[aria-expanded=true]{border-color:#e69146;box-shadow:0 0 0 3px #fff3e8}
+.ddCollection.ddCollection .dd-field.has-value{color:#193047}
+.ddCollection.ddCollection .dd-picker{margin-top:14px;border:1px solid #dce4eb;border-radius:12px;background:#fff;box-shadow:0 8px 22px #1024350c;padding:18px}
+.ddCollection.ddCollection .dd-picker-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;margin-bottom:16px}
+.ddCollection.ddCollection strong{font-weight:500}
+.ddCollection.ddCollection .dd-close{border:0;background:transparent;color:#697e90;padding:4px;display:grid;place-items:center}
+.ddCollection.ddCollection .dd-close svg{width:18px;height:18px}
+.ddCollection.ddCollection .dd-periods{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;background:#f1f5f8;border-radius:10px;margin-bottom:16px}
+.ddCollection.ddCollection .dd-periods button{border:0;background:transparent;color:#617486;padding:10px 4px;border-radius:7px;font-size:12px;min-height:48px}
+.ddCollection.ddCollection .dd-periods button span{display:block;font-size:10px;margin-top:4px;white-space:nowrap}
+.ddCollection.ddCollection .dd-periods button[aria-pressed=true]{background:#203c54;color:#fff}
+.ddCollection.ddCollection .dd-slots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ddCollection.ddCollection .dd-slot{height:40px;border:1px solid #dce4eb;background:#fff;color:#203c54;border-radius:7px;font-size:14px;font-variant-numeric:tabular-nums}
+.ddCollection.ddCollection .dd-slot:hover:not(:disabled){background:#fff5eb;border-color:#e7a46b}
+.ddCollection.ddCollection .dd-slot[aria-pressed=true]{background:#fff0e2;border-color:#dd873f;color:#a85313}
+.ddCollection.ddCollection .dd-slot:disabled{opacity:.28}
+.ddCollection.ddCollection footer{border-top:1px solid #e6ebf0;padding-top:16px;margin-top:18px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.ddCollection.ddCollection .dd-hint{font-size:12px;color:#617486;line-height:1.5}
+.ddCollection.ddCollection .dd-apply{background:#203c54;color:#fff;border:0;border-radius:8px;padding:12px 14px;font-size:12px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.ddCollection.ddCollection .dd-apply svg{width:15px;height:15px}
+.ddCollection.ddCollection .dd-apply:disabled{opacity:.4}
+.ddCollection.ddCollection .dd-saved{margin-top:16px;padding:12px;background:#f0f6f2;color:#385b42;font-size:13px;border-radius:8px}
+.ddCollection.ddCollection [hidden]{display:none!important}
+@media(max-width:480px){.ddCollection.ddCollection{padding:12px 4px}.ddCollection.ddCollection .dd-surface{padding:16px}.ddCollection.ddCollection .dd-picker{padding:12px}.ddCollection.ddCollection .dd-periods{grid-template-columns:repeat(2,1fr)}.ddCollection.ddCollection footer{align-items:stretch;flex-direction:column}.ddCollection.ddCollection .dd-apply{justify-content:center}.ddCollection.ddCollection .dd-fields{gap:10px}.ddCollection.ddCollection .dd-date{flex-wrap:wrap}}
+@media(pointer:coarse){.ddCollection.ddCollection .dd-slot{min-height:44px}.ddCollection.ddCollection .dd-close{min-width:44px;min-height:44px}}
+
+.ddCollection.ddCollection{padding:0;font-family:Arial,sans-serif;color-scheme:light;width:100%;min-width:0}.ddCollection.ddCollection button{cursor:pointer;letter-spacing:normal;text-transform:none;box-shadow:none;min-width:0;margin:0;font-weight:400}.ddCollection.ddCollection button:disabled{cursor:default}.ddCollection.ddCollection .dd-field{height:48px}.ddCollection.ddCollection .dd-helper{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;font-size:12px;color:#617486}.ddCollection.ddCollection .dd-helper button{border:0;background:transparent;color:#203c54;text-decoration:underline;font-size:12px;padding:5px}.ddCollection.ddCollection header{position:static;border:0;background:transparent;padding:0;box-shadow:none;width:auto;min-height:0}.ddCollection.ddCollection footer{background:transparent;width:auto;border-radius:0;box-shadow:none}.ddCollection.ddCollection .dd-picker .dd-periods button span{font-size:11px}.ddCollection.ddCollection .dd-icon svg{width:24px;height:24px}.ddCollection.ddCollection .dd-picker-heading strong{color:#193047}.ddCollection.ddCollection .dd-slot{padding:0}.ddCollection.ddCollection label{color:#193047;letter-spacing:normal;text-transform:none}.ddCollection.ddCollection h2{font-family:Arial,sans-serif;letter-spacing:normal;text-transform:none;color:#193047}.ddCollection.ddCollection input[type=hidden]{display:none!important}
+@media(min-width:1024px){.ddCollection.ddCollection h2{font-size:17px}.ddCollection.ddCollection .dd-icon{height:36px;width:36px;border-radius:10px}.ddCollection.ddCollection header{margin-bottom:18px}.ddCollection.ddCollection .dd-date{margin-bottom:16px}.ddCollection.ddCollection .dd-fields{gap:20px}.ddCollection.ddCollection .dd-picker{width:580px;max-width:100%;margin-left:auto;padding:20px}}
+

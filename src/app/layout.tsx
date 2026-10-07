@@ -1,4 +1,5 @@
 import './availability.css';
+import './collection-time-picker.css';
 import './globals.css';
 import './home-hero.css';
 import './mobile-polish.css';

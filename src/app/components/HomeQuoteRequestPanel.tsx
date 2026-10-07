@@ -178,7 +178,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
           <AddressAutocomplete name="delivery" label={fieldLabel('Delivery')} desktopPlaceholder={!wizard?'Town or postcode':undefined}/>
         </div>
         <div className="homeQuoteFieldGrid homeQuoteDateTransport">
-          <CollectionWindowFields date={collectionDate}/><CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>
+          <CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/><CollectionWindowFields date={collectionDate}/>
           <div className="field"><label htmlFor="home-quote-transport-type">{fieldLabel('Transport type')}</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
         </div>
       </div>
