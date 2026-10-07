@@ -7,7 +7,7 @@ import DeliveryDesignIcon from '@/app/components/DeliveryDesignIcon';
 import CustomerQuoteRequest from '@/app/components/CustomerQuoteRequest';
 import ApprovedCustomerOverview, {OverviewSummaryIcon} from '@/app/components/ApprovedCustomerOverview';import {useEffect,useLayoutEffect,useRef,useState} from 'react';import AddressAutocomplete from '@/app/components/AddressAutocomplete';import CustomerCollectionDateActions from '@/app/components/CustomerCollectionDateActions';import Link from 'next/link';import CustomerRequestActions from '@/app/components/CustomerRequestActions';import CustomerReviewForm from '@/app/components/CustomerReviewForm';import {vehicleTypes,vehicleTypeCategory,vehicleTypeDisplay} from '@/lib/vehicle-types';
 import {transportTypes,transportTypeDisplay} from '@/lib/transport-types';
-import {enclosedTransportCompatibilityMessage,isTransportVehicleCompatible} from '@/lib/transport-compatibility';
+import {enclosedTransportCompatibilityMessage,isTransportVehicleCompatible,drivenTransportCompatibilityMessage,isTransportRunningCompatible} from '@/lib/transport-compatibility';
 
 const label=(s:string)=>s.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
 function collectionDateLabel(value:string|null|undefined,month:'short'|'long'='short'){
@@ -180,6 +180,7 @@ async function create(e:any){
  const form=e.currentTarget as HTMLFormElement;
  if(!form.reportValidity())return;
  const requestData=new FormData(form);
+ if(!isTransportRunningCompatible(requestData.get('transportType'),requestData.get('running'))){setFormMessage({type:'error',text:drivenTransportCompatibilityMessage});return;}
  if(!isTransportVehicleCompatible(requestData.get('transportType'),requestData.get('vehicleType'))){
   setFormMessage({type:'error',text:enclosedTransportCompatibilityMessage});
   return;

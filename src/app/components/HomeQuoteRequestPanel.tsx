@@ -9,7 +9,7 @@ import {createPortal} from 'react-dom';
 import AddressAutocomplete from './AddressAutocomplete';
 import {vehicleTypes} from '@/lib/vehicle-types';
 import {transportTypes} from '@/lib/transport-types';
-import {enclosedTransportCompatibilityMessage,isTransportVehicleCompatible} from '@/lib/transport-compatibility';
+import {enclosedTransportCompatibilityMessage,isTransportVehicleCompatible,drivenTransportCompatibilityMessage,isTransportRunningCompatible} from '@/lib/transport-compatibility';
 
 type Props={expanded:boolean;onExpandChange:(expanded:boolean)=>void;wizard?:boolean};
 type AccountMode='create'|'login';
@@ -84,6 +84,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
   const [vehicleType,setVehicleType]=useState<string>('');
   const [transportType,setTransportType]=useState<string>('');
   const [collectionDate,setCollectionDate]=useState('');
+  const [running,setRunning]=useState('');
   const requestInFlight=useRef(false);
   const incompatible=transportType!==''&&vehicleType!==''&&!isTransportVehicleCompatible(transportType,vehicleType);
 
@@ -96,6 +97,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
     if(!form.reportValidity())return;
     if(!collectionDate){setError('Choose a collection date from the calendar.');return}
     const fields=new FormData(form);
+    if(!isTransportRunningCompatible(fields.get('transportType'),fields.get('running'))){setError(drivenTransportCompatibilityMessage);return;}
     if(!isTransportVehicleCompatible(fields.get('transportType'),fields.get('vehicleType'))){
       return;
     }
@@ -159,7 +161,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
       <div><strong>Get vehicle transport quotes</strong><span>Takes about 60 seconds</span></div>
       <button type="button" className="homeQuoteExpand" aria-label={expanded?'Collapse account details':'Expand account details'} aria-expanded={expanded} aria-controls="home-quote-extra" disabled={submitting} onClick={()=>{setError('');onExpandChange(!expanded)}}>{expanded?'−':'+'}</button>
     </div>
-    <form ref={formRef} noValidate={wizard} className="quoteForm homeQuoteForm homeQuoteApproved" onChange={wizard?updateDraft:undefined} onSubmit={submit} aria-busy={submitting}>
+    <form ref={formRef} noValidate={wizard} className="quoteForm homeQuoteForm homeQuoteApproved" onChange={wizard?updateDraft:undefined} onSubmit={submit} onReset={()=>setRunning('')} aria-busy={submitting}>
       {wizard&&<section className="approvedWizard approvedWizardReview"><h2>Review your request</h2>{[['collection','Collection'],['delivery','Delivery'],['vehicleType','Vehicle type'],['vehicleMake','Make'],['vehicleModel','Model'],['registration','Registration'],['running','Running condition'],['transportType','Transport type']].map(([key,label])=><div key={key}><span>{label}</span><strong>{key==='running'?(draft[key]==='true'?'Runs and drives':'Non-running'):key==='transportType'?transportTypes.find(type=>type.value===draft[key])?.label:draft[key]||'Not specified'}</strong></div>)}<div><span>Collection date</span><strong>{collectionDate?new Date(collectionDate+'T12:00:00').toLocaleDateString('en-GB'):'Not specified'}</strong></div><button type="button" className="btn light" onClick={()=>setStep(1)}>Edit request</button></section>}
       <div className="homeQuoteSection homeQuoteVehicle">
           <strong>Vehicle details</strong>
@@ -168,7 +170,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
             <div className="field"><label htmlFor="home-quote-make">{fieldLabel('Make')}</label><input id="home-quote-make" name="vehicleMake" placeholder={polished?'e.g. Ford':undefined} required disabled={submitting}/></div>
             <div className="field"><label htmlFor="home-quote-model">{fieldLabel('Model')}</label><input id="home-quote-model" name="vehicleModel" placeholder={polished?'e.g. Focus':undefined} required disabled={submitting}/></div>
             <div className="field"><label htmlFor="home-quote-registration">{fieldLabel('Registration')}</label><input id="home-quote-registration" name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters" disabled={submitting}/></div>
-            <div className="field"><label htmlFor="home-quote-running">{fieldLabel('Running condition')}</label><select id="home-quote-running" name="running" defaultValue="" required disabled={submitting}><option value="" disabled>{polished?'Select running condition':'Select'}</option><option value="true">Runs and drives</option><option value="false">Non-running</option></select></div>
+            <div className="field"><label htmlFor="home-quote-running">{fieldLabel('Running condition')}</label><select id="home-quote-running" name="running" defaultValue="" onChange={event=>setRunning(event.target.value)} required disabled={submitting}><option value="" disabled>{polished?'Select running condition':'Select'}</option><option value="true">Runs and drives</option><option value="false" disabled={transportType==='DRIVEN'}>Non-running</option></select></div>
           </div>
       </div>
       <div className={`homeQuoteSection homeQuoteTransport${expanded?'':' desktopCompactLocations'}`}>
@@ -179,9 +181,10 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
         </div>
         <div className="homeQuoteFieldGrid homeQuoteDateTransport">
           <CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/><CollectionWindowFields date={collectionDate}/>
-          <div className="field"><label htmlFor="home-quote-transport-type">{fieldLabel('Transport type')}</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
+          <div className="field"><label htmlFor="home-quote-transport-type">{fieldLabel('Transport type')}</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value} disabled={type.value==='DRIVEN'&&running==='false'}>{type.label}</option>)}</select></div>
         </div>
       </div>
+      {expanded&&(transportType==='DRIVEN'||running==='false')&&<p className="muted">Driven transport requires a vehicle that runs and drives. Non-running vehicles must be carried.</p>}
       {expanded&&incompatible&&<div className="formNotice errorNotice homeQuoteCompatibility" role="alert">{enclosedTransportCompatibilityMessage}</div>}
       <div id="home-quote-extra" className="homeQuoteExtra" hidden={!expanded}>
         <div className="homeQuoteSection">

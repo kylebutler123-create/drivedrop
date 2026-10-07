@@ -49,6 +49,7 @@ function openCollectionCalendar(input: HTMLInputElement){
 
 export default function CustomerQuoteRequest(props: Props) {
   const [date,setDate]=useState('');
+  const [transport,setTransport]=useState(''),[running,setRunning]=useState('');
   return <section className="dashboardCard requestPanel customerQuoteRequest" hidden={props.hidden}>
     <div className="quoteDesktopOnly quotePageIntro">
       <div className="quotePageHeading"><div><h1>Get a quote</h1><p>Tell us what needs moving and receive quotes from independent transporters.</p></div><span>UK vehicle transport</span></div>
@@ -57,7 +58,7 @@ export default function CustomerQuoteRequest(props: Props) {
     <div className="quoteFormLayout">
       <div className="quoteFormCard">
         <div className="panelHeading quoteMobileOnly"><div><span className="panelIcon">＋</span><div><h2>Request vehicle transport</h2><p>Tell us what needs moving and verified transporters can send you quotes.</p></div></div></div>
-        <form onSubmit={props.onSubmit}>
+        <form onSubmit={props.onSubmit} onReset={()=>{setTransport('');setRunning('');}}>
           <div className="grid">
             <div className="quoteDesktopOnly quoteSectionTitle quoteCollectionTitle"><span className="quoteSectionNumber">1</span><QuoteIcon name="pin"/><div><h2>Collection &amp; delivery</h2><p>Where is your vehicle going?</p></div></div>
             <AddressAutocomplete key={`collection-${props.newJobId || 'draft'}`} name="collection" label={<FieldLabel mobile="COLLECTION" desktop="Collection"/>} desktopPlaceholder="Enter collection address"/>
@@ -67,14 +68,15 @@ export default function CustomerQuoteRequest(props: Props) {
               event.preventDefault();
               if(event.key==='Enter'||event.key===' '||event.key==='ArrowDown')openCollectionCalendar(event.currentTarget);
             }} onBeforeInput={event=>{if(desktopCalendarOnly())event.preventDefault()}} onPaste={event=>{if(desktopCalendarOnly())event.preventDefault()}} onDrop={event=>{if(desktopCalendarOnly())event.preventDefault()}}/><span className="quoteDesktopOnly quoteDatePlaceholder" aria-hidden="true">Select date</span></div>
-            <CollectionWindowFields key={props.newJobId||'draft'} date={date}/><div className="field"><label htmlFor="request-transport-type"><FieldLabel mobile="TRANSPORT TYPE" desktop="Transport type"/></label><select id="request-transport-type" name="transportType" required defaultValue=""><option value="" disabled>Select transport type</option>{transportTypes.map(type => <option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
+            <CollectionWindowFields key={props.newJobId||'draft'} date={date}/><div className="field"><label htmlFor="request-transport-type"><FieldLabel mobile="TRANSPORT TYPE" desktop="Transport type"/></label><select id="request-transport-type" name="transportType" required defaultValue="" onChange={event=>setTransport(event.target.value)}><option value="" disabled>Select transport type</option>{transportTypes.map(type => <option key={type.value} value={type.value} disabled={type.value==='DRIVEN'&&running==='false'}>{type.label}</option>)}</select></div>
             <div className="quoteDesktopOnly quoteSectionTitle quoteVehicleTitle"><span className="quoteSectionNumber">2</span><QuoteIcon name="car"/><div><h2>Vehicle details</h2><p>Help transporters provide an accurate quote.</p></div></div>
             <div className="field quoteVehicleType"><label htmlFor="request-vehicle-type"><FieldLabel mobile="VEHICLE TYPE" desktop="Vehicle type"/></label><select id="request-vehicle-type" name="vehicleType" required value={props.selectedVehicleType} onChange={event => props.onVehicleTypeChange(event.target.value)}><option value="" disabled>Select vehicle type</option>{vehicleTypes.map(type => <option key={type} value={type}>{type}</option>)}</select></div>
             <div className="field quoteExampleField"><label htmlFor="request-vehicle-make"><FieldLabel mobile="MAKE" desktop="Make"/></label><input id="request-vehicle-make" name="vehicleMake" required placeholder=" "/><span className="quoteDesktopOnly quoteExample">e.g. BMW</span></div>
             <div className="field quoteExampleField"><label htmlFor="request-vehicle-model"><FieldLabel mobile="MODEL" desktop="Model"/></label><input id="request-vehicle-model" name="vehicleModel" required placeholder=" "/><span className="quoteDesktopOnly quoteExample">e.g. 3 Series</span></div>
             <div className="field"><label htmlFor="request-registration"><FieldLabel mobile="REGISTRATION" desktop="Registration (optional)"/></label><input id="request-registration" name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters"/></div>
-            <div className="field"><label htmlFor="request-running"><FieldLabel mobile="RUNNING?" desktop="Running condition"/></label><select id="request-running" name="running" required defaultValue=""><option value="" disabled>Select running condition</option><option value="true">Runs and drives</option><option value="false">Non-running</option></select></div>
+            <div className="field"><label htmlFor="request-running"><FieldLabel mobile="RUNNING?" desktop="Running condition"/></label><select id="request-running" name="running" required defaultValue="" onChange={event=>setRunning(event.target.value)}><option value="" disabled>Select running condition</option><option value="true">Runs and drives</option><option value="false" disabled={transport==='DRIVEN'}>Non-running</option></select></div>
           </div>
+          {(transport==='DRIVEN'||running==='false')&&<p className="muted">Driven transport requires a vehicle that runs and drives. Non-running vehicles must be carried.</p>}
           {props.message && <div className={props.message.type === 'success' ? 'formNotice successNotice' : 'formNotice errorNotice'} role={props.message.type === 'success' ? 'status' : 'alert'}>{props.message.text}</div>}
           <div className="quoteSubmitRow"><p className="quoteDesktopOnly">Compare quotes before choosing a transporter.</p><button type="submit" className="btn orange" disabled={props.submitting} aria-busy={props.submitting}>{props.submitting ? 'Submitting request…' : 'Request quotes'}<span className="quoteDesktopOnly"><QuoteIcon name="arrow"/></span></button></div>
         </form>
