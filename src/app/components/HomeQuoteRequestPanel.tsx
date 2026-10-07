@@ -1,4 +1,5 @@
 'use client';
+import CollectionWindowFields from './CollectionWindowFields';
 
 import {FormEvent,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import Link from 'next/link';
@@ -124,7 +125,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
       const job={
         collection:fields.get('collection'),
         delivery:fields.get('delivery'),
-        collectionDate:fields.get('collectionDate'),
+        collectionDate:fields.get('collectionDate'),collectionFrom:fields.get('collectionFrom')||undefined,collectionUntil:fields.get('collectionUntil')||undefined,
         transportType:fields.get('transportType'),
         vehicleType:fields.get('vehicleType'),
         vehicleMake:fields.get('vehicleMake'),
@@ -177,7 +178,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
           <AddressAutocomplete name="delivery" label={fieldLabel('Delivery')} desktopPlaceholder={!wizard?'Town or postcode':undefined}/>
         </div>
         <div className="homeQuoteFieldGrid homeQuoteDateTransport">
-          <CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>
+          <CollectionWindowFields date={collectionDate}/><CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>
           <div className="field"><label htmlFor="home-quote-transport-type">{fieldLabel('Transport type')}</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
         </div>
       </div>

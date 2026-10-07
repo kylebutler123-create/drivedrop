@@ -1,6 +1,7 @@
 'use client';
 
-import type {FormEventHandler, ReactNode} from 'react';
+import {useState,type FormEventHandler,type ReactNode} from 'react';
+import CollectionWindowFields from './CollectionWindowFields';
 import Image from 'next/image';
 import Link from 'next/link';
 import AddressAutocomplete from './AddressAutocomplete';
@@ -47,6 +48,7 @@ function openCollectionCalendar(input: HTMLInputElement){
 }
 
 export default function CustomerQuoteRequest(props: Props) {
+  const [date,setDate]=useState('');
   return <section className="dashboardCard requestPanel customerQuoteRequest" hidden={props.hidden}>
     <div className="quoteDesktopOnly quotePageIntro">
       <div className="quotePageHeading"><div><h1>Get a quote</h1><p>Tell us what needs moving and receive quotes from independent transporters.</p></div><span>UK vehicle transport</span></div>
@@ -60,12 +62,12 @@ export default function CustomerQuoteRequest(props: Props) {
             <div className="quoteDesktopOnly quoteSectionTitle quoteCollectionTitle"><span className="quoteSectionNumber">1</span><QuoteIcon name="pin"/><div><h2>Collection &amp; delivery</h2><p>Where is your vehicle going?</p></div></div>
             <AddressAutocomplete key={`collection-${props.newJobId || 'draft'}`} name="collection" label={<FieldLabel mobile="COLLECTION" desktop="Collection"/>} desktopPlaceholder="Enter collection address"/>
             <AddressAutocomplete key={`delivery-${props.newJobId || 'draft'}`} name="delivery" label={<FieldLabel mobile="DELIVERY" desktop="Delivery"/>} desktopPlaceholder="Enter delivery address"/>
-            <div className="field quoteDateField"><label htmlFor="request-collection-date"><FieldLabel mobile="COLLECTION DATE" desktop="Collection date"/></label><input id="request-collection-date" type="date" name="collectionDate" required onClick={event=>openCollectionCalendar(event.currentTarget)} onKeyDown={event=>{
+            <div className="field quoteDateField"><label htmlFor="request-collection-date"><FieldLabel mobile="COLLECTION DATE" desktop="Collection date"/></label><input id="request-collection-date" type="date" name="collectionDate" required onChange={e=>setDate(e.target.value)} onClick={event=>openCollectionCalendar(event.currentTarget)} onKeyDown={event=>{
               if(!desktopCalendarOnly()||event.key==='Tab'||event.key==='Escape')return;
               event.preventDefault();
               if(event.key==='Enter'||event.key===' '||event.key==='ArrowDown')openCollectionCalendar(event.currentTarget);
             }} onBeforeInput={event=>{if(desktopCalendarOnly())event.preventDefault()}} onPaste={event=>{if(desktopCalendarOnly())event.preventDefault()}} onDrop={event=>{if(desktopCalendarOnly())event.preventDefault()}}/><span className="quoteDesktopOnly quoteDatePlaceholder" aria-hidden="true">Select date</span></div>
-            <div className="field"><label htmlFor="request-transport-type"><FieldLabel mobile="TRANSPORT TYPE" desktop="Transport type"/></label><select id="request-transport-type" name="transportType" required defaultValue=""><option value="" disabled>Select transport type</option>{transportTypes.map(type => <option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
+            <CollectionWindowFields key={props.newJobId||'draft'} date={date}/><div className="field"><label htmlFor="request-transport-type"><FieldLabel mobile="TRANSPORT TYPE" desktop="Transport type"/></label><select id="request-transport-type" name="transportType" required defaultValue=""><option value="" disabled>Select transport type</option>{transportTypes.map(type => <option key={type.value} value={type.value}>{type.label}</option>)}</select></div>
             <div className="quoteDesktopOnly quoteSectionTitle quoteVehicleTitle"><span className="quoteSectionNumber">2</span><QuoteIcon name="car"/><div><h2>Vehicle details</h2><p>Help transporters provide an accurate quote.</p></div></div>
             <div className="field quoteVehicleType"><label htmlFor="request-vehicle-type"><FieldLabel mobile="VEHICLE TYPE" desktop="Vehicle type"/></label><select id="request-vehicle-type" name="vehicleType" required value={props.selectedVehicleType} onChange={event => props.onVehicleTypeChange(event.target.value)}><option value="" disabled>Select vehicle type</option>{vehicleTypes.map(type => <option key={type} value={type}>{type}</option>)}</select></div>
             <div className="field quoteExampleField"><label htmlFor="request-vehicle-make"><FieldLabel mobile="MAKE" desktop="Make"/></label><input id="request-vehicle-make" name="vehicleMake" required placeholder=" "/><span className="quoteDesktopOnly quoteExample">e.g. BMW</span></div>
@@ -81,7 +83,7 @@ export default function CustomerQuoteRequest(props: Props) {
         <section className="quoteNextCard"><Image src="/orange-design-preview/assets/customer-quote-countryside-approved.webp" width={419} height={263} sizes="(min-width: 1400px) 407px, 30vw" unoptimized alt="Navy recovery truck carrying a silver car on a countryside road"/><div className="quoteNextContent"><h2>What happens next?</h2><ol>{[
           ['Receive quotes', 'Independent transporters quote for your request.'],
           ['Compare your options', 'Review prices, profiles and messages.'],
-          ['Choose your transporter', 'Accept a quote when you are ready.'],
+          ['Choose your transporter', 'Check availability, then pay to confirm your booking.'],
         ].map(([title, copy], index) => <li key={title}><span>{index + 1}</span><div><h3>{title}</h3><p>{copy}</p></div></li>)}</ol></div></section>
         <section className="quoteHelpCard"><h2><QuoteIcon name="help"/>A little help with your request</h2><p>Choose the transport type that suits your vehicle. Enclosed transport is available for cars, motorcycles and classic / prestige vehicles.</p><Link href="/help">Help &amp; support <QuoteIcon name="arrow"/></Link></section>
       </aside>

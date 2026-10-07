@@ -1,55 +1,13 @@
-import {NextResponse} from 'next/server';
-import {prisma} from '@/lib/prisma';
-import {currentUser} from '@/lib/auth';
+import {after,NextResponse} from 'next/server';
 import {z} from 'zod';
-import {calculateFinance} from '@/lib/finance';
-import {createNotificationSafely} from '@/lib/notifications';
-
-import {collectionDateIsCurrent} from '@/lib/job-expiry';
-
-const S=z.object({quoteId:z.string()});
-const money=(pence:number)=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(pence/100);
-
-export async function POST(r:Request){
- const u=await currentUser();
- if(!u||u.role!=='CUSTOMER')return NextResponse.json({error:'Customer login required'},{status:403});
- const {quoteId}=S.parse(await r.json());
- try{
-  const isPreview=process.env.VERCEL_ENV==='preview'||(!process.env.VERCEL_ENV&&process.env.NODE_ENV!=='production');
-  const saved=await prisma.$transaction(async(tx:any)=>{
-   const q=await tx.quote.findUniqueOrThrow({where:{id:quoteId},include:{job:true,transporter:{include:{transporterVerification:{select:{status:true}}}}}});
-   if(q.job.customerId!==u.id)throw new Error('Forbidden');
-   if(q.status!=='PENDING'||!['OPEN','QUOTED'].includes(q.job.status))throw new Error('Quote unavailable');
-   const collectionDate=q.dateNegotiationStatus==='ACCEPTED'&&q.proposedCollectionDate?q.proposedCollectionDate:q.job.collectionDate;
-   if(!collectionDateIsCurrent(collectionDate))throw new Error('This collection date has passed. Agree a new collection date before booking.');
-   if(['PROPOSED','COUNTERED'].includes(q.dateNegotiationStatus))throw new Error('Collection date must be agreed before accepting this quote');
-   if(q.transporter.accountStatus!=='ACTIVE'||q.transporter.workRestricted||q.transporter.transporterVerification?.status!=='APPROVED')throw new Error('This transporter is no longer available for booking');
-   const previous=await tx.booking.findUnique({where:{jobId:q.jobId},include:{payment:true}});
-   if(previous){
-    if(previous.status!=='CANCELLED')throw new Error('This job already has an active booking');
-    await tx.booking.delete({where:{id:previous.id}});
-   }
-   const finance=calculateFinance(q.pricePence);
-   const booking=await tx.booking.create({data:{jobId:q.jobId,quoteId:q.id,customerId:u.id,transporterId:q.transporterId,agreedPricePence:q.pricePence,status:isPreview?'CONFIRMED':'PENDING_PAYMENT'}});
-   const payment=await tx.bookingPayment.create({data:{bookingId:booking.id,...finance,...(isPreview?{paidPence:finance.transportValuePence,status:'PAID',providerReference:`test_${crypto.randomUUID()}`}:{})}});
-   await tx.financeEvent.create({data:{paymentId:payment.id,type:isPreview?'PAYMENT_CAPTURED':'PAYMENT_CREATED',amountPence:payment.transportValuePence,actorId:u.id,note:isPreview?'Full sandbox/test payment captured during quote acceptance; booking confirmed':'Booking reserved pending full payment'}});
-   await tx.quote.update({where:{id:q.id},data:{status:'ACCEPTED'}});
-   await tx.quote.updateMany({where:{jobId:q.jobId,id:{not:q.id}},data:{status:'DECLINED'}});
-   await tx.transportJob.update({where:{id:q.jobId},data:{status:'BOOKED',...(q.dateNegotiationStatus==='ACCEPTED'&&q.proposedCollectionDate?{collectionDate:q.proposedCollectionDate}:{})}});
-   const vehicle=[q.job.vehicleYear,q.job.vehicleMake,q.job.vehicleModel].filter(Boolean).join(' ').replace(/\s+/g,' ').trim()||'vehicle';
-   return {booking:{...booking,status:isPreview?'CONFIRMED':'PENDING_PAYMENT',payment:{...payment,...(isPreview?{status:'PAID',paidPence:finance.transportValuePence}:{})}},vehicle};
-  });
-  if(saved.booking.payment.status==='PAID'){
-   await createNotificationSafely({
-    userId:saved.booking.transporterId,
-    type:'PAYMENT',
-    title:'Customer payment secured',
-    body:`Payment of ${money(saved.booking.payment.transportValuePence)} is secured for the ${saved.vehicle}. You can proceed with the delivery.`,
-    href:'/transporter?view=deliveries'
-   });
-  }
-  return NextResponse.json(saved.booking,{status:201});
- }catch(e:any){
-  return NextResponse.json({error:e.message||'Unable to reserve booking'},{status:400});
- }
-}
+import {currentUser} from '@/lib/auth';
+import {apiError,parseJson} from '@/lib/api';
+import {selectQuote} from '@/lib/availability';
+import {notifyAvailability} from '@/lib/availability-notifications';
+const S=z.object({quoteId:z.string().min(1),collectionFrom:z.string().optional(),collectionUntil:z.string().optional()});
+export async function POST(r:Request){try{
+ const u=await currentUser();if(!u||u.role!=='CUSTOMER')return NextResponse.json({error:'Customer login required'},{status:403});
+ const d=await parseJson(r,S);const result=await selectQuote(u,d.quoteId,d);
+ if(result.created)after(()=>notifyAvailability(result.request.id));
+ return NextResponse.json(result.request,{status:result.created?201:200});
+}catch(e){return apiError(e,'Unable to request transporter availability');}}

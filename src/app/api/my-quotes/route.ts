@@ -1,3 +1,4 @@
+import {isOfferLive} from '@/lib/availability-time';
 import {NextResponse} from 'next/server';
 import {currentUser} from '@/lib/auth';
 import {prisma} from '@/lib/prisma';
@@ -14,7 +15,7 @@ export async function GET(){
     where:{transporterId:u.id},
     include:{
       job:{select:{
-        id:true,status:true,vehicleMake:true,vehicleModel:true,collection:true,delivery:true,collectionDate:true,
+        id:true,status:true,vehicleMake:true,vehicleModel:true,collection:true,delivery:true,collectionDate:true,collectionFrom:true,collectionUntil:true,
         customer:{select:{name:true}},
         quotes:pendingCollectionDates,
         _count:{select:{quotes:{where:{status:{not:'WITHDRAWN'}}}}}
@@ -33,6 +34,6 @@ export async function GET(){
     const expired=['OPEN','QUOTED'].includes(job.status)&&!isQuoteRequestOpen(q.job,now);
     // Derived status preserves history and allows a customer date change to reopen a request.
     // Never expose other transporters' quote details in this owner-scoped response.
-    return {...q,status:q.status==='PENDING'&&expired?'EXPIRED':q.status,job:{...job,expired,vehicleType:types.get(job.id)||null}};
+    return {...q,status:q.status==='PENDING'&&(expired||!isOfferLive(q,now))?'EXPIRED':q.status,job:{...job,expired,vehicleType:types.get(job.id)||null}};
   }),{headers:{'Cache-Control':'no-store, max-age=0'}});
 }

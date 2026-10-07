@@ -1,3 +1,4 @@
+import {validateCollectionWindow} from '@/lib/availability-time';
 import {vehicleTypes} from '@/lib/vehicle-types';
 import {transportTypeDisplay,transportTypeValues} from '@/lib/transport-types';
 import {enclosedTransportCompatibilityMessage,isTransportVehicleCompatible} from '@/lib/transport-compatibility';
@@ -10,7 +11,7 @@ import {sendTransactionalEmailBatchSafely} from '@/lib/email';
 import {insuranceStatusForVerification} from '@/lib/insurance-expiry-notifications';
 
 
-const S=z.object({collection:z.string().min(2),delivery:z.string().min(2),transportType:z.enum(transportTypeValues),vehicleType:z.enum(vehicleTypes),vehicleMake:z.string().min(1),vehicleModel:z.string().min(1),registration:z.string().optional(),running:z.boolean().default(true),collectionDate:z.coerce.date()}).superRefine((data,context)=>{
+const S=z.object({collection:z.string().min(2),delivery:z.string().min(2),transportType:z.enum(transportTypeValues),vehicleType:z.enum(vehicleTypes),vehicleMake:z.string().min(1),vehicleModel:z.string().min(1),registration:z.string().optional(),running:z.boolean().default(true),collectionDate:z.coerce.date(),collectionFrom:z.string().optional(),collectionUntil:z.string().optional()}).superRefine((data,context)=>{
  if(!isTransportVehicleCompatible(data.transportType,data.vehicleType))context.addIssue({code:z.ZodIssueCode.custom,path:['vehicleType'],message:enclosedTransportCompatibilityMessage});
 });
 
@@ -20,8 +21,9 @@ export async function POST(r:Request){
  const parsed=S.safeParse(await r.json());
  if(!parsed.success)return NextResponse.json({error:parsed.error.issues[0]?.message||'Please check the request details and try again.'},{status:400});
  const d=parsed.data;
+ let window;try{window=validateCollectionWindow(d.collectionDate,d.collectionFrom,d.collectionUntil)}catch(e){return NextResponse.json({error:e instanceof Error?e.message:'Invalid collection window'},{status:400})}
  const {vehicleType,...jobData}=d;
- const job=await prisma.transportJob.create({data:{...jobData,customerId:u.id}});
+ const job=await prisma.transportJob.create({data:{...jobData,collectionFrom:window.collectionFrom,collectionUntil:window.collectionUntil,customerId:u.id}});
  await prisma.$executeRaw`UPDATE "TransportJob" SET "vehicleType"=${vehicleType} WHERE "id"=${job.id}`;
 
  after(async()=>{
@@ -61,7 +63,7 @@ export const revalidate=0;
 export async function GET(){
  const u=await currentUser();
  if(!u||!['TRANSPORTER','ADMIN'].includes(u.role))return NextResponse.json({error:'Forbidden'},{status:403});
- const jobs=await prisma.transportJob.findMany({where:{...openQuoteRequestsWhere()},include:{_count:{select:{quotes:{where:{status:{not:'WITHDRAWN'}}}}},quotes:{where:u.role==='TRANSPORTER'?{transporterId:u.id,status:'PENDING'}:undefined,select:{id:true,pricePence:true,status:true,transporterId:true,proposedCollectionDate:true,dateNegotiationStatus:true,message:true}},customer:{select:{name:true}}},orderBy:{createdAt:'desc'}});
+ const jobs=await prisma.transportJob.findMany({where:{...openQuoteRequestsWhere()},include:{_count:{select:{quotes:{where:{status:{not:'WITHDRAWN'}}}}},quotes:{where:u.role==='TRANSPORTER'?{transporterId:u.id,status:'PENDING',OR:[{expiresAt:null},{expiresAt:{gt:new Date()}}]}:undefined,select:{id:true,pricePence:true,status:true,expiresAt:true,transporterId:true,proposedCollectionDate:true,dateNegotiationStatus:true,message:true}},customer:{select:{name:true}}},orderBy:{createdAt:'desc'}});
  const ids=jobs.map(j=>j.id);
  const rows=ids.length?await prisma.$queryRawUnsafe<Array<{id:string;vehicleType:string|null}>>(`SELECT "id", "vehicleType" FROM "TransportJob" WHERE "id" IN (${ids.map((_,i)=>`$${i+1}`).join(',')})`,...ids):[];
  const types=new Map(rows.map(r=>[r.id,r.vehicleType]));

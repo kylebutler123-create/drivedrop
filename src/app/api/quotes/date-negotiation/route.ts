@@ -1,3 +1,5 @@
+import {lockJob,assertNoReservation} from '@/lib/availability';
+import {isOfferLive} from '@/lib/availability-time';
 import {NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
@@ -10,9 +12,12 @@ export async function PATCH(r:Request){
  if(!u)return NextResponse.json({error:'Login required'},{status:401});
  try{
   const d=S.parse(await r.json());
-  const q=await prisma.quote.findUnique({where:{id:d.quoteId},include:{job:{include:{quotes:pendingCollectionDates}}}});
+  const updated=await prisma.$transaction(async tx=>{
+  const initial=await tx.quote.findUnique({where:{id:d.quoteId},select:{jobId:true}});if(!initial)throw Error("Quote not found");
+  await lockJob(tx,initial.jobId);await assertNoReservation(tx,initial.jobId);
+  const q=await tx.quote.findUnique({where:{id:d.quoteId},include:{job:{include:{quotes:pendingCollectionDates}}}});
   if(!q)return NextResponse.json({error:'Quote not found'},{status:404});
-  if(q.status!=='PENDING'||!['OPEN','QUOTED'].includes(q.job.status))return NextResponse.json({error:'Quote is no longer available'},{status:400});
+  if(!isOfferLive(q)||!['OPEN','QUOTED'].includes(q.job.status))return NextResponse.json({error:'Quote is no longer available'},{status:400});
   const isCustomer=u.role==='CUSTOMER'&&q.job.customerId===u.id;
   const isTransporter=u.role==='TRANSPORTER'&&q.transporterId===u.id;
   if(!isCustomer&&!isTransporter)return NextResponse.json({error:'Forbidden'},{status:403});
@@ -38,7 +43,9 @@ export async function PATCH(r:Request){
    data.proposedCollectionDate=parseCollectionDateInput(d.date);data.dateNegotiationStatus='PROPOSED';
   }
   if(data.proposedCollectionDate&&!collectionDateIsCurrent(data.proposedCollectionDate))throw new Error('Choose a collection date today or later');
-  const updated=await prisma.quote.update({where:{id:q.id},data});
+  return tx.quote.update({where:{id:q.id},data});
+  });
+  if(updated instanceof Response)return updated;
   return NextResponse.json(updated);
  }catch(e:any){return NextResponse.json({error:e?.message||'Unable to update collection date'},{status:400})}
 }

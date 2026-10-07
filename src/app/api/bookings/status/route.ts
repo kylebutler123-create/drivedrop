@@ -1,3 +1,4 @@
+import {lockJob} from '@/lib/availability';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { currentUser } from '@/lib/auth';
@@ -18,6 +19,7 @@ export async function PATCH(r:Request){
   if(d.status==='DELIVERED')return NextResponse.json({error:'Complete the Proof of Delivery form to finish this delivery.'},{status:400});
   try{
     const result=await prisma.$transaction(async (tx: any)=>{
+      const initial=await tx.booking.findUniqueOrThrow({where:{id:d.bookingId},select:{jobId:true}});await lockJob(tx,initial.jobId);
       const b=await tx.booking.findUniqueOrThrow({where:{id:d.bookingId},include:{payment:true,job:true,customer:{select:{name:true,email:true}},transporter:{select:{name:true}}}});
       if(u.role==='TRANSPORTER'&&b.transporterId!==u.id) throw new Error('Forbidden');
       if(!allowed[b.status]?.includes(d.status)) throw new Error(`Cannot move booking from ${b.status} to ${d.status}`);
@@ -45,7 +47,7 @@ export async function PATCH(r:Request){
             await tx.bookingPayment.update({where:{id:b.payment.id},data:b.payment.paidPence>0?{payoutStatus:'HELD'}:{status:'CANCELLED',payoutStatus:'CANCELLED'}});
           }
         }
-        if(u.role==='TRANSPORTER'){
+        if(u.role==='TRANSPORTER'&&b.payment?.status==='PAID'&&b.payment.paidPence>=b.payment.transportValuePence){
           cancellationFeeCreated=(await recordTransporterCancellationFee(tx,b.transporterId,b.id))>0;
         }
       }

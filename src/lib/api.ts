@@ -1,3 +1,4 @@
+import {AvailabilityError} from './availability-error'
 import { NextResponse } from 'next/server'
 import { ZodError, ZodType } from 'zod'
 
@@ -10,7 +11,7 @@ export function apiError(error: unknown, fallback='Request failed') {
   const message=error instanceof Error ? error.message : fallback
   const status=message==='Forbidden'?403:message==='Not found'?404:400
   console.error('DriveDrop API error',{requestId:id,status,errorName:error instanceof Error?error.name:'UnknownError',message,errorStack:error instanceof Error?error.stack:undefined})
-  const publicMessage=process.env.NODE_ENV==='production'&&status===400?fallback:message
+  const publicMessage=process.env.NODE_ENV==='production'&&status===400&&!(error instanceof AvailabilityError)?fallback:message
   return jsonWithRequestId({error:publicMessage,requestId:id},status,id)
 }
 export async function parseJson<T>(request:Request,schema:ZodType<T>):Promise<T>{

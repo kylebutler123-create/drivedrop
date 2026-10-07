@@ -1,6 +1,8 @@
+import {lockJob,assertNoReservation} from '@/lib/availability';
+import {quoteExpiry,isOfferLive} from '@/lib/availability-time';
 import { NextResponse } from 'next/server';import { prisma } from '@/lib/prisma';import { currentUser } from '@/lib/auth';import { z } from 'zod';import {apiError,parseJson} from '@/lib/api';import {sendTransactionalEmailSafely} from '@/lib/email';import {createNotificationSafely} from '@/lib/notifications';import {calculateCustomerPrice} from '@/lib/finance';import {insuranceStatusForVerification} from '@/lib/insurance-expiry-notifications'
 import {isQuoteRequestOpen,pendingCollectionDates,collectionDateIsCurrent,parseCollectionDateInput} from '@/lib/job-expiry';
-const S=z.object({jobId:z.string().min(1),pricePence:z.number().int().min(1000).max(10_000_000),message:z.string().trim().max(1000).optional(),proposedCollectionDate:z.string().optional()})
+const S=z.object({jobId:z.string().min(1),pricePence:z.number().int().min(1000).max(10_000_000),message:z.string().trim().max(1000).optional(),proposedCollectionDate:z.string().optional(),expiresAt:z.string().optional()})
 const W=z.object({quoteId:z.string().min(1)})
 export async function POST(r:Request){
  try{
@@ -13,6 +15,9 @@ export async function POST(r:Request){
   if(insuranceStatus.state==='MISSING'||insuranceStatus.state==='EXPIRED')return NextResponse.json({error:insuranceStatus.replacementPending?'Your replacement insurance is awaiting DriveDrop approval. New quotes remain blocked until it is approved.':'Your approved insurance is missing or expired. Upload replacement insurance and wait for DriveDrop approval before submitting new quotes'},{status:403});
   const d=await parseJson(r,S);
   const result=await prisma.$transaction(async (tx: any)=>{
+   await lockJob(tx,d.jobId);
+   await assertNoReservation(tx,d.jobId);
+   const expiresAt=quoteExpiry(d.expiresAt);
    const job=await tx.transportJob.findUnique({where:{id:d.jobId},include:{customer:{select:{id:true,email:true,name:true}},quotes:pendingCollectionDates}});
    if(!job)throw new Error('Not found');
    if(!isQuoteRequestOpen(job))throw new Error('Job has expired or is no longer accepting quotes');
@@ -21,8 +26,8 @@ export async function POST(r:Request){
    const proposed=d.proposedCollectionDate?parseCollectionDateInput(d.proposedCollectionDate):null;
    if(!collectionDateIsCurrent(proposed||job.collectionDate))throw new Error('Choose a collection date today or later');
    const q=existing
-    ?await tx.quote.update({where:{id:existing.id},data:{status:'PENDING',pricePence:d.pricePence,message:d.message||null,proposedCollectionDate:proposed,dateNegotiationStatus:proposed?'PROPOSED':'ORIGINAL'}})
-    :await tx.quote.create({data:{jobId:d.jobId,pricePence:d.pricePence,message:d.message,transporterId:u.id,proposedCollectionDate:proposed,dateNegotiationStatus:proposed?'PROPOSED':'ORIGINAL'}});
+    ?await tx.quote.update({where:{id:existing.id},data:{status:'PENDING',expiresAt,pricePence:d.pricePence,message:d.message||null,proposedCollectionDate:proposed,dateNegotiationStatus:proposed?'PROPOSED':'ORIGINAL'}})
+    :await tx.quote.create({data:{jobId:d.jobId,expiresAt,pricePence:d.pricePence,message:d.message,transporterId:u.id,proposedCollectionDate:proposed,dateNegotiationStatus:proposed?'PROPOSED':'ORIGINAL'}});
    if(job.status==='OPEN')await tx.transportJob.update({where:{id:d.jobId},data:{status:'QUOTED'}});
    return {quote:q,customer:job.customer,vehicleMake:job.vehicleMake,vehicleModel:job.vehicleModel,collection:job.collection,delivery:job.delivery,revised:existing?.status==='PENDING'}
   });
@@ -41,6 +46,8 @@ export async function DELETE(r:Request){
   if(!u||u.role!=='TRANSPORTER')return NextResponse.json({error:'Transporter login required'},{status:403});
   const d=await parseJson(r,W);
   const result=await prisma.$transaction(async(tx:any)=>{
+   const initial=await tx.quote.findFirst({where:{id:d.quoteId,transporterId:u.id},select:{jobId:true}});if(!initial)throw Error('Quote not found');
+   await lockJob(tx,initial.jobId);await assertNoReservation(tx,initial.jobId);
    const quote=await tx.quote.findFirst({where:{id:d.quoteId,transporterId:u.id},include:{booking:{select:{id:true}},job:{select:{id:true,status:true,customerId:true,vehicleMake:true,vehicleModel:true}}}});
    if(!quote)throw new Error('Quote not found');
    if(quote.status!=='PENDING')throw new Error('Only a pending quote can be cancelled');

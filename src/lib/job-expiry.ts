@@ -8,7 +8,7 @@ export function collectionDateCutoff(now=new Date()){
  return new Date(`${part('year')}-${part('month')}-${part('day')}T00:00:00.000Z`);
 }
 type DateValue=Date|string;
-type PendingDate={status:string;proposedCollectionDate?:DateValue|null;dateNegotiationStatus:string};
+type PendingDate={status:string;expiresAt?:DateValue|null;proposedCollectionDate?:DateValue|null;dateNegotiationStatus:string};
 type RequestDates={status:string;collectionDate:DateValue;quotes?:PendingDate[]};
 export function collectionDateIsCurrent(date:DateValue,now=new Date()){
  const value=new Date(date).getTime();
@@ -23,14 +23,14 @@ export function parseCollectionDateInput(value:string){
 const liveDateStatuses=['PROPOSED','COUNTERED','ACCEPTED'];
 export function isQuoteRequestOpen(job:RequestDates,now=new Date()){
  return ['OPEN','QUOTED'].includes(job.status)&&(collectionDateIsCurrent(job.collectionDate,now)||
-  (job.quotes||[]).some(q=>q.status==='PENDING'&&liveDateStatuses.includes(q.dateNegotiationStatus)&&!!q.proposedCollectionDate&&collectionDateIsCurrent(q.proposedCollectionDate,now)));
+  (job.quotes||[]).some(q=>q.status==='PENDING'&&(!q.expiresAt||new Date(q.expiresAt)>now)&&liveDateStatuses.includes(q.dateNegotiationStatus)&&!!q.proposedCollectionDate&&collectionDateIsCurrent(q.proposedCollectionDate,now)));
 }
 // Shared by both dashboard lists and the customer quote-request list.
 export function openQuoteRequestsWhere(now=new Date()):Prisma.TransportJobWhereInput{
  const cutoff=collectionDateCutoff(now);
  return {status:{in:['OPEN','QUOTED']},OR:[
   {collectionDate:{gte:cutoff}},
-  {quotes:{some:{status:'PENDING',dateNegotiationStatus:{in:['PROPOSED','COUNTERED','ACCEPTED']},proposedCollectionDate:{gte:cutoff}}}}
+  {quotes:{some:{status:'PENDING',OR:[{expiresAt:null},{expiresAt:{gt:now}}],dateNegotiationStatus:{in:['PROPOSED','COUNTERED','ACCEPTED']},proposedCollectionDate:{gte:cutoff}}}}
  ]};
 }
-export const pendingCollectionDates={where:{status:'PENDING' as const},select:{status:true,proposedCollectionDate:true,dateNegotiationStatus:true}};
+export const pendingCollectionDates={where:{status:'PENDING' as const},select:{status:true,expiresAt:true,proposedCollectionDate:true,dateNegotiationStatus:true}};

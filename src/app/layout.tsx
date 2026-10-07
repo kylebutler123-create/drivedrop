@@ -1,3 +1,4 @@
+import './availability.css';
 import './globals.css';
 import './home-hero.css';
 import './mobile-polish.css';

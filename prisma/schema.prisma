@@ -182,6 +182,9 @@ model TransportJob {
   running        Boolean     @default(true)
   transportType  String      @default("ANY")
   collectionDate DateTime
+  collectionFrom String?
+  collectionUntil String?
+  availabilityRequests AvailabilityRequest[]
   status         JobStatus   @default(OPEN)
   quotes         Quote[]
   booking        Booking?
@@ -197,6 +200,8 @@ model Quote {
   transporterId            String
   transporter              User                  @relation("TransporterQuotes", fields: [transporterId], references: [id])
   pricePence               Int
+  expiresAt                DateTime?
+  availabilityRequests     AvailabilityRequest[]
   message                  String?
   proposedCollectionDate   DateTime?
   dateNegotiationStatus    DateNegotiationStatus @default(ORIGINAL)
@@ -204,6 +209,7 @@ model Quote {
   booking                  Booking?
   createdAt                DateTime               @default(now())
 
+  @@index([expiresAt])
   @@unique([jobId, transporterId])
   @@index([transporterId, status, createdAt])
 }
@@ -495,4 +501,33 @@ model TransporterCancellationDeduction {
 
   @@unique([feeId, paymentId])
   @@index([paymentId])
+}
+
+// A reservation is not a Booking. Only successful payment creates an active delivery.
+model AvailabilityRequest {
+  id String @id @default(cuid())
+  jobId String
+  job TransportJob @relation(fields: [jobId], references: [id])
+  quoteId String
+  quote Quote @relation(fields: [quoteId], references: [id])
+  customerId String
+  transporterId String
+  status String @default("AWAITING_TRANSPORTER")
+  activeJobId String? @unique
+  pricePence Int
+  collectionDate DateTime
+  collectionFrom String?
+  collectionUntil String?
+  respondBy DateTime
+  confirmedAt DateTime?
+  payBy DateTime?
+  travelMinutes Int?
+  bookingId String? @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([customerId, createdAt])
+  @@index([transporterId, createdAt])
+  @@index([status, respondBy, payBy])
+  @@index([jobId])
+  @@index([quoteId])
 }

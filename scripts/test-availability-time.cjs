@@ -1,0 +1,26 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),swc=require('next/dist/build/swc');
+const cache={};function load(name){const file=path.resolve(__dirname,'../src/lib',name+'.ts');if(cache[file])return cache[file];const out={};cache[file]=out;const code=swc.transformSync(fs.readFileSync(file,'utf8'),{filename:file,jsc:{parser:{syntax:'typescript'},target:'es2022'},module:{type:'commonjs'}}).code;new Function('exports','require',code)(out,id=>id.startsWith('./')?load(id.slice(2)):require(id));return out;}
+const h=load('availability-time');const at=s=>new Date(s);let n=0;const check=fn=>{fn();n++};
+check(()=>assert.equal(h.ukInstant('2026-10-07','14:00').toISOString(),'2026-10-07T13:00:00.000Z'));
+check(()=>assert.equal(h.ukInstant('2026-12-07','14:00').toISOString(),'2026-12-07T14:00:00.000Z'));
+check(()=>assert.throws(()=>h.ukInstant('2026-03-29','01:30'),/ambiguous|unavailable/));
+check(()=>assert.throws(()=>h.ukInstant('2026-10-25','01:30'),/ambiguous/));
+check(()=>assert.throws(()=>h.ukInstant('2026-02-30','10:00'),/valid/));
+check(()=>assert.throws(()=>h.validateCollectionWindow('2026-10-07',null,null,at('2026-10-07T11:00Z')),/requires/));
+check(()=>assert.throws(()=>h.validateCollectionWindow('2026-10-07','18:00','14:00',at('2026-10-07T11:00Z')),/later/));
+check(()=>assert.throws(()=>h.validateCollectionWindow('2026-10-07','10:00','11:00',at('2026-10-07T11:00Z')),/passed/));
+check(()=>assert.equal(h.validateCollectionWindow('2026-10-08',null,null,at('2026-10-07T11:00Z')).collectionFrom,null));
+check(()=>assert.equal(h.confirmationDeadline('2026-10-07','18:00',at('2026-10-07T11:30Z')).toISOString(),'2026-10-07T12:30:00.000Z'));
+check(()=>assert.equal(h.confirmationDeadline('2026-10-07','18:00',at('2026-10-07T04:00Z')).toISOString(),'2026-10-07T08:00:00.000Z'));
+check(()=>assert.equal(h.confirmationDeadline('2026-10-10',null,at('2026-10-07T22:00Z')).toISOString(),'2026-10-08T19:00:00.000Z'));
+check(()=>assert.equal(h.confirmationDeadline('2026-10-10',null,at('2026-10-07T08:00Z')).toISOString(),'2026-10-08T08:00:00.000Z'));
+check(()=>assert.throws(()=>h.confirmationDeadline('2026-10-07','23:00',at('2026-10-07T20:00Z')),/enough time/));
+check(()=>assert.throws(()=>h.confirmationDeadline('2026-10-07','14:00',at('2026-10-07T12:50Z')),/enough time/));
+check(()=>assert.equal(h.paymentDeadline('2026-10-07','18:00',60,at('2026-10-07T11:45Z')).toISOString(),'2026-10-07T12:15:00.000Z'));
+check(()=>assert.equal(h.paymentDeadline('2026-10-10',null,60,at('2026-10-07T11:45Z')).toISOString(),'2026-10-07T13:45:00.000Z'));
+check(()=>assert.equal(h.paymentDeadline('2026-10-07','18:00',120,at('2026-10-07T14:40Z')).toISOString(),'2026-10-07T15:00:00.000Z'));
+check(()=>assert.throws(()=>h.paymentDeadline('2026-10-07','18:00',240,at('2026-10-07T14:40Z')),/enough time/));
+check(()=>assert.equal(h.isOfferLive({status:'PENDING',expiresAt:'2026-10-07T12:00Z'},at('2026-10-07T12:00Z')),false));
+check(()=>assert.equal(h.requestExpired({status:'AWAITING_PAYMENT',respondBy:'2026-10-07T11:00Z',payBy:'2026-10-07T12:00Z'},at('2026-10-07T12:00Z')),true));
+check(()=>assert.equal(h.requestExpired({status:'BOOKED',respondBy:'2026-10-07T11:00Z',payBy:'2026-10-07T12:00Z'},at('2026-10-07T12:00Z')),false));
+console.log(`PASS: ${n} availability deadline, UK DST, overnight, travel, expiry and collection-window cases`);
