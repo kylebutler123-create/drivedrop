@@ -1,4 +1,11 @@
 /* Approved homepage form content. Preserve existing outer shape and purpose tabs. */
+@media(min-width:1024px){
+body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell.isQuoteDetails .homeQuoteForm.homeQuoteApproved .ddCollectionCombined{margin:0;padding-top:24px;border-top:1px solid #e1e8ee}
+body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell.isQuoteDetails .homeQuoteForm.homeQuoteApproved .ddCollectionCombined .dd-fields{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:end}
+body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell.isQuoteDetails .homeQuoteForm.homeQuoteApproved .ddCollectionCombined .dd-date-column{grid-column:auto}
+body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell.isQuoteDetails .homeQuoteForm.homeQuoteApproved .ddCollectionCombined label{font:500 13px Arial,sans-serif!important;color:#193047!important;margin:0 0 8px!important}
+body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell.isQuoteDetails .homeQuoteForm.homeQuoteApproved .ddCollectionCombined .dd-field{height:48px;min-height:48px;border-radius:9px;padding:0 13px}
+}
 .homeQuoteDatePolishLabel{display:none}
 @media(min-width:1024px){
 body.approvedDesktop .homePage:not(.desktopQuotePage) .homeHeroPanelShell.isQuoteDetails .homeQuoteForm.homeQuoteApproved{gap:20px!important;padding-top:0!important;color:#081f3e}

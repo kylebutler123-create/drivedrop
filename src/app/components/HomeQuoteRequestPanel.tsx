@@ -1,5 +1,5 @@
 'use client';
-import CollectionWindowFields from './CollectionWindowFields';
+import CollectionWindowFields,{Icon as CollectionIcon} from './CollectionWindowFields';
 
 import {FormEvent,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import Link from 'next/link';
@@ -14,7 +14,7 @@ import {enclosedTransportCompatibilityMessage,isTransportVehicleCompatible,drive
 type Props={expanded:boolean;onExpandChange:(expanded:boolean)=>void;wizard?:boolean};
 type AccountMode='create'|'login';
 
-function CollectionDatePicker({value,onChange,disabled}:{value:string;onChange:(date:string)=>void;disabled:boolean}){
+function CollectionDatePicker({value,onChange,disabled,combined=false}:{value:string;onChange:(date:string)=>void;disabled:boolean;combined?:boolean}){
   const [open,setOpen]=useState(false);
   const [month,setMonth]=useState(()=>{const today=new Date();return new Date(today.getFullYear(),today.getMonth(),1)});
   const [position,setPosition]=useState({top:0,left:0});
@@ -47,11 +47,11 @@ function CollectionDatePicker({value,onChange,disabled}:{value:string;onChange:(
   },[open]);
   const firstDay=(new Date(month.getFullYear(),month.getMonth(),1).getDay()+6)%7;
   const days=new Date(month.getFullYear(),month.getMonth()+1,0).getDate();
-  const label=value?new Date(`${value}T12:00:00`).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Select date';
-  return <div className="field homeQuoteCalendarField" ref={container}>
-    <span className="homeQuoteFieldLabel" id="home-quote-date-label"><span className="homeQuoteDateLegacyLabel">COLLECTION DATE</span><span className="homeQuoteDatePolishLabel">Collection date</span></span>
+  const label=value?new Date(`${value}T12:00:00`).toLocaleDateString('en-GB',{day:'numeric',month:combined?'long':'short',year:'numeric'}):'Select date';
+  return <div className={combined?'dd-date-column homeQuoteCombinedDate':'field homeQuoteCalendarField'} ref={container}>
+    {combined?<label htmlFor="home-quote-date-button">Collection date</label>:<span className="homeQuoteFieldLabel" id="home-quote-date-label"><span className="homeQuoteDateLegacyLabel">COLLECTION DATE</span><span className="homeQuoteDatePolishLabel">Collection date</span></span>}
     <input type="hidden" name="collectionDate" value={value}/>
-    <button type="button" className="homeQuoteDateButton" aria-label={`Collection date: ${label}`} aria-expanded={open} aria-haspopup="dialog" onClick={()=>setOpen(current=>!current)} disabled={disabled}>{label}<span aria-hidden="true">▦</span></button>
+    <button id="home-quote-date-button" type="button" className={combined?`dd-field dd-date-contained${value?' has-value':''}`:'homeQuoteDateButton'} aria-label={`Collection date: ${label}`} aria-expanded={open} aria-haspopup="dialog" onClick={()=>setOpen(current=>!current)} disabled={disabled}>{combined?<><CollectionIcon name="calendar"/><span>{label}</span><CollectionIcon name="chevron"/></>:<>{label}<span aria-hidden="true">▦</span></>}</button>
     {open&&createPortal(<div ref={popup} className="homeQuoteCalendar" role="dialog" aria-label="Choose collection date" style={position}>
       <div className="homeQuoteCalendarHeader"><button type="button" aria-label="Previous month" onClick={()=>setMonth(current=>new Date(current.getFullYear(),current.getMonth()-1,1))}>‹</button><strong>{month.toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</strong><button type="button" aria-label="Next month" onClick={()=>setMonth(current=>new Date(current.getFullYear(),current.getMonth()+1,1))}>›</button></div>
       <div className="homeQuoteCalendarDays">{['M','T','W','T','F','S','S'].map((day,index)=><span key={index} aria-hidden="true">{day}</span>)}{Array.from({length:firstDay},(_,index)=><span key={`empty-${index}`}/>)}{Array.from({length:days},(_,index)=>{const day=index+1;const date=`${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;return <button type="button" key={day} aria-label={new Date(`${date}T12:00:00`).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})} aria-pressed={value===date} onClick={()=>{onChange(date);setOpen(false)}}>{day}</button>})}</div>
@@ -180,7 +180,8 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
           <AddressAutocomplete name="delivery" label={fieldLabel('Delivery')} desktopPlaceholder={!wizard?'Town or postcode':undefined}/>
         </div>
         <div className="homeQuoteFieldGrid homeQuoteDateTransport">
-          <CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/><CollectionWindowFields date={collectionDate}/>
+          {(!desktop||wizard)&&<CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>}
+          <CollectionWindowFields date={collectionDate} dateField={desktop&&!wizard?<CollectionDatePicker combined value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>:undefined}/>
           <div className="field"><label htmlFor="home-quote-transport-type">{fieldLabel('Transport type')}</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value} disabled={type.value==='DRIVEN'&&running==='false'}>{type.label}</option>)}</select></div>
         </div>
       </div>
