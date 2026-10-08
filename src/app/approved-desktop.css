@@ -435,10 +435,10 @@
  body.approvedDesktop .desktopPublicFooter.referenceFooter{background:#081f3e;padding:25px 0 20px;margin-top:65px}
  body.approvedDesktop:has(.approvedReferenceHome)>.desktopPublicFooter.referenceFooter{margin-top:0}
  body.approvedDesktop .desktopPublicFooter.referenceFooter h2{color:white!important;font-size:12px!important;margin:0 0 9px!important;text-align:left!important}
- body.approvedDesktop .homePage:not(.desktopQuotePage) .desktopHeroSlogan{font-size:34px;top:12px;right:20px}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .desktopHeroSlogan{font-size:34px;top:12px;right:10px}
 }
 @media screen and (min-width:1024px) and (max-width:1199px){
- body.approvedDesktop .homePage:not(.desktopQuotePage) .desktopHeroSlogan{font-size:28px;top:10px;right:15px}
+ body.approvedDesktop .homePage:not(.desktopQuotePage) .desktopHeroSlogan{font-size:28px;top:10px;right:10px}
 }
 @media screen and (min-width:1024px){
  /* Tapered, curved brush accents from the approved reference. */
