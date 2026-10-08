@@ -12,7 +12,7 @@ type CancelledBooking={
 };
 const date=(value:string|null)=>{
  const parsed=value?new Date(value):null;
- return parsed&&Number.isFinite(parsed.getTime())?parsed.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'Europe/London'}):'Not recorded';
+ return parsed&&Number.isFinite(parsed.getTime())?parsed.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'Europe/London'}):'Not recorded';
 };
 const reference=(id:string)=>`DD-${id.slice(-8).toUpperCase()}`;
 
@@ -77,10 +77,10 @@ export default function TransporterCancelledDeliveries({selected,onCountChange}:
       <span className="transporterCancelledDate"><small>Cancelled on</small><b>{date(booking.cancelledAt)}</b></span>
       <svg className="transporterCancelledChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
      </button>
-     <div className="transporterCancelledDetails" id={detailsId} hidden={!open}>
-      <p><strong>Delivery reference</strong><span>{reference(booking.id)}</span><strong>Cancelled on</strong><span>{date(booking.cancelledAt)}</span></p>
-      <dl><div><dt>Transport type</dt><dd>{transportTypeDisplay(booking.job.transportType)}</dd></div><div><dt>Registration</dt><dd>{booking.job.registration||'Not provided'}</dd></div><div><dt>Running condition</dt><dd>{booking.job.running?'Runs & drives':'Non-running'}</dd></div><div><dt>Requested collection date</dt><dd>{date(booking.job.collectionDate)}</dd></div><div><dt>Customer</dt><dd>{booking.customer.name}</dd></div></dl>
-      {booking.cancellationNote&&<p><strong>Cancellation note</strong><span>{booking.cancellationNote}</span></p>}
+     <div className="transporterCancelledDetails tdExpandedBody" id={detailsId} hidden={!open}>
+      <div className="tdSecureRow"><span>Cancelled on · {date(booking.cancelledAt)}</span><span>Delivery reference · {reference(booking.id)}</span></div>
+      <dl className="tdFacts tdFactsFour"><div><dt>Transport type</dt><dd>{transportTypeDisplay(booking.job.transportType).replace(/\s*[\p{Extended_Pictographic}\uFE0F]+/gu,'')}</dd></div><div><dt>Registration</dt><dd>{booking.job.registration||'Not provided'}</dd></div><div><dt>Running condition</dt><dd>{booking.job.running?'Runs & drives':'Non-running'}</dd></div><div><dt>Customer</dt><dd>{booking.customer.name}</dd></div></dl>
+      {booking.cancellationNote&&<div className="tdQuoteMessage"><small>Cancellation note</small><p>{booking.cancellationNote}</p></div>}
      </div>
     </article>;
    })}

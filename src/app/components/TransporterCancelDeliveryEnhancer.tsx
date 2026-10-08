@@ -25,8 +25,8 @@ export default function TransporterCancelDeliveryEnhancer(){
         existing?.remove();
         return;
       }
-      if(existing)return;
-      const actions=card.querySelector<HTMLElement>('.actionButtons');
+      const actions=card.querySelector<HTMLElement>(window.matchMedia('(min-width:1024px)').matches?'[data-desktop-cancel-slot]':'.actionButtons');
+      if(existing){if(actions&&existing.parentElement!==actions)actions.appendChild(existing);return;}
       if(!actions)return;
       const button=document.createElement('button');
       button.type='button';
