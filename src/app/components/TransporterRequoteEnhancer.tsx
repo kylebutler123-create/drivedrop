@@ -125,7 +125,7 @@ export default function TransporterRequoteEnhancer({jobId,quote,onUpdated,onCanc
         <div><label htmlFor={`requote-date-${quote.id}`}>Alternative collection date</label><QuoteDatePicker id={`requote-date-${quote.id}`} name="proposedCollectionDate" label="Alternative collection date" withWindow disabled={saving} initialValue={draft.date} initialFrom={draft.from} initialUntil={draft.until} onChange={selection=>setDraft(current=>({...current,date:selection.value,from:selection.from,until:selection.until}))}/></div>
         <div><label htmlFor={`requote-expiry-${quote.id}`}>Quote valid until · UK</label><QuoteDatePicker id={`requote-expiry-${quote.id}`} name="expiresAt" label="Quote valid until" withTime disabled={saving} initialValue={draft.expiresAt} onChange={selection=>setDraft(current=>({...current,expiresAt:selection.value}))}/></div>
         <div className="quoteMessageField"><label htmlFor={`requote-message-${quote.id}`}>Message to customer</label><textarea id={`requote-message-${quote.id}`} name="message" maxLength={1000} rows={3} value={draft.message} disabled={saving} onChange={event=>setDraft(current=>({...current,message:event.target.value}))}/></div>
-        <span className="tdDesktopOnly tdQuoteFootnote">You confirm availability before the customer pays.</span>
+        <span className="tdDesktopOnly tdQuoteFootnote">The customer authorises payment before you confirm availability.</span>
         <div className="requoteActions requoteEditActions">
           <button className="btn light" type="button" disabled={saving} onClick={cancel}>Cancel</button>
           <button className="btn orange quoteSubmitBtn" type="submit" disabled={saving}>{saving?'Updating…':'Update quote'}</button>
@@ -135,3 +135,4 @@ export default function TransporterRequoteEnhancer({jobId,quote,onUpdated,onCanc
     {notice&&<div className={`requoteNotice ${notice.type}`} role={notice.type==='error'?'alert':'status'}>{notice.text}</div>}
   </div>;
 }
+
