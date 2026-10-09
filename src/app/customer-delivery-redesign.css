@@ -364,3 +364,9 @@
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.isCollapsed .deliveryDesignSummary{grid-template-columns:48px minmax(180px,1fr) 320px 130px 18px!important;gap:12px!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerCompactAddress{font-size:12px;gap:5px}
 }
+
+@media screen and (min-width:1024px){
+ .quoteDesignDate .quoteCollectionWindow{display:flex;align-items:center;gap:6px;margin-top:5px;color:#0b1c46;font-size:13px;line-height:1.3;white-space:nowrap}
+ .quoteCollectionWindow svg{flex:none;color:#7183a0}
+ .quoteDesignDate .quoteCollectionWindow small{display:inline;font-size:11px;color:#7183a0;margin-left:3px}
+}

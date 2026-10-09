@@ -181,7 +181,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
         </div>
         <div className="homeQuoteFieldGrid homeQuoteDateTransport">
           {(!desktop||wizard)&&<CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>}
-          <CollectionWindowFields date={collectionDate} dateField={desktop&&!wizard?<CollectionDatePicker combined value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>:undefined}/>
+          <CollectionWindowFields required={expanded} date={collectionDate} dateField={desktop&&!wizard?<CollectionDatePicker combined value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>:undefined}/>
           <div className="field"><label htmlFor="home-quote-transport-type">{fieldLabel('Transport type')}</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value} disabled={type.value==='DRIVEN'&&running==='false'}>{type.label}</option>)}</select></div>
         </div>
       </div>

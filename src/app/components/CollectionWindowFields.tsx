@@ -15,7 +15,7 @@ export default function CollectionWindowFields({date,from='',until='',required=f
  useEffect(()=>{setNow(new Date());const timer=setInterval(()=>setNow(new Date()),30000);return()=>clearInterval(timer);},[]);
  useEffect(()=>{setStart(from||'');setEnd(until||'');setSaved(false);setOpen(false);setError('');},[from,until]);
  useEffect(()=>{setSaved(false);setError('');},[day]);
- function invalid(a=start,b=end,allowUndated=false){if(!a&&!b)return mustFill?'Both times are required for same-day collection.':'';if(!a||!b||a>=b)return 'Available until must be later than Available from.';if(!day)return allowUndated?'':'Choose a collection date before submitting your request.';try{const current=new Date();if(ukInstant(day,b)<=current)return 'Choose a later collection window.';ukInstant(day,a);}catch{return 'Choose valid collection times for this date.';}return '';}
+ function invalid(a=start,b=end,allowUndated=false){if(!a&&!b)return mustFill?'Select both an Available from and Available until time.':'';if(!a||!b||a>=b)return 'Available until must be later than Available from.';if(!day)return allowUndated?'':'Choose a collection date before submitting your request.';try{const current=new Date();if(ukInstant(day,b)<=current)return 'Choose a later collection window.';ukInstant(day,a);}catch{return 'Choose valid collection times for this date.';}return '';}
  useEffect(()=>{const form=root.current?.closest('form');if(!form)return;const reset=()=>{setStart(from||'');setEnd(until||'');setOpen(false);setSaved(false);setError('');};const submit=(e:Event)=>{const message=invalid();if(message){e.preventDefault();e.stopImmediatePropagation();setError(message);setOpen(true);setActive(!start?'from':'until');setPeriod(!start?1:Math.min(3,Math.floor((minutes(start)+30)/360)));startButton.current?.focus();}};form.addEventListener('reset',reset);form.addEventListener('submit',submit,true);return()=>{form.removeEventListener('reset',reset);form.removeEventListener('submit',submit,true);};});
  function show(which:'from'|'until'){setNow(new Date());setActive(which);setPeriod((which==='from'?start:end)?Math.floor(minutes(which==='from'?start:end)/360):which==='until'&&start?Math.min(3,Math.floor((minutes(start)+30)/360)):1);setOpen(true);setSaved(false);}
  function close(){setOpen(false);(active==='from'?startButton:endButton).current?.focus();}
@@ -32,7 +32,7 @@ export default function CollectionWindowFields({date,from='',until='',required=f
    {error&&<p className="availabilityError" role="alert">{error}</p>}
   </section>}
   {saved&&<div className="dd-saved" aria-live="polite">Collection window: {start} – {end} · {formattedDate}</div>}
-  <div className="dd-helper"><span>{dateField?'UK time · A collection window is required for same-day requests and optional for future dates.':mustFill?'Both times are required for same-day collection.':'Optional · Leave both times blank to arrange a window later.'}</span>{!mustFill&&(start||end)&&<button type="button" onClick={()=>{setStart('');setEnd('');setSaved(false);setError('');setOpen(false);}}>Clear times</button>}</div>
+  <div className="dd-helper"><span>{mustFill?'UK time · Both collection times are required.':'Optional · Leave both times blank to arrange a window later.'}</span>{!mustFill&&(start||end)&&<button type="button" onClick={()=>{setStart('');setEnd('');setSaved(false);setError('');setOpen(false);}}>Clear times</button>}</div>
   {error&&!open&&<p className="availabilityError" role="alert">{error}</p>}
  </fieldset>;
 }

@@ -12,6 +12,7 @@ import {insuranceStatusForVerification} from '@/lib/insurance-expiry-notificatio
 
 
 const S=z.object({collection:z.string().min(2),delivery:z.string().min(2),transportType:z.enum(transportTypeValues),vehicleType:z.enum(vehicleTypes),vehicleMake:z.string().min(1),vehicleModel:z.string().min(1),registration:z.string().optional(),running:z.boolean().default(true),collectionDate:z.coerce.date(),collectionFrom:z.string().optional(),collectionUntil:z.string().optional()}).superRefine((data,context)=>{
+ if(!data.collectionFrom||!data.collectionUntil)context.addIssue({code:z.ZodIssueCode.custom,path:['collectionFrom'],message:'Select both an Available from and Available until time.'});
  if(!isTransportVehicleCompatible(data.transportType,data.vehicleType))context.addIssue({code:z.ZodIssueCode.custom,path:['vehicleType'],message:enclosedTransportCompatibilityMessage});
  if(!isTransportRunningCompatible(data.transportType,data.running))context.addIssue({code:z.ZodIssueCode.custom,path:['running'],message:drivenTransportCompatibilityMessage});
 });
