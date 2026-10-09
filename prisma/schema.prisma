@@ -204,6 +204,8 @@ model Quote {
   availabilityRequests     AvailabilityRequest[]
   message                  String?
   proposedCollectionDate   DateTime?
+  proposedCollectionFrom   String?
+  proposedCollectionUntil  String?
   dateNegotiationStatus    DateNegotiationStatus @default(ORIGINAL)
   status                   QuoteStatus            @default(PENDING)
   booking                  Booking?

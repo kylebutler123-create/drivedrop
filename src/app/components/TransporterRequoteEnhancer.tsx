@@ -1,5 +1,6 @@
 'use client';
 
+import QuoteDatePicker from './QuoteDatePicker';
 import {useRef,useState} from 'react';
 
 type Quote={
@@ -9,8 +10,10 @@ type Quote={
   expiresAt?:string|null;
   message?:string|null;
   proposedCollectionDate?:string|null;
+  proposedCollectionFrom?:string|null;
+  proposedCollectionUntil?:string|null;
 };
-type Draft={price:string;message:string;date:string;expiresAt:string};
+type Draft={price:string;message:string;date:string;expiresAt:string;from:string;until:string};
 type WithdrawResult={quote:Quote;jobStatus:string;noCancellationFine:true};
 type Props={showActionIcons?:boolean;jobId:string;quote:Quote;onUpdated:(quote:Quote)=>void;onCancelled:(result:WithdrawResult)=>void};
 
@@ -18,7 +21,7 @@ function quoteDraft(quote:Quote):Draft{
   return {
     price:(quote.pricePence/100).toFixed(2),
     message:quote.message||'',
-    date:quote.proposedCollectionDate?.slice(0,10)||'',expiresAt:quote.expiresAt?new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/London',dateStyle:'short',timeStyle:'short'}).format(new Date(quote.expiresAt)).replace(' ','T'):''
+    date:quote.proposedCollectionDate?.slice(0,10)||'',from:quote.proposedCollectionFrom||'',until:quote.proposedCollectionUntil||'',expiresAt:quote.expiresAt?new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/London',dateStyle:'short',timeStyle:'short'}).format(new Date(quote.expiresAt)).replace(' ','T'):''
   };
 }
 
@@ -34,7 +37,7 @@ async function saveQuoteRevision(jobId:string,quoteId:string,draft:Draft):Promis
       jobId,
       pricePence,
       message:draft.message,
-      proposedCollectionDate:draft.date,expiresAt:draft.expiresAt
+      proposedCollectionDate:draft.date,proposedCollectionFrom:draft.from,proposedCollectionUntil:draft.until,expiresAt:draft.expiresAt
     })
   });
   const result=await response.json().catch(()=>null);
@@ -118,7 +121,7 @@ export default function TransporterRequoteEnhancer({jobId,quote,onUpdated,onCanc
     {!editing?<div className="requoteActions"><button type="button" className="btn orange requoteButton" disabled={withdrawing} onClick={openEditor}>{showActionIcons&&<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m4 16 12-12 4 4L8 20H4ZM14 6l4 4"/></svg>}<span className="tdMobileOnly">Adjust quote</span><span className="tdDesktopOnly">Edit quote</span></button><button type="button" className="btn light" disabled={withdrawing} onClick={withdraw}>{showActionIcons&&<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19"/></svg>}{withdrawing?'Cancelling…':'Cancel quote'}</button></div>:<form className="requoteForm" onSubmit={submit} aria-busy={saving}>
       <div className="requoteHeading"><strong>Adjust your quote</strong><small>Your updated offer replaces your current pending quote.</small></div>
       <label>NEW PRICE (£)<input name="price" type="number" min="10" max="100000" step="0.01" required value={draft.price} disabled={saving} onChange={event=>setDraft({...draft,price:event.target.value})}/></label>
-      <label>ALTERNATIVE COLLECTION DATE<input name="date" type="date" value={draft.date} disabled={saving} onChange={event=>setDraft({...draft,date:event.target.value})}/></label>
+      <label htmlFor={`requote-date-${quote.id}`}>ALTERNATIVE COLLECTION DATE</label><QuoteDatePicker id={`requote-date-${quote.id}`} name="proposedCollectionDate" label="Alternative collection date" withWindow disabled={saving} initialValue={draft.date} initialFrom={draft.from} initialUntil={draft.until} onChange={selection=>setDraft(current=>({...current,date:selection.value,from:selection.from,until:selection.until}))}/>
       <label>QUOTE VALID UNTIL (UK TIME)<input type="datetime-local" value={draft.expiresAt} disabled={saving} onChange={event=>setDraft({...draft,expiresAt:event.target.value})}/></label><label>MESSAGE TO CUSTOMER<textarea name="message" maxLength={1000} rows={3} value={draft.message} disabled={saving} onChange={event=>setDraft({...draft,message:event.target.value})}/></label>
       <div className="requoteActions">
         <button className="btn orange" type="submit" disabled={saving}>{saving?'Updating…':'Update quote'}</button>

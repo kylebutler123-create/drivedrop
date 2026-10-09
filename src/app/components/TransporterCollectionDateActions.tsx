@@ -3,6 +3,8 @@
 import {useRef, useState, type FormEvent} from 'react';
 
 type DateUpdate = {
+  proposedCollectionFrom: string | null;
+  proposedCollectionUntil: string | null;
   proposedCollectionDate: string;
   dateNegotiationStatus: 'ACCEPTED' | 'PROPOSED';
 };
@@ -49,6 +51,8 @@ export default function TransporterCollectionDateActions({quoteId, customerDate,
       }
       onUpdated({
         proposedCollectionDate: result.proposedCollectionDate,
+        proposedCollectionFrom: result.proposedCollectionFrom??null,
+        proposedCollectionUntil: result.proposedCollectionUntil??null,
         dateNegotiationStatus: expectedStatus,
       });
     } catch {

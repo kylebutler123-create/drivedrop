@@ -1,8 +1,8 @@
 import {lockJob,assertNoReservation} from '@/lib/availability';
-import {quoteExpiry,isOfferLive} from '@/lib/availability-time';
+import {quoteExpiry,isOfferLive,validateCollectionWindow} from '@/lib/availability-time';
 import { NextResponse } from 'next/server';import { prisma } from '@/lib/prisma';import { currentUser } from '@/lib/auth';import { z } from 'zod';import {apiError,parseJson} from '@/lib/api';import {sendTransactionalEmailSafely} from '@/lib/email';import {createNotificationSafely} from '@/lib/notifications';import {calculateCustomerPrice} from '@/lib/finance';import {insuranceStatusForVerification} from '@/lib/insurance-expiry-notifications'
 import {isQuoteRequestOpen,pendingCollectionDates,collectionDateIsCurrent,parseCollectionDateInput} from '@/lib/job-expiry';
-const S=z.object({jobId:z.string().min(1),pricePence:z.number().int().min(1000).max(10_000_000),message:z.string().trim().max(1000).optional(),proposedCollectionDate:z.string().optional(),expiresAt:z.string().optional()})
+const S=z.object({jobId:z.string().min(1),pricePence:z.number().int().min(1000).max(10_000_000),message:z.string().trim().max(1000).optional(),proposedCollectionDate:z.string().optional(),proposedCollectionFrom:z.string().optional(),proposedCollectionUntil:z.string().optional(),expiresAt:z.string().optional()})
 const W=z.object({quoteId:z.string().min(1)})
 export async function POST(r:Request){
  try{
@@ -24,10 +24,12 @@ export async function POST(r:Request){
    const existing=await tx.quote.findFirst({where:{jobId:d.jobId,transporterId:u.id}});
    if(existing&&!['PENDING','WITHDRAWN'].includes(existing.status))throw new Error('This quote can no longer be revised');
    const proposed=d.proposedCollectionDate?parseCollectionDateInput(d.proposedCollectionDate):null;
+   if(!proposed&&(d.proposedCollectionFrom||d.proposedCollectionUntil))throw new Error('Choose an alternative collection date for this time window');
+   const proposedWindow=proposed?validateCollectionWindow(proposed,d.proposedCollectionFrom,d.proposedCollectionUntil,new Date(),false):{collectionFrom:null,collectionUntil:null};
    if(!collectionDateIsCurrent(proposed||job.collectionDate))throw new Error('Choose a collection date today or later');
    const q=existing
-    ?await tx.quote.update({where:{id:existing.id},data:{status:'PENDING',expiresAt,pricePence:d.pricePence,message:d.message||null,proposedCollectionDate:proposed,dateNegotiationStatus:proposed?'PROPOSED':'ORIGINAL'}})
-    :await tx.quote.create({data:{jobId:d.jobId,expiresAt,pricePence:d.pricePence,message:d.message,transporterId:u.id,proposedCollectionDate:proposed,dateNegotiationStatus:proposed?'PROPOSED':'ORIGINAL'}});
+    ?await tx.quote.update({where:{id:existing.id},data:{status:'PENDING',expiresAt,pricePence:d.pricePence,message:d.message||null,proposedCollectionDate:proposed,proposedCollectionFrom:proposedWindow.collectionFrom,proposedCollectionUntil:proposedWindow.collectionUntil,dateNegotiationStatus:proposed?'PROPOSED':'ORIGINAL'}})
+    :await tx.quote.create({data:{jobId:d.jobId,expiresAt,pricePence:d.pricePence,message:d.message,transporterId:u.id,proposedCollectionDate:proposed,proposedCollectionFrom:proposedWindow.collectionFrom,proposedCollectionUntil:proposedWindow.collectionUntil,dateNegotiationStatus:proposed?'PROPOSED':'ORIGINAL'}});
    if(job.status==='OPEN')await tx.transportJob.update({where:{id:d.jobId},data:{status:'QUOTED'}});
    return {quote:q,customer:job.customer,vehicleMake:job.vehicleMake,vehicleModel:job.vehicleModel,collection:job.collection,delivery:job.delivery,revised:existing?.status==='PENDING'}
   });

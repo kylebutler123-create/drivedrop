@@ -1,12 +1,12 @@
 import {lockJob,assertNoReservation} from '@/lib/availability';
-import {isOfferLive} from '@/lib/availability-time';
+import {isOfferLive,validateCollectionWindow} from '@/lib/availability-time';
 import {NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
 import {z} from 'zod';
 import {isQuoteRequestOpen,pendingCollectionDates,collectionDateIsCurrent,parseCollectionDateInput} from '@/lib/job-expiry';
 
-const S=z.object({quoteId:z.string().min(1),action:z.enum(['ACCEPT','DECLINE','COUNTER','PROPOSE']),date:z.string().optional()});
+const S=z.object({quoteId:z.string().min(1),action:z.enum(['ACCEPT','DECLINE','COUNTER','PROPOSE']),date:z.string().optional(),proposedCollectionFrom:z.string().optional(),proposedCollectionUntil:z.string().optional()});
 export async function PATCH(r:Request){
  const u=await currentUser();
  if(!u)return NextResponse.json({error:'Login required'},{status:401});
@@ -23,16 +23,17 @@ export async function PATCH(r:Request){
   if(!isCustomer&&!isTransporter)return NextResponse.json({error:'Forbidden'},{status:403});
   if(isTransporter&&(u.accountStatus!=='ACTIVE'||u.workRestricted))return NextResponse.json({error:'Your transporter account is not currently permitted to change pending quotes'},{status:403});
   if(!isQuoteRequestOpen(q.job)&&!(isCustomer&&d.action==='COUNTER'))throw new Error('This request has expired. The customer must choose a new collection date.');
-  const data:{dateNegotiationStatus?:'ACCEPTED'|'DECLINED'|'COUNTERED'|'PROPOSED';proposedCollectionDate?:Date|null}={};
+  const data:{dateNegotiationStatus?:'ACCEPTED'|'DECLINED'|'COUNTERED'|'PROPOSED';proposedCollectionDate?:Date|null;proposedCollectionFrom?:string|null;proposedCollectionUntil?:string|null}={};
   if(d.action==='ACCEPT'){
    if(!q.proposedCollectionDate)throw new Error('No proposed date to accept');
    if(!collectionDateIsCurrent(q.proposedCollectionDate))throw new Error('Choose a collection date today or later');
    if(isCustomer&&q.dateNegotiationStatus!=='PROPOSED')throw new Error('No transporter date proposal is awaiting your response');
    if(isTransporter&&q.dateNegotiationStatus!=='COUNTERED')throw new Error('No customer counter-date is awaiting your response');
+   validateCollectionWindow(q.proposedCollectionDate,q.proposedCollectionFrom,q.proposedCollectionUntil,new Date(),false);
    data.dateNegotiationStatus='ACCEPTED';
   }else if(d.action==='DECLINE'){
    if(!isCustomer)throw new Error('Only the customer can decline a proposed date');
-   data.dateNegotiationStatus='DECLINED';data.proposedCollectionDate=null;
+   data.dateNegotiationStatus='DECLINED';data.proposedCollectionDate=null;data.proposedCollectionFrom=null;data.proposedCollectionUntil=null;
   }else if(d.action==='COUNTER'){
    if(!isCustomer)throw new Error('Only the customer can counter with another date');
    if(!d.date)throw new Error('Choose a counter-date');
@@ -42,6 +43,7 @@ export async function PATCH(r:Request){
    if(!d.date)throw new Error('Choose a proposed date');
    data.proposedCollectionDate=parseCollectionDateInput(d.date);data.dateNegotiationStatus='PROPOSED';
   }
+  if(['COUNTER','PROPOSE'].includes(d.action)&&data.proposedCollectionDate){const window=validateCollectionWindow(data.proposedCollectionDate,d.proposedCollectionFrom,d.proposedCollectionUntil,new Date(),false);data.proposedCollectionFrom=window.collectionFrom;data.proposedCollectionUntil=window.collectionUntil;}
   if(data.proposedCollectionDate&&!collectionDateIsCurrent(data.proposedCollectionDate))throw new Error('Choose a collection date today or later');
   return tx.quote.update({where:{id:q.id},data});
   });

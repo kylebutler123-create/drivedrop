@@ -64,7 +64,7 @@ export const revalidate=0;
 export async function GET(){
  const u=await currentUser();
  if(!u||!['TRANSPORTER','ADMIN'].includes(u.role))return NextResponse.json({error:'Forbidden'},{status:403});
- const jobs=await prisma.transportJob.findMany({where:{...openQuoteRequestsWhere()},include:{_count:{select:{quotes:{where:{status:{not:'WITHDRAWN'}}}}},quotes:{where:u.role==='TRANSPORTER'?{transporterId:u.id,status:'PENDING',OR:[{expiresAt:null},{expiresAt:{gt:new Date()}}]}:undefined,select:{id:true,pricePence:true,status:true,expiresAt:true,transporterId:true,proposedCollectionDate:true,dateNegotiationStatus:true,message:true}},customer:{select:{name:true}}},orderBy:{createdAt:'desc'}});
+ const jobs=await prisma.transportJob.findMany({where:{...openQuoteRequestsWhere()},include:{_count:{select:{quotes:{where:{status:{not:'WITHDRAWN'}}}}},quotes:{where:u.role==='TRANSPORTER'?{transporterId:u.id,status:'PENDING',OR:[{expiresAt:null},{expiresAt:{gt:new Date()}}]}:undefined,select:{id:true,pricePence:true,status:true,expiresAt:true,transporterId:true,proposedCollectionDate:true,proposedCollectionFrom:true,proposedCollectionUntil:true,dateNegotiationStatus:true,message:true}},customer:{select:{name:true}}},orderBy:{createdAt:'desc'}});
  const ids=jobs.map(j=>j.id);
  const rows=ids.length?await prisma.$queryRawUnsafe<Array<{id:string;vehicleType:string|null}>>(`SELECT "id", "vehicleType" FROM "TransportJob" WHERE "id" IN (${ids.map((_,i)=>`$${i+1}`).join(',')})`,...ids):[];
  const types=new Map(rows.map(r=>[r.id,r.vehicleType]));

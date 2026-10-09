@@ -41,7 +41,8 @@ export async function selectQuote(actor:BookingActor,quoteId:string,window?:{col
   if(prior&&prior.status!=='CANCELLED')throw new AvailabilityError('This job already has a booking');
   const date=q.dateNegotiationStatus==='ACCEPTED'&&q.proposedCollectionDate?q.proposedCollectionDate:q.job.collectionDate;
   const windowChanged=calendarDate(date)!==calendarDate(q.job.collectionDate);
-  const from=window?.collectionFrom||(windowChanged?null:q.job.collectionFrom),until=window?.collectionUntil||(windowChanged?null:q.job.collectionUntil);
+  const agreedWindow=q.dateNegotiationStatus==='ACCEPTED'&&q.proposedCollectionFrom&&q.proposedCollectionUntil;
+  const from=window?.collectionFrom||(agreedWindow?q.proposedCollectionFrom:windowChanged?null:q.job.collectionFrom),until=window?.collectionUntil||(agreedWindow?q.proposedCollectionUntil:windowChanged?null:q.job.collectionUntil);
   validateCollectionWindow(date,from,until,now);
   const request=await tx.availabilityRequest.create({data:{jobId:q.jobId,quoteId:q.id,customerId:actor.id,transporterId:q.transporterId,activeJobId:q.jobId,pricePence:q.pricePence,collectionDate:date,collectionFrom:from,collectionUntil:until,respondBy:confirmationDeadline(date,until,now,q.expiresAt)}});
   return {request,created:true};

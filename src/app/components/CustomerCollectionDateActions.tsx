@@ -3,6 +3,8 @@
 import {useRef, useState, type FormEvent} from 'react';
 
 type DateUpdate = {
+  proposedCollectionFrom: string | null;
+  proposedCollectionUntil: string | null;
   proposedCollectionDate: string | null;
   dateNegotiationStatus: 'ACCEPTED' | 'DECLINED' | 'COUNTERED';
 };
@@ -53,6 +55,8 @@ export default function CustomerCollectionDateActions({quoteId, proposedDate, on
       // The endpoint returns the transporter price; keep the customer's displayed total.
       onUpdated({
         proposedCollectionDate: result.proposedCollectionDate,
+        proposedCollectionFrom: result.proposedCollectionFrom??null,
+        proposedCollectionUntil: result.proposedCollectionUntil??null,
         dateNegotiationStatus: expectedStatus,
       });
     } catch {
