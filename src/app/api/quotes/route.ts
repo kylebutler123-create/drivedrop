@@ -22,7 +22,7 @@ export async function POST(r:Request){
    if(!job)throw new Error('Not found');
    if(!isQuoteRequestOpen(job))throw new Error('Job has expired or is no longer accepting quotes');
    const existing=await tx.quote.findFirst({where:{jobId:d.jobId,transporterId:u.id}});
-   if(existing&&!['PENDING','WITHDRAWN'].includes(existing.status))throw new Error('This quote can no longer be revised');
+   if(existing&&!['PENDING','WITHDRAWN','EXPIRED'].includes(existing.status))throw new Error('This quote can no longer be revised');
    const proposed=d.proposedCollectionDate?parseCollectionDateInput(d.proposedCollectionDate):null;
    if(!proposed&&(d.proposedCollectionFrom||d.proposedCollectionUntil))throw new Error('Choose an alternative collection date for this time window');
    const proposedWindow=proposed?validateCollectionWindow(proposed,d.proposedCollectionFrom,d.proposedCollectionUntil,new Date(),false):{collectionFrom:null,collectionUntil:null};

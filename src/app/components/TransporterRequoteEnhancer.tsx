@@ -89,6 +89,7 @@ export default function TransporterRequoteEnhancer({jobId,quote,onUpdated,onCanc
     try{
       const updated=await saveQuoteRevision(jobId,quote.id,draft);
       onUpdated(updated);
+      window.dispatchEvent(new Event('drivedrop-quotes-updated'));
       setEditing(false);
       setNotice({type:'success',text:'Quote updated successfully — the customer can now review your revised offer.'});
     }catch(error){
@@ -108,6 +109,7 @@ export default function TransporterRequoteEnhancer({jobId,quote,onUpdated,onCanc
     try{
       const result=await cancelQuote(quote.id);
       onCancelled(result);
+      window.dispatchEvent(new Event('drivedrop-quotes-updated'));
     }catch(error){
       setNotice({type:'error',text:error instanceof Error?error.message:'Unable to cancel your quote. Check your connection and try again.'});
     }finally{
