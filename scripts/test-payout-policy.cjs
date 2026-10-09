@@ -1,0 +1,17 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),Module=require('node:module');
+const root=path.join(__dirname,'..'),file=path.join(root,'src/lib/payout-policy.ts');
+const swc=require(path.join(root,'node_modules/next/dist/build/swc'));
+const m=new Module(file);m._compile(swc.transformSync(fs.readFileSync(file,'utf8'),{filename:file,jsc:{parser:{syntax:'typescript'},target:'es2020'},module:{type:'commonjs'}}).code,file);
+const {refundAmounts,completedPayoutStatus,adminPayoutApproved,payoutApprovalMarker}=m.exports;
+const legacy={paidPence:50000,refundedPence:0,platformFeePence:2500};
+const first=refundAmounts(legacy,25000);assert.deepEqual(first,{refundedPence:25000,platformFeePence:1250,transporterProceedsPence:23750});
+const second=refundAmounts({...legacy,...first},10000);assert.equal(second.platformFeePence,750);assert.equal(second.transporterProceedsPence,14250);
+assert.equal(refundAmounts({...legacy,...first},25000).transporterProceedsPence,0);
+assert.throws(()=>refundAmounts(legacy,50001));assert.throws(()=>refundAmounts(legacy,0));
+const partial={id:'d',status:'RESOLVED',resolution:'PARTIAL_REFUND'};
+assert.equal(adminPayoutApproved([partial],[]),false);assert.equal(adminPayoutApproved([partial],[{note:payoutApprovalMarker('d')}]),true);
+const fixtures=[['HELD',null,true,'HELD'],['READY',null,false,'BLOCKED'],['READY',null,true,'READY'],['PAID',true,false,'PAID'],['NOT_READY',null,false,'AWAITING'],['NOT_READY',true,true,'NOT_READY'],['CANCELLED',true,true,'CANCELLED']];
+for(const [payoutStatus,customerConfirmedAt,details,expected] of fixtures)assert.equal(completedPayoutStatus({payment:{payoutStatus},customerConfirmedAt},details),expected);
+assert.equal(completedPayoutStatus({payment:{status:'REFUNDED',payoutStatus:'CANCELLED'}},true),'REFUNDED');
+assert.equal(completedPayoutStatus({payment:{payoutStatus:'READY'},disputes:[{status:'OPEN'}]},true),'HELD');
+console.log('PASS refund accounting, explicit admin approval and exclusive completed statuses');

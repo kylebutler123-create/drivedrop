@@ -18,7 +18,7 @@ export async function GET(){
     trackingEvents:{where:{status:'DELIVERED'},select:{createdAt:true,note:true},orderBy:{createdAt:'desc'},take:1},
     evidence:{select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'asc'}},
     disputes:{select:{id:true,status:true,resolution:true,reason:true,createdAt:true},orderBy:{createdAt:'desc'}},
-    payment:{select:{transporterProceedsPence:true,cancellationDeductionPence:true,payoutStatus:true,status:true,events:{where:{type:'PAYOUT_PAID'},select:{id:true,createdAt:true},orderBy:{createdAt:'desc'},take:1}}}
+    payment:{select:{transporterProceedsPence:true,refundedPence:true,cancellationDeductionPence:true,payoutStatus:true,status:true,events:{where:{type:{in:['PAYOUT_PAID','PAYOUT_READY']}},select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'desc'}}}}
    },
    orderBy:{createdAt:'desc'}
   }),

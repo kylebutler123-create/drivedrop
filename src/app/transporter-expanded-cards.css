@@ -163,3 +163,8 @@
  body.approvedDesktop.role-transporter .tdQuoteCard .requoteGrid .requoteEditActions>.quoteSubmitBtn{width:170px!important}
  body.approvedDesktop.role-transporter .tdQuoteCard .requoteGrid .quoteMessageField{padding-bottom:25px}
 }
+
+@media(min-width:1024px){
+ body.approvedDesktop.role-transporter .transporterCompletedCard:is([data-payout-status="HELD"],[data-payout-status="BLOCKED"]) .tdCompactStatus{background:#fff0dd;color:#a75100}
+ body.approvedDesktop.role-transporter .transporterCompletedCard:is([data-payout-status="REFUNDED"],[data-payout-status="CANCELLED"],[data-payout-status="NOT_READY"]) .tdCompactStatus{background:#edf0f6;color:#52658e}
+}

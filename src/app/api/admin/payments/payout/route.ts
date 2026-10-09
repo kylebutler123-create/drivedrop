@@ -4,6 +4,7 @@ import {currentUser} from '@/lib/auth';
 import {createNotificationSafely} from '@/lib/notifications';
 import {applyCancellationFeesToPayout} from '@/lib/cancellation-fees';
 import {z} from 'zod';
+import {capturedPayment,adminPayoutApproved} from '@/lib/payout-policy';
 
 const S=z.object({paymentId:z.string()});
 const money=(pence:number)=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(pence/100);
@@ -23,21 +24,23 @@ export async function POST(r:Request){
  const{paymentId}=parsed.data;
  try{
   const result=await prisma.$transaction(async(tx:any)=>{
+   const ref=await tx.bookingPayment.findUniqueOrThrow({where:{id:paymentId},select:{bookingId:true}});await tx.$queryRaw`SELECT id FROM "Booking" WHERE id=${ref.bookingId} FOR UPDATE`;
    const old=await tx.bookingPayment.findUniqueOrThrow({
     where:{id:paymentId},
-    include:{booking:{include:{
-     disputes:{select:{status:true,resolution:true}},
+    include:{events:{where:{type:'PAYOUT_READY'}},booking:{include:{
+     disputes:{select:{id:true,status:true,resolution:true}},
      trackingEvents:{where:{status:'DELIVERED'},select:{createdAt:true},orderBy:{createdAt:'desc'},take:1},
      job:{select:{vehicleMake:true,vehicleModel:true,registration:true}}
     }}}
    });
    const activeDisputes=old.booking.disputes.filter((dispute:any)=>['OPEN','UNDER_REVIEW'].includes(dispute.status));
-   const adminReleaseOverride=old.booking.disputes.some((dispute:any)=>dispute.status==='RESOLVED'&&dispute.resolution==='RELEASE_PAYOUT');
+   const adminReleaseOverride=adminPayoutApproved(old.booking.disputes,old.events);
    if(activeDisputes.length)throw new Error('Payout is held while an active dispute is under review');
    if(old.booking.status!=='DELIVERED')throw new Error('Delivery must be completed first');
    if(!old.booking.customerConfirmedAt&&!adminReleaseOverride)throw new Error('Customer confirmation or an approved admin dispute resolution is required');
-   if(old.status!=='PAID')throw new Error('Customer payment not recorded');
+   if(!capturedPayment(old.status))throw new Error('Customer payment not recorded');
    if(old.payoutStatus!=='READY')throw new Error('Payout is not ready for release');
+   if(old.transporterProceedsPence<=0||old.transporterProceedsPence+old.platformFeePence!==old.paidPence-old.refundedPence)throw Error('Remaining payment amounts require review before release');
    const details=await tx.$queryRaw<any[]>`SELECT "id" FROM "TransporterPayoutDetails" WHERE "userId"=${old.booking.transporterId} LIMIT 1`;
    if(!details.length)throw new Error('Transporter payout details are not complete');
    const feeResult=await applyCancellationFeesToPayout({
