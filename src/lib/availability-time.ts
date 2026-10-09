@@ -45,7 +45,7 @@ export function confirmationDeadline(date:Date|string,until?:string|null,now=new
  if(sameDay&&!until)throw new AvailabilityError('Add a collection time window before requesting same-day confirmation');
  const start=responseStart(now);
  // 30 minutes is a minimum travel allowance, not a prediction of the route duration.
- const cutoff=new Date(+collectionLimit(date,until)-(paymentMinutes(date,now)+30)*MINUTE);
+ const cutoff=new Date(+collectionLimit(date,until)-30*MINUTE);
  const deadline=new Date(Math.min(+businessDeadline(now,sameDay?60:720),+cutoff,...(offerExpiry?[+offerExpiry]:[]),...(sameDay?[+ukInstant(calendarDate(date),'20:00')]:[])));
  if(+deadline-+start<15*MINUTE)throw new AvailabilityError('There is not enough time for confirmation, payment and travel. Choose a later collection window.');
  return deadline;
@@ -58,4 +58,4 @@ export function paymentDeadline(date:Date|string,until:string|null,travelMinutes
  return deadline;
 }
 export function isOfferLive(q:{status:string;expiresAt?:Date|string|null},now=new Date()){return q.status==='PENDING'&&(!q.expiresAt||+new Date(q.expiresAt)>+now);}
-export function requestExpired(r:{status:string;respondBy:Date|string;payBy?:Date|string|null},now=new Date()){return r.status==='AWAITING_TRANSPORTER'?+new Date(r.respondBy)<=+now:r.status==='AWAITING_PAYMENT'? !r.payBy||+new Date(r.payBy)<=+now:false;}
+export function requestExpired(r:{status:string;respondBy:Date|string;payBy?:Date|string|null},now=new Date()){return ['AWAITING_TRANSPORTER','AWAITING_AUTHORISATION'].includes(r.status)?+new Date(r.respondBy)<=+now:r.status==='AWAITING_PAYMENT'? !r.payBy||+new Date(r.payBy)<=+now:false;}

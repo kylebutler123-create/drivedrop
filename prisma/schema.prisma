@@ -507,6 +507,13 @@ model TransporterCancellationDeduction {
 
 // A reservation is not a Booking. Only successful payment creates an active delivery.
 model AvailabilityRequest {
+  paymentProvider String?
+  paymentState String?
+  checkoutSessionId String? @unique
+  paymentIntentId String? @unique
+  authorisedAmountPence Int?
+  authorisationExpiresAt DateTime?
+  paymentEnvironment String?
   id String @id @default(cuid())
   jobId String
   job TransportJob @relation(fields: [jobId], references: [id])

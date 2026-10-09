@@ -33,6 +33,7 @@ export async function POST(r:Request){
      job:{select:{vehicleMake:true,vehicleModel:true,registration:true}}
     }}}
    });
+   if(old.provider!=='TEST')throw new Error('This simulated payout endpoint cannot release Stripe payments');
    const activeDisputes=old.booking.disputes.filter((dispute:any)=>['OPEN','UNDER_REVIEW'].includes(dispute.status));
    const adminReleaseOverride=adminPayoutApproved(old.booking.disputes,old.events);
    if(activeDisputes.length)throw new Error('Payout is held while an active dispute is under review');
@@ -78,3 +79,4 @@ export async function POST(r:Request){
   return NextResponse.json({error:e.message||'Unable to release payout'},{status:400});
  }
 }
+
