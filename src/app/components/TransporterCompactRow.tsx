@@ -13,7 +13,7 @@ export default function TransporterCompactRow({job,date,dateLabel='Collection',s
  return <span className={`tdCompactRow tdCompact-${kind}`}>
   <span className="tdCompactVehicle"><Icon name={vehicleTypeIcon(job.vehicleType)}/></span>
   <span className="tdCompactIdentity"><strong>{job.vehicleMake} {job.vehicleModel}</strong><span className="tdCompactAddresses"><span className="tdCompactAddress"><Icon name="pin"/><span><b>Collection:</b> {job.collection}</span></span><span className="tdCompactAddress"><Icon name="pin"/><span><b>Delivery:</b> {job.delivery}</span></span></span></span>
-  <span className="tdCompactDate"><small>{dateLabel}</small><span>{compactDate(date)}</span></span>
+  <span className="tdCompactDate"><small>{dateLabel}</small><span>{compactDate(date)}</span>{kind==='jobs'&&job.collectionFrom&&job.collectionUntil&&<span className="tdCompactCollectionWindow"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>{job.collectionFrom} – {job.collectionUntil} <small>UK time</small></span></span>}</span>
   <span className="tdCompactMeta">{typeof count==='number'&&<span>{count} quote{count===1?'':'s'}</span>}{typeof price==='number'&&<span className="tdCompactPrice"><small>Your quote</small><strong>{new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP',maximumFractionDigits:2}).format(price/100)}</strong></span>}</span>
   <span className="tdCompactStatusSlot">{status&&<span className="tdCompactStatus">{status}</span>}</span>
   <span className={'tdCompactChevron'+(open?' isOpen':'')}><Icon name="down"/></span>

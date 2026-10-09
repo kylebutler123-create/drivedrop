@@ -98,3 +98,9 @@
  body.approvedDesktop.role-transporter .tdCompactAddress{font-size:12px;gap:5px}
  body.approvedDesktop.role-transporter .tdCompactContacts{right:282px}
 }
+
+@media(min-width:1024px){
+ .tdCompactDate .tdCompactCollectionWindow{display:flex;align-items:center;gap:6px;margin-top:5px;color:#0b1c46;font-size:13px!important;font-weight:400!important;line-height:1.3;white-space:nowrap}
+ .tdCompactCollectionWindow svg{flex:none;width:14px!important;height:14px!important;color:#7183a0!important}
+ .tdCompactDate .tdCompactCollectionWindow small{display:inline!important;font-size:11px!important;font-weight:400!important;color:#7183a0!important;margin-left:3px}
+}
