@@ -1,0 +1,12 @@
+@media(min-width:1024px){
+ body.approvedDesktop .collectionDateWindowField{grid-column:auto!important;position:relative;min-width:0}
+ body.approvedDesktop .collectionDateWindowField .quotePickerTrigger{height:44px;min-height:44px;font:14px Arial,sans-serif;color:#081f3e;border-color:#bfd0e3;border-radius:6px;padding:10px 12px}
+ body.approvedDesktop .collectionDateWindowField .quotePickerTrigger:not(.hasValue){color:#7b8da8}
+ body.approvedDesktop .collectionDateWindowField label{font-size:14px!important;line-height:20px!important;font-weight:600!important;color:#081f3e!important;margin:0 0 6px!important;display:block!important}
+ body.approvedDesktop .collectionDateWindowField small{display:block;color:#7183a0;font-size:12px;line-height:18px;margin-top:7px}
+ body.approvedDesktop .customerQuoteRequest .collectionDateWindowField .quotePickerTrigger{height:48px;min-height:48px}
+ body.approvedDesktop .customerQuotePolish .requestPanel .grid{gap:20px 24px!important;align-items:start!important}
+ body.approvedDesktop .homePage .homeHeroPanelShell.isQuoteExpanded .homeQuoteForm{align-items:start!important;grid-template-rows:auto auto auto!important}
+ body.approvedDesktop .homePage .homeHeroPanelShell.isQuoteExpanded .homeQuoteForm .homeQuoteTransport{padding-bottom:20px!important}
+ body.approvedDesktop .homeQuoteForm .homeQuoteVehicle>strong{visibility:visible!important;display:flex!important}
+}

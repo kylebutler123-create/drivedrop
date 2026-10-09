@@ -1,4 +1,5 @@
 'use client';
+import CollectionDateWindowField from './CollectionDateWindowField';
 import CollectionWindowFields,{Icon as CollectionIcon} from './CollectionWindowFields';
 
 import {FormEvent,useEffect,useLayoutEffect,useRef,useState} from 'react';
@@ -84,6 +85,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
   const [vehicleType,setVehicleType]=useState<string>('');
   const [transportType,setTransportType]=useState<string>('');
   const [collectionDate,setCollectionDate]=useState('');
+  const [windowTimes,setWindowTimes]=useState({from:'',until:''});
   const [running,setRunning]=useState('');
   const requestInFlight=useRef(false);
   const incompatible=transportType!==''&&vehicleType!==''&&!isTransportVehicleCompatible(transportType,vehicleType);
@@ -161,7 +163,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
       <div><strong>Get vehicle transport quotes</strong><span>Takes about 60 seconds</span></div>
       <button type="button" className="homeQuoteExpand" aria-label={expanded?'Collapse account details':'Expand account details'} aria-expanded={expanded} aria-controls="home-quote-extra" disabled={submitting} onClick={()=>{setError('');onExpandChange(!expanded)}}>{expanded?'−':'+'}</button>
     </div>
-    <form ref={formRef} noValidate={wizard} className="quoteForm homeQuoteForm homeQuoteApproved" onChange={wizard?updateDraft:undefined} onSubmit={submit} onReset={()=>setRunning('')} aria-busy={submitting}>
+    <form ref={formRef} noValidate={wizard} className="quoteForm homeQuoteForm homeQuoteApproved" onChange={wizard?updateDraft:undefined} onSubmit={submit} onReset={()=>{setRunning('');setCollectionDate('');setWindowTimes({from:'',until:''})}} aria-busy={submitting}>
       {wizard&&<section className="approvedWizard approvedWizardReview"><h2>Review your request</h2>{[['collection','Collection'],['delivery','Delivery'],['vehicleType','Vehicle type'],['vehicleMake','Make'],['vehicleModel','Model'],['registration','Registration'],['running','Running condition'],['transportType','Transport type']].map(([key,label])=><div key={key}><span>{label}</span><strong>{key==='running'?(draft[key]==='true'?'Runs and drives':'Non-running'):key==='transportType'?transportTypes.find(type=>type.value===draft[key])?.label:draft[key]||'Not specified'}</strong></div>)}<div><span>Collection date</span><strong>{collectionDate?new Date(collectionDate+'T12:00:00').toLocaleDateString('en-GB'):'Not specified'}</strong></div><button type="button" className="btn light" onClick={()=>setStep(1)}>Edit request</button></section>}
       <div className="homeQuoteSection homeQuoteVehicle">
           <strong>Vehicle details</strong>
@@ -180,8 +182,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
           <AddressAutocomplete name="delivery" label={fieldLabel('Delivery')} desktopPlaceholder={!wizard?'Town or postcode':undefined}/>
         </div>
         <div className="homeQuoteFieldGrid homeQuoteDateTransport">
-          {(!desktop||wizard)&&<CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>}
-          <CollectionWindowFields required={expanded} date={collectionDate} dateField={desktop&&!wizard?<CollectionDatePicker combined value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/>:undefined}/>
+          {desktop&&!wizard?<CollectionDateWindowField id="home-collection-window" required={expanded} disabled={submitting} initialValue={collectionDate} initialFrom={windowTimes.from} initialUntil={windowTimes.until} onChange={selection=>{setCollectionDate(selection.value);setWindowTimes({from:selection.from,until:selection.until});setError('')}}/>:<><CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/><CollectionWindowFields required={expanded} date={collectionDate}/></>}
           <div className="field"><label htmlFor="home-quote-transport-type">{fieldLabel('Transport type')}</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value} disabled={type.value==='DRIVEN'&&running==='false'}>{type.label}</option>)}</select></div>
         </div>
       </div>
