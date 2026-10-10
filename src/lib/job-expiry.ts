@@ -34,13 +34,3 @@ export function openQuoteRequestsWhere(now=new Date()):Prisma.TransportJobWhereI
  ]};
 }
 export const pendingCollectionDates={where:{status:'PENDING' as const},select:{status:true,expiresAt:true,proposedCollectionDate:true,dateNegotiationStatus:true}};
-
-// A declined offer must not make the customer's saved request disappear when
-// its alternative date was the only date keeping it in the live marketplace.
-// Available jobs still use openQuoteRequestsWhere and the original expiry rules.
-export function customerQuoteRequestsWhere(now=new Date()):Prisma.TransportJobWhereInput{
- return {status:{in:['OPEN','QUOTED']},OR:[
-  openQuoteRequestsWhere(now),
-  {availabilityRequests:{some:{status:'DECLINED',quote:{status:'WITHDRAWN'}}}}
- ]};
-}

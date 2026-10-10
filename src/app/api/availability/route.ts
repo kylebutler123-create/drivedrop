@@ -1,4 +1,3 @@
-import {isQuoteRequestOpen} from '@/lib/job-expiry';
 import {after,NextResponse} from 'next/server';
 import {z} from 'zod';
 import {currentUser} from '@/lib/auth';
@@ -18,10 +17,10 @@ export async function GET(){try{
   if(row.paymentEnvironment&&row.paymentEnvironment!==paymentEnvironment())continue;
   try{await prisma.$transaction(async tx=>{await lockJob(tx,row.jobId);await closeExpired(tx,row.jobId,new Date());});const next=await reconcileRequest(row.id);if(next.status!==row.status)after(()=>notifyAvailability(row.id));}catch{ /* Keep pending operations visible for retry/reconciliation. */ }
  }
- const rows=await prisma.availabilityRequest.findMany({where:{...owner,...(u.role==='TRANSPORTER'?{status:{not:'AWAITING_AUTHORISATION'}}:{})},include:{quote:{select:{status:true}},job:{select:{vehicleMake:true,vehicleModel:true,collectionDate:true,collection:true,delivery:true,running:true,status:true,quotes:{where:{status:'PENDING',OR:[{expiresAt:null},{expiresAt:{gt:new Date()}}]},select:{id:true,status:true,expiresAt:true,proposedCollectionDate:true,dateNegotiationStatus:true}}}}},orderBy:{createdAt:'desc'},take:100});
+ const rows=await prisma.availabilityRequest.findMany({where:{...owner,...(u.role==='TRANSPORTER'?{status:{not:'AWAITING_AUTHORISATION'}}:{})},include:{quote:{select:{status:true}},job:{select:{vehicleMake:true,vehicleModel:true,collection:true,delivery:true,running:true,status:true,quotes:{where:{status:'PENDING',OR:[{expiresAt:null},{expiresAt:{gt:new Date()}}]},select:{id:true}}}}},orderBy:{createdAt:'desc'},take:100});
  const ids=[...new Set(rows.flatMap(r=>[r.customerId,r.transporterId]))];
  const users=await prisma.user.findMany({where:{id:{in:ids}},select:{id:true,name:true,transporterVerification:{select:{businessName:true}}}});
- return NextResponse.json(rows.map(({job,quote,...r})=>availabilityForAccount({...r,job:{...job,quotes:undefined,availableQuoteCount:job.quotes.length,selectedQuoteStatus:quote.status,requestOpen:isQuoteRequestOpen(job)},customerName:users.find(u=>u.id===r.customerId)?.name,transporterName:users.find(u=>u.id===r.transporterId)?.transporterVerification?.businessName||users.find(u=>u.id===r.transporterId)?.name},u.role)),{headers:{'Cache-Control':'no-store'}});
+ return NextResponse.json(rows.map(({job,quote,...r})=>availabilityForAccount({...r,job:{...job,quotes:undefined,availableQuoteCount:job.quotes.length,selectedQuoteStatus:quote.status},customerName:users.find(u=>u.id===r.customerId)?.name,transporterName:users.find(u=>u.id===r.transporterId)?.transporterVerification?.businessName||users.find(u=>u.id===r.transporterId)?.name},u.role)),{headers:{'Cache-Control':'no-store'}});
 }catch(e){return apiError(e,'Unable to load confirmation requests');}}
 const S=z.object({requestId:z.string().min(1),action:z.enum(['CONFIRM','DECLINE','WITHDRAW'])});
 export async function PATCH(r:Request){try{const u=await currentUser();if(!u)return NextResponse.json({error:'Login required'},{status:403});const d=await parseJson(r,S);const result=await respondToRequest(u,d.requestId,d.action);if(result.changed)after(()=>notifyAvailability(result.request.id));return NextResponse.json(availabilityForAccount(result.request,u.role));}catch(e){return apiError(e,'Unable to update confirmation request');}}

@@ -25,12 +25,10 @@ function reset(){row={id:'r',quoteId:'q',jobId:'j',transporterId:'t',customerId:
  const React=require('react'),{renderToStaticMarkup}=require('react-dom/server');
  const panelCode=swc.transformSync('export default function AvailabilityPanel'+fs.readFileSync('src/app/components/AvailabilityPanel.tsx','utf8').split('export default function AvailabilityPanel')[1],{jsc:{parser:{syntax:'typescript',tsx:true},target:'es2022',transform:{react:{runtime:'automatic'}}},module:{type:'commonjs'}}).code;
  function renderNotice(rows,role='CUSTOMER'){
-  let call=0;const panel={};new Function('exports','require','useState','useRef','useCallback','useEffect','requestExpired','RequestCard','Link',panelCode)(panel,require,()=>[call++===0?rows:'',()=>{}],value=>({current:value}),fn=>fn,()=>{},()=>false,()=>null,props=>React.createElement('a',props));
+  let call=0;const panel={};new Function('exports','require','useState','useRef','useCallback','useEffect','requestExpired','RequestCard',panelCode)(panel,require,()=>[call++===0?rows:'',()=>{}],value=>({current:value}),fn=>fn,()=>{},()=>false,()=>null);
   return renderToStaticMarkup(React.createElement(panel.default,{role}));
  }
  const declined={id:'r',jobId:'j',status:'DECLINED',paymentState:'RELEASE_PENDING',transporterName:'Example Transport',job:{status:'QUOTED',selectedQuoteStatus:'WITHDRAWN',availableQuoteCount:2,vehicleMake:'Mercedes-Benz',vehicleModel:'E-Class'}};
- assert.match(renderNotice([{...declined,job:{...declined.job,requestOpen:false,availableQuoteCount:0}}]),/request is saved, but its original collection date has passed/);
- assert.match(renderNotice([{...declined,job:{...declined.job,requestOpen:false}}]),/href="\/customer\?view=request"/);
  assert.match(renderNotice([declined]),/Please select another quote below/);
  assert.match(renderNotice([declined]),/release is being processed/);
  assert.match(renderNotice([{...declined,paymentState:'RELEASED',job:{...declined.job,availableQuoteCount:0}}]),/still open for new quotes/);
