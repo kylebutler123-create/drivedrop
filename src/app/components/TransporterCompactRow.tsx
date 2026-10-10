@@ -27,6 +27,6 @@ export function ActiveCompactRow({booking}:{booking:any}){
   const card=event.currentTarget.closest('.transporterBooking');
   card?.querySelector<HTMLButtonElement>(':scope > .transporterCardToggle')?.click();
   setOpen(!card?.classList.contains('isCollapsed'));
- }}><TransporterCompactRow kind="active" job={booking.job} date={booking.agreedCollectionDate||booking.job.collectionDate} status={booking.status.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,(c:string)=>c.toUpperCase())} open={open}/></button>
+ }}><TransporterCompactRow kind="active" job={booking.job} date={booking.agreedCollectionDate||booking.job.collectionDate} collectionWindow={{from:booking.job.collectionFrom,until:booking.job.collectionUntil}} status={booking.status.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,(c:string)=>c.toUpperCase())} open={open}/></button>
  <span className="tdCompactContacts"><Link href={`/messages?bookingId=${encodeURIComponent(booking.id)}`} aria-label="Message customer"><Icon name="chat"/></Link>{booking.customer.phone&&<a href={`tel:${String(booking.customer.phone).replace(/[^\d+]/g,'')}`} aria-label="Call customer"><Icon name="phone"/></a>}</span></div>;
 }
