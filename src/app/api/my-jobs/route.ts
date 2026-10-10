@@ -21,7 +21,7 @@ export async function GET(){
     transporterVerification:{select:{status:true,businessName:true,companyNumber:true,yearsOperating:true,website:true}},
     reviewsReceived:{where:{verified:true,moderationStatus:{not:'HIDDEN'}},select:{rating:true}}
    }}}},
-   booking:true
+   booking:{select:{id:true,status:true}}
   },
   orderBy:{createdAt:'desc'}
  });
@@ -42,7 +42,7 @@ export async function GET(){
   const displayName=`${businessName} · ${ratingText}`;
   const pricing=calculateCustomerPrice(q.pricePence);
   const media=profileMedia.get(transporter.id);
-  return {...q,transporterBasePricePence:q.pricePence,platformFeePence:pricing.platformFeePence,pricePence:pricing.customerTotalPence,transporter:{...transporter,name:displayName,personName:transporter.name,businessName,companyNumber:verification?.companyNumber||null,yearsOperating:verification?.yearsOperating??null,website:verification?.website||null,verificationStatus:verification?.status||'NOT_STARTED',reviewCount,averageRating,profileImageUrl:profileImageUrl(media?.transporterPhotoPath||media?.profileImagePath||null),businessLogoUrl:profileImageUrl(media?.profileImagePath||null),transporterPhotoUrl:profileImageUrl(media?.transporterPhotoPath||null),truckPhotoUrl:profileImageUrl(media?.truckPhotoPath||null)}};
+  return {...q,pricePence:pricing.customerTotalPence,transporter:{...transporter,name:displayName,personName:transporter.name,businessName,companyNumber:verification?.companyNumber||null,yearsOperating:verification?.yearsOperating??null,website:verification?.website||null,verificationStatus:verification?.status||'NOT_STARTED',reviewCount,averageRating,profileImageUrl:profileImageUrl(media?.transporterPhotoPath||media?.profileImagePath||null),businessLogoUrl:profileImageUrl(media?.profileImagePath||null),transporterPhotoUrl:profileImageUrl(media?.transporterPhotoPath||null),truckPhotoUrl:profileImageUrl(media?.truckPhotoPath||null)}};
  })}));
  return NextResponse.json(result,{headers:{'Cache-Control':'no-store, max-age=0'}});
 }

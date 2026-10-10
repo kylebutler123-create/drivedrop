@@ -1,3 +1,4 @@
+import {calculateCustomerPrice} from '@/lib/finance';
 import {lockJob,assertNoReservation} from '@/lib/availability';
 import {isOfferLive,validateCollectionWindow} from '@/lib/availability-time';
 import {NextResponse} from 'next/server';
@@ -48,6 +49,6 @@ export async function PATCH(r:Request){
   return tx.quote.update({where:{id:q.id},data});
   });
   if(updated instanceof Response)return updated;
-  return NextResponse.json(updated);
+  return NextResponse.json({...updated,pricePence:u.role==='CUSTOMER'?calculateCustomerPrice(updated.pricePence).customerTotalPence:updated.pricePence});
  }catch(e:any){return NextResponse.json({error:e?.message||'Unable to update collection date'},{status:400})}
 }

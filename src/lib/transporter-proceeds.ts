@@ -1,3 +1,4 @@
+import {transporterRefund} from './price-visibility';
 import {prisma} from './prisma';
 
 export type PeriodParams={year?:string;start?:string;end?:string};
@@ -21,15 +22,16 @@ export const periodQuery=(period:ProceedsPeriod)=>period.year?new URLSearchParam
 export const longDate=(date:string)=>new Date(date+'T12:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'Europe/London'});
 export const periodDescription=(period:ProceedsPeriod)=>longDate(period.start)+' – '+longDate(period.end);
 export async function loadProceeds(transporterId:string){
- return prisma.booking.findMany({
+ const rows=await prisma.booking.findMany({
   where:{transporterId,status:{in:['CONFIRMED','COLLECTION_SCHEDULED','COLLECTED','IN_TRANSIT','ARRIVING_SOON','DELIVERED','CANCELLED']}},
   select:{
-   id:true,status:true,customerConfirmedAt:true,createdAt:true,
+   id:true,status:true,agreedPricePence:true,customerConfirmedAt:true,createdAt:true,
    customer:{select:{name:true}},
    job:{select:{id:true,vehicleMake:true,vehicleModel:true,registration:true,collection:true,delivery:true,collectionDate:true}},
    payment:{select:{transporterProceedsPence:true,cancellationDeductionPence:true,refundedPence:true,payoutStatus:true,updatedAt:true,events:{where:{type:'PAYOUT_PAID'},select:{createdAt:true},orderBy:{createdAt:'desc'},take:1}}}
   },orderBy:{createdAt:'desc'}
  });
+ return rows.map(({agreedPricePence,...row})=>({...row,payment:row.payment?{...row.payment,refundedPence:transporterRefund(agreedPricePence,row.payment)}:null}));
 }
 export type ProceedsBooking=Awaited<ReturnType<typeof loadProceeds>>[number];
 export function proceedsCsv(rows:ProceedsBooking[]){
@@ -37,7 +39,7 @@ export function proceedsCsv(rows:ProceedsBooking[]){
   let s=String(value??'');if(/^[\s]*[=+@-]/.test(s))s="'"+s;
   return '"'+s.replaceAll('"','""')+'"';
  };
- const header=['Booking ID','Delivery reference','Booked on (Europe/London)','Customer','Vehicle','Registration','Collection','Delivery','Collection date','Delivery status','Payout status','Proceeds before fines GBP','Fine deducted GBP','Net proceeds GBP','Customer refund GBP','Paid on (Europe/London)'];
+ const header=['Booking ID','Delivery reference','Booked on (Europe/London)','Customer','Vehicle','Registration','Collection','Delivery','Collection date','Delivery status','Payout status','Proceeds before fines GBP','Fine deducted GBP','Net proceeds GBP','Refund adjustment GBP','Paid on (Europe/London)'];
  const records=rows.filter(r=>r.payment).map(r=>{
   const p=r.payment!;const net=p.payoutStatus==='CANCELLED'?0:p.transporterProceedsPence||0;
   const fine=p.cancellationDeductionPence||0;

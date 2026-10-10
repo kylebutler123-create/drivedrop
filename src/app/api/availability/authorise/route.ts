@@ -1,3 +1,4 @@
+import {availabilityForAccount} from '@/lib/price-visibility';
 import {after,NextResponse} from 'next/server';
 import {z} from 'zod';
 import {currentUser} from '@/lib/auth';
@@ -11,5 +12,5 @@ export async function POST(r:Request){try{
  const {requestId}=await parseJson(r,z.object({requestId:z.string().min(1)}));
  const result=await authoriseRequest(user,requestId);
  if(result.request.status==='AWAITING_TRANSPORTER')after(()=>notifyAvailability(requestId));
- return NextResponse.json({...result.request,checkoutUrl:result.checkoutUrl});
+ return NextResponse.json({...availabilityForAccount(result.request,user.role),checkoutUrl:result.checkoutUrl});
 }catch(e){return apiError(e,'Unable to authorise payment');}}

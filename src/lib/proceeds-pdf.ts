@@ -44,7 +44,7 @@ export async function proceedsPdf(rows:ProceedsBooking[],transporterName:string,
  const fines=rows.reduce((sum,r)=>sum+(r.payment?.cancellationDeductionPence||0),0);
  const refunds=rows.reduce((sum,r)=>sum+(r.payment?.refundedPence||0),0);
  line('Booked proceeds before fines: '+money(total),12,true);
- line('Net paid proceeds: '+money(paid)+' | Fines: '+money(fines)+' | Customer refunds: '+money(refunds));rule();
+ line('Net paid proceeds: '+money(paid)+' | Fines: '+money(fines)+' | Refund adjustments: '+money(refunds));rule();
  if(!rows.length)line('No proceeds records in this period.');
  for(const row of rows){
   const p=row.payment;if(!p)continue;
@@ -58,7 +58,7 @@ export async function proceedsPdf(rows:ProceedsBooking[],transporterName:string,
   line('Collection: '+row.job.collection);line('Delivery: '+row.job.delivery);
   line('Collection date: '+(row.job.collectionDate?londonDate(row.job.collectionDate):'Not recorded'));
   line('Proceeds before fines: '+money(net+fine)+' | Fine deducted: '+money(fine));
-  line('Net proceeds: '+money(net)+' | Customer refund: '+money(p.refundedPence||0));
+  line('Net proceeds: '+money(net)+' | Refund adjustment: '+money(p.refundedPence||0));
   line('Delivery status: '+row.status.replaceAll('_',' ')+' | Payout status: '+p.payoutStatus);
   line('Paid on: '+(p.events[0]?londonDate(p.events[0].createdAt):'Not recorded'));rule();
  }

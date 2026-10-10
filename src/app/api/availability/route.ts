@@ -7,7 +7,7 @@ import {respondToRequest,reconcileRequest} from '@/lib/booking-authorisation';
 import {lockJob,closeExpired} from '@/lib/availability';
 import {paymentEnvironment} from '@/lib/booking-authorisation-provider';
 import {notifyAvailability} from '@/lib/availability-notifications';
-import {calculateCustomerPrice} from '@/lib/finance';
+import {availabilityForAccount} from '@/lib/price-visibility';
 export const dynamic='force-dynamic';
 export async function GET(){try{
  const u=await currentUser();if(!u||!['CUSTOMER','TRANSPORTER'].includes(u.role))return NextResponse.json({error:'Login required'},{status:403});
@@ -20,7 +20,7 @@ export async function GET(){try{
  const rows=await prisma.availabilityRequest.findMany({where:{...owner,...(u.role==='TRANSPORTER'?{status:{not:'AWAITING_AUTHORISATION'}}:{})},include:{job:{select:{vehicleMake:true,vehicleModel:true,collection:true,delivery:true,running:true,status:true}}},orderBy:{createdAt:'desc'},take:100});
  const ids=[...new Set(rows.flatMap(r=>[r.customerId,r.transporterId]))];
  const users=await prisma.user.findMany({where:{id:{in:ids}},select:{id:true,name:true}});
- return NextResponse.json(rows.map(r=>({...r,customerName:users.find(u=>u.id===r.customerId)?.name,transporterName:users.find(u=>u.id===r.transporterId)?.name,customerTotalPence:r.authorisedAmountPence||calculateCustomerPrice(r.pricePence).customerTotalPence})),{headers:{'Cache-Control':'no-store'}});
+ return NextResponse.json(rows.map(r=>availabilityForAccount({...r,customerName:users.find(u=>u.id===r.customerId)?.name,transporterName:users.find(u=>u.id===r.transporterId)?.name},u.role)),{headers:{'Cache-Control':'no-store'}});
 }catch(e){return apiError(e,'Unable to load confirmation requests');}}
 const S=z.object({requestId:z.string().min(1),action:z.enum(['CONFIRM','DECLINE','WITHDRAW'])});
-export async function PATCH(r:Request){try{const u=await currentUser();if(!u)return NextResponse.json({error:'Login required'},{status:403});const d=await parseJson(r,S);const result=await respondToRequest(u,d.requestId,d.action);if(result.changed)after(()=>notifyAvailability(result.request.id));return NextResponse.json(result.request);}catch(e){return apiError(e,'Unable to update confirmation request');}}
+export async function PATCH(r:Request){try{const u=await currentUser();if(!u)return NextResponse.json({error:'Login required'},{status:403});const d=await parseJson(r,S);const result=await respondToRequest(u,d.requestId,d.action);if(result.changed)after(()=>notifyAvailability(result.request.id));return NextResponse.json(availabilityForAccount(result.request,u.role));}catch(e){return apiError(e,'Unable to update confirmation request');}}

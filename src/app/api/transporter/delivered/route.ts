@@ -1,3 +1,4 @@
+import {transporterRefund} from '@/lib/price-visibility';
 import {NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
@@ -28,7 +29,7 @@ export async function GET(){
  const vehicleRows=jobIds.length?await prisma.$queryRawUnsafe<Array<{id:string;vehicleType:string|null}>>(`SELECT "id", "vehicleType" FROM "TransportJob" WHERE "id" IN (${jobIds.map((_,i)=>`$${i+1}`).join(',')})`,...jobIds):[];
  const vehicleTypes=new Map(vehicleRows.map(row=>[row.id,row.vehicleType]));
  const completedBookings=bookings
-  .map(booking=>({...booking,job:{...booking.job,vehicleType:vehicleTypes.get(booking.job.id)||null}}))
+  .map(booking=>({...booking,payment:booking.payment?{...booking.payment,refundedPence:transporterRefund(booking.agreedPricePence,booking.payment)}:null,job:{...booking.job,vehicleType:vehicleTypes.get(booking.job.id)||null}}))
   .sort((a,b)=>{
    const aCompletedAt=new Date(a.trackingEvents[0]?.createdAt||a.createdAt).getTime();
    const bCompletedAt=new Date(b.trackingEvents[0]?.createdAt||b.createdAt).getTime();

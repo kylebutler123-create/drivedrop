@@ -124,7 +124,7 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
    <div className={styles.route}><div><small>Collection</small><b><ProceedsIcon name="pin"/>{booking.job.collection}</b></div><span>→</span><div><small>Delivery</small><b><ProceedsIcon name="pin"/>{booking.job.delivery}</b></div></div>
    <div className={styles.cardBottom}><div className={styles.breakdown}>
     {fine>0&&<><div><span>Proceeds before fine</span><b>{money(beforeFine)}</b></div><div><span>Fine deducted</span><b className={styles.deduction}>−{money(fine)}</b></div></>}
-    {refund>0&&<div><span>Customer refund</span><b className={styles.deduction}>−{money(refund)}</b></div>}
+    {refund>0&&<div><span>Refund adjustment</span><b className={styles.deduction}>−{money(refund)}</b></div>}
     <div><span>{fine>0?'Net proceeds':payment.payoutStatus==='CANCELLED'?'Net payout':'Booked proceeds'}</span><b>{money(net)}</b></div>
     <div><span>Payout status</span><b>{payoutLabel(booking)}</b></div>
     <div><span>Collection date</span><b>{booking.job.collectionDate?<><span className={styles.legacyCopy}>{new Date(booking.job.collectionDate).toLocaleDateString('en-GB')}</span><span className={styles.desktopCopy}>{desktopDate(booking.job.collectionDate)}</span></>:'Not recorded'}</b></div>

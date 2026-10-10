@@ -1,3 +1,4 @@
+import {notificationForAccount} from '@/lib/price-visibility';
 import {NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
@@ -20,7 +21,7 @@ export async function GET(){
   LIMIT 100
  `;
  const unread=rows.filter(n=>!n.readAt).length;
- return NextResponse.json({notifications:rows,unread},{headers:{'Cache-Control':'no-store, max-age=0'}});
+ return NextResponse.json({notifications:rows.map(n=>notificationForAccount(n,u.role)),unread},{headers:{'Cache-Control':'no-store, max-age=0'}});
 }
 
 export async function PATCH(r:Request){

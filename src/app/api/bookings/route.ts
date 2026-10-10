@@ -1,3 +1,4 @@
+import {availabilityForAccount} from '@/lib/price-visibility';
 import {after,NextResponse} from 'next/server';
 import {z} from 'zod';
 import {currentUser} from '@/lib/auth';
@@ -11,5 +12,5 @@ export async function POST(r:Request){try{
  const d=await parseJson(r,S);const result=await selectQuote(u,d.quoteId,d);
  const authorised=await authoriseRequest(u,result.request.id);
  if(authorised.request.status==='AWAITING_TRANSPORTER'&&result.created)after(()=>notifyAvailability(result.request.id));
- return NextResponse.json({...authorised.request,checkoutUrl:authorised.checkoutUrl},{status:result.created?201:200});
+ return NextResponse.json({...availabilityForAccount(authorised.request,u.role),checkoutUrl:authorised.checkoutUrl},{status:result.created?201:200});
 }catch(e){return apiError(e,'Unable to request transporter availability');}}

@@ -69,6 +69,6 @@ export async function PATCH(r:Request){
     if(d.status==='CANCELLED'){
       await sendTransactionalEmailSafely({to:b.customer.email,subject:result.automaticRefundPence>0?`Your ${vehicle} delivery was cancelled and refunded`:`Your ${vehicle} delivery has been reopened`,heading:result.automaticRefundPence>0?'Transporter cancelled — payment automatically refunded':'Transporter cancelled — your request is open again',preheader:result.automaticRefundPence>0?`Your payment has been refunded and your DriveDrop request is open again.`:`Your DriveDrop transport request is available for new quotes again.`,body:`Hi ${b.customer.name?.trim()||'there'},\n\n${transporter} has cancelled the booking for your ${vehicle}.${result.automaticRefundPence>0?`\n\nYour payment of £${(result.automaticRefundPence/100).toFixed(2)} has been automatically refunded.`:''}\n\nYour transport request has automatically been reopened so verified transporters can quote again.${d.note?`\n\nCancellation reason: ${d.note}`:''}`,ctaLabel:'View your request',ctaPath:'/customer',});
     }
-    return NextResponse.json({booking:result.booking,event:result.event,automaticRefundPence:result.automaticRefundPence});
+    return NextResponse.json({booking:result.booking,event:result.event,...(u.role==='ADMIN'?{automaticRefundPence:result.automaticRefundPence}:{})});
   }catch(e:any){return NextResponse.json({error:e.message||'Unable to update delivery'},{status:400})}
 }
