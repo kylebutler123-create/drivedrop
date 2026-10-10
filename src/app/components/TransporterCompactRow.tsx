@@ -21,12 +21,32 @@ export default function TransporterCompactRow({job,date,dateLabel='Collection',s
  </span>;
 }
 
+export function openActiveProof(card:HTMLElement,stage:'collection'|'delivery'){
+ const mount=card.querySelector<HTMLElement>(`:scope > .bookingColumns ${stage==='collection'?'[data-poc]':'[data-pod-mount]'}`);
+ if(!mount)return;
+ if(card.classList.contains('isCollapsed'))card.querySelector<HTMLButtonElement>(':scope > .transporterCardToggle')?.click();
+ // Reuse the existing form and its draft, validation and success handler.
+ mount.querySelector<HTMLButtonElement>(':scope > button')?.click();
+ requestAnimationFrame(()=>{
+  const form=mount.querySelector<HTMLFormElement>('form');
+  form?.scrollIntoView({block:'nearest',behavior:'smooth'});
+  form?.querySelector<HTMLElement>('input:not([type="hidden"]),textarea,button')?.focus({preventScroll:true});
+ });
+}
+
 export function ActiveCompactRow({booking}:{booking:any}){
  const[open,setOpen]=useState(false);
+ const stage=['CONFIRMED','COLLECTION_SCHEDULED'].includes(booking.status)?'collection':['IN_TRANSIT','ARRIVING_SOON'].includes(booking.status)?'delivery':null;
+ const status=booking.status.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,(c:string)=>c.toUpperCase());
  return <div className="tdActiveHeader"><button type="button" className="tdCompactToggle" aria-expanded={open} aria-label={`View delivery details for ${booking.job.vehicleMake} ${booking.job.vehicleModel}`} onClick={event=>{
   const card=event.currentTarget.closest('.transporterBooking');
   card?.querySelector<HTMLButtonElement>(':scope > .transporterCardToggle')?.click();
   setOpen(!card?.classList.contains('isCollapsed'));
- }}><TransporterCompactRow kind="active" job={booking.job} date={booking.agreedCollectionDate||booking.job.collectionDate} collectionWindow={{from:booking.job.collectionFrom,until:booking.job.collectionUntil}} status={booking.status.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,(c:string)=>c.toUpperCase())} open={open}/></button>
- <span className="tdCompactContacts"><Link href={`/messages?bookingId=${encodeURIComponent(booking.id)}`} aria-label="Message customer"><Icon name="chat"/></Link>{booking.customer.phone&&<a href={`tel:${String(booking.customer.phone).replace(/[^\d+]/g,'')}`} aria-label="Call customer"><Icon name="phone"/></a>}</span></div>;
+ }}><TransporterCompactRow kind="active" job={booking.job} date={booking.agreedCollectionDate||booking.job.collectionDate} collectionWindow={{from:booking.job.collectionFrom,until:booking.job.collectionUntil}} open={open}/></button>
+ <div className="tdActiveCompactActions"><span className="tdCompactContacts"><Link href={`/messages?bookingId=${encodeURIComponent(booking.id)}`} aria-label="Message customer"><Icon name="chat"/></Link>{booking.customer.phone&&<a href={`tel:${String(booking.customer.phone).replace(/[^\d+]/g,'')}`} aria-label="Call customer"><Icon name="phone"/></a>}</span>
+ {stage?<button type="button" className="tdCompactProofAction" onClick={event=>{
+  const card=event.currentTarget.closest<HTMLElement>('.transporterBooking');
+  if(card){openActiveProof(card,stage);setOpen(!card.classList.contains('isCollapsed'))}
+ }}>{stage==='collection'?'Complete collection':'Complete delivery'}</button>:<span/>}
+ <span className="tdCompactStatus">{status}</span></div></div>;
 }

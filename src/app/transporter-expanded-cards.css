@@ -187,6 +187,26 @@
 
 @media(max-width:1023px){.jobOpportunity .requoteActions>button>svg{display:none}}
 
+/* Approved compact delivery actions: 19px either side of the 174px action. */
+@media(min-width:1024px){
+ body.approvedDesktop.role-transporter .tdActiveHeader .tdCompact-active{grid-template-columns:48px minmax(0,1fr) 230px 258px 112px 18px;gap:18px;padding-right:20px}
+ body.approvedDesktop.role-transporter .tdCompact-active>.tdCompactChevron{grid-column:6}
+ body.approvedDesktop.role-transporter .tdActiveCompactActions{position:absolute;right:56px;top:50%;transform:translateY(-50%);display:grid;grid-template-columns:76px 174px 112px;gap:19px;align-items:center;width:400px}
+ body.approvedDesktop.role-transporter .tdActiveCompactActions>.tdCompactContacts{position:static;transform:none;display:flex;gap:8px;width:76px}
+ body.approvedDesktop.role-transporter .tdActiveCompactActions>.tdCompactContacts>a{box-sizing:border-box;flex:0 0 34px;width:34px;height:34px;padding:0}
+ body.approvedDesktop.role-transporter .tdActiveCompactActions>.tdCompactStatus{box-sizing:border-box;width:112px;padding:7px 8px;text-align:center;font:500 13px/18px Arial,sans-serif;background:#dfeeff;color:#0860ce;border-radius:24px}
+ body.approvedDesktop.role-transporter .tdActiveCompactActions>.tdCompactProofAction{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;width:174px;height:38px;min-height:38px;padding:11px 15px;border:0;border-radius:6px;background:#ff681b;color:#fff;font:400 13px/16px Arial,sans-serif;white-space:nowrap;cursor:pointer;box-shadow:none}
+ body.approvedDesktop.role-transporter .tdCompactProofAction:focus-visible{outline:2px solid #091650;outline-offset:3px}
+ body.approvedDesktop.role-transporter .transporterBooking:not(.isCollapsed) .tdCompactProofAction{visibility:hidden}
+}
+@media(min-width:1024px) and (max-width:1240px){
+ body.approvedDesktop.role-transporter .tdActiveHeader .tdCompact-active{grid-template-columns:40px minmax(0,1fr) 170px 400px 18px;gap:12px;padding-left:16px;padding-right:16px}
+ body.approvedDesktop.role-transporter .tdCompact-active>.tdCompactStatusSlot{display:none}
+ body.approvedDesktop.role-transporter .tdCompact-active>.tdCompactChevron{grid-column:5}
+ body.approvedDesktop.role-transporter .tdActiveCompactActions{right:46px}
+ body.approvedDesktop.role-transporter .tdActiveHeader .tdCompactDate{padding-left:12px}
+}
+
 /* Approved orange Edit quote action on desktop compact My quotes cards. */
 @media(min-width:1024px){
  body.approvedDesktop.role-transporter .tdQuoteCard.tdQuoteClosed .requoteActions>button.requoteButton{
