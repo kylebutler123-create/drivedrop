@@ -17,7 +17,13 @@ assert(rendered[0].includes('Select condition'));assert(rendered[0].includes('Ex
 assert(rendered[1].includes('RECIPIENT NAME'));assert(rendered[1].includes('DELIVERY NOTES'));assert(rendered[1].includes('OPTIONAL'));assert(rendered[1].includes('OpenStreetMap'));assert(rendered[1].includes('Share delivery location'));
 const css=postcss.parse(fs.readFileSync(path.join(root,'src/app/transporter-proof-polish.css'),'utf8'));
 css.nodes.forEach(node=>{if(node.type==='comment')return;if(node.type==='rule'){assert.equal(node.selector,'.tdProofPhotoControl>span,.tdCancellationWarning');assert.equal(node.nodes[0].value,'none');return;}assert.equal(node.name,'media');assert.equal(node.params,'(min-width:1024px)');});
-assert(css.toString().includes('max-width:568px'));
+assert(css.toString().includes('max-width:none'));
+assert(css.toString().includes('padding:16px!important'));
+assert(css.toString().includes('background:#f7faff!important'));
+const submitRule=css.nodes.find(n=>n.type==='atrule').nodes.find(n=>n.selector?.endsWith('fieldset>.btn.fullBtn'));
+const submitValues=Object.fromEntries(submitRule.nodes.map(n=>[n.prop,n.value]));
+assert.equal(submitValues.width,'auto');assert.equal(submitValues['min-height'],'36px');assert.equal(submitValues.padding,'9px 16px');
+for(const colour of ['background:#1975d2','background:#168653','stroke:#fff'])assert(css.toString().includes(colour));
 const cancel=fs.readFileSync(path.join(root,'src/app/components/TransporterCancelDeliveryEnhancer.tsx'),'utf8');
 for(const text of ["['CONFIRMED','COLLECTION_SCHEDULED']","window.prompt('Reason for cancelling this delivery:'","window.confirm('Cancel this delivery?","£50 cancellation fine","method:'PATCH'","data.booking.status!=='CANCELLED'","button.disabled=true"]){assert(cancel.includes(text));}
 console.log('PASS: required fields, native photo validation, signatures, confirmations, optional location and cancellation safeguards retained; form styling desktop-only.');
