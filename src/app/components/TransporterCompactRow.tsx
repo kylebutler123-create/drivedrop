@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Icon,{vehicleTypeIcon} from './DeliveryDesignIcon';
 import '../transporter-compact-cards.css';
 import '../transporter-expanded-cards.css';
+import '../transporter-proof-polish.css';
 
 export const compactDate=(value:unknown)=>{
  const date=value?new Date(String(value)):null;

@@ -23,7 +23,17 @@ export default function TransporterCancelDeliveryEnhancer(){
       const existing=card.querySelector<HTMLButtonElement>('[data-cancel-delivery]');
       if(!booking||!['CONFIRMED','COLLECTION_SCHEDULED'].includes(booking.status)){
         existing?.remove();
+        card.querySelector('.tdCancellationWarning')?.remove();
         return;
+      }
+      const footer=card.querySelector<HTMLElement>('.tdActiveFooter');
+      if(footer&&!footer.querySelector('.tdCancellationWarning')){
+        const warning=document.createElement('p');
+        warning.className='tdCancellationWarning';
+        warning.append('Cancelling an active delivery will result in a ');
+        const fine=document.createElement('b');fine.textContent='£50 fine';warning.append(fine);
+        warning.append(', automatically deducted from your payment for the next completed job.');
+        footer.insertBefore(warning,footer.querySelector('[data-desktop-cancel-slot]'));
       }
       const actions=card.querySelector<HTMLElement>(window.matchMedia('(min-width:1024px)').matches?'[data-desktop-cancel-slot]':'.actionButtons');
       if(existing){if(actions&&existing.parentElement!==actions)actions.appendChild(existing);return;}
