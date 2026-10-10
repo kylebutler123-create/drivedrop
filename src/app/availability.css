@@ -8,3 +8,15 @@
 .availabilitySavedWindow>svg{flex-shrink:0}
 .availabilitySavedWindow span{display:block;font-size:12px;color:#586a7c;margin-bottom:3px}
 .availabilitySavedWindow strong{font-size:15px;font-weight:600}
+
+/* Approved desktop collection date and window, grouped above the authorisation notice. */
+.availabilitySchedule{display:none}
+@media(min-width:1024px){
+ .availabilityDialog .availabilityLegacyDate,.availabilityDialog .availabilitySavedWindow{display:none}
+ .availabilitySchedule{display:grid;grid-template-columns:1.12fr 1fr;gap:18px;align-items:center;background:#f1f6fb;border:1px solid #d7e3ef;border-radius:8px;padding:14px 16px;margin:16px 0;color:#142e49}
+ .availabilityScheduleDetail{display:flex;align-items:center;gap:11px;min-width:0}
+ .availabilityScheduleDetail+.availabilityScheduleDetail{border-left:1px solid #d7e3ef;padding-left:18px}
+ .availabilityScheduleDetail>svg{width:20px;height:20px;flex:none}
+ .availabilityScheduleDetail span{display:block;font-size:12px;color:#586a7c;margin-bottom:5px}
+ .availabilityScheduleDetail strong{font-size:15px;font-weight:600;white-space:nowrap}
+}
