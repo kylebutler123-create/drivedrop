@@ -1,0 +1,60 @@
+.customerSimpleQuotes{display:none}
+@media(min-width:1024px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard:is(.isCollapsed,:not(.isCollapsed)){padding:0!important;border:1px solid #d6e5f7!important;border-radius:10px!important;background:#fff!important;overflow:hidden}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard:not(.isCollapsed){display:flex!important;flex-direction:column;gap:0!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerCardToggle{order:0;display:block!important;height:auto!important;min-height:0!important;width:100%;margin:0!important;padding:18px 24px!important;border:0!important;border-left:7px solid #ff681b!important;background:#fff!important;text-align:left}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard:before{display:none!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignSummary{display:grid!important;grid-template-columns:48px minmax(0,1fr) 305px 155px 18px!important;align-items:center;gap:18px!important;height:auto!important;min-height:84px;padding:0!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignVehicle{width:48px;height:48px;border-radius:10px;background:#fff0e3}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignIdentity>strong{font:700 18px/1.4 Arial,sans-serif;white-space:normal!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteVehicleRegistration{font:500 15px/1.4 Arial,sans-serif;color:#52658e;white-space:nowrap;margin-left:8px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .customerCompactAddresses{display:grid!important;gap:3px;margin-top:6px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .customerCompactAddress{display:block!important;font:400 13px/1.7 Arial,sans-serif;color:#52658e;white-space:normal}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .customerCompactAddress>svg{display:none}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignDate{grid-column:3;grid-row:1;width:100%!important;box-sizing:border-box;padding:0 0 0 24px!important;border-left:1px solid #d7e5fa;gap:4px;font:700 14px/1.4 Arial,sans-serif}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignDate>small{font:400 13px/1.7 Arial,sans-serif;color:#52658e}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteCollectionWindow{font-weight:400;margin-top:5px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteTransportDetails{display:block;margin-top:7px;font:400 12px/1.5 Arial,sans-serif;color:#52658e}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignCount{grid-column:4;grid-row:1;justify-self:end;border:1px solid #ffdbbc;border-radius:20px;padding:8px 14px;font:400 12px/1.4 Arial,sans-serif;white-space:nowrap;background:#fff0e3;color:#b45313}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignStatus{display:none!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignChevron{grid-column:5}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.legacyCustomerQuote,
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestDetailsPanel{display:none!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard:not(.isCollapsed)>.customerSimpleQuotes{display:block;order:4;margin:0!important;padding:24px;border-top:1px solid #e0e9f4;width:100%;box-sizing:border-box}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions{margin:0 24px 16px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.expandedCollapse{margin:0 24px 16px!important;align-self:flex-end}
+ .customerSimpleQuotes .simpleQuotesToolbar{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:18px}
+ .customerSimpleQuotes .simpleQuotesToolbar h3{font:700 20px/1.3 Arial,sans-serif;color:#091650;margin:0}
+ .customerSimpleQuotes .simpleQuotesToolbar p{font:400 13px/1.5 Arial,sans-serif;color:#52658e;margin:7px 0 0}
+ .customerSimpleQuotes .simpleQuotesToolbar label{display:flex;align-items:center;gap:10px;white-space:nowrap;font:400 12px Arial,sans-serif;color:#52658e}
+ .customerSimpleQuotes .simpleQuotesToolbar select{box-sizing:border-box;min-height:42px;width:195px;padding:11px 14px;border:1px solid #b8cce3;border-radius:7px;background:#f7faff;color:#091650;font:400 13px Arial,sans-serif}
+ .customerSimpleQuotes .simpleQuote{box-sizing:border-box;display:grid;grid-template-columns:250px 145px minmax(0,1fr) auto;align-items:center;gap:24px;padding:20px;border:1px solid #cbddef;border-left:4px solid #77a6d4;border-radius:8px;margin-bottom:12px;background:#f8fbff;min-height:108px}
+ .customerSimpleQuotes .simpleQuote:last-child{margin-bottom:0}
+ .customerSimpleQuotes .simpleQuoteDate{font:400 15px/1.5 Arial,sans-serif;color:#091650}
+ .customerSimpleQuotes .simpleQuoteDate>small{display:block;font:400 11px/1.5 Arial,sans-serif;letter-spacing:.3px;color:#647995;margin-bottom:5px}
+ .customerSimpleQuotes .simpleQuoteTime{display:flex;align-items:center;gap:6px;color:#344f72;font:400 13px/1.5 Arial,sans-serif;margin-top:5px}
+ .customerSimpleQuotes .simpleQuoteTime svg{flex:none}
+ .customerSimpleQuotes .simpleQuoteTime small{font-size:11px;color:#647995;margin-left:3px}
+ .customerSimpleQuotes .simpleQuotePrice{border-left:1px solid #d5e1ef;padding-left:24px}
+ .customerSimpleQuotes .simpleQuotePrice strong{font:600 25px/1.3 Arial,sans-serif;color:#091650}
+ .customerSimpleQuotes .simpleQuotePrice small{display:block;font:400 11px/1.4 Arial,sans-serif;color:#647995;margin-top:5px}
+ .customerSimpleQuotes .simpleQuoteTransporter{min-width:0;border-left:1px solid #d5e1ef;padding-left:24px}
+ .customerSimpleQuotes .simpleQuoteTransporter>strong{font:700 15px/1.4 Arial,sans-serif;color:#091650;overflow-wrap:anywhere}
+ .customerSimpleQuotes .simpleQuoteRating{display:flex;flex-wrap:wrap;gap:8px;font:400 13px/1.5 Arial,sans-serif;margin-top:8px;color:#344f72}
+ .customerSimpleQuotes .simpleQuoteStars{color:#bc7900;letter-spacing:1px;white-space:nowrap}
+ .customerSimpleQuotes :is(.simpleQuoteVerified,.simpleQuoteUnverified){display:block;font:400 11px/1.5 Arial,sans-serif;color:#267147;margin-top:7px}
+ .customerSimpleQuotes .simpleQuoteUnverified{color:#647995}
+ .customerSimpleQuotes .simpleQuoteActions{display:flex;gap:10px;align-items:center}
+ .customerSimpleQuotes :is(.simpleQuoteProfile,.simpleQuoteSelect){box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;flex:none;width:auto;border-radius:6px;padding:11px 15px;font:400 12px/1.5 Arial,sans-serif;white-space:nowrap;text-decoration:none;cursor:pointer;min-height:40px}
+ .customerSimpleQuotes .simpleQuoteProfile{border:1px solid #a8bfd8;background:white;color:#193650}
+ .customerSimpleQuotes .simpleQuoteSelect{border:1px solid #ff681b;background:#ff681b;color:white;padding:11px 18px}
+ .customerSimpleQuotes .simpleQuoteSelect:disabled{opacity:.55;cursor:not-allowed}
+ .customerSimpleQuotes .simpleQuoteNotice{grid-column:1/-1;margin:0;font:400 13px/1.5 Arial,sans-serif;color:#993b24}
+ .customerSimpleQuotes :is(a,button,select):focus-visible{outline:2px solid #ff681b;outline-offset:3px}
+}
+@media(min-width:1024px) and (max-width:1240px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignSummary{grid-template-columns:48px minmax(0,1fr) 220px 155px 18px!important;gap:12px!important}
+ .customerSimpleQuotes .simpleQuote{grid-template-columns:180px 125px minmax(0,1fr) auto;gap:14px;padding:16px}
+ .customerSimpleQuotes :is(.simpleQuotePrice,.simpleQuoteTransporter){padding-left:14px}
+ .customerSimpleQuotes .simpleQuoteActions{flex-direction:column;align-items:stretch}
+}

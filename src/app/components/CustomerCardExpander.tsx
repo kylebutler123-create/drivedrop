@@ -179,11 +179,12 @@ function syncQuoteSummary(card:HTMLElement){
  const icon=vehicleTypeIcon(cardVehicleType(card));
  const from=card.dataset.collectionFrom||'',until=card.dataset.collectionUntil||'';
  const window=from&&until?`${from} – ${until}`:'';
- const signature=JSON.stringify([title,route,date,status,count,icon,window]);
+ const registration=card.dataset.registration||'',transport=card.dataset.transportLabel||'',running=card.dataset.runningLabel||'';
+ const signature=JSON.stringify([title,route,date,status,count,icon,window,registration,transport,running]);
  let summary=button.querySelector<HTMLElement>('.quoteDesignSummary');
  if(summary&&lastQuoteSummary.get(card)===signature)return;
  if(!summary){summary=document.createElement('span');summary.className='quoteDesignSummary';button.appendChild(summary)}
- summary.innerHTML=`<span class="quoteDesignVehicle">${deliveryIconMarkup(icon)}</span><span class="quoteDesignIdentity"><strong>${escapeHtml(title)}</strong>${fullAddressMarkup(stops[0],stops[1])}</span><span class="quoteDesignDate"><small>Requested collection</small><span>${escapeHtml(date)}</span>${window?`<span class="quoteCollectionWindow"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>${escapeHtml(window)} <small>UK time</small></span></span>`:''}</span><span class="quoteDesignCount${count?'':' isAwaiting'}">${escapeHtml(countLabel)}</span><span class="quoteDesignStatus">${escapeHtml(status)}</span><span class="quoteDesignChevron">${deliveryIconMarkup('down')}</span>`;
+ summary.innerHTML=`<span class="quoteDesignVehicle">${deliveryIconMarkup(icon)}</span><span class="quoteDesignIdentity"><strong>${escapeHtml(title)}${registration?`<span class="quoteVehicleRegistration"> · ${escapeHtml(registration)}</span>`:''}</strong>${fullAddressMarkup(stops[0],stops[1])}</span><span class="quoteDesignDate"><small>Requested collection</small><span>${escapeHtml(date)}</span>${window?`<span class="quoteCollectionWindow"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>${escapeHtml(window)} <small>UK time</small></span></span>`:''}<span class="quoteTransportDetails">${escapeHtml([transport,running].filter(Boolean).join(' · '))}</span></span><span class="quoteDesignCount${count?'':' isAwaiting'}">${escapeHtml(countLabel)}</span><span class="quoteDesignStatus">${escapeHtml(status)}</span><span class="quoteDesignChevron">${deliveryIconMarkup('down')}</span>`;
  lastQuoteSummary.set(card,signature);
 }
 
