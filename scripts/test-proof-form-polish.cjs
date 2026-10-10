@@ -19,7 +19,7 @@ const css=postcss.parse(fs.readFileSync(path.join(root,'src/app/transporter-proo
 css.nodes.forEach(node=>{if(node.type==='comment')return;if(node.type==='rule'){assert.equal(node.selector,'.tdProofPhotoControl>span,.tdCancellationWarning');assert.equal(node.nodes[0].value,'none');return;}assert.equal(node.name,'media');assert.equal(node.params,'(min-width:1024px)');});
 assert(css.toString().includes('max-width:none'));
 assert(css.toString().includes('padding:16px!important'));
-assert(css.toString().includes('background:#f7faff!important'));
+assert(css.toString().includes('background:#eaf2fc!important'));
 const submitRule=css.nodes.find(n=>n.type==='atrule').nodes.find(n=>n.selector?.endsWith('fieldset>.btn.fullBtn'));
 const submitValues=Object.fromEntries(submitRule.nodes.map(n=>[n.prop,n.value]));
 assert.equal(submitValues.width,'auto');assert.equal(submitValues['min-height'],'36px');assert.equal(submitValues.padding,'9px 16px');
