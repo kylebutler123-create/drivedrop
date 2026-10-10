@@ -138,9 +138,15 @@ export async function respondToRequest(actor:BookingActor,id:string,action:'CONF
    return {request:await tx.availabilityRequest.update({where:{id},data:{status:'CAPTURING',confirmedAt:now,paymentState:'CAPTURE_PENDING'}}),changed:true};
   }
   if(r.status==='BOOKED')throw new AvailabilityError('This booking is already active');
+  if(action==='DECLINE'){
+   await tx.quote.updateMany({where:{id:r.quoteId,jobId:r.jobId,transporterId:r.transporterId,status:'PENDING'},data:{status:'WITHDRAWN'}});
+   if(await tx.quote.count({where:{jobId:r.jobId,status:'PENDING'}})===0)await tx.transportJob.updateMany({where:{id:r.jobId,status:'QUOTED'},data:{status:'OPEN'}});
+  }
   return {request:await tx.availabilityRequest.update({where:{id},data:{status:action==='WITHDRAW'?'WITHDRAWN':'DECLINED',activeJobId:null,paymentState:r.paymentProvider==='STRIPE'?'RELEASE_PENDING':r.paymentProvider?'RELEASED':null}}),changed:true};
  });
  // Return/GET retries recover any interrupted provider operation. Never call Stripe within a DB transaction.
- const request=await reconcileRequest(id);
+ // A provider interruption must not hide a committed decline or skip its notification.
+ // The account refresh/cron retries RELEASE_PENDING; never report it as released here.
+ const request=await reconcileRequest(id).catch(error=>{if(result.request.status==='DECLINED')return result.request;throw error;});
  return {request,changed:result.changed||request.status!==result.request.status};
 }
