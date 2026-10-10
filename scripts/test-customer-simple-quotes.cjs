@@ -18,7 +18,7 @@ assert.equal(offeredCollection({...later,proposedCollectionFrom:null,proposedCol
 assert.equal(offeredCollection({...later,dateNegotiationStatus:'DECLINED'},job).date,job.collectionDate);
 const Component=load('src/app/components/CustomerDesktopQuotes.tsx').default;
 const html=renderToStaticMarkup(React.createElement(Component,{job,busyQuoteId:null,onSelect(){},notice:null}));
-assert(html.includes('14 December 2026'));assert(html.includes('16 December 2026'));assert(html.includes('13:00'));assert(html.includes('£249.00'));
+assert(html.includes('Monday 14 December 2026'));assert(html.includes('Wednesday 16 December 2026'));assert(html.includes('13:00'));assert(html.includes('£249.00'));
 assert(!html.includes('rating decoration'));assert(html.includes('New transporter · No reviews yet'));assert.equal((html.match(/>Select quote</g)||[]).length,3);
 assert(!html.includes('Keep original date'));assert(!html.includes('Offer another date'));assert(html.includes('/transporter/profile/t'));
 const legacy=renderToStaticMarkup(React.createElement(Component,{job:{...job,quotes:[{...later,dateNegotiationStatus:'COUNTERED'}]},busyQuoteId:null,onSelect(){},notice:null}));

@@ -28,9 +28,10 @@
  .customerSimpleQuotes .simpleQuotesToolbar p{font:400 13px/1.5 Arial,sans-serif;color:#52658e;margin:7px 0 0}
  .customerSimpleQuotes .simpleQuotesToolbar label{display:flex;align-items:center;gap:10px;white-space:nowrap;font:400 12px Arial,sans-serif;color:#52658e}
  .customerSimpleQuotes .simpleQuotesToolbar select{box-sizing:border-box;min-height:42px;width:195px;padding:11px 14px;border:1px solid #b8cce3;border-radius:7px;background:#f7faff;color:#091650;font:400 13px Arial,sans-serif}
- .customerSimpleQuotes .simpleQuote{box-sizing:border-box;display:grid;grid-template-columns:250px 145px minmax(0,1fr) auto;align-items:center;gap:24px;padding:20px;border:1px solid #cbddef;border-left:4px solid #77a6d4;border-radius:8px;margin-bottom:12px;background:#f8fbff;min-height:108px}
+ .customerSimpleQuotes .simpleQuote{box-sizing:border-box;display:grid;grid-template-columns:265px 145px minmax(0,1fr) auto;align-items:center;gap:24px;padding:20px;border:1px solid #cbddef;border-left:4px solid #77a6d4;border-radius:8px;margin-bottom:12px;background:#f8fbff;min-height:108px}
  .customerSimpleQuotes .simpleQuote:last-child{margin-bottom:0}
  .customerSimpleQuotes .simpleQuoteDate{font:400 15px/1.5 Arial,sans-serif;color:#091650}
+ .customerSimpleQuotes .simpleQuoteDate>strong{font-size:14px}
  .customerSimpleQuotes .simpleQuoteDate>small{display:block;font:400 11px/1.5 Arial,sans-serif;letter-spacing:.3px;color:#647995;margin-bottom:5px}
  .customerSimpleQuotes .simpleQuoteTime{display:flex;align-items:center;gap:6px;color:#344f72;font:400 13px/1.5 Arial,sans-serif;margin-top:5px}
  .customerSimpleQuotes .simpleQuoteTime svg{flex:none}
@@ -57,4 +58,20 @@
  .customerSimpleQuotes .simpleQuote{grid-template-columns:180px 125px minmax(0,1fr) auto;gap:14px;padding:16px}
  .customerSimpleQuotes :is(.simpleQuotePrice,.simpleQuoteTransporter){padding-left:14px}
  .customerSimpleQuotes .simpleQuoteActions{flex-direction:column;align-items:stretch}
+}
+
+/* Reuse the existing cancellation control as a sibling of the header toggle. */
+@media(min-width:1024px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard{position:relative}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard:has(>.customerRequestActions) .quoteDesignCount{align-self:start;margin:6px 0 46px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions{display:block!important;position:absolute;top:69px;right:60px;z-index:1;width:155px;box-sizing:border-box;margin:0!important;padding:0!important;border:0!important;background:transparent}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions .manageRequestActions{display:flex;justify-content:center;margin:0;gap:0}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions button{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;width:auto;min-height:36px!important;height:auto!important;margin:0!important;padding:9px 15px!important;border:0;border-radius:6px;background:#091650!important;color:#fff!important;font:400 12px/18px Arial,sans-serif!important;white-space:nowrap;cursor:pointer}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions button:disabled{opacity:.6;cursor:wait}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions button:focus-visible{outline:2px solid #ff681b;outline-offset:3px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions:has(.formNotice){position:static;order:1;width:auto;margin:12px 24px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions .formNotice{margin:8px 0;font-size:12px;white-space:normal;overflow-wrap:anywhere}
+}
+@media(min-width:1024px) and (max-width:1240px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions{right:54px}
 }

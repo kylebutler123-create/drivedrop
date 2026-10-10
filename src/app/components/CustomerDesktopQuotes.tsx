@@ -10,7 +10,7 @@ export default function CustomerDesktopQuotes({job,busyQuoteId,onSelect,notice}:
   <div className="simpleQuotesToolbar"><div><h3>Choose your transporter</h3><p>Each quote shows the collection date and time offered by that transporter.</p></div><label>Sort by <select value={sort} onChange={e=>setSort(e.target.value as QuoteSort)}><option value="date">Soonest collection</option><option value="price">Price: Low to high</option><option value="rating">Highest rated</option></select></label></div>
   {sortCustomerQuotes(job.quotes,job,sort).map((q:any)=>{
    const schedule=offeredCollection(q,job),d=new Date(schedule.date);
-   const date=Number.isFinite(d.getTime())?d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}):'Date unavailable';
+   const date=Number.isFinite(d.getTime())?d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).replace(',',''):'Date unavailable';
    const rating=q.transporter.averageRating==null?null:Number(q.transporter.averageRating),reviews=Number(q.transporter.reviewCount)||0;
    const rated=rating!==null&&Number.isFinite(rating)&&reviews>0;
    const verified=q.transporter.verificationStatus==='APPROVED'||q.transporter.transporterVerification?.status==='APPROVED';
