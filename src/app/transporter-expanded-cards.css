@@ -187,6 +187,13 @@
 
 @media(max-width:1023px){.jobOpportunity .requoteActions>button>svg{display:none}}
 
+/* Approved orange Edit quote action on desktop compact My quotes cards. */
+@media(min-width:1024px){
+ body.approvedDesktop.role-transporter .tdQuoteCard.tdQuoteClosed .requoteActions>button.requoteButton{
+  background:#ff681b!important;border-color:#ff681b!important;color:#fff!important;
+ }
+}
+
 /* Matching collection/delivery launch buttons; proof-form submit buttons stay unchanged. */
 @media(min-width:1024px){
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking :is([data-poc],[data-pod-mount])>button.btn.orange.fullBtn{
