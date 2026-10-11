@@ -388,13 +388,17 @@
  body.approvedDesktop .customerLiveWorkspace .bookingCard[data-active-summary].isCollapsed .deliveryCollectionWindow{display:flex;align-items:center;gap:6px;margin-top:5px;color:#0b1c46;font-size:13px;line-height:1.3;white-space:nowrap}
  body.approvedDesktop .customerLiveWorkspace .deliveryCollectionWindow svg{flex:none;color:#7183a0}
  body.approvedDesktop .customerLiveWorkspace .bookingCard[data-active-summary].isCollapsed .deliveryCollectionWindow small{display:inline;font-size:11px;line-height:1.3;color:#7183a0;margin-left:3px}
- body.approvedDesktop .customerLiveWorkspace .bookingCard[data-active-summary].isCollapsed>.deliveryCompactActions>a[title="Message transporter"]{background:#1975d2;border-color:#1975d2;color:#fff}
- body.approvedDesktop .customerLiveWorkspace .bookingCard[data-active-summary].isCollapsed>.deliveryCompactActions>a[title="Call transporter"]{background:#168653;border-color:#168653;color:#fff}
- body.approvedDesktop .customerLiveWorkspace .bookingCard[data-active-summary].isCollapsed>.deliveryCompactActions>a svg{stroke:#fff}
- body.approvedDesktop .customerLiveWorkspace .bookingCard[data-active-summary].isCollapsed>.deliveryCompactActions>a:hover{filter:brightness(.92)}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard[data-active-summary]>.deliveryCompactActions>a[title="Message transporter"]{background:#1975d2;border-color:#1975d2;color:#fff}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard[data-active-summary]>.deliveryCompactActions>a[title="Call transporter"]{background:#168653;border-color:#168653;color:#fff}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard[data-active-summary]>.deliveryCompactActions>a svg{stroke:#fff}
+ body.approvedDesktop .customerLiveWorkspace .bookingCard[data-active-summary]>.deliveryCompactActions>a:hover{filter:brightness(.92)}
 }
 @media(min-width:1024px) and (max-width:1240px){
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryDesignSummary{grid-template-columns:48px minmax(140px,1fr) 400px 130px 18px!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-active-summary].isCollapsed .deliveryHistoryDate{padding-left:24px;padding-right:220px}
  body.approvedDesktop .customerLiveWorkspace .bookingCard[data-active-summary].isCollapsed .deliveryCollectionWindow{white-space:normal}
+}
+.desktopVehicleRegistration{display:none}
+@media(min-width:1024px){
+ body.approvedDesktop .customerLiveWorkspace :is(.deliveryDesignIdentity,.overviewVehicleCopy)>strong>.desktopVehicleRegistration{display:inline;font:500 13px/1.4 DriveDropApproved,Arial,sans-serif;color:#52658e;white-space:nowrap;margin-left:4px}
 }
