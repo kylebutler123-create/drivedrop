@@ -47,7 +47,7 @@
 }
 .customerQuoteRequestGroup{display:contents}
 @media(min-width:1024px){
- .customerQuoteRequestGroup:has(>.customerRequestDeclineNotice){display:flex;flex-direction:column;min-width:0;border:1px solid #efb367;border-radius:12px;overflow:hidden;background:#fff}
+ .customerQuoteRequestGroup:has(>.customerRequestDeclineNotice){display:flex;flex-direction:column;min-width:0;margin-bottom:var(--delivery-list-gap,10px);border:1px solid #efb367;border-radius:12px;overflow:hidden;background:#fff}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerQuoteRequestGroup:has(>.customerRequestDeclineNotice)>.quoteRequestCard.quoteRequestCard{margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
  .customerQuoteRequestGroup>.customerRequestDeclineNotice{align-items:center;gap:12px;margin:0;padding:15px 18px;background:#fff7ec;border:0;border-top:1px solid #efcfaa;border-radius:0;color:#7c431c;font:14px/1.5 DriveDropApproved,Arial,sans-serif}
  .customerQuoteRequestGroup>.customerRequestDeclineNotice>svg{display:none}
