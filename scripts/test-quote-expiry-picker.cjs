@@ -29,3 +29,18 @@ html=render('21','00');
 assert.doesNotMatch(html,/<button[^>]*class="quotePickerApply"[^>]*disabled/);
 assert.match(html,/<option[^>]*disabled[^>]*>20<\/option>/);
 console.log('PASS: past dates, elapsed/same-minute times, future UK time, stale submission, UK DST gaps/ambiguity, optional empty expiry and picker disabled states.');
+function windowPicker(hourly,savedFrom='',savedUntil=''){
+ index=0;state=['2026-12-14',true,'2026-12-14','','',savedFrom,savedUntil,savedFrom,savedUntil,'',new Date('2026-12-01T12:00:00Z'),now,{top:0,left:0},hourly];
+ return renderToStaticMarkup(React.createElement(Picker,{id:'window',name:'collectionDate',label:'Collection window',withWindow:true}));
+}
+html=windowPicker(true);
+assert(!html.includes('>09:30</option>'));assert(html.includes('>09:00</option>'));
+assert(windowPicker(false).includes('>09:30</option>'),'mobile keeps existing intervals');
+html=windowPicker(true,'09:30','11:30');
+assert.match(html,/name="proposedCollectionFrom" value="09:30"/);
+assert.match(html,/<option[^>]*disabled[^>]*>09:30<\/option>/);
+const Fields=load('src/app/components/CollectionWindowFields.tsx').default;
+function fields(hourly){index=0;state=['09:30','11:30','from',true,1,'',false,now,hourly];return renderToStaticMarkup(React.createElement(Fields,{date:'2026-12-14'}));}
+html=fields(true);assert.equal((html.match(/class="dd-slot"/g)||[]).length,6);assert(!html.includes('>09:30</button>'));assert.match(html,/name="collectionFrom" value="09:30"/);
+assert.equal((fields(false).match(/class="dd-slot"/g)||[]).length,12);
+console.log('PASS: both collection pickers offer hourly desktop slots, preserve stored half-hour windows, and retain mobile intervals.');
