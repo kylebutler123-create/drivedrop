@@ -77,7 +77,7 @@ export default function TransporterCancelledDeliveries({selected,onCountChange,o
     const detailsId=`cancelled-details-${booking.id}`;
     return <article className={`transporterCancelledCard${activity.unread(booking.id,booking.cancelledAt||'CANCELLED')?' hasUnreadCardActivity':''}`} key={booking.id} id={'booking-'+booking.id} ref={node=>{if(node&&window.location.hash==='#booking-'+booking.id)node.scrollIntoView({block:'center'})}}>
      <button type="button" className="transporterCancelledToggle" aria-expanded={open} aria-controls={detailsId} onClick={()=>{if(!open)activity.mark(booking.id,booking.cancelledAt||'CANCELLED');setExpanded(open?null:booking.id)}}>
-      <CompactRow kind="cancelled" job={booking.job} date={booking.job.collectionDate} status="Cancelled" open={open}/>
+      <CompactRow kind="cancelled" job={booking.job} date={booking.cancelledAt} dateLabel="Cancelled on" status="Cancelled" open={open}/>
       <Icon name="car"/>
       <span className="transporterCancelledIdentity"><strong>{booking.job.vehicleMake} {booking.job.vehicleModel}</strong><span className="transporterCancelledBadge">Cancelled</span><small>Delivery reference: {reference(booking.id)}</small></span>
       <span className="transporterCancelledStop"><small>Collection</small><b>{booking.job.collection}</b></span><span className="transporterCancelledArrow"><Icon name="arrow"/></span>
@@ -86,7 +86,7 @@ export default function TransporterCancelledDeliveries({selected,onCountChange,o
       <svg className="transporterCancelledChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
      </button>
      <div className="transporterCancelledDetails tdExpandedBody" id={detailsId} hidden={!open}>
-      <div className="tdSecureRow"><span>Cancelled on · {date(booking.cancelledAt)}</span><span>Delivery reference · {reference(booking.id)}</span></div>
+      <div className="tdSecureRow"><span>Collection date · {date(booking.job.collectionDate)}</span><span>Delivery reference · {reference(booking.id)}</span></div>
       <dl className="tdFacts tdFactsFour"><div><dt>Transport type</dt><dd>{transportTypeDisplay(booking.job.transportType).replace(/\s*[\p{Extended_Pictographic}\uFE0F]+/gu,'')}</dd></div><div><dt>Registration</dt><dd>{booking.job.registration||'Not provided'}</dd></div><div><dt>Running condition</dt><dd>{booking.job.running?'Runs & drives':'Non-running'}</dd></div><div><dt>Customer</dt><dd>{booking.customer.name}</dd></div></dl>
       {booking.cancellationNote&&<div className="tdQuoteMessage"><small>Cancellation note</small><p>{booking.cancellationNote}</p></div>}
      </div>
