@@ -21,4 +21,16 @@ state=null;lastEffectKey=undefined;assert.equal(render(props),null,'dismissal su
 const next={...props,rows:[{...row,id:'decline2'}],quoteCount:0};assert.match(renderToStaticMarkup(render(next)),/still open for new quotes/);
 assert.equal(render({...props,rows:[{...row,id:'pending',status:'AWAITING_TRANSPORTER'},row]}),null);
 assert.match(renderToStaticMarkup(render({...props,customerId:'customer2'})),/Transport One/);
+for(const status of ['EXPIRED','PAYMENT_FAILED']){
+ const ended={...row,id:status,status,paymentState:'RELEASE_PENDING',job:{...row.job,vehicleMake:'Ford',vehicleModel:'Focus'}};
+ assert.equal(helper.latestConfirmationIssue([ended,row],'j'),ended);
+ assert.equal(helper.latestConfirmationIssue([{...row,status:'AWAITING_TRANSPORTER'},ended],'j'),undefined);
+ const issueProps={...props,rows:[ended],ended:true};
+ const output=renderToStaticMarkup(render(issueProps));
+ assert.match(output,status==='EXPIRED'?/Confirmation request expired/:/Payment unsuccessful/);
+ assert.match(output,/No booking was confirmed/);
+ assert.match(output,/release is being processed/);
+ render(issueProps).props.children[2].props.onClick();
+ assert.equal(render(issueProps),null);
+}
 console.log('PASS: latest decline only; no resurrection after selection; per-job/per-account scope; dismiss/reload; new decline; empty quotes; notice markup.');
