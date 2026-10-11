@@ -45,6 +45,18 @@
  .declineNoticeDismiss:hover{background:#f7e3c4}
  .declineNoticeDismiss:focus-visible{outline:2px solid #b06a16;outline-offset:2px}
 }
+.customerQuoteRequestGroup{display:contents}
+@media(min-width:1024px){
+ .customerQuoteRequestGroup:has(>.customerRequestDeclineNotice){display:flex;flex-direction:column;min-width:0;border:1px solid #efb367;border-radius:12px;overflow:hidden;background:#fff}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerQuoteRequestGroup:has(>.customerRequestDeclineNotice)>.quoteRequestCard.quoteRequestCard{margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+ .customerQuoteRequestGroup>.customerRequestDeclineNotice{align-items:center;gap:12px;margin:0;padding:15px 18px;background:#fff7ec;border:0;border-top:1px solid #efcfaa;border-radius:0;color:#7c431c;font:14px/1.5 DriveDropApproved,Arial,sans-serif}
+ .customerQuoteRequestGroup>.customerRequestDeclineNotice>svg{display:none}
+ .customerQuoteRequestGroup>.customerRequestDeclineNotice>div{padding-left:34px}
+ .customerQuoteRequestGroup>.customerRequestDeclineNotice strong{margin:0;font-size:14px;font-weight:600;color:#8b471b}
+ .customerQuoteRequestGroup>.customerRequestDeclineNotice p{margin:2px 0 0}
+ .customerQuoteRequestGroup .declineNoticeDismiss{box-sizing:border-box;flex:0 0 82px;width:82px;min-width:82px;height:32px;min-height:32px;margin-left:auto;padding:6px 10px;border:1px solid #dfbd96;border-radius:6px;background:transparent;color:#874719;font:500 13px/18px DriveDropApproved,Arial,sans-serif}
+ .customerQuoteRequestGroup .declineNoticeDismiss:hover{background:#f7e3c4}
+}
 .alternativeCollectionNotice,.alternativeCollectionRegistration{display:none}
 @media(min-width:1024px){
  .availabilityDialog.hasAlternativeCollection{box-sizing:border-box;width:min(650px,calc(100vw - 32px));font:14px/1.5 Arial,sans-serif;padding:28px}
