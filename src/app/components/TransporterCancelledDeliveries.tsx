@@ -16,6 +16,10 @@ const date=(value:string|null)=>{
  return parsed&&Number.isFinite(parsed.getTime())?parsed.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'Europe/London'}):'Not recorded';
 };
 const reference=(id:string)=>`DD-${id.slice(-8).toUpperCase()}`;
+const cancellationDateValue=(booking:CancelledBooking)=>{
+ const value=booking.cancelledAt?Date.parse(booking.cancelledAt):NaN;
+ return Number.isFinite(value)?value:Number.NEGATIVE_INFINITY;
+};
 
 export default function TransporterCancelledDeliveries({selected,onCountChange,onUnreadChange}:{selected:boolean;onCountChange:(count:number)=>void;onUnreadChange:(unread:boolean)=>void}){
  const [bookings,setBookings]=useState<CancelledBooking[]|null>(null);
@@ -68,7 +72,7 @@ export default function TransporterCancelledDeliveries({selected,onCountChange,o
    {error&&<div className="formNotice errorNotice" role="alert"><span>{bookings===null?'Unable to load cancelled deliveries.':'Unable to refresh cancelled deliveries. Your existing cards are still shown.'}</span><button type="button" className="btn light" onClick={()=>void refresh()} disabled={refreshing}>Try again</button></div>}
    {bookings===null&&!error&&<p role="status">Loading cancelled deliveries…</p>}
    {bookings?.length===0&&<div className="transporterCancelledEmpty"><h3>No cancelled deliveries</h3><p>Your cancelled deliveries will appear here.</p></div>}
-   {bookings?.map(booking=>{
+   {bookings&&[...bookings].sort((a,b)=>cancellationDateValue(b)-cancellationDateValue(a)).map(booking=>{
     const open=expanded===booking.id;
     const detailsId=`cancelled-details-${booking.id}`;
     return <article className={`transporterCancelledCard${activity.unread(booking.id,booking.cancelledAt||'CANCELLED')?' hasUnreadCardActivity':''}`} key={booking.id} id={'booking-'+booking.id} ref={node=>{if(node&&window.location.hash==='#booking-'+booking.id)node.scrollIntoView({block:'center'})}}>
