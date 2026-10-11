@@ -10,13 +10,23 @@ assert.equal(helper.latestDecline([{...row,job:{...row.job,selectedQuoteStatus:'
 assert.notEqual(helper.declineDismissalKey('customer1','r'),helper.declineDismissalKey('customer2','r'));
 let state=null,lastEffectKey;const storage=new Map();
 global.localStorage={getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)};
-global.window={addEventListener(){},removeEventListener(){}};
+const events=[];
+global.window={addEventListener(){},removeEventListener(){},dispatchEvent:event=>events.push(event.type)};
+const warnings=(rows=[row],visible=['j'],customer='customer1')=>helper.hasUndismissedQuoteWarnings(rows,visible,customer,helper.isNoticeDismissed);
+assert.equal(warnings(),true,'undismissed decline needs attention');
+assert.equal(warnings([row],[]),false,'hidden request has no visible decline warning');
+assert.equal(warnings([{...row,id:'new',status:'AWAITING_TRANSPORTER'},row]),false,'old decline does not return after selection');
+assert.equal(helper.hasUndismissedQuoteWarnings([row],['j'],undefined,helper.isNoticeDismissed),false);
 const hooks={useState:()=>[state,value=>state=value],useEffect:(fn,deps)=>{if(deps[0]!==lastEffectKey){lastEffectKey=deps[0];fn()}}};
 const exportsNotice={};new Function('exports','require',compile('src/app/components/CustomerDeclineNotice.tsx'))(exportsNotice,id=>id==='react'?hooks:id==='@/lib/decline-notice'?helper:require(id));
 const props={rows:[row],jobId:'j',customerId:'customer1',quoteCount:2};
 const render=props=>{exportsNotice.default(props);return exportsNotice.default(props)};
 let element=render(props);assert.match(renderToStaticMarkup(element),/Please choose another quote/);
 element.props.children[2].props.onClick();assert.equal(render(props),null);
+assert.equal(events.at(-1),'drivedrop:customer-notice-dismissed','dismissal notifies navigation immediately');
+assert.equal(warnings(),false,'dismissed warning no longer contributes');
+assert.equal(warnings([row],['j'],'customer2'),true,'dismissal is account scoped');
+assert.equal(warnings([{...row,id:'other',jobId:'other'},row],['j','other']),true,'another warning keeps attention');
 state=null;lastEffectKey=undefined;assert.equal(render(props),null,'dismissal survives reload');
 const next={...props,rows:[{...row,id:'decline2'}],quoteCount:0};assert.match(renderToStaticMarkup(render(next)),/still open for new quotes/);
 assert.equal(render({...props,rows:[{...row,id:'pending',status:'AWAITING_TRANSPORTER'},row]}),null);
@@ -33,4 +43,8 @@ for(const status of ['EXPIRED','PAYMENT_FAILED']){
  render(issueProps).props.children[2].props.onClick();
  assert.equal(render(issueProps),null);
 }
+const realStorage=global.localStorage;
+global.localStorage={getItem(){throw Error('blocked')},setItem(){throw Error('blocked')}};
+helper.dismissNotice('blocked-key');assert.equal(helper.isNoticeDismissed('blocked-key'),true,'dismissal survives rerenders without storage');
+global.localStorage=realStorage;
 console.log('PASS: latest decline only; no resurrection after selection; per-job/per-account scope; dismiss/reload; new decline; empty quotes; notice markup.');
