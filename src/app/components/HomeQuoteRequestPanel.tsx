@@ -211,7 +211,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
       </div>
       {error&&<div className="formNotice errorNotice homeQuoteError" role="alert">{error}</div>}
       {wizard&&<div className="approvedWizard approvedWizardControls"><button type="button" className="btn light" onClick={()=>step>1?setStep(current=>current-1):window.location.assign('/')}>← Back</button>{step<4&&<button type="button" className="btn orange" onClick={nextStep}>Continue →</button>}</div>}
-      <button type={expanded?'submit':'button'} className="btn orange quoteCta" disabled={submitting} onClick={expanded?undefined:()=>onExpandChange(true)}>{submitting?'Submitting request…':'Get My Quotes'}</button>
+      <button type={expanded?'submit':'button'} className="btn orange quoteCta" disabled={submitting} onClick={expanded?undefined:event=>{if(polished)event.preventDefault();onExpandChange(true)}}>{submitting?'Submitting request…':'Get My Quotes'}</button>
       {!wizard&&<button type="button" className="homeQuoteExpand approvedInlineExpand" aria-label={expanded?'Collapse quote details':'Expand quote details'} aria-expanded={expanded} aria-controls="home-quote-extra" disabled={submitting} onClick={()=>{setError('');onExpandChange(!expanded)}}>{expanded?'−':'+'}</button>}
       <p className="quoteSmall">{polished?'Free quotes · No obligation':'No payment required to request quotes.'}</p>
     </form>
