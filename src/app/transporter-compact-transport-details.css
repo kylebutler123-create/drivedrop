@@ -1,9 +1,10 @@
 .tdCompactTransportDetails{display:none}
 @media(min-width:1024px){
  body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-jobs{grid-template-columns:48px minmax(0,1fr) 170px 195px 82px 165px 18px;gap:18px;padding:10px 18px;min-height:82px}
- body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-quotes{grid-template-columns:48px minmax(0,1fr) 160px 175px 160px 214px 18px;gap:14px;padding:10px 18px;min-height:82px}
+ body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-quotes{grid-template-columns:48px minmax(0,1fr) 145px 170px 160px 210px 18px;gap:10px;padding:10px 18px;min-height:82px}
  body.approvedDesktop.role-transporter .tdCompactTransportDetails{grid-column:3;grid-row:1;display:flex;flex-direction:column;justify-content:center;gap:5px;min-height:58px;min-width:0;border-left:1px solid #d7e5fa;padding-left:18px;color:#304d70;font:500 14px/1.4 Arial,sans-serif;overflow-wrap:anywhere}
  body.approvedDesktop.role-transporter :is(.tdCompact-jobs,.tdCompact-quotes)>.tdCompactDate{grid-column:4;grid-row:1;border-left:1px solid #d7e5fa;padding-left:18px;min-width:0}
+ body.approvedDesktop.role-transporter .tdCompact-quotes>.tdCompactTransportDetails,body.approvedDesktop.role-transporter .tdCompact-quotes>.tdCompactDate{padding-left:12px}
  body.approvedDesktop.role-transporter :is(.tdCompact-jobs,.tdCompact-quotes)>.tdCompactDate>small{font-size:12px;font-weight:400;color:#52658e}
  body.approvedDesktop.role-transporter :is(.tdCompact-jobs,.tdCompact-quotes)>.tdCompactMeta{grid-column:5;grid-row:1;justify-content:center;font:600 13px/1.4 Arial,sans-serif}
  body.approvedDesktop.role-transporter :is(.tdCompact-jobs,.tdCompact-quotes)>.tdCompactStatusSlot{grid-column:6;grid-row:1}
@@ -13,7 +14,8 @@
  body.approvedDesktop.role-transporter .tdCompact-quotes .tdCompactPrice small{font:400 12px/1.4 Arial,sans-serif;white-space:nowrap}
  body.approvedDesktop.role-transporter .tdCompact-quotes .tdCompactPrice strong{font:700 17px/1.4 Arial,sans-serif}
  body.approvedDesktop.role-transporter .tdCompact-jobs .tdCompactStatus{min-width:142px;background:#fff0e3;color:#b45313;font:500 14px/1.4 Arial,sans-serif}
- body.approvedDesktop.role-transporter .tdQuoteCard.tdQuoteClosed .requoteWrap>.requoteActions{right:50px}
+ body.approvedDesktop.role-transporter .tdQuoteCard.tdQuoteClosed .requoteWrap>.requoteActions{right:46px;gap:8px}
+ body.approvedDesktop.role-transporter .tdQuoteCard.tdQuoteClosed .requoteActions>.btn{padding:7px 10px}
 }
 @media(min-width:1024px) and (max-width:1199px){
  body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-jobs{grid-template-columns:40px minmax(0,1fr) 120px 150px 60px 120px 18px;gap:10px;padding:10px 14px}
