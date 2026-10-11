@@ -1,4 +1,12 @@
 /* Approved desktop dashboard and delivery cards. All live content is retained. */
+/* Keep the viewport width stable when switching between short and long lists. */
+@media(min-width:1024px){
+ html:has(body.approvedDesktop .customerLiveWorkspace.customerActivityLayout){scrollbar-gutter:stable}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout>#quote-requests{box-sizing:border-box;width:100%;max-width:none;margin-left:0;margin-right:0;padding-left:0;padding-right:0}
+ @supports not (scrollbar-gutter:stable){
+  html:has(body.approvedDesktop .customerLiveWorkspace.customerActivityLayout){overflow-y:scroll}
+ }
+}
 .quoteDesignSummary{display:none}
 @media screen and (min-width:1024px){
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout #quote-requests>.dashboardSectionHeading{box-sizing:border-box;height:55px;min-height:55px;margin:0;padding:0 0 16px;align-items:center}
