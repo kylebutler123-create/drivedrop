@@ -22,19 +22,5 @@ function reset(){row={id:'r',quoteId:'q',jobId:'j',transporterId:'t',customerId:
  const eligibility={};const js=swc.transformSync('export async function eligibleQuote'+eligibleSource,{jsc:{parser:{syntax:'typescript'},target:'es2022'},module:{type:'commonjs'}}).code;
  new Function('exports','quoteInclude','isOfferLive','AvailabilityError','insuranceStatusForVerification',js)(eligibility,{},q=>q.status==='PENDING',Error,()=>({state:'VALID'}));
  await assert.rejects(()=>eligibility.eligibleQuote({quote:{findUniqueOrThrow:async()=>({status:'WITHDRAWN',job:{status:'QUOTED'}})}},'q',new Date()),/unavailable/);
- const React=require('react'),{renderToStaticMarkup}=require('react-dom/server');
- const panelCode=swc.transformSync('export default function AvailabilityPanel'+fs.readFileSync('src/app/components/AvailabilityPanel.tsx','utf8').split('export default function AvailabilityPanel')[1],{jsc:{parser:{syntax:'typescript',tsx:true},target:'es2022',transform:{react:{runtime:'automatic'}}},module:{type:'commonjs'}}).code;
- function renderNotice(rows,role='CUSTOMER'){
-  let call=0;const panel={};new Function('exports','require','useState','useRef','useCallback','useEffect','requestExpired','RequestCard',panelCode)(panel,require,()=>[call++===0?rows:'',()=>{}],value=>({current:value}),fn=>fn,()=>{},()=>false,()=>null);
-  return renderToStaticMarkup(React.createElement(panel.default,{role}));
- }
- const declined={id:'r',jobId:'j',status:'DECLINED',paymentState:'RELEASE_PENDING',transporterName:'Example Transport',job:{status:'QUOTED',selectedQuoteStatus:'WITHDRAWN',availableQuoteCount:2,vehicleMake:'Mercedes-Benz',vehicleModel:'E-Class'}};
- assert.match(renderNotice([declined]),/Please select another quote below/);
- assert.match(renderNotice([declined]),/release is being processed/);
- assert.match(renderNotice([{...declined,paymentState:'RELEASED',job:{...declined.job,availableQuoteCount:0}}]),/still open for new quotes/);
- assert.match(renderNotice([{...declined,paymentState:'RELEASED'}]),/Your bank may take time/);
- assert.doesNotMatch(renderNotice([declined],'TRANSPORTER'),/availabilityDeclinedBanner/);
- assert.doesNotMatch(renderNotice([{...declined,job:{...declined.job,selectedQuoteStatus:'PENDING'}}]),/availabilityDeclinedBanner/);
- assert.doesNotMatch(renderNotice([{...declined,id:'new',status:'BOOKED'},declined]),/availabilityDeclinedBanner/);
  console.log('PASS: decline withdraws only its quote; counts/job state; authorisation release; duplicate decline; customer withdrawal; ownership; capture/booking protection; rollback; stale selection rejected.');
 })().catch(e=>{console.error(e);process.exitCode=1});

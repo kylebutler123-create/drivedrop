@@ -1,0 +1,24 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),swc=require('next/dist/build/swc'),React=require('react'),{renderToStaticMarkup}=require('react-dom/server');
+function compile(file){return swc.transformSync(fs.readFileSync(file,'utf8'),{jsc:{parser:{syntax:'typescript',tsx:file.endsWith('tsx')},target:'es2022',transform:{react:{runtime:'automatic'}}},module:{type:'commonjs'}}).code}
+const helper={};new Function('exports',compile('src/lib/decline-notice.ts'))(helper);
+const row={id:'decline1',jobId:'j',status:'DECLINED',transporterName:'Transport One',job:{status:'QUOTED',selectedQuoteStatus:'WITHDRAWN'}};
+assert.equal(helper.latestDecline([row],'j'),row);
+assert.equal(helper.latestDecline([{...row,id:'decline2'},row],'j').id,'decline2');
+for(const status of ['AWAITING_AUTHORISATION','AWAITING_TRANSPORTER','BOOKED','EXPIRED','WITHDRAWN'])assert.equal(helper.latestDecline([{...row,id:'new',status},row],'j'),undefined);
+assert.equal(helper.latestDecline([row],'other-job'),undefined);
+assert.equal(helper.latestDecline([{...row,job:{...row.job,selectedQuoteStatus:'PENDING'}}],'j'),undefined);
+assert.notEqual(helper.declineDismissalKey('customer1','r'),helper.declineDismissalKey('customer2','r'));
+let state=null,lastEffectKey;const storage=new Map();
+global.localStorage={getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)};
+global.window={addEventListener(){},removeEventListener(){}};
+const hooks={useState:()=>[state,value=>state=value],useEffect:(fn,deps)=>{if(deps[0]!==lastEffectKey){lastEffectKey=deps[0];fn()}}};
+const exportsNotice={};new Function('exports','require',compile('src/app/components/CustomerDeclineNotice.tsx'))(exportsNotice,id=>id==='react'?hooks:id==='@/lib/decline-notice'?helper:require(id));
+const props={rows:[row],jobId:'j',customerId:'customer1',quoteCount:2};
+const render=props=>{exportsNotice.default(props);return exportsNotice.default(props)};
+let element=render(props);assert.match(renderToStaticMarkup(element),/Please choose another quote/);
+element.props.children[2].props.onClick();assert.equal(render(props),null);
+state=null;lastEffectKey=undefined;assert.equal(render(props),null,'dismissal survives reload');
+const next={...props,rows:[{...row,id:'decline2'}],quoteCount:0};assert.match(renderToStaticMarkup(render(next)),/still open for new quotes/);
+assert.equal(render({...props,rows:[{...row,id:'pending',status:'AWAITING_TRANSPORTER'},row]}),null);
+assert.match(renderToStaticMarkup(render({...props,customerId:'customer2'})),/Transport One/);
+console.log('PASS: latest decline only; no resurrection after selection; per-job/per-account scope; dismiss/reload; new decline; empty quotes; notice markup.');

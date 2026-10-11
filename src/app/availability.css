@@ -37,3 +37,10 @@
  .availabilityCustomerLegacyCopy{display:none!important}
  .availabilityCustomerDesktopCopy{display:block}
 }
+@media(min-width:1024px){
+ .customerRequestDeclineNotice{align-items:flex-start;margin-bottom:10px}
+ .customerRequestDeclineNotice>div{flex:1;min-width:0}
+ .declineNoticeDismiss{display:inline-flex;align-items:center;justify-content:center;flex:none;width:30px;height:30px;padding:0;border:0;border-radius:5px;background:transparent;color:#694719;font:24px/1 Arial,sans-serif;cursor:pointer}
+ .declineNoticeDismiss:hover{background:#f7e3c4}
+ .declineNoticeDismiss:focus-visible{outline:2px solid #b06a16;outline-offset:2px}
+}
