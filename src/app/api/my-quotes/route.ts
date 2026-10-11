@@ -15,7 +15,7 @@ export async function GET(){
     where:{transporterId:u.id},
     include:{
       job:{select:{
-        id:true,status:true,vehicleMake:true,vehicleModel:true,collection:true,delivery:true,collectionDate:true,collectionFrom:true,collectionUntil:true,
+        id:true,status:true,vehicleMake:true,vehicleModel:true,registration:true,transportType:true,running:true,collection:true,delivery:true,collectionDate:true,collectionFrom:true,collectionUntil:true,
         customer:{select:{name:true}},
         quotes:pendingCollectionDates,
         _count:{select:{quotes:{where:{status:{not:'WITHDRAWN'}}}}}
