@@ -25,6 +25,7 @@ export async function authoriseRequest(actor:BookingActor,id:string){
  if(r.paymentProvider==='TEST'){
   authorisationProvider();
   r=await locked(id,async(tx,r)=>{
+   if(['AWAITING_TRANSPORTER','CAPTURING','BOOKED'].includes(r.status))return r;
    if(r.status!=='AWAITING_AUTHORISATION'||requestExpired(r))throw new AvailabilityError('This authorisation request has expired');
    return tx.availabilityRequest.update({where:{id},data:{status:'AWAITING_TRANSPORTER',paymentState:'AUTHORISED',paymentIntentId:`test_auth_${id}`,authorisationExpiresAt:new Date(Date.now()+7*86400000)}});
   });

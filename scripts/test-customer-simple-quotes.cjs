@@ -1,7 +1,7 @@
 const fs=require('fs'),path=require('path'),assert=require('assert/strict');
 const swc=require('next/dist/build/swc'),React=require('react'),{renderToStaticMarkup}=require('react-dom/server');
 const root=path.resolve(__dirname,'..');
-function load(file){const filename=path.join(root,file),exports={};const code=swc.transformSync(fs.readFileSync(filename,'utf8'),{filename,jsc:{parser:{syntax:'typescript',tsx:file.endsWith('tsx')},target:'es2022',transform:{react:{runtime:'automatic'}}},module:{type:'commonjs'}}).code;new Function('exports','require',code)(exports,id=>id==='@/lib/customer-quote-display'?load('src/lib/customer-quote-display.ts'):id==='next/link'?(({children,...props})=>React.createElement('a',props,children)):require(id));return exports;}
+function load(file){const filename=path.join(root,file),exports={};const code=swc.transformSync(fs.readFileSync(filename,'utf8'),{filename,jsc:{parser:{syntax:'typescript',tsx:file.endsWith('tsx')},target:'es2022',transform:{react:{runtime:'automatic'}}},module:{type:'commonjs'}}).code;new Function('exports','require',code)(exports,id=>id==='@/lib/customer-quote-display'?load('src/lib/customer-quote-display.ts'):id==='@/lib/quote-selection-state'?load('src/lib/quote-selection-state.ts'):id==='next/link'?(({children,...props})=>React.createElement('a',props,children)):require(id));return exports;}
 const {offeredCollection,sortCustomerQuotes}=load('src/lib/customer-quote-display.ts');
 const job={id:'job',collectionDate:'2026-12-14T00:00:00.000Z',collectionFrom:'09:00',collectionUntil:'12:00'};
 const transporter={id:'t',name:'Business · rating decoration',businessName:'Midlands Vehicle Logistics',averageRating:4.9,reviewCount:86,verificationStatus:'APPROVED'};
@@ -17,6 +17,7 @@ assert.deepEqual(offeredCollection(sameDay,job),{date:job.collectionDate,from:'1
 assert.equal(offeredCollection({...later,proposedCollectionFrom:null,proposedCollectionUntil:null},job).from,null);
 assert.equal(offeredCollection({...later,dateNegotiationStatus:'DECLINED'},job).date,job.collectionDate);
 const Component=load('src/app/components/CustomerDesktopQuotes.tsx').default;
+const lockedHtml=renderToStaticMarkup(React.createElement(Component,{job,busyQuoteId:null,onSelect(){},notice:null,selectionRequest:{id:'r',jobId:'job',quoteId:'a',status:'AWAITING_TRANSPORTER'}}));assert(lockedHtml.includes('Awaiting confirmation'));assert.equal((lockedHtml.match(/class="simpleQuoteSelect" disabled/g)||[]).length,3);assert(!lockedHtml.includes('>Select quote</button>'));
 const html=renderToStaticMarkup(React.createElement(Component,{job,busyQuoteId:null,onSelect(){},notice:null}));
 assert(html.includes('Monday 14 December 2026'));assert(html.includes('Wednesday 16 December 2026'));assert(html.includes('13:00'));assert(html.includes('£249.00'));
 assert(!html.includes('rating decoration'));assert(html.includes('New transporter · No reviews yet'));assert.equal((html.match(/>Select quote</g)||[]).length,3);
