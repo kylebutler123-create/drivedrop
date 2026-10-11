@@ -1,4 +1,5 @@
 'use client';
+import useDesktopCardActivity from './useDesktopCardActivity';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import Icon from './ApprovedIcon';
 import CompactRow from './TransporterCompactRow';
@@ -16,8 +17,11 @@ const date=(value:string|null)=>{
 };
 const reference=(id:string)=>`DD-${id.slice(-8).toUpperCase()}`;
 
-export default function TransporterCancelledDeliveries({selected,onCountChange}:{selected:boolean;onCountChange:(count:number)=>void}){
+export default function TransporterCancelledDeliveries({selected,onCountChange,onUnreadChange}:{selected:boolean;onCountChange:(count:number)=>void;onUnreadChange:(unread:boolean)=>void}){
  const [bookings,setBookings]=useState<CancelledBooking[]|null>(null);
+ const activity=useDesktopCardActivity('transporter-cancelled');
+ const hasUnread=bookings?.some(b=>activity.unread(b.id,b.cancelledAt||'CANCELLED'))||false;
+ useEffect(()=>{onUnreadChange(hasUnread)},[hasUnread,onUnreadChange]);
  const [error,setError]=useState(false);
  const [refreshing,setRefreshing]=useState(false);
  const [expanded,setExpanded]=useState<string|null>(null);
@@ -67,8 +71,8 @@ export default function TransporterCancelledDeliveries({selected,onCountChange}:
    {bookings?.map(booking=>{
     const open=expanded===booking.id;
     const detailsId=`cancelled-details-${booking.id}`;
-    return <article className="transporterCancelledCard" key={booking.id} id={'booking-'+booking.id} ref={node=>{if(node&&window.location.hash==='#booking-'+booking.id)node.scrollIntoView({block:'center'})}}>
-     <button type="button" className="transporterCancelledToggle" aria-expanded={open} aria-controls={detailsId} onClick={()=>setExpanded(open?null:booking.id)}>
+    return <article className={`transporterCancelledCard${activity.unread(booking.id,booking.cancelledAt||'CANCELLED')?' hasUnreadCardActivity':''}`} key={booking.id} id={'booking-'+booking.id} ref={node=>{if(node&&window.location.hash==='#booking-'+booking.id)node.scrollIntoView({block:'center'})}}>
+     <button type="button" className="transporterCancelledToggle" aria-expanded={open} aria-controls={detailsId} onClick={()=>{if(!open)activity.mark(booking.id,booking.cancelledAt||'CANCELLED');setExpanded(open?null:booking.id)}}>
       <CompactRow kind="cancelled" job={booking.job} date={booking.job.collectionDate} status="Cancelled" open={open}/>
       <Icon name="car"/>
       <span className="transporterCancelledIdentity"><strong>{booking.job.vehicleMake} {booking.job.vehicleModel}</strong><span className="transporterCancelledBadge">Cancelled</span><small>Delivery reference: {reference(booking.id)}</small></span>

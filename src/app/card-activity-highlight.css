@@ -1,0 +1,14 @@
+/* Unread activity is independent of the card's booking/payout status colours. */
+@media(min-width:1024px){
+ body.approvedDesktop main.dashboardShell.customerLiveWorkspace.customerActivityLayout :is(.bookingCard,.quoteRequestCard,.approvedRecentRow):is(.hasUnreadCardActivity,[data-unread-card-activity="true"],.hasUnreadDeliveryProgress,.hasUnreadCompletedActivity),
+ body.approvedDesktop main.dashboardShell.customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard[data-unread-card-activity="true"],
+ body.approvedDesktop.role-transporter main.dashboardShell :is(.jobOpportunity,.transporterBooking,.tdQuoteCard,.transporterCancelledCard,.transporterCompletedCard):is(.hasUnreadCardActivity,[data-unread-card-activity="true"],.hasUnreadAwaiting,.hasUnreadReady,.hasUnreadPaid){border-color:#efb367!important;background:#fff7ec!important;box-shadow:0 0 0 1px #efb367!important}
+ body.approvedDesktop main.dashboardShell.customerLiveWorkspace.customerActivityLayout .bookingCard:is(.hasUnreadDeliveryProgress,.hasUnreadCompletedActivity)>.customerCardToggle,
+ body.approvedDesktop main.dashboardShell.customerLiveWorkspace.customerActivityLayout .bookingCard:is(.hasUnreadDeliveryProgress,.hasUnreadCompletedActivity) .deliveryDesignSummary,
+ body.approvedDesktop main.dashboardShell.customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard[data-unread-card-activity="true"]>.customerCardToggle,
+ body.approvedDesktop.role-transporter main.dashboardShell :is(.hasUnreadCardActivity,[data-unread-card-activity="true"],.hasUnreadAwaiting,.hasUnreadReady,.hasUnreadPaid) :is(.tdCompactRow,.tdActiveHeader,.tdCompactToggle,.transporterCompletedSummary,.transporterCancelledToggle){background:#fff7ec!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard:is(.hasUnreadAwaiting,.hasUnreadReady,.hasUnreadPaid) .tdCompactVehicle:after,
+ body.approvedDesktop main.dashboardShell.customerLiveWorkspace.customerActivityLayout .customerCancelledCompact.hasUnreadDeliveryProgress .customerCancelledStatus:before{display:none!important}
+ /* Opening a quote request clears activity even though quotes remain available. */
+ body.approvedDesktop main.dashboardShell.customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard:not([data-unread-card-activity="true"]){box-shadow:none!important}
+}

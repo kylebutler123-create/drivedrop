@@ -1,10 +1,14 @@
 'use client';
+import useDesktopCardActivity,{quoteActivityVersion} from './useDesktopCardActivity';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import QuotesDesktop from '../transporter/quotes/QuotesDesktop';
 import {dashboardQuotedJobs} from '@/lib/quote-order';
 
-export default function TransporterQuotedJobs({selected,onCountChange}:{selected:boolean;onCountChange:(count:number)=>void}){
+export default function TransporterQuotedJobs({selected,onCountChange,onUnreadChange}:{selected:boolean;onCountChange:(count:number)=>void;onUnreadChange:(unread:boolean)=>void}){
  const[quotes,setQuotes]=useState<any[]>([]),[loaded,setLoaded]=useState(false),[error,setError]=useState('');
+ const activity=useDesktopCardActivity('transporter-quotes');
+ const hasUnread=quotes.some(q=>activity.unread(q.id,quoteActivityVersion([q])));
+ useEffect(()=>{onUnreadChange(hasUnread)},[hasUnread,onUnreadChange]);
  const sequence=useRef(0),mounted=useRef(false);
  const refresh=useCallback(async()=>{
   const request=++sequence.current;
@@ -20,5 +24,5 @@ export default function TransporterQuotedJobs({selected,onCountChange}:{selected
  useEffect(()=>{if(selected)void refresh()},[selected,refresh]);
  function update(id:string,value:any){++sequence.current;setQuotes(rows=>rows.map(q=>q.id===id?{...q,...value}:q));void refresh()}
  function cancel(id:string){++sequence.current;setQuotes(rows=>rows.filter(q=>q.id!==id));onCountChange(Math.max(0,quotes.length-1));void refresh()}
- return selected?<section id="my-quoted-jobs" aria-label="Jobs you have quoted on"><QuotesDesktop embedded quotes={quotes} loading={!loaded&&!error} error={error} onUpdate={update} onCancel={cancel} onRetry={refresh}/></section>:null;
+ return selected?<section id="my-quoted-jobs" aria-label="Jobs you have quoted on"><QuotesDesktop unreadQuote={q=>activity.unread(q.id,quoteActivityVersion([q]))} onQuoteOpened={q=>activity.mark(q.id,quoteActivityVersion([q]))} embedded quotes={quotes} loading={!loaded&&!error} error={error} onUpdate={update} onCancel={cancel} onRetry={refresh}/></section>:null;
 }

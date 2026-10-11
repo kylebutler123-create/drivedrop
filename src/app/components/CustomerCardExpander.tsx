@@ -49,7 +49,7 @@ function syncDeliveryProgress(card:HTMLElement,markSeen=false){
   }
   if(newlySeen)window.dispatchEvent(new CustomEvent('drivedrop:customer-progress-seen'));
  }
- const unread=!confirmationRequired&&progress.highlight===true&&!!progress.customerId&&!!progress.bookingId&&!persistedSeen&&seen!==progress.eventKey;
+ const unread=(!confirmationRequired||window.matchMedia('(min-width:1024px)').matches)&&progress.highlight===true&&!!progress.customerId&&!!progress.bookingId&&!persistedSeen&&seen!==progress.eventKey;
  card.classList.toggle('hasUnreadDeliveryProgress',unread);
  let badge=main.querySelector<HTMLElement>('.customerDeliveryProgressAlert');
  if(!unread){badge?.remove();return}

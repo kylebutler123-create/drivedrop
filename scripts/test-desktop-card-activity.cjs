@@ -1,0 +1,23 @@
+const assert=require('assert/strict'),fs=require('fs'),swc=require('next/dist/build/swc');
+const storage=new Map();global.localStorage={getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)};
+let desktop=true;
+global.window={matchMedia:()=>({matches:desktop,addEventListener(){},removeEventListener(){}}),addEventListener(){},removeEventListener(){}};
+let values=[],cursor=0,effects=[];
+const react={useState(initial){const i=cursor++;if(!(i in values))values[i]=initial;return [values[i],v=>{values[i]=typeof v==='function'?v(values[i]):v}]},useEffect(fn){effects.push(fn)}};
+const filename='src/app/components/useDesktopCardActivity.ts',exportsForTest={};
+const code=swc.transformSync(fs.readFileSync(filename,'utf8'),{filename,jsc:{parser:{syntax:'typescript'},target:'es2022'},module:{type:'commonjs'}}).code;
+new Function('exports','require',code)(exportsForTest,id=>id==='react'?react:require(id));
+const {default:hook,quoteActivityVersion}=exportsForTest;
+function render(account='account-a'){cursor=0;effects=[];const result=hook('quotes',account);for(const effect of effects)effect();return result}
+render();let state=render();
+assert(state.unread('one','v1'));assert(state.unread('two','v1'));
+state.mark('one','v1');state=render();assert(!state.unread('one','v1'));assert(state.unread('two','v1'));
+values=[];render();state=render();assert(!state.unread('one','v1'),'read state survives remount');assert(state.unread('one','v2'),'new event is unread');
+values=[];render('account-b');state=render('account-b');assert(state.unread('one','v1'),'account isolation');
+desktop=false;values=[];render();state=render();assert(!state.unread('two','v1'));const size=storage.size;state.mark('mobile','v1');assert.equal(storage.size,size,'mobile does not mark desktop activity');
+const a={id:'a',pricePence:100,status:'PENDING'},b={id:'b',pricePence:200,status:'PENDING'};
+assert.equal(quoteActivityVersion([a,b]),quoteActivityVersion([b,a]));
+assert.notEqual(quoteActivityVersion([a]),quoteActivityVersion([{...a,pricePence:150}]));
+assert.notEqual(quoteActivityVersion([a]),quoteActivityVersion([a,b]));
+assert.equal(quoteActivityVersion([]),'');
+console.log('PASS: individual read state, remaining unread cards, persistence, new activity, account isolation, desktop-only behaviour and quote activity versions.');
