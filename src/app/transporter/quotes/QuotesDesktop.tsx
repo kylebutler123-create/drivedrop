@@ -12,12 +12,12 @@ function Icon({name}:{name:string}){const paths:Record<string,string>={car:'M3 1
 return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name]||paths.all}/></svg>}
 export default function QuotesDesktop({quotes,loading,error,onUpdate,onCancel,onRetry,embedded=false,unreadQuote,onQuoteOpened}:{unreadQuote?:(q:any)=>boolean;onQuoteOpened?:(q:any)=>void;embedded?:boolean;quotes:any[];loading:boolean;error:string;onUpdate:(id:string,value:any)=>void;onCancel:(id:string,value:any)=>void;onRetry:()=>void}){
  const[expanded,setExpanded]=useState<Record<string,boolean>>({});
- const[filter,setFilter]=useState('ALL'),[latest,setLatest]=useState(false);
- const rows=sortQuotes(quotes.filter(q=>filter==='ALL'||q.status===filter),latest);
+ const[filter,setFilter]=useState('ALL');
+ const rows=sortQuotes(quotes.filter(q=>filter==='ALL'||q.status===filter));
  const Container=embedded?'div':'main';
  return <Container className={s.page+(embedded?' '+s.embedded:'')}><header><h1>My quotes</h1><p>{embedded?'Jobs you have quoted on':'Review your quotes, adjust your offer and keep track of customer responses.'}</p></header>
  {!embedded&&<nav className={s.summary} aria-label="Filter quotes">{['ALL','PENDING','ACCEPTED','DECLINED'].map(key=><button key={key} onClick={()=>setFilter(key)} aria-pressed={filter===key} className={filter===key?s.active:''}><Icon name={key.toLowerCase()}/><span>{key==='ALL'?'All quotes':label(key)}<strong>{key==='ALL'?quotes.length:quotes.filter(q=>q.status===key).length}</strong></span></button>)}</nav>}
- <div className={s.heading}>{!embedded&&<h2>Your quotes</h2>}<label><Icon name="calendar"/><select aria-label="Collection date order" value={latest?'latest':'soonest'} onChange={e=>setLatest(e.target.value==='latest')}><option value="soonest">Collection date: soonest first</option><option value="latest">Collection date: latest first</option></select></label></div>
+ {!embedded&&<div className={s.heading}><h2>Your quotes</h2></div>}
  {error&&<p role="alert">{error} <button onClick={onRetry}>Try again</button></p>}
  {loading?<p>Loading submitted quotes…</p>:!rows.length?<div className={s.empty}><h2>No {filter==='ALL'?'submitted':filter.toLowerCase()} quotes</h2><p>Your transporter quotes will appear here as soon as you submit them.</p></div>:<section className={s.cards}>{rows.map(q=>{
  const editable=q.status==='PENDING'&&['OPEN','QUOTED'].includes(q.job.status);
