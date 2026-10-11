@@ -1,0 +1,17 @@
+const fs=require('fs'),assert=require('assert/strict'),swc=require('next/dist/build/swc'),React=require('react'),{renderToStaticMarkup}=require('react-dom/server');
+const filename='src/app/components/AlternativeCollectionNotice.tsx',result={};
+const code=swc.transformSync(fs.readFileSync(filename,'utf8'),{filename,jsc:{parser:{syntax:'typescript',tsx:true},target:'es2022',transform:{react:{runtime:'automatic'}}},module:{type:'commonjs'}}).code;
+new Function('exports','require',code)(result,require);
+const {default:Notice,collectionScheduleDiffers:differs}=result;
+const original={date:'2026-12-14T00:00:00Z',from:'09:00',until:'12:00'};
+const render=selected=>renderToStaticMarkup(React.createElement(Notice,{original,selected}));
+assert.equal(render({...original,date:'2026-12-14'}),'');
+assert(differs(original,{...original,from:'10:00'}));
+assert(differs(original,{...original,until:'13:00'}));
+assert(differs(original,{...original,date:'2026-12-15'}));
+assert(!differs({date:'2026-12-14',from:null},{date:'2026-12-14',from:''}));
+const html=render({date:'2026-12-15',from:'13:00',until:'16:00'});
+assert(html.includes('Monday 14 December 2026'));assert(html.includes('Tuesday 15 December 2026'));
+assert(html.includes('09:00 – 12:00 UK time'));assert(html.includes('13:00'));assert(html.includes('16:00'));
+assert(render({date:'2026-12-15',from:null,until:null}).includes('Time window to be arranged'));
+console.log('PASS: unchanged schedule hidden, date-only and time-only changes shown, full weekdays, both windows and missing-time fallback.');

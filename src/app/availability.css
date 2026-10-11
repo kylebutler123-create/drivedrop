@@ -45,3 +45,23 @@
  .declineNoticeDismiss:hover{background:#f7e3c4}
  .declineNoticeDismiss:focus-visible{outline:2px solid #b06a16;outline-offset:2px}
 }
+.alternativeCollectionNotice,.alternativeCollectionRegistration{display:none}
+@media(min-width:1024px){
+ .availabilityDialog.hasAlternativeCollection{box-sizing:border-box;width:min(650px,calc(100vw - 32px));font:14px/1.5 Arial,sans-serif;padding:28px}
+ .hasAlternativeCollection h2{margin:0 0 12px;line-height:1.25}
+ .hasAlternativeCollection .alternativeCollectionRegistration{display:inline}
+ .hasAlternativeCollection .availabilitySchedule{display:none}
+ .alternativeCollectionNotice{display:block;padding:18px;background:#fff7ec;border:1px solid #efb367;border-radius:9px;margin:16px 0}
+ .alternativeCollectionHeading{display:flex;gap:10px;align-items:center;color:#934715;font-size:16px}
+ .alternativeCollectionHeading svg{width:22px;height:22px;flex:none}
+ .alternativeCollectionNotice p{margin:9px 0 16px;font-size:14px;color:#734c30}
+ .alternativeCollectionOriginal{font-size:12px;color:#64758b;border-bottom:1px solid #efd8b9;padding-bottom:13px;margin-bottom:13px}
+ .alternativeCollectionOriginal span,.alternativeCollectionSelected span{display:block;margin-bottom:4px}
+ .alternativeCollectionOriginal strong{font-weight:400}
+ .alternativeCollectionSelected span{color:#934715;font-size:12px}
+ .alternativeCollectionSelected strong{display:block;font-size:17px;color:#142e49}
+ .alternativeCollectionSelected .alternativeCollectionWindow{margin-top:4px;font-size:16px}
+ .alternativeCollectionWindow small{font-size:13px;color:#586a7c}
+ .hasAlternativeCollection .availabilityNotice{background:#f1f6fb;color:#142e49;font-size:14px}
+ .hasAlternativeCollection .availabilityActions{display:grid;grid-template-columns:1fr;gap:8px}
+}
