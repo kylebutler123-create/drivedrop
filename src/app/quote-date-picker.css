@@ -4,3 +4,5 @@
 
 /* Native required validation redirects focus to the accessible calendar dialog. */
 input.quotePickerValidation{position:absolute!important;width:1px!important;height:1px!important;min-height:0!important;padding:0!important;margin:0!important;border:0!important;opacity:0!important;pointer-events:none!important}
+.quotePickerDays button:disabled,.quotePickerMonth button:disabled{opacity:.35;cursor:not-allowed;background:transparent;box-shadow:none}
+.quotePickerApply:disabled{opacity:.45;cursor:not-allowed}

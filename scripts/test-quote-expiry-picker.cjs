@@ -1,0 +1,31 @@
+const fs=require('fs'),path=require('path'),assert=require('assert/strict'),swc=require('next/dist/build/swc'),React=require('react'),{renderToStaticMarkup}=require('react-dom/server');
+let state=[],index=0;
+function load(file){const filename=path.resolve(file),exports={};const code=swc.transformSync(fs.readFileSync(filename,'utf8'),{filename,jsc:{parser:{syntax:'typescript',tsx:file.endsWith('tsx')},target:'es2022',transform:{react:{runtime:'automatic'}}},module:{type:'commonjs'}}).code;new Function('exports','require',code)(exports,id=>{
+ if(id==='react')return {...React,useState:()=>[state[index++],()=>{}],useEffect(){},useLayoutEffect(){},useRef:()=>({current:null})};
+ if(id==='react-dom')return {createPortal:node=>node};
+ if(id.includes('CollectionWindowFields'))return {Icon:()=>null};
+ if(id.endsWith('.css'))return {};
+ if(id==='@/lib/availability-time')return load('src/lib/availability-time.ts');
+ if(id==='./availability-error')return load('src/lib/availability-error.ts');
+ return require(id);
+});return exports;}
+global.document={body:{}};
+const {quoteExpiry}=load('src/lib/availability-time.ts');
+const now=new Date('2026-10-11T19:59:30Z'); // 20:59 UK, even if the browser is elsewhere.
+assert.throws(()=>quoteExpiry('2026-10-10T23:59',now),/future/);
+assert.throws(()=>quoteExpiry('2026-10-11T20:59',now),/future/);
+assert.equal(quoteExpiry('2026-10-11T21:00',now).toISOString(),'2026-10-11T20:00:00.000Z');
+assert.throws(()=>quoteExpiry('2026-10-11T21:00',new Date('2026-10-11T20:00:00Z')),/future/);
+assert.throws(()=>quoteExpiry('2027-03-28T01:30',now),/clock time/);
+assert.throws(()=>quoteExpiry('2026-10-25T01:30',now),/clock time/);
+assert.equal(quoteExpiry('',now),null);
+const Picker=load('src/app/components/QuoteDatePicker.tsx').default;
+function render(hour,minute){index=0;state=['',true,'2026-10-11',hour,minute,'','','','','',new Date('2026-10-01T12:00:00Z'),now,{top:0,left:0}];return renderToStaticMarkup(React.createElement(Picker,{id:'expiry',name:'expiresAt',label:'Quote valid until',withTime:true}));}
+let html=render('20','59');
+assert.match(html,/<button[^>]*aria-label="10 October 2026"[^>]*disabled/);
+assert.match(html,/<button[^>]*aria-label="Previous month"[^>]*disabled/);
+assert.match(html,/<button[^>]*class="quotePickerApply"[^>]*disabled/);
+html=render('21','00');
+assert.doesNotMatch(html,/<button[^>]*class="quotePickerApply"[^>]*disabled/);
+assert.match(html,/<option[^>]*disabled[^>]*>20<\/option>/);
+console.log('PASS: past dates, elapsed/same-minute times, future UK time, stale submission, UK DST gaps/ambiguity, optional empty expiry and picker disabled states.');
