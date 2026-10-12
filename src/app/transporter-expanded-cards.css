@@ -224,9 +224,9 @@
  body.approvedDesktop.role-transporter .tdActiveHeader .tdCompactDate{padding-left:12px}
 }
 
-/* Approved orange Edit quote action on desktop compact My quotes cards. */
+/* Keep Edit quote orange in both compact and expanded desktop My quotes cards. */
 @media(min-width:1024px){
- body.approvedDesktop.role-transporter .tdQuoteCard.tdQuoteClosed .requoteActions>button.requoteButton{
+ body.approvedDesktop.role-transporter .tdQuoteCard .requoteActions>button.requoteButton{
   background:#ff681b!important;border-color:#ff681b!important;color:#fff!important;
  }
 }
