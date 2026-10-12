@@ -14,8 +14,8 @@
  body.approvedDesktop.role-transporter .tdCompact-quotes .tdCompactPrice small{font:400 12px/1.4 Arial,sans-serif;white-space:nowrap}
  body.approvedDesktop.role-transporter .tdCompact-quotes .tdCompactPrice strong{font:700 17px/1.4 Arial,sans-serif}
  body.approvedDesktop.role-transporter .tdCompact-jobs .tdCompactStatus{min-width:142px;background:#fff0e3;color:#b45313;font:500 14px/1.4 Arial,sans-serif}
- body.approvedDesktop.role-transporter .tdQuoteCard.tdQuoteClosed .requoteWrap>.requoteActions{right:46px;gap:8px}
- body.approvedDesktop.role-transporter .tdQuoteCard.tdQuoteClosed .requoteActions>.btn{padding:7px 10px;font-weight:500}
+ body.approvedDesktop.role-transporter .tdQuoteCard>.tdQuoteActions .requoteWrap>.requoteActions{gap:8px}
+ body.approvedDesktop.role-transporter .tdQuoteCard .requoteActions>.btn{padding:7px 10px;font-weight:500}
 }
 @media(min-width:1024px) and (max-width:1199px){
  body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-jobs{grid-template-columns:40px minmax(0,1fr) 120px 150px 60px 120px 18px;gap:10px;padding:10px 14px}
@@ -27,5 +27,4 @@
  body.approvedDesktop.role-transporter :is(.tdCompact-jobs,.tdCompact-quotes) .tdCompactCollectionWindow{align-items:flex-start;white-space:normal}
  body.approvedDesktop.role-transporter :is(.tdCompact-jobs,.tdCompact-quotes) .tdCompactCollectionWindow small{display:block!important;margin-left:0}
  body.approvedDesktop.role-transporter .tdCompact-jobs .tdCompactStatus{min-width:100px}
- body.approvedDesktop.role-transporter .tdQuoteCard.tdQuoteClosed .requoteWrap>.requoteActions{right:42px}
 }
