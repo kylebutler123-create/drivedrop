@@ -2,7 +2,7 @@
 /* Completed and cancelled cards retain their own date labels and status colours. */
 @media(min-width:1024px){
  body.approvedDesktop.role-transporter .tdCompactRow:is(.tdCompact-completed,.tdCompact-cancelled){grid-template-columns:48px minmax(0,1fr) 170px 195px 200px 18px;gap:18px}
- body.approvedDesktop.role-transporter :is(.tdCompact-completed,.tdCompact-cancelled)>.tdCompactTransportDetails{gap:1px;font-size:13px;line-height:1.4}
+ body.approvedDesktop.role-transporter .tdCompactRow>.tdCompactTransportDetails{gap:1px;font-size:13px;line-height:1.4}
  body.approvedDesktop.role-transporter :is(.tdCompact-completed,.tdCompact-cancelled)>.tdCompactDate{grid-column:4;grid-row:1;padding-left:18px;min-width:0}
  body.approvedDesktop.role-transporter :is(.tdCompact-completed,.tdCompact-cancelled)>.tdCompactMeta{display:none}
  body.approvedDesktop.role-transporter :is(.tdCompact-completed,.tdCompact-cancelled)>.tdCompactStatusSlot{grid-column:5;grid-row:1}
