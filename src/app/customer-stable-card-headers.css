@@ -1,10 +1,11 @@
 /* One desktop header layout for collapsed and expanded customer bookings.
    The first grid row also anchors sibling action buttons, including wrapped addresses. */
 @media(min-width:1024px){
- /* Match the compact card's lower border without shifting its header or actions. */
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.bookingCard.customerExpandableCard:is([data-active-summary],[data-completed-summary],.customerCancelledCompact):not(.isCollapsed)>.customerCardToggle::after{content:'';position:absolute;left:-24px;right:-20px;bottom:-11px;height:1px;background:#cfe5fe;pointer-events:none}
+ /* An inset separator follows the header's 10px bottom inset plus 14px of air.
+    The 12px grid gap also preserves the original space below the divider. */
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.bookingCard.customerExpandableCard:is([data-active-summary],[data-completed-summary],.customerCancelledCompact):not(.isCollapsed)::after{content:'';display:block;grid-column:1/-1;grid-row:2;height:1px;margin:12px 0 0;background:#dce9f6;pointer-events:none}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.bookingCard.customerExpandableCard:is([data-active-summary],[data-completed-summary],.customerCancelledCompact){display:grid;position:relative;height:auto!important;min-height:84px!important;padding:10px 20px 10px 24px!important;border:1px solid #cfe5fe!important;border-radius:9px!important;margin:0 0 var(--delivery-list-gap,10px)!important}
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.bookingCard.customerExpandableCard:is([data-active-summary],[data-completed-summary],.customerCancelledCompact):not(.isCollapsed){padding-bottom:18px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.bookingCard.customerExpandableCard:is([data-active-summary],[data-completed-summary],.customerCancelledCompact):not(.isCollapsed){padding-bottom:18px!important;row-gap:12px}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.bookingCard.customerExpandableCard:is([data-active-summary],[data-completed-summary],.customerCancelledCompact)::before{display:none!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.bookingCard.customerExpandableCard:is([data-active-summary],[data-completed-summary],.customerCancelledCompact)>.customerCardToggle{position:relative;grid-column:1/-1;grid-row:1;align-self:center;height:auto!important;min-height:62px!important;padding:0!important;box-sizing:border-box}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.bookingCard.customerExpandableCard:is([data-active-summary],[data-completed-summary],.customerCancelledCompact)>.customerCardToggle::before{content:'';position:absolute;left:-24px;top:-10px;bottom:-10px;width:7px;background:#2188ff}
