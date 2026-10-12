@@ -3,6 +3,7 @@ import {useEffect} from 'react';
 import {usePathname} from 'next/navigation';
 import {deliveryIconMarkup,vehicleTypeIcon} from './DeliveryDesignIcon';
 import {vehicleTypeDisplay} from '@/lib/vehicle-types';
+import {transportTypeDisplay} from '@/lib/transport-types';
 
 function text(el:Element|null){return (el?.textContent||'').replace(/\s+/g,' ').trim()}
 function escapeHtml(value:any){return String(value??'').replace(/[&<>'\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]||c))}
@@ -159,7 +160,10 @@ function syncDesignSummary(card:HTMLElement){
  if(summary&&lastDesignSummary.get(card)===signature)return;
  let data;try{data=JSON.parse(raw)}catch{return}
  if(!summary){summary=document.createElement('span');summary.className='deliveryDesignSummary';button.appendChild(summary)}
- summary.innerHTML=`<span class="deliveryVehicleIcon">${deliveryIconMarkup(icon)}</span><span class="deliveryDesignIdentity"><strong>${escapeHtml(data.title)}${data.registration?`<span class="desktopVehicleRegistration"> · ${escapeHtml(data.registration)}</span>`:''}</strong>${fullAddressMarkup(data.collection,data.delivery)}<small class="deliveryExpandedPartner">${escapeHtml(data.transporter)} · ${escapeHtml(data.registration)}</small><small>Delivery reference · ${escapeHtml(bookingReference(card.dataset.bookingId))}</small>${data.compactDetails?`<small class="deliveryCompactMetadata">${escapeHtml(data.compactDetails)}</small>`:''}</span><span class="deliveryHistoryDate"><small>${escapeHtml(data.rowDateLabel)}</small><span>${escapeHtml(data.rowDate)}</span>${compactCollectionWindow(data,card.hasAttribute('data-active-summary'))}</span><span class="deliveryDesignPayment"><span class="deliveryDesignStatus">${escapeHtml(card.hasAttribute('data-active-summary')&&data.status==='Confirmation required'?'Delivered':data.status)}</span><small>${escapeHtml(data.paymentLabel)}</small><strong>${escapeHtml(data.payment)}</strong></span><span class="deliveryDesignChevron">${deliveryIconMarkup('down')}</span>`;
+ const historyCard=card.matches('[data-completed-summary],.customerCancelledCompact');
+ const transport=transportTypeDisplay(data.transportType).replace(/\s*[\p{Extended_Pictographic}\uFE0F]+/gu,'').trim();
+ const details=historyCard?`<span class="customerHistoryTransport"><span>${escapeHtml(transport)}</span><span>${escapeHtml(vehicleTypeDisplay(data.vehicleType))}</span><span>${data.running?'Runs & drives':'Non-running'}</span></span>`:'';
+ summary.innerHTML=`<span class="deliveryVehicleIcon">${deliveryIconMarkup(icon)}</span><span class="deliveryDesignIdentity"><strong>${escapeHtml(data.title)}${data.registration?`<span class="desktopVehicleRegistration"> · ${escapeHtml(data.registration)}</span>`:''}</strong>${fullAddressMarkup(data.collection,data.delivery)}<small class="deliveryExpandedPartner">${escapeHtml(data.transporter)} · ${escapeHtml(data.registration)}</small><small>Delivery reference · ${escapeHtml(bookingReference(card.dataset.bookingId))}</small>${data.compactDetails?`<small class="deliveryCompactMetadata">${escapeHtml(data.compactDetails)}</small>`:''}</span>${details}<span class="deliveryHistoryDate"><small>${escapeHtml(historyCard&&data.rowDateLabel==='Cancelled'?'Cancelled on':data.rowDateLabel)}</small><span>${escapeHtml(data.rowDate)}</span>${compactCollectionWindow(data,card.hasAttribute('data-active-summary'))}</span><span class="deliveryDesignPayment"><span class="deliveryDesignStatus">${escapeHtml(card.hasAttribute('data-active-summary')&&data.status==='Confirmation required'?'Delivered':data.status)}</span><small>${escapeHtml(data.paymentLabel)}</small><strong>${escapeHtml(data.payment)}</strong></span><span class="deliveryDesignChevron">${deliveryIconMarkup('down')}</span>`;
  lastDesignSummary.set(card,signature);
 }
 
