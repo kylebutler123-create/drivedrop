@@ -66,6 +66,7 @@
  body.approvedDesktop.role-transporter main.dashboardShell .jobOpportunity:not(.tdJobClosed)>.jobQuoteDetails{margin:0!important;padding:0 25px 20px;border-top:1px solid #e1e9f2}
  body.approvedDesktop.role-transporter .jobQuoteDetails>.jobQuoteToggle{pointer-events:none;cursor:default;border:0;border-radius:0;background:none;padding:20px 0 14px;min-height:0;color:#091650;font:600 16px Arial,sans-serif}
  body.approvedDesktop.role-transporter .jobQuoteDetails>.jobQuoteToggle .jobQuoteChevron{display:none}
+ body.approvedDesktop.role-transporter .jobOpportunity .quoteSubmitPanel{box-shadow:none!important}
  body.approvedDesktop.role-transporter :is(.jobOpportunity .quoteSubmitPanel,:is(.tdQuoteCard,.jobOpportunity) .requoteGrid){display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 20px;padding:0!important;margin:0!important;border:0!important;background:none!important;border-radius:0}
  body.approvedDesktop.role-transporter :is(.jobOpportunity .quoteSubmitPanel,:is(.tdQuoteCard,.jobOpportunity) .requoteGrid)>div{min-width:0;margin:0;padding:0}
  body.approvedDesktop.role-transporter :is(.jobOpportunity .quoteSubmitPanel,:is(.tdQuoteCard,.jobOpportunity) .requoteGrid) label{display:block;color:#7183a0;font:12px Arial,sans-serif;text-transform:none;letter-spacing:0;margin:0 0 7px}
