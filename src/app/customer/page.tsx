@@ -9,6 +9,7 @@ import '../customer-quote-polish.css';
 import '../customer-delivery-redesign.css';
 import '../customer-expanded-polish.css';
 import '../customer-simple-quotes.css';
+import '../customer-stable-card-headers.css';
 import CustomerDesktopQuotes from '../components/CustomerDesktopQuotes';
 import DeliveryDesignIcon from '@/app/components/DeliveryDesignIcon';
 import CustomerQuoteRequest from '@/app/components/CustomerQuoteRequest';
