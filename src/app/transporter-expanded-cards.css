@@ -84,9 +84,11 @@
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>:is(.bookingTop,.routeVisual,.agreedCollectionDate,.activeVehicleDetails,.transporterCollectionTimePrompt,.transporterCollectionAction,.transporterCompactDeliveryAction){display:none!important}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdActiveReference{border-top:1px solid #e1e9f2;margin:0!important;padding:22px 25px;text-align:right;font:12px Arial,sans-serif;color:#6c7e99}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner{display:none!important}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdActiveReference{display:flex!important;justify-content:space-between;gap:20px}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdActiveReference{display:flex!important;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px 20px;padding-bottom:0}
+ body.approvedDesktop.role-transporter .tdActiveReference .tdActiveCustomer{color:#657b98;text-align:left}
+ body.approvedDesktop.role-transporter .tdActiveReference .tdActiveCustomer b{font-weight:600}
  body.approvedDesktop.role-transporter .tdActiveReference .tdSecured{font-size:13px;color:#246847}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdActiveFacts{margin:0!important;padding:0 25px}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking>.tdActiveFacts{display:none!important}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.bookingColumns{display:grid;grid-template-columns:1.1fr 1fr;gap:34px;margin:24px 25px 0!important;padding:0;border:0;background:transparent}
  body.approvedDesktop.role-transporter .transporterBooking>.bookingColumns>section{min-width:0;border:0;background:none;padding:0;border-radius:0;box-shadow:none}
  body.approvedDesktop.role-transporter .transporterBooking>.bookingColumns>section+section{border-left:1px solid #e1e9f2;padding-left:30px}
