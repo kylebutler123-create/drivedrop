@@ -1,4 +1,19 @@
 .tdCompactTransportDetails{display:none}
+/* Approved active-delivery compact layout: full addresses and narrower actions. */
+@media(min-width:1024px){
+ body.approvedDesktop.role-transporter .tdActiveHeader .tdCompactRow.tdCompact-active{grid-template-columns:48px minmax(0,1fr) 130px 170px 328px 18px;gap:12px;padding:10px 18px}
+ body.approvedDesktop.role-transporter .tdCompact-active>.tdCompactTransportDetails{padding-left:12px}
+ body.approvedDesktop.role-transporter .tdActiveHeader .tdCompact-active>.tdCompactDate{grid-column:4;grid-row:1;border-left:1px solid #d7e5fa;padding-left:12px;min-width:0}
+ body.approvedDesktop.role-transporter .tdCompact-active>.tdCompactDate>small{font-size:14px;font-weight:600;color:#091650}
+ body.approvedDesktop.role-transporter .tdCompact-active>.tdCompactMeta{grid-column:5;grid-row:1}
+ body.approvedDesktop.role-transporter .tdCompact-active>.tdCompactStatusSlot{display:none}
+ body.approvedDesktop.role-transporter .tdCompact-active>.tdCompactChevron{grid-column:6;grid-row:1}
+ body.approvedDesktop.role-transporter .tdActiveHeader>.tdActiveCompactActions{right:48px;grid-template-columns:70px 140px 94px;gap:12px;width:328px}
+ body.approvedDesktop.role-transporter .tdActiveHeader .tdActiveCompactActions>.tdCompactContacts{width:70px;gap:6px}
+ body.approvedDesktop.role-transporter .tdActiveHeader .tdActiveCompactActions>.tdCompactContacts>a{flex:0 0 32px;width:32px;height:34px}
+ body.approvedDesktop.role-transporter .tdActiveHeader .tdActiveCompactActions>.tdCompactProofAction{width:140px;padding:11px 8px;font-size:12px}
+ body.approvedDesktop.role-transporter .tdActiveHeader .tdActiveCompactActions>.tdCompactStatus{width:94px;padding:7px 5px;font-size:12px}
+}
 @media(min-width:1024px){
  body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-jobs{grid-template-columns:48px minmax(0,1fr) 170px 195px 82px 165px 18px;gap:18px;padding:10px 18px;min-height:82px}
  body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-quotes{grid-template-columns:48px minmax(0,1fr) 145px 170px 160px 210px 18px;gap:10px;padding:10px 18px;min-height:82px}
