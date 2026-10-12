@@ -1,4 +1,18 @@
 /* Approved desktop expanded cards. Legacy mobile layouts remain in place. */
+@media(min-width:1024px){
+ body.approvedDesktop.role-transporter .tdQuoteBody .tdQuoteSummary{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,28%);align-items:start;gap:32px}
+ body.approvedDesktop.role-transporter .tdQuoteBody .tdQuoteMessage{min-width:0;margin:0}
+ body.approvedDesktop.role-transporter .tdQuoteBody .tdQuoteMessage h3{font:600 14px Arial,sans-serif;color:#091650;margin:0 0 9px}
+ body.approvedDesktop.role-transporter .tdQuoteBody .tdQuoteMessage p{font:400 14px/1.6 Arial,sans-serif;color:#52658e;margin:0;overflow-wrap:anywhere}
+ body.approvedDesktop.role-transporter .tdQuoteExpiry{display:flex;align-items:flex-start;gap:11px;min-width:0;background:#f1f6fc;border:1px solid #c9dbee;border-radius:8px;padding:14px 16px}
+ body.approvedDesktop.role-transporter .tdQuoteExpiry>svg{flex:none;width:20px;height:20px;color:#356a9e;margin-top:1px}
+ body.approvedDesktop.role-transporter .tdQuoteExpiry>div{min-width:0}
+ body.approvedDesktop.role-transporter .tdQuoteExpiry small{display:block;font:500 12px/1.4 Arial,sans-serif;color:#52658e;margin-bottom:6px}
+ body.approvedDesktop.role-transporter .tdQuoteExpiry strong{display:block;font:600 14px/1.5 Arial,sans-serif;color:#091650}
+ body.approvedDesktop.role-transporter .tdQuoteExpiry time>span{display:block;font:400 13px/1.5 Arial,sans-serif;color:#304d70;margin-top:2px}
+ body.approvedDesktop.role-transporter .tdQuoteBody .tdCardEnd{margin-top:20px;padding-top:14px;font:13px/1.4 Arial,sans-serif;color:#52658e;flex-wrap:wrap}
+ body.approvedDesktop.role-transporter .tdQuoteBody .tdCardEnd b{font-weight:600;color:#304d70}
+}
 .tdDesktopOnly{display:none!important}.tdMobileOnly{display:contents}
 @media(min-width:1024px){
  body.approvedDesktop.role-transporter .tdDesktopOnly{display:block!important}

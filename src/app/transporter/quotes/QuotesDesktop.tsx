@@ -6,7 +6,6 @@ import DateActions from '../../components/TransporterCollectionDateActions';
 import {sortQuotes,quoteCollectionDate} from '@/lib/quote-order';
 import s from './quotes.module.css';
 import CompactRow from '../../components/TransporterCompactRow';
-const date=(d:string)=>new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'Europe/London'});
 const label=(s:string)=>s.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
 function Icon({name}:{name:string}){const paths:Record<string,string>={car:'M3 15v-4l3-1 3-5h7l4 5 3 1v4h-3m-4 0H8M8 10h11M8 15a2 2 0 1 1-4 0 2 2 0 0 1 4 0m13 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0',van:'M2 17V4h13l7 7v6h-3M6 17h9M15 4v7h7M7 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0m12 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0',all:'M5 2h14v20H5ZM8 7h8M8 12h8M8 17h5',pending:'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0M12 6v6l4 3',accepted:'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0m-15-1 3 3 7-7',declined:'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0M8 8l8 8M16 8l-8 8',calendar:'M4 4h16v18H4ZM8 2v5m8-5v5M4 10h16',people:'M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6M2 21v-4c0-5 12-5 12 0v4M17 4a3 3 0 0 1 0 6m0 3c4 0 5 2 5 4v4',pin:'M19 9c0 6-7 13-7 13S5 15 5 9a7 7 0 0 1 14 0ZM15 9a3 3 0 1 1-6 0 3 3 0 0 1 6 0'};
 return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name]||paths.all}/></svg>}
@@ -23,13 +22,15 @@ export default function QuotesDesktop({quotes,loading,error,onUpdate,onCancel,on
  const editable=q.status==='PENDING'&&['OPEN','QUOTED'].includes(q.job.status);
  const count=q.job._count?.quotes??0;
  const windowFrom=q.proposedCollectionDate?q.proposedCollectionFrom:q.job.collectionFrom,windowUntil=q.proposedCollectionDate?q.proposedCollectionUntil:q.job.collectionUntil;
- const ds=q.dateNegotiationStatus==='ACCEPTED'?'Agreed date':q.dateNegotiationStatus==='COUNTERED'?'Customer proposed date':q.proposedCollectionDate?'Proposed date':'Requested date';
  return <article className={s.card+' tdQuoteCard'+(expanded[q.id]?'':' tdQuoteClosed')+(unreadQuote?.(q)?' hasUnreadCardActivity':'')} key={q.id}><button type="button" className="tdCompactToggle" aria-expanded={!!expanded[q.id]} onClick={()=>{if(!expanded[q.id])onQuoteOpened?.(q);setExpanded(current=>({...current,[q.id]:!current[q.id]}))}}><CompactRow kind="quotes" collectionWindow={{from:windowFrom,until:windowUntil}} job={q.job} date={quoteCollectionDate(q)} count={count} price={q.pricePence} open={!!expanded[q.id]}/></button><div className="tdQuoteActions">
  {editable&&<Requote showActionIcons jobId={q.job.id} quote={q} onUpdated={updated=>onUpdate(q.id,updated)} onCancelled={result=>onCancel(q.id,result)}/>}
  {q.status==='ACCEPTED'&&q.booking&&<Link className={s.delivery+' tdQuoteDelivery'} href={(q.booking.status==='DELIVERED'?'/transporter/delivered':'/transporter?view=deliveries')+'#booking-'+encodeURIComponent(q.booking.id)}>View active delivery</Link>}
  </div><div className="tdExpandedBody tdQuoteBody" hidden={!expanded[q.id]}>
- <dl className="tdFacts"><div><dt>Quote status</dt><dd>{label(q.status)}</dd>{!embedded&&<small>Job · {label(q.job.status)}</small>}</div><div><dt>Date status</dt><dd>{ds}</dd>{q.proposedCollectionDate&&<small>Requested: {date(q.job.collectionDate)}</small>}{q.booking&&<small>Booking: {q.booking.customerConfirmedAt?'Completed':label(q.booking.status)}</small>}</div><div><dt>Submitted</dt><dd>{date(q.createdAt)}</dd></div><div><dt>Collection window · UK</dt><dd>{windowFrom&&windowUntil?`${windowFrom} – ${windowUntil}`:'To be arranged'}</dd></div><div><dt>Quote expires · UK</dt><dd>{q.expiresAt?new Date(q.expiresAt).toLocaleString('en-GB',{day:'numeric',month:'long',hour:'2-digit',minute:'2-digit',timeZone:'Europe/London'}):'No expiry set'}</dd></div></dl>
- <div className="tdQuoteMessage"><small>Your message to the customer</small><p>{q.message||'No message added to this quote.'}</p></div><div className="tdCardEnd"><span>Customer · {q.job.customer.name}</span><span>{q.status==='PENDING'?'Awaiting the customer’s response':label(q.status)}</span></div></div>
+ <div className="tdQuoteSummary">
+  <div className="tdQuoteMessage"><h3>Your message to the customer</h3><p>{q.message||'No message added to this quote.'}</p></div>
+  <div className="tdQuoteExpiry"><Icon name="pending"/><div><small>Quote expires · UK time</small>{q.expiresAt?<time dateTime={q.expiresAt}><strong>{new Date(q.expiresAt).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'Europe/London'})}</strong><span>{new Date(q.expiresAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/London'})}</span></time>:<strong>No expiry set</strong>}</div></div>
+ </div>
+ <div className="tdCardEnd"><span>Customer · <b>{q.job.customer.name}</b></span><span>{q.status==='PENDING'?'Awaiting the customer’s response':label(q.status)}</span></div></div>
  {editable&&q.dateNegotiationStatus==='COUNTERED'&&q.proposedCollectionDate&&<DateActions quoteId={q.id} customerDate={q.proposedCollectionDate} onUpdated={update=>onUpdate(q.id,update)}/>}
  </article>})}</section>}</Container>
 }
