@@ -180,7 +180,7 @@ function syncQuoteSummary(card:HTMLElement){
  const icon=vehicleTypeIcon(cardVehicleType(card));
  const from=card.dataset.collectionFrom||'',until=card.dataset.collectionUntil||'';
  const window=from&&until?`${from} – ${until}`:'';
- const registration=card.dataset.registration||'',transport=card.dataset.transportLabel||'',running=card.dataset.runningLabel||'';
+ const registration=card.dataset.registration||'',transport=(card.dataset.transportLabel||'').replace(/\s*[\p{Extended_Pictographic}\uFE0F]+/gu,'').trim(),running=card.dataset.runningLabel||'';
  const vehicleType=vehicleTypeDisplay(cardVehicleType(card));
  const signature=JSON.stringify([title,route,date,status,count,icon,window,registration,transport,vehicleType,running]);
  let summary=button.querySelector<HTMLElement>('.quoteDesignSummary');
