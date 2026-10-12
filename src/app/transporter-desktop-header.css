@@ -1,3 +1,11 @@
+/* Match the customer fix: reserve scrollbar space on short and long desktop pages. */
+@media (min-width:1024px) {
+  html:has(body.approvedDesktop.role-transporter) { scrollbar-gutter:stable; }
+  @supports not (scrollbar-gutter:stable) {
+    html:has(body.approvedDesktop.role-transporter) { overflow-y:scroll; }
+  }
+}
+
 /* Keep the transporter header in one ordered row on desktop. */
 @media (min-width: 761px) {
   .transporterTop {
