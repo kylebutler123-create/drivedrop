@@ -40,10 +40,11 @@
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.bookingCard.customerExpandableCard:is([data-active-summary],[data-completed-summary],.customerCancelledCompact)[data-active-summary] .deliveryCollectionWindow{white-space:normal}
 }
 
-/* Approved quote-request action colours, in both header states. */
+/* Approved minimal quote-request controls, in both header states. */
 @media(min-width:1024px){
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions button{background:#c9363f!important;border-color:#c9363f!important;color:#fff!important}
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignCount{background:#ff681b!important;color:#fff!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions button{background:transparent!important;border:0!important;color:#a43b43!important;text-decoration:underline;text-underline-offset:3px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignCount{background:transparent!important;color:#304d70!important;border:0;gap:7px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignCount> b{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:25px;height:25px;padding:0 5px;box-sizing:border-box;border-radius:50%;background:#fff0e3;color:#b45313;font:600 12px Arial,sans-serif}
 }
 
 /* Approved shared customer compact typography and controls; desktop only. */
@@ -68,7 +69,7 @@
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteTransportDetails{font-family:Arial,sans-serif;color:#304d70;padding-left:12px}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignDate{padding-left:12px!important;font-family:Arial,sans-serif}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignDate>small{font:600 14px/1.4 Arial,sans-serif;color:#091650}
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignCount{min-height:32px;padding:7px 5px;font:500 12px/18px Arial,sans-serif}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignCount{min-height:30px;padding:0;font:500 12px/18px Arial,sans-serif}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions{position:relative;grid-row:1;align-self:center;justify-self:end;top:auto;right:auto;width:140px;margin:0 224px 0 0!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions button{width:140px;height:38px!important;min-height:38px!important;padding:11px 8px!important;font:400 12px/16px Arial,sans-serif!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions:has(.formNotice){grid-row:auto;justify-self:stretch;align-self:auto;width:auto;margin:12px 24px!important}
