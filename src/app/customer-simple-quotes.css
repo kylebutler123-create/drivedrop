@@ -48,7 +48,7 @@
  .customerSimpleQuotes .simpleQuoteActions{display:flex;gap:10px;align-items:center}
  .customerSimpleQuotes :is(.simpleQuoteProfile,.simpleQuoteSelect){box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;flex:none;width:auto;border-radius:6px;padding:11px 15px;font:400 12px/1.5 Arial,sans-serif;white-space:nowrap;text-decoration:none;cursor:pointer;min-height:40px}
  .customerSimpleQuotes .simpleQuoteProfile{border:1px solid #a8bfd8;background:white;color:#193650}
- .customerSimpleQuotes .simpleQuoteSelect{border:1px solid #ff681b;background:#ff681b;color:white;padding:11px 18px}
+ .customerSimpleQuotes .simpleQuoteSelect{border:1px solid #2563eb;background:#2563eb;color:white;padding:11px 18px}
  .customerSimpleQuotes .simpleQuoteSelect:disabled{opacity:.55;cursor:not-allowed}
  .customerSimpleQuotes .simpleQuoteNotice{grid-column:1/-1;margin:0;font:400 13px/1.5 Arial,sans-serif;color:#993b24}
  .customerSimpleQuotes :is(a,button,select):focus-visible{outline:2px solid #ff681b;outline-offset:3px}
