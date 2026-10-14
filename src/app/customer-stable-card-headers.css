@@ -40,6 +40,12 @@
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.bookingCard.customerExpandableCard:is([data-active-summary],[data-completed-summary],.customerCancelledCompact)[data-active-summary] .deliveryCollectionWindow{white-space:normal}
 }
 
+/* Approved quote-request action colours, in both header states. */
+@media(min-width:1024px){
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerRequestActions button{background:#c9363f!important;border-color:#c9363f!important;color:#fff!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignCount{background:#ff681b!important;color:#fff!important}
+}
+
 /* Approved shared customer compact typography and controls; desktop only. */
 @media(min-width:1024px){
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard.bookingCard.customerExpandableCard:is([data-completed-summary],.customerCancelledCompact){padding-left:25px!important;padding-right:18px!important}
