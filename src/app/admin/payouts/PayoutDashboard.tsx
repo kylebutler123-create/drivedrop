@@ -1,4 +1,5 @@
 'use client';
+import Icon from '@/app/components/ApprovedIcon';
 import {useMemo,useState} from 'react';
 import PayoutRecords from './PayoutRecords';
 
@@ -58,7 +59,7 @@ export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:an
  return <>
   <section className="payoutCategoryControls" aria-label="Payout categories">
    {categories.map(([key,name,symbol])=><button type="button" key={key} className={`payoutCategoryButton ${key==='BLOCKED'?'isBlocked':''} ${counts[key]>0?'hasMatches':''} ${category===key?'isActive':''}`} onClick={()=>selectCategory(key)} aria-pressed={category===key}>
-    <span className="payoutCategoryIcon" aria-hidden="true">{symbol}</span>
+    <span className="payoutCategoryIcon" aria-hidden="true"><span className="adminPayoutLegacyIcon">{symbol}</span><span className="adminPayoutVectorIcon"><Icon name={key==='READY'?'pound':key==='BLOCKED'?'lock':key==='HELD'?'shield':'circleCheck'}/></span></span>
     <span className="payoutCategoryCopy"><b>{name}</b><small>{money(values[key])}</small></span>
     <strong className="payoutCategoryCount" aria-label={`${counts[key]} ${name.toLowerCase()} payouts`}>{counts[key]}</strong>
    </button>)}
