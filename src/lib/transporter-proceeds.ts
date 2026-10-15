@@ -1,3 +1,4 @@
+import {inPayoutReviewWindow} from './payout-policy';
 import {transporterRefund} from './price-visibility';
 import {prisma} from './prisma';
 
@@ -26,12 +27,12 @@ export async function loadProceeds(transporterId:string){
   where:{transporterId,status:{in:['CONFIRMED','COLLECTION_SCHEDULED','COLLECTED','IN_TRANSIT','ARRIVING_SOON','DELIVERED','CANCELLED']}},
   select:{
    id:true,status:true,agreedPricePence:true,customerConfirmedAt:true,createdAt:true,
-   customer:{select:{name:true}},
+   customer:{select:{name:true}},disputes:{select:{id:true,status:true,resolution:true}},
    job:{select:{id:true,vehicleMake:true,vehicleModel:true,registration:true,collection:true,delivery:true,collectionDate:true}},
-   payment:{select:{transporterProceedsPence:true,cancellationDeductionPence:true,refundedPence:true,payoutStatus:true,updatedAt:true,events:{where:{type:'PAYOUT_PAID'},select:{createdAt:true},orderBy:{createdAt:'desc'},take:1}}}
+   payment:{select:{transporterProceedsPence:true,cancellationDeductionPence:true,refundedPence:true,payoutStatus:true,updatedAt:true,events:{where:{type:{in:['PAYOUT_PAID','PAYOUT_READY']}},select:{createdAt:true,type:true,note:true},orderBy:{createdAt:'desc'}}}}
   },orderBy:{createdAt:'desc'}
  });
- return rows.map(({agreedPricePence,...row})=>({...row,payment:row.payment?{...row.payment,refundedPence:transporterRefund(agreedPricePence,row.payment)}:null}));
+ return rows.map(({agreedPricePence,...row})=>({...row,payment:row.payment?{...row.payment,payoutStatus:inPayoutReviewWindow(row)?'WAITING':row.payment.payoutStatus,events:row.payment.events.filter(e=>e.type==='PAYOUT_PAID').slice(0,1).map(e=>({createdAt:e.createdAt})),refundedPence:transporterRefund(agreedPricePence,row.payment)}:null}));
 }
 export type ProceedsBooking=Awaited<ReturnType<typeof loadProceeds>>[number];
 export function proceedsCsv(rows:ProceedsBooking[]){

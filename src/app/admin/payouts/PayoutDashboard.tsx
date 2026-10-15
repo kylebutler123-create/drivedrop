@@ -1,11 +1,15 @@
 'use client';
+import {useReviewClock} from '@/app/components/ReviewWindowNotice';
+import {inPayoutReviewWindow,payoutWindowOpen} from '@/lib/payout-policy';
 import Icon from '@/app/components/ApprovedIcon';
-import {useMemo,useState} from 'react';
+import {useEffect,useMemo,useRef,useState} from 'react';
+import {useRouter} from 'next/navigation';
 import PayoutRecords from './PayoutRecords';
 
-type Category='READY'|'BLOCKED'|'HELD'|'PAID';
+type Category='WAITING'|'READY'|'BLOCKED'|'HELD'|'PAID';
 const categories:[Category,string,string][]=[
  ['READY','Ready','£'],
+ ['WAITING','24-hour hold','◷'],
  ['BLOCKED','Blocked','!'],
  ['HELD','Held','🛡️'],
  ['PAID','Paid','✓']
@@ -17,8 +21,8 @@ const eventDate=(payment:any,category:Category)=>{
  const event=eventType?payment.events?.find((item:any)=>item.type===eventType):null;
  return new Date(event?.createdAt||payment.updatedAt||payment.createdAt||0).getTime();
 };
-const matchesCategory=(row:any,category:Category)=>category==='BLOCKED'?row.payoutStatus==='READY'&&!row.payoutDetailsComplete:category==='READY'?row.payoutStatus==='READY'&&row.payoutDetailsComplete:row.payoutStatus===category;
-const rowsForCategory=(rows:any[],category:Category)=>rows.filter(row=>matchesCategory(row,category));
+const matchesCategory=(row:any,category:Category,now:number)=>{const b={...row.booking,payment:row};if(category==='WAITING')return inPayoutReviewWindow(b,row.events,now);if(category==='READY'||category==='BLOCKED')return row.payoutStatus==='READY'&&payoutWindowOpen(b,row.events,now)&&(category==='READY'?row.payoutDetailsComplete:!row.payoutDetailsComplete);return row.payoutStatus===category;};
+const rowsForCategory=(rows:any[],category:Category,now:number)=>rows.filter(row=>matchesCategory(row,category,now));
 const csvCell=(value:unknown)=>{let text=String(value??'');if(/^[=+\-@]/.test(text))text="'"+text;return '"'+text.replaceAll('"','""')+'"'};
 const searchableText=(payment:any)=>{
  const booking=payment.booking||{},job=booking.job||{},transporter=booking.transporter||{},customer=booking.customer||{};
@@ -26,20 +30,22 @@ const searchableText=(payment:any)=>{
 };
 
 export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:any[];initialBlockedOnly?:boolean}){
+ const reviewNow=useReviewClock();const router=useRouter();const previousWaiting=useRef<number|null>(null);
  const[category,setCategory]=useState<Category>(initialBlockedOnly?'BLOCKED':'READY');
  const[query,setQuery]=useState('');
  const[released,setReleased]=useState<Record<string,string>>({});
  const liveRows=useMemo(()=>rows.map(row=>{const releasedAt=released[row.id];return releasedAt?{...row,payoutStatus:'PAID',updatedAt:releasedAt,events:[{id:`released-${row.id}`,type:'PAYOUT_PAID',createdAt:releasedAt},...(row.events||[])]}:row}),[rows,released]);
- const counts=useMemo(()=>Object.fromEntries(categories.map(([key])=>[key,rowsForCategory(liveRows,key).length])) as Record<Category,number>,[liveRows]);
- const values=useMemo(()=>Object.fromEntries(categories.map(([key])=>[key,rowsForCategory(liveRows,key).reduce((total,row)=>total+(row.transporterProceedsPence||0),0)])) as Record<Category,number>,[liveRows]);
+ const counts=useMemo(()=>Object.fromEntries(categories.map(([key])=>[key,rowsForCategory(liveRows,key,reviewNow).length])) as Record<Category,number>,[liveRows,reviewNow]);
+ useEffect(()=>{if(previousWaiting.current!==null&&counts.WAITING<previousWaiting.current)router.refresh();previousWaiting.current=counts.WAITING},[counts.WAITING,router]);
+ const values=useMemo(()=>Object.fromEntries(categories.map(([key])=>[key,rowsForCategory(liveRows,key,reviewNow).reduce((total,row)=>total+(row.transporterProceedsPence||0),0)])) as Record<Category,number>,[liveRows,reviewNow]);
  const displayed=useMemo(()=>{
   const term=query.trim().toLowerCase();
   return liveRows
-   .filter(row=>matchesCategory(row,category))
+   .filter(row=>matchesCategory(row,category,reviewNow))
    .filter(row=>!term||searchableText(row).includes(term))
    .slice()
    .sort((a,b)=>eventDate(b,category)-eventDate(a,category));
- },[liveRows,category,query]);
+ },[liveRows,category,query,reviewNow]);
  const exportVisible=()=>{
   if(!displayed.length)return;
   const headings=['Delivery reference','Payout status','Status date','Vehicle','Registration','Transporter','Transporter email','Customer','Customer email','Collection','Delivery','Total paid GBP','DriveDrop fee GBP','Transporter proceeds GBP'];
@@ -53,7 +59,7 @@ export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:an
  };
  const selectCategory=(next:Category)=>setCategory(next);
  const payoutReleased=(paymentId:string)=>{const releasedAt=new Date().toISOString();setReleased(current=>({...current,[paymentId]:releasedAt}));setCategory('PAID');setQuery('')};
- const title=category==='BLOCKED'?'Blocked payouts':category==='READY'?'Ready for payout':category==='HELD'?'Held payouts':'Paid payouts';
+ const title=category==='WAITING'?'24-hour payout holds':category==='BLOCKED'?'Blocked payouts':category==='READY'?'Ready for payout':category==='HELD'?'Held payouts':'Paid payouts';
  const eyebrow=category==='BLOCKED'?'Details required':category==='READY'?'Action required':category==='HELD'?'Protected funds':'Finance history';
  const emptyLabel=query?'matching '+category.toLowerCase()+' payouts':category==='BLOCKED'?'blocked payouts':category==='READY'?'payouts ready for release':undefined;
  return <>

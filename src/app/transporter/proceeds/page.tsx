@@ -36,6 +36,7 @@ const payoutLabel=(booking:any)=>{
  const status=booking.payment?.payoutStatus;
  if(status==='PAID')return'Paid';
  if(status==='HELD')return'Held';
+ if(status==='WAITING')return'24-hour hold';
  if(status==='READY')return'Ready for release';
  if(status==='CANCELLED')return'Payout cancelled';
  if(booking.status==='DELIVERED'&&!booking.customerConfirmedAt)return'Awaiting customer confirmation';

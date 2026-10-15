@@ -4,7 +4,7 @@ import {currentUser} from '@/lib/auth';
 import {createNotificationSafely} from '@/lib/notifications';
 import {applyCancellationFeesToPayout} from '@/lib/cancellation-fees';
 import {z} from 'zod';
-import {capturedPayment,adminPayoutApproved} from '@/lib/payout-policy';
+import {capturedPayment,adminPayoutApproved,payoutWindowOpen} from '@/lib/payout-policy';
 
 const S=z.object({paymentId:z.string()});
 const money=(pence:number)=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(pence/100);
@@ -39,6 +39,7 @@ export async function POST(r:Request){
    if(activeDisputes.length)throw new Error('Payout is held while an active dispute is under review');
    if(old.booking.status!=='DELIVERED')throw new Error('Delivery must be completed first');
    if(!old.booking.customerConfirmedAt&&!adminReleaseOverride)throw new Error('Customer confirmation or an approved admin dispute resolution is required');
+   if(!payoutWindowOpen({...old.booking,payment:old},old.events))throw new Error('The 24-hour customer dispute window is still open. Only an approved admin dispute resolution permits earlier release.');
    if(!capturedPayment(old.status))throw new Error('Customer payment not recorded');
    if(old.payoutStatus!=='READY')throw new Error('Payout is not ready for release');
    if(old.transporterProceedsPence<=0||old.transporterProceedsPence+old.platformFeePence!==old.paidPence-old.refundedPence)throw Error('Remaining payment amounts require review before release');
