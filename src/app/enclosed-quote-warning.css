@@ -1,0 +1,23 @@
+/* Desktop Available jobs only; other transport types keep their existing form. */
+@media (min-width:1024px) {
+ body.approvedDesktop.role-transporter .jobOpportunity .enclosedQuoteWarning {
+  display:flex;align-items:center;gap:16px;margin:0 0 20px;padding:16px 18px;
+  border:1px solid #e9ad39;border-radius:7px;background:#fff8e8;color:#824600;
+  font:400 14px/1.5 Arial,sans-serif;
+ }
+ body.approvedDesktop.role-transporter .jobOpportunity .enclosedQuoteWarning>svg {width:30px;height:30px;flex:none}
+ body.approvedDesktop.role-transporter .jobOpportunity .enclosedQuoteWarning strong {display:block;font-size:16px;font-weight:700}
+ body.approvedDesktop.role-transporter .jobOpportunity .enclosedQuoteWarning p {margin:3px 0 0}
+ body.approvedDesktop.role-transporter .jobOpportunity .quoteSubmitPanel .enclosedQuoteConfirmation {
+  display:flex;align-items:center;gap:12px;margin:0;padding-top:8px;cursor:pointer;
+  color:#091650;font:400 13px/1.5 Arial,sans-serif;text-transform:none;letter-spacing:normal;
+ }
+ body.approvedDesktop.role-transporter .jobOpportunity .quoteSubmitPanel .enclosedQuoteConfirmation input[type=checkbox] {
+  appearance:auto;width:18px!important;height:18px!important;min-height:18px!important;
+  flex:0 0 18px;padding:0!important;margin:0;accent-color:#ff681b;cursor:pointer;
+ }
+ body.approvedDesktop.role-transporter .jobOpportunity .enclosedQuoteConfirmation input:focus-visible {outline:2px solid #2563eb;outline-offset:3px}
+ body.approvedDesktop.role-transporter .jobOpportunity .quoteSubmitPanel:has(.enclosedQuoteConfirmation) .quoteSubmitBtn:disabled {
+  background:#cbd2dc!important;color:#fff!important;opacity:1;cursor:not-allowed;transform:none;
+ }
+}
