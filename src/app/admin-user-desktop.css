@@ -1,0 +1,76 @@
+.adminUserTableHead,.adminUserDesktopRow,.adminUserSearchIcon,.adminUserActionIcon,.adminUserResultCount,.adminUsersDesktopSubtitle{display:none}
+@media(min-width:1024px){
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUsersLegacySubtitle{display:none!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUsersDesktopSubtitle{display:block!important;font-size:14px!important;color:#526487!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserFilters{margin:16px 0 12px!important;gap:8px!important;flex-wrap:wrap!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserFilter{min-height:40px!important;height:40px!important;padding:8px 14px!important;gap:10px!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserFilter strong{min-width:25px!important;padding:3px 7px!important;font-size:12px!important;line-height:18px!important;border-radius:4px!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserFilter span{font-size:13px!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserSearch{position:relative;margin:0 0 14px!important;max-width:none!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserSearch input{height:44px!important;padding:11px 14px 11px 46px!important;font-size:13px!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserSearchIcon{position:absolute;left:15px;top:11px;display:block;color:#091650;pointer-events:none}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserSearchIcon svg{width:21px;height:21px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserList{display:block!important;gap:0!important;border:1px solid #d2dceb!important;border-radius:6px!important;background:#fff!important;overflow:hidden}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager :is(.adminUserTableHead,.adminUserDesktopRow){display:grid!important;grid-template-columns:minmax(0,2.6fr) minmax(95px,.95fr) minmax(190px,1.55fr) 125px 85px 60px;align-items:center;gap:12px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserTableHead{padding:14px 18px;min-height:46px;background:#091650;color:#fff;font-size:12px;font-weight:600;line-height:18px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserTableHead>span:nth-child(n+4){text-align:center}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserCard{border:0!important;border-bottom:1px solid #dce4ee!important;border-radius:0!important;margin:0!important;padding:0!important;overflow:visible!important;background:#fff!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserCard:last-child{border-bottom:0!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserSummary{display:block!important;width:100%!important;min-height:70px!important;padding:12px 18px!important;border-radius:0!important;margin:0!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserSummary>:not(.adminUserDesktopRow){display:none!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserSummary:hover{background:#f7faff!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopAccount{display:flex;align-items:center;gap:14px;min-width:0}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopAccount>span:last-child{min-width:0}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopAccount b{display:block;font-size:14px;font-weight:700;color:#091650;line-height:1.4}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopAccount small{display:block;font-size:12px;color:#526487;line-height:1.5;overflow-wrap:anywhere;margin-top:2px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopPortrait{display:grid;place-items:center;width:42px;height:44px;flex-shrink:0;border-radius:6px;background:#eaf0f6;color:#091650}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopPortrait svg{width:26px;height:26px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager :is(.adminUserRoleBadge,.adminUserStateBadge,.adminUserInsuranceBadge){display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;min-height:28px;border-radius:5px;background:#0752df;color:#fff;font-size:11px;font-weight:600;line-height:1.2;text-align:center}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserStateBadge.active{background:#008346}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserStateBadge.suspended{background:#d30b21}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserStateBadge.other{background:#526487}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserInsuranceBadge{background:#ffc436;color:#19213a;font-size:10px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopStatuses{display:flex;gap:8px;flex-wrap:wrap}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserNumber{text-align:center;font-size:14px;font-weight:600;color:#091650}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopChevron{display:grid;place-items:center;color:#091650}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopChevron svg{width:18px;height:18px;transition:none}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopChevron.isOpen svg{transform:rotate(180deg)}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserExpanded{margin:0 10px 10px!important;padding:17px!important;grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr)!important;column-gap:22px!important;row-gap:14px!important;background:white!important;border:1px solid #dce4ee!important;border-radius:5px!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserExpanded .adminUserMeta{display:flex!important;flex-direction:column!important;gap:5px!important;padding:0 20px 0 0!important;border:0!important;border-right:1px solid #dce4ee!important;border-radius:0!important;background:none!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserMeta>div{display:grid!important;grid-template-columns:145px minmax(0,1fr)!important;gap:10px!important;padding:0!important;min-height:16px!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserMeta :is(span,b){font-size:12px!important;line-height:1.4!important;font-weight:400!important;color:#263c64!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminDetailCaption{font-size:15px!important;font-weight:700!important;color:#091650!important;line-height:1.3!important;margin:0 0 8px!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserExpanded>.field{padding:0!important;border:0!important;border-radius:0!important;gap:10px!important;justify-content:flex-start!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminComplianceAlert{display:flex!important;align-items:center;gap:10px;padding:12px!important;background:#fff3cf!important;border:1px solid #f8ae28!important;color:#302200!important;border-radius:5px;font-size:12px!important;line-height:1.4!important;font-weight:600!important;margin-bottom:6px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminComplianceAlert svg{width:21px;height:21px;flex-shrink:0;color:#f77708}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserExpanded label{font-size:12px!important;font-weight:500!important;color:#10214b!important;margin:0!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserExpanded textarea{height:94px!important;min-height:94px!important;font-size:13px!important;padding:10px 12px!important;margin:0!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserNoteHint{font-size:11px!important;color:#526487!important;margin:0!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserExpanded>.actionButtons:last-child{display:flex!important;gap:10px!important;flex-wrap:wrap!important;align-items:center!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserExpanded .btn{height:35px!important;min-height:35px!important;font-size:12px!important;padding:8px 16px!important;gap:8px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;font-weight:500!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserActionIcon{display:inline-flex}.adminUserActionIcon svg,.adminDesktopMessage svg{width:18px;height:18px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager [data-admin-action=SAVE_NOTE]{min-width:112px;background:#091650!important;color:white!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminDesktopMessage{background:#0752df!important;border-color:#0752df!important;color:white!important;min-width:150px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager [data-admin-action=SUSPEND]{background:#d30b21!important;color:white!important;border-color:#d30b21!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager [data-admin-action=RESTRICT_WORK]{background:#ffc436!important;color:#19213a!important;border-color:#ffc436!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager [data-admin-action=DELETE]{background:#fff!important;color:#d30b21!important;border:1px solid #d30b21!important;margin-left:auto!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserContactActions{gap:24px!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserContactActions>button{display:none!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserContactActions>a{color:#0752df!important;font-size:12px!important;font-weight:600!important;height:auto!important;min-height:0!important;padding:0!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserResultCount{display:block;margin:12px 0 0;color:#526487;font-size:12px}
+}
+@media(min-width:1024px) and (max-width:1279px){
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager :is(.adminUserTableHead,.adminUserDesktopRow){grid-template-columns:minmax(180px,2fr) 85px minmax(130px,1.3fr) 88px 60px 40px;gap:8px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopPortrait{width:32px;height:36px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopAccount{gap:8px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserTableHead{font-size:10px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopAccount small{font-size:10px}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserMeta>div{grid-template-columns:110px minmax(0,1fr)!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserExpanded{column-gap:14px!important}
+}
+@media(min-width:1024px){
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserExpanded>.adminUserContactActions>button.btn{display:none!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserContactLegacy{display:none}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopChevron svg{transform:none!important}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminUserManager .adminUserDesktopChevron.isOpen svg{transform:rotate(180deg)!important}
+}
