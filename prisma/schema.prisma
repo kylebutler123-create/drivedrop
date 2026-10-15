@@ -125,6 +125,7 @@ enum FinanceEventType {
 }
 
 model User {
+  disputeReviewNotes               DisputeReviewNote[]
   id                               String                    @id @default(cuid())
   email                            String                    @unique
   name                             String
@@ -336,6 +337,7 @@ model Evidence {
 }
 
 model Dispute {
+  reviewNotes    DisputeReviewNote[]
   id             String             @id @default(cuid())
   bookingId      String
   booking        Booking            @relation(fields: [bookingId], references: [id], onDelete: Cascade)
@@ -356,6 +358,20 @@ model Dispute {
   @@index([bookingId, status, createdAt])
   @@index([raisedById, createdAt])
   @@index([reviewerId])
+}
+
+model DisputeReviewNote {
+  id        String   @id @default(uuid())
+  disputeId String
+  dispute   Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+  actorId   String?
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  kind      String
+  body      String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([disputeId, createdAt])
+  @@index([actorId])
 }
 
 model Review {
