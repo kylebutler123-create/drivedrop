@@ -78,6 +78,12 @@ for (const card of docCards) {
 }
 find(tree, n => n.type === 'button' && n.props.className === 'vr-filter')[1].props.onClick();
 assert.deepEqual(calls.pop(), ['filter', 'REPLACEMENT']);
+find(tree, n => n.type === 'button' && n.props['data-filter'] === 'VERIFY')[0].props.onClick();
+assert.deepEqual(calls.pop(), ['filter', 'ALL']);
+const allTree = expand(React.createElement(Component, {...props, filter: 'ALL'}));
+assert(find(allTree, n => n.type === 'button' && n.props.className === 'vr-filter').every(n => n.props['aria-pressed'] === false));
+find(allTree, n => n.type === 'button' && n.props['data-filter'] === 'VERIFY')[0].props.onClick();
+assert.deepEqual(calls.pop(), ['filter', 'VERIFY']);
 find(tree, n => n.type === 'input')[0].props.onChange({target: {value: 'policy'}});
 assert.deepEqual(calls.pop(), ['search', 'policy']);
 find(tree, n => n.type === 'button' && n.props.className === 'vr-summary')[0].props.onClick();

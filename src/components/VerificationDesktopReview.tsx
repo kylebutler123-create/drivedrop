@@ -343,8 +343,9 @@ export default function VerificationDesktopReview(props: Props) {
             key={item.value}
             type="button"
             className="vr-filter"
+            data-filter={item.value}
             aria-pressed={filter === item.value}
-            onClick={() => onFilter(item.value)}
+            onClick={() => onFilter(filter === item.value ? "ALL" : item.value)}
           >
             <span className="vr-filter-top">
               <strong>{counts[item.value]}</strong>

@@ -694,6 +694,38 @@
   body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter {
     padding: 14px 16px;
     min-height: 100px;
+    border-top-width: 7px;
+    border-top-color: var(--verification-filter-color);
+    color: var(--verification-filter-color);
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter[data-filter="VERIFY"] {
+    --verification-filter-color: #a76600;
+    --verification-filter-tint: #fff0ce;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter[data-filter="REPLACEMENT"],
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter[data-filter="REJECTED"] {
+    --verification-filter-color: #b32933;
+    --verification-filter-tint: #ffeaed;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter[data-filter="NOT_STARTED"] {
+    --verification-filter-color: #526487;
+    --verification-filter-tint: #eaf0f8;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter[data-filter="APPROVED"] {
+    --verification-filter-color: #008346;
+    --verification-filter-tint: #e6f5ed;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter[aria-pressed="true"] {
+    background: var(--verification-filter-tint);
+    color: var(--verification-filter-color);
+    border-color: var(--verification-filter-color);
+    box-shadow: 0 0 0 1px var(--verification-filter-color);
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter[aria-pressed="false"] {
+    background: white;
+    border-color: #d2dceb;
+    border-top-color: var(--verification-filter-color);
+    box-shadow: none;
   }
   body.approvedDesktop.role-admin
     .verificationDesktopReview
