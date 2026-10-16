@@ -698,19 +698,24 @@
     border-top-color: var(--verification-filter-color);
     color: var(--verification-filter-color);
   }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-record[data-status="VERIFY"],
   body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter[data-filter="VERIFY"] {
     --verification-filter-color: #a76600;
     --verification-filter-tint: #fff0ce;
   }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-record[data-status="REPLACEMENT"],
   body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter[data-filter="REPLACEMENT"],
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-record[data-status="REJECTED"],
   body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter[data-filter="REJECTED"] {
     --verification-filter-color: #b32933;
     --verification-filter-tint: #ffeaed;
   }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-record[data-status="NOT_STARTED"],
   body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter[data-filter="NOT_STARTED"] {
     --verification-filter-color: #526487;
     --verification-filter-tint: #eaf0f8;
   }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-record[data-status="APPROVED"],
   body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter[data-filter="APPROVED"] {
     --verification-filter-color: #008346;
     --verification-filter-tint: #e6f5ed;
@@ -943,5 +948,15 @@
   }
   body.approvedDesktop.role-admin .verificationDesktopReview .vr-upload-banner {
     align-items: flex-start;
+  }
+}
+
+@media (min-width: 1024px) {
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-record[data-status] {
+    border-left-color: var(--verification-filter-color, #526487);
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-record[data-status] .vr-badge {
+    color: var(--verification-filter-color, #526487);
+    background: var(--verification-filter-tint, #eaf0f8);
   }
 }

@@ -101,6 +101,8 @@ assert(!approvedHtml.includes('Approve this upload'));
 const missingHtml = renderToStaticMarkup(React.createElement(Component, {...props, rows: [{...base, status: 'NOT_STARTED', documents: []}]}));
 assert(missingHtml.includes('Not uploaded'));
 assert(missingHtml.includes('Verification not started'));
+assert(missingHtml.includes('data-status="NOT_STARTED"'));
+assert(approvedHtml.includes('data-status="APPROVED"'));
 const expiredTree = expand(React.createElement(Component, {...props, rows: [{...base, documents: [{...documents[1], expiresAt: '2020-01-01'}]}]}));
 assert(find(expiredTree, n => n.type === 'button' && n.props.title?.startsWith('Insurance must'))[0].props.disabled);
 const source = fs.readFileSync(path.join(root, 'src/components/VerificationAdmin.tsx'), 'utf8');

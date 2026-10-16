@@ -441,6 +441,7 @@ export default function VerificationDesktopReview(props: Props) {
               <article
                 className={`vr-record ${open ? "vr-expanded-record" : ""} ${replacement ? "vr-expired" : ""}`}
                 key={verification.id}
+                data-status={replacement ? "REPLACEMENT" : pending.length ? "VERIFY" : verification.status === "PENDING" ? "VERIFY" : verification.status}
               >
                 <button
                   type="button"
