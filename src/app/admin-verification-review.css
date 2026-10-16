@@ -1,0 +1,915 @@
+/* The legacy view remains unchanged below 1024px. */
+.verificationDesktopReview {
+  display: none;
+}
+.verificationLegacyView {
+  display: contents;
+}
+@media (min-width: 1024px) {
+  .verificationLegacyView {
+    display: none;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview {
+    display: block;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #10214b;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview * {
+    box-sizing: border-box;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview button,
+  body.approvedDesktop.role-admin .verificationDesktopReview input {
+    font: inherit;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview button {
+    cursor: pointer;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-layout {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-side {
+    background: #091650;
+    color: white;
+    padding: 25px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-brand {
+    font-size: 25px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 8px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-brand i {
+    color: #ff681b;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-tag {
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding-left: 10px;
+    color: #d9e2ff;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-nav {
+    display: grid;
+    gap: 4px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-nav span {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 10px;
+    border-left: 3px solid transparent;
+    border-radius: 5px;
+    font-size: 12px;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-nav
+    .vr-current {
+    background: #0752df;
+    border-left-color: #ff681b;
+    color: white;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-nav svg {
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-bottom {
+    margin-top: auto;
+    padding-top: 60px;
+    color: #d6dff4;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-top {
+    height: 58px;
+    background: white;
+    border-bottom: 1px solid #dce4ee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+    font-size: 12px;
+    gap: 10px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-top em {
+    font-style: normal;
+    color: #9aa7bc;
+    padding: 0 12px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-utilities {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-avatar {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    background: #0752df;
+    border-radius: 50%;
+    color: white;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-main {
+    padding: 26px 24px 30px;
+    max-width: 1320px;
+    margin: auto;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview h1 {
+    font-size: 28px;
+    letter-spacing: -0.6px;
+    line-height: 1.2;
+    color: #091650;
+    margin: 0 0 9px;
+    font-weight: 700;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview p {
+    margin: 0;
+    color: #526487;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-page-heading {
+    margin-bottom: 22px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filters {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter {
+    border: 1px solid #d2dceb;
+    border-top: 3px solid #ff681b;
+    border-radius: 6px;
+    background: white;
+    color: #10214b;
+    text-align: left;
+    padding: 12px 11px;
+    display: grid;
+    gap: 9px;
+    min-height: 100px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter strong {
+    font-size: 25px;
+    line-height: 1;
+    font-weight: 700;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter svg {
+    width: 21px;
+    height: 21px;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-filter
+    span:last-child {
+    font-size: 11px;
+    line-height: 1.35;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-filter[aria-pressed="true"] {
+    background: #091650;
+    color: white;
+    border-color: #091650;
+    border-top-color: #ff681b;
+    box-shadow: 0 4px 10px #09165016;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter:hover {
+    box-shadow: 0 3px 12px #09165015;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-workspace {
+    background: white;
+    border: 1px solid #d2dceb;
+    border-radius: 7px;
+    overflow: hidden;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-list-top {
+    padding: 17px 18px;
+    border-bottom: 1px solid #e1e7ef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview h2 {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.4;
+    font-weight: 700;
+    color: #091650;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-count {
+    color: #526487;
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f6f8fc;
+    border: 1px solid #cdd8e7;
+    border-radius: 5px;
+    padding: 8px 10px;
+    width: 44%;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-search input {
+    border: 0;
+    background: transparent;
+    outline-offset: 4px;
+    min-width: 0;
+    width: 100%;
+    font-size: 11px;
+    color: #10214b;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-search svg {
+    width: 16px;
+    flex-shrink: 0;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-list {
+    padding: 14px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-list-head {
+    background: #091650;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 5px;
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-record {
+    border: 1px solid #d5dfed;
+    border-left: 4px solid #0752df;
+    border-radius: 5px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-record[hidden] {
+    display: none;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 16px;
+    background: white;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-summary::-webkit-details-marker {
+    display: none;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-summary:hover {
+    background: #f8faff;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-record-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-business-icon {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    background: #eaf1fe;
+    color: #0752df;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-business-name {
+    flex: 1;
+    min-width: 0;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-business-name
+    b {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview small {
+    font-size: 11px;
+    color: #526487;
+    display: block;
+    margin-top: 3px;
+    overflow-wrap: anywhere;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-badge {
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    background: #fff0ce;
+    color: #805300;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-chevron {
+    background: #eaf0f8;
+    border-radius: 4px;
+    width: 25px;
+    height: 25px;
+    display: grid;
+    place-items: center;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-expanded-record
+    .vr-chevron {
+    transform: rotate(180deg);
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-facts {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px 10px;
+    border-top: 1px solid #e5ebf3;
+    padding-top: 13px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-facts span {
+    font-size: 10px;
+    color: #60718d;
+    display: block;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-facts b {
+    font-size: 11px;
+    display: block;
+    margin-top: 4px;
+    font-weight: 600;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-green {
+    color: #008346 !important;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-amber {
+    color: #a76600 !important;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-expanded {
+    background: #f6f8fc;
+    border-top: 1px solid #d5dfed;
+    padding: 18px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-section-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #091650;
+    margin: 0 0 12px;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-section-label
+    svg {
+    width: 17px;
+    height: 17px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-business {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    background: white;
+    border: 1px solid #d8e1ed;
+    border-radius: 5px;
+    padding: 15px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-business span {
+    display: block;
+    color: #60718d;
+    font-size: 10px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-business b {
+    display: block;
+    font-size: 11px;
+    margin-top: 5px;
+    overflow-wrap: anywhere;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-actions {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 12px 0 22px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 1px solid #cbd7e7;
+    border-radius: 4px;
+    background: white;
+    color: #10214b;
+    padding: 8px 10px;
+    font-size: 11px;
+    line-height: 1.3;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-button svg {
+    width: 14px;
+    height: 14px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-blue {
+    background: #0752df;
+    color: white;
+    border-color: #0752df;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-call {
+    background: #008346;
+    color: white;
+    border-color: #008346;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-danger {
+    color: #b32933;
+    border-color: #e1bfc4;
+    background: #fffafa;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-push {
+    margin-left: auto;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-docs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-doc {
+    border: 1px solid #d1ddec;
+    border-radius: 5px;
+    background: white;
+    overflow: hidden;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-doc-head {
+    padding: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #eaf0f9;
+    border-bottom: 1px solid #d5dfed;
+    color: #091650;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-doc-head svg {
+    width: 19px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-doc-body {
+    padding: 13px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-doc-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 9px;
+    font-size: 11px;
+    color: #526487;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-doc-meta
+    strong {
+    font-weight: 600;
+    color: #10214b;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-open {
+    width: 100%;
+    margin: 5px 0 10px;
+    background: #091650;
+    border-color: #091650;
+    color: white;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-doc-actions {
+    display: flex;
+    gap: 7px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-notice {
+    display: flex;
+    gap: 10px;
+    background: #fff7e5;
+    border: 1px solid #efd9ab;
+    border-left: 3px solid #e7a128;
+    border-radius: 4px;
+    padding: 12px;
+    margin: 16px 0 12px;
+    color: #76521c;
+    font-size: 11px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-notice svg {
+    flex-shrink: 0;
+    width: 18px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-notice b {
+    display: block;
+    margin-bottom: 3px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-final-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-preview-label {
+    text-align: right;
+    color: #64738d;
+    font-size: 10px;
+    padding-top: 13px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-toast {
+    margin-top: 12px;
+    color: #526487;
+    font-size: 11px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-empty {
+    padding: 24px;
+    color: #526487;
+    text-align: center;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-record.vr-expired {
+    border-left-color: #d30b21;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-record.vr-expired
+    .vr-badge {
+    background: #ffeaed;
+    color: #b32933;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-upload-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    background: #eaf1ff;
+    border: 1px solid #b7ccf4;
+    border-left: 4px solid #0752df;
+    padding: 14px 16px;
+    border-radius: 5px;
+    margin: 0 0 16px;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-upload-banner
+    strong {
+    display: block;
+    color: #091650;
+    font-size: 14px;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-upload-banner
+    small {
+    color: #38547b;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-new-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #0752df;
+    color: white;
+    border-radius: 4px;
+    font-size: 11px;
+    padding: 5px 8px;
+    font-weight: 700;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-upload-time {
+    background: #fff4dc;
+    border-bottom: 1px solid #ecd7a9;
+    padding: 10px 14px;
+    color: #7b520b;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-file-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5fb;
+    border: 1px solid #d6dfeb;
+    border-radius: 4px;
+    padding: 11px;
+    margin-bottom: 13px;
+    overflow-wrap: anywhere;
+    font-size: 12px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-file-name svg {
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+    color: #0752df;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-doc {
+    border: 1px solid #b2c8ec;
+    border-top: 3px solid #0752df;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-doc-head {
+    justify-content: space-between;
+    background: #091650;
+    color: white;
+    padding: 13px 14px;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-doc-head
+    > span:first-child {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-prior {
+    border-top: 1px solid #d6dfeb;
+    margin-top: 15px;
+    padding-top: 13px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-prior summary {
+    background: #f2f5f9;
+    padding: 11px;
+    border: 1px solid #d7dfeb;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #526487;
+    font-size: 11px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-prior-body {
+    padding: 12px;
+    background: #f7f9fc;
+    color: #526487;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-prior-body p {
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-prior
+    .vr-button {
+    background: white;
+    color: #526487;
+    border-color: #cbd7e7;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-doc-actions
+    .vr-button {
+    flex: 1;
+  }
+
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-summary {
+    display: block;
+    width: 100%;
+    border: 0;
+    border-radius: 0;
+    text-align: left;
+    color: #10214b;
+    font-family: inherit;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-summary::-webkit-details-marker {
+    display: none;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filters {
+    gap: 14px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-filter {
+    padding: 14px 16px;
+    min-height: 100px;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-filter
+    span:last-child {
+    font-size: 13px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-facts span {
+    font-size: 11px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-facts b {
+    font-size: 12px;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-filter[aria-pressed="true"]
+    * {
+    color: inherit;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-list-top h2 {
+    font-size: 17px !important;
+    line-height: 1.4 !important;
+    letter-spacing: normal !important;
+    margin: 0 !important;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-section-label {
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+    margin: 0 0 12px !important;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-button {
+    text-decoration: none;
+    min-height: 34px;
+    box-shadow: none;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .approvedIcon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-business-icon
+    .approvedIcon {
+    width: 24px;
+    height: 24px;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-filter
+    .approvedIcon {
+    width: 24px;
+    height: 24px;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-chevron
+    .approvedIcon {
+    width: 16px;
+    height: 16px;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-file-name
+    span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-doc-meta
+    strong {
+    overflow-wrap: anywhere;
+    text-align: right;
+    min-width: 0;
+    max-width: 70%;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-doc-meta
+    > span {
+    flex-shrink: 0;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-new-label {
+    white-space: nowrap;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-red {
+    color: #b32933 !important;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-badge-red {
+    background: #ffeaed;
+    color: #b32933;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-badge-green {
+    background: #e5f5ed;
+    color: #087644;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-reviewed-label {
+    background: #eef2f7;
+    color: #10214b;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-doc-reviewed {
+    border-top-color: #8795aa;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-doc-reviewed
+    .vr-upload-time {
+    background: #f1f5fa;
+    border-color: #d5dfed;
+    color: #526487;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-history-version
+    + .vr-history-version {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #d6dfeb;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-prior summary {
+    list-style: none;
+    gap: 10px;
+    cursor: pointer;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-prior
+    summary::-webkit-details-marker {
+    display: none;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-prior
+    summary
+    span {
+    min-width: 0;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-prior[open]
+    > summary
+    .approvedIcon {
+    transform: rotate(180deg);
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-document-note {
+    margin-top: 12px;
+    font-size: 11px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-feedback {
+    padding: 12px 16px;
+    background: #e5f5ed;
+    color: #087644;
+    border: 1px solid #acd7c2;
+    border-radius: 5px;
+    margin-bottom: 14px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-expanded {
+    overflow-wrap: anywhere;
+  }
+  body.approvedDesktop.role-admin
+    .verificationDesktopReview
+    .vr-missing
+    .vr-doc-body {
+    color: #526487;
+    min-height: 70px;
+  }
+  body.approvedDesktop.role-admin.role-admin
+    main.adminVerificationPage.adminVerificationPage {
+    width: calc(100% - 224px) !important;
+    max-width: none !important;
+    margin: 0 0 0 224px !important;
+    padding: 26px 28px 40px !important;
+  }
+  body.approvedDesktop.role-admin.role-admin
+    main.adminVerificationPage.adminVerificationPage
+    .adminWorkspace {
+    max-width: 1320px !important;
+    margin: 0 auto !important;
+  }
+  body.approvedDesktop.role-admin.role-admin
+    main.adminVerificationPage
+    #verification-actions {
+    margin: 0 0 22px !important;
+  }
+  body.approvedDesktop.role-admin.role-admin
+    main.adminVerificationPage
+    #verification-actions
+    h2 {
+    font-size: 30px !important;
+    line-height: 1.2 !important;
+    margin: 0 0 9px !important;
+  }
+  body.approvedDesktop.role-admin.role-admin
+    main.adminVerificationPage
+    #verification-actions
+    > span {
+    font-size: 13px !important;
+  }
+}
+@media (min-width: 1024px) and (max-width: 1199px) {
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-doc-head {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-doc-meta {
+    flex-wrap: wrap;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-doc-actions {
+    flex-wrap: wrap;
+  }
+  body.approvedDesktop.role-admin .verificationDesktopReview .vr-upload-banner {
+    align-items: flex-start;
+  }
+}
