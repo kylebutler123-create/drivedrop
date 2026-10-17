@@ -64,8 +64,8 @@ export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:an
  const emptyLabel=query?'matching '+category.toLowerCase()+' payouts':category==='BLOCKED'?'blocked payouts':category==='READY'?'payouts ready for release':undefined;
  return <>
   <section className="payoutCategoryControls" aria-label="Payout categories">
-   {categories.map(([key,name,symbol])=><button type="button" key={key} className={`payoutCategoryButton ${key==='BLOCKED'?'isBlocked':''} ${counts[key]>0?'hasMatches':''} ${category===key?'isActive':''}`} onClick={()=>selectCategory(key)} aria-pressed={category===key}>
-    <span className="payoutCategoryIcon" aria-hidden="true"><span className="adminPayoutLegacyIcon">{symbol}</span><span className="adminPayoutVectorIcon"><Icon name={key==='READY'?'pound':key==='BLOCKED'?'lock':key==='HELD'?'shield':'circleCheck'}/></span></span>
+   {categories.map(([key,name,symbol])=><button type="button" key={key} data-payout-category={key} className={`payoutCategoryButton ${key==='BLOCKED'?'isBlocked':''} ${counts[key]>0?'hasMatches':''} ${category===key?'isActive':''}`} onClick={()=>selectCategory(key)} aria-pressed={category===key}>
+    <span className="payoutCategoryIcon" aria-hidden="true"><span className="adminPayoutLegacyIcon">{symbol}</span><span className="adminPayoutVectorIcon">{key==='WAITING'?<svg className="approvedIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>:<Icon name={key==='READY'?'pound':key==='BLOCKED'?'lock':key==='HELD'?'shield':'circleCheck'}/>}</span></span>
     <span className="payoutCategoryCopy"><b>{name}</b><small>{money(values[key])}</small></span>
     <strong className="payoutCategoryCount" aria-label={`${counts[key]} ${name.toLowerCase()} payouts`}>{counts[key]}</strong>
    </button>)}

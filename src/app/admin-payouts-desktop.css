@@ -1,0 +1,81 @@
+/* Approved payout preview: desktop presentation only. No payout policy changes. */
+@media (min-width:1024px) {
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) { --payout-colour:#008346; --payout-tint:#e6f5ed; color:#10214b; }
+  body.approvedDesktop.role-admin :is([data-payout-category="READY"],.adminShell:has([data-payout-category="READY"].isActive)) { --payout-colour:#008346; --payout-tint:#e6f5ed; }
+  body.approvedDesktop.role-admin :is([data-payout-category="WAITING"],.adminShell:has([data-payout-category="WAITING"].isActive)) { --payout-colour:#a76600; --payout-tint:#fff0ce; }
+  body.approvedDesktop.role-admin :is([data-payout-category="BLOCKED"],.adminShell:has([data-payout-category="BLOCKED"].isActive)) { --payout-colour:#b32933; --payout-tint:#ffeaed; }
+  body.approvedDesktop.role-admin :is([data-payout-category="HELD"],.adminShell:has([data-payout-category="HELD"].isActive)) { --payout-colour:#a34c16; --payout-tint:#fff0e4; }
+  body.approvedDesktop.role-admin :is([data-payout-category="PAID"],.adminShell:has([data-payout-category="PAID"].isActive)) { --payout-colour:#0752df; --payout-tint:#eaf1fe; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls)>.backLink { display:none; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls)>.adminHero { display:flex!important; justify-content:space-between; align-items:center; gap:24px; padding:0!important; margin:0 0 22px!important; background:transparent!important; border:0!important; box-shadow:none!important; overflow:visible; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls)>.adminHero:after { display:none; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminHero h1 { font-size:30px!important; line-height:1.2!important; letter-spacing:-.6px; margin:5px 0 9px!important; color:#091650!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminHero p { font-size:13px!important; color:#526487!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .dashboardEyebrow { font-size:11px!important; color:#526487!important; letter-spacing:1.2px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminHeroBadge { display:flex!important; align-items:flex-end; gap:0; text-align:right; min-width:160px; padding:0 0 0 20px!important; border:0!important; border-left:3px solid #008346!important; border-radius:0!important; background:transparent!important; box-shadow:none!important; backdrop-filter:none; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminHeroBadge strong { font-size:27px!important; color:#008346!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminHeroBadge :is(span,small) { font-size:11px!important; color:#60718d!important; text-transform:none; letter-spacing:0; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutCategoryControls { grid-template-columns:repeat(5,minmax(0,1fr))!important; gap:12px!important; margin:0 0 20px!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutCategoryButton { grid-template-columns:21px minmax(0,1fr) auto; gap:10px; min-height:78px!important; padding:13px!important; border:1px solid #d2dceb!important; border-top:7px solid var(--payout-colour)!important; border-radius:6px!important; background:white!important; color:#10214b!important; box-shadow:none!important; transform:none!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutCategoryButton.isActive { background:var(--payout-tint)!important; box-shadow:inset 0 0 0 1px var(--payout-colour)!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutCategoryButton :is(.payoutCategoryIcon,.payoutCategoryCount) { color:var(--payout-colour)!important; background:transparent!important; padding:0; min-width:0; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutCategoryIcon { width:21px!important; height:21px!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutCategoryCopy b { font-size:14px!important; color:#10214b!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutCategoryCopy small { font-size:11px!important; color:#60718d!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutCategoryCount { font-size:23px!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutSearchBar { max-width:none!important; margin:0 0 20px!important; padding:12px 16px!important; border:1px solid #d2dceb!important; border-radius:6px!important; background:white!important; align-items:center; gap:16px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutSearchBar label { font-size:13px!important; color:#10214b!important; text-transform:none; letter-spacing:0; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutSearchBar>div { border:0; padding:0; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutSearchBar input { height:32px; font-size:13px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutSearchBar input:focus-visible { outline:2px solid #0752df; outline-offset:2px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutResultsHeading { background:white; border:1px solid #d2dceb; border-radius:7px 7px 0 0; padding:15px 18px!important; margin:0!important; gap:16px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutResultsHeading h2 { font-size:18px!important; margin:3px 0 0!important; color:#091650!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutResultsActions>span { font-size:11px; color:#60718d; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutRecordList { display:grid; gap:12px; background:white; border:1px solid #d2dceb; border-top:0; border-radius:0 0 7px 7px; padding:14px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutCompact { padding:0!important; margin:0!important; border:1px solid #d5dfed!important; border-left:5px solid var(--payout-colour)!important; border-radius:5px!important; box-shadow:none!important; overflow:hidden; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutSummary { grid-template-columns:minmax(220px,300px) minmax(0,1fr) 20px; gap:22px!important; padding:16px!important; border-radius:0!important; background:white!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .isExpanded .adminPayoutSummary { background:#f7f9fd!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutIdentity>strong { font-size:16px!important; color:#10214b!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutIdentity small { font-size:11px!important; color:#60718d!important; font-weight:400; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutIdentity .statusPill { background:#eaf0f8!important; color:#526487!important; border:0!important; border-radius:4px!important; padding:4px 7px!important; font-size:11px!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutIdentity .statusPill:first-child { background:var(--payout-tint)!important; color:var(--payout-colour)!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutQuick { grid-column:auto; grid-row:auto; grid-template-columns:repeat(5,minmax(0,1fr)); gap:16px 12px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutQuick>span { padding:0; background:transparent!important; border-radius:0; min-height:0; gap:4px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutQuick small { font-size:11px!important; color:#60718d!important; font-weight:400; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutQuick b { font-size:12px!important; color:#10214b!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutQuick>span:nth-child(4) b { color:var(--payout-colour)!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .reviewWindowNotice { margin:0!important; padding:9px 16px!important; border:0!important; border-top:1px solid #dfe6ef!important; border-radius:0!important; background:var(--payout-tint)!important; color:var(--payout-colour)!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .reviewWindowNotice strong { font-size:12px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutExpanded { padding:18px!important; background:#f6f8fc!important; border-top:1px solid #d5dfed!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutVehicleDetails { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; padding:12px 15px!important; margin-bottom:14px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutVehicleDetails>.subHeading { display:none; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutVehicleDetails>.infoRow { display:flex; flex-direction:column; align-items:flex-start; gap:4px; padding:0!important; border:0; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .routeVisual { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:11px 15px; background:#eaf0f9; border-radius:4px; margin:0 0 16px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .routeVisual>div { min-width:0; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .routeVisual b { font-size:13px; overflow-wrap:anywhere; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutColumns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .infoPanel { border:1px solid #d5dfed!important; background:white!important; border-radius:5px!important; padding:12px 14px; box-shadow:none!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .infoRow { gap:18px; padding:6px 0!important; font-size:12px!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .infoRow>span { color:#60718d; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .infoRow>b { color:#10214b; overflow-wrap:anywhere; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) :is(.payoutColumns>section>h3,.proofGroupHeading) { margin:0!important; background:#091650!important; color:white!important; font-size:13px!important; padding:11px 14px!important; border-radius:5px 5px 0 0; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutColumns>section>h3+.infoPanel { border-radius:0 0 5px 5px!important; margin:0; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayout { background:white; border:1px solid #d5dfed; padding:12px 14px; margin:0; border-radius:0 0 5px 5px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayout p { font-size:11px; color:#526487; line-height:1.6; margin:9px 0 0; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .btn { width:auto; min-height:0; padding:9px 13px!important; border-radius:4px!important; font-size:12px!important; box-shadow:none!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .btn.light { border:1px solid #cbd7e7!important; background:white!important; color:#10214b!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayout .btn:not(.light):not(:disabled) { background:#0752df!important; color:white!important; border-color:#0752df!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .btn:disabled { background:#edf1f6!important; color:#697994!important; cursor:not-allowed; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutProofReview { margin-top:16px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutProofReview h3 { font-size:18px!important; color:#091650; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutProofGrid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutProofGroup { padding:0!important; border:1px solid #d5dfed; border-radius:5px; background:white; overflow:hidden; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .podEvidenceLinks { padding:12px 14px; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .evidenceRow { padding:9px 0; border:0; border-top:1px solid #e2e8f1; border-radius:0; background:white; color:#0752df; }
+}
+@media (min-width:1024px) and (max-width:1279px) {
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutCategoryButton { grid-template-columns:minmax(0,1fr) auto; gap:6px; padding:10px!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .payoutCategoryIcon { display:none!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutSummary { grid-template-columns:minmax(190px,1fr) minmax(0,2fr) 20px; gap:12px!important; }
+  body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) .adminPayoutQuick { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
