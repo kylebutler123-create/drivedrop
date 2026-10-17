@@ -230,6 +230,28 @@
  body.approvedDesktop :is(.authPage,.authShell) .authSubmit{width:100%;margin:15px 0 0;min-height:46px}.approvedDesktop :is(.authPage,.authShell) .authSecondary{font-size:14px;color:#1478ff}
  body.approvedDesktop :is(.authPage,.authShell) .accountSwitch{background:#f1f6fc;border-radius:6px;margin:20px 0;padding:4px}.approvedDesktop :is(.authPage,.authShell) .accountSwitch a.active{background:#fff;color:#0b3760;border-radius:5px}
  .approvedAuthCopy{display:block;position:absolute;left:38px;right:30px;bottom:35px;color:white}.approvedAuthCopy h2{font-size:38px!important;color:white!important;line-height:1.1;margin:0 0 25px}.approvedAuthCopy ul{display:grid;gap:13px;padding:0;margin:0;list-style:none}.approvedAuthCopy li{display:flex;align-items:center;gap:12px;font-size:14px}.approvedAuthCopy .approvedIcon{width:20px;height:20px;color:#a7c7e5}.approvedAuthCopy>p{border-top:1px solid #ffffff38;padding-top:21px;margin-top:25px;font-size:13px;color:#dbe7f4}
+ /* Stable desktop login geometry across account types; notices can expand both panels. */
+ body.approvedDesktop .authPage.loginPage{min-height:680px!important;align-items:stretch}
+ body.approvedDesktop .authPage.loginPage>.authVisual{min-height:680px!important}
+ body.approvedDesktop .authPage.loginPage.transporterLogin>.authVisual{background-position:80% center!important}
+ body.approvedDesktop .authPage.loginPage>.authPanel{min-height:0!important;align-items:stretch!important}
+ body.approvedDesktop .authPage.loginPage .authCard{min-height:680px;transform:none!important}
+ body.approvedDesktop .authPage.loginPage .backLink{font-size:12px;color:#647799;line-height:18px}
+ body.approvedDesktop .authPage.loginPage .authHeading{margin:19px 0 0}
+ body.approvedDesktop .authPage.loginPage .authHeading h2{letter-spacing:-.8px}
+ body.approvedDesktop .authPage.loginPage .authHeading>p{min-height:48px;margin:0;font-size:14px;line-height:1.7;color:#647799}
+ body.approvedDesktop .authPage.loginPage .accountSwitch{height:46px;margin:20px 0;padding:4px}
+ body.approvedDesktop .authPage.loginPage .accountSwitch a{display:flex;align-items:center;justify-content:center;padding:0 12px;font-size:13px;border-radius:5px}
+ body.approvedDesktop .authPage.loginPage .accountSwitch a.active{box-shadow:0 2px 7px #1537530a}
+ body.approvedDesktop .authPage.loginPage .field label{margin-bottom:7px;line-height:19.5px}
+ body.approvedDesktop .authPage.loginPage .authCard input{height:46px;padding:12px 14px;border-radius:7px;font-size:14px}
+ body.approvedDesktop .authPage.loginPage .password-wrap input{padding-right:64px}
+ body.approvedDesktop .authPage.loginPage .password-toggle{right:14px;padding:0;border-radius:0;background:transparent;font-size:12px;color:#647799}
+ body.approvedDesktop .authPage.loginPage .forgotLink{font-size:12px;color:#1478ff}
+ body.approvedDesktop .authPage.loginPage .authSubmit{height:46px;min-height:46px;padding:12px 20px;margin:15px 0 0;border-radius:6px;font-size:14px;background:#ff7a18;box-shadow:none}
+ body.approvedDesktop .authPage.loginPage .authDivider{margin:23px 0 17px;font-size:12px;line-height:18px}
+ body.approvedDesktop .authPage.loginPage .authSecondary{min-height:44px;padding:10px 16px;border-radius:6px;background:white;font-size:14px}
+ body.approvedDesktop .authPage.loginPage .authFootnote{margin:17px 0 0;font-size:11px;line-height:1.5;color:#7a8ca5}
  /* Approved public pages and support. Legacy mobile content remains mounted. */
  body.approvedDesktop .desktopInformationPage{background:#f8fbff}
  body.approvedDesktop .desktopInformationPage>.informationHero,body.approvedDesktop .desktopInformationPage>.informationBody{display:none}
