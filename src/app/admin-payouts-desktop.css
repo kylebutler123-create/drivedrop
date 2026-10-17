@@ -1,5 +1,9 @@
 /* Approved payout preview: desktop presentation only. No payout policy changes. */
+.payoutFinePreview { display:none!important; }
 @media (min-width:1024px) {
+  body.approvedDesktop.role-admin .adminShell .adminPayoutQuick>.payoutFinePreview { display:flex!important; padding:7px 9px!important; background:#fff0ce!important; border-radius:4px; }
+  body.approvedDesktop.role-admin .adminShell .adminPayoutQuick>.payoutFinePreview b { color:#a76600!important; }
+  body.approvedDesktop.role-admin .adminShell .payoutFineEstimateNote { display:block!important; margin:0; padding:9px 16px; background:#fff8e9; color:#795011; font-size:11px; line-height:1.5; border-top:1px solid #eddbb4; }
   body.approvedDesktop.role-admin .adminShell:has(>.payoutCategoryControls) { --payout-colour:#008346; --payout-tint:#e6f5ed; color:#10214b; }
   body.approvedDesktop.role-admin :is([data-payout-category="READY"],.adminShell:has([data-payout-category="READY"].isActive)) { --payout-colour:#008346; --payout-tint:#e6f5ed; }
   body.approvedDesktop.role-admin :is([data-payout-category="WAITING"],.adminShell:has([data-payout-category="WAITING"].isActive)) { --payout-colour:#a76600; --payout-tint:#fff0ce; }
