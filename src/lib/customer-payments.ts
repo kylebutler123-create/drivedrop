@@ -1,5 +1,5 @@
 export type CustomerPayment = {
-  id: string; bookingId: string; reference: string; vehicle: string;
+  job?: {id:string;vehiclePhotoPath?:string|null}; id: string; bookingId: string; reference: string; vehicle: string;
   collection: string; delivery: string; bookingStatus: string; confirmed: boolean;
   currency: string; totalPence: number; paidPence: number; refundedPence: number;
   status: string; createdAt: string; paidAt: string | null; test: boolean;

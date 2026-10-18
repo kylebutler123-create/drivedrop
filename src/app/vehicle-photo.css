@@ -2,6 +2,7 @@
 .vehiclePhotoSymbol{display:contents}
 @media(min-width:1024px){
  body.approvedDesktop .vehiclePhotoThumbnail[hidden]{display:none!important}
+ body.approvedDesktop .vehiclePhotoThumbnail.financialVehiclePhoto{width:48px!important;height:40px!important;flex:none}
  body.approvedDesktop .availabilityVehicleIcon:has(.vehiclePhotoThumbnail){width:54px;height:54px;padding:0;flex:none}
  body.approvedDesktop :is(.deliveryVehicleIcon,.quoteDesignVehicle).hasVehiclePhoto>svg{display:none!important}
  body.approvedDesktop .adminBookingVehicle>.vehiclePhotoSymbol>.vehiclePhotoThumbnail{width:37px!important;height:37px!important;flex:none}

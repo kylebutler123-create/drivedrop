@@ -28,7 +28,7 @@ export async function loadProceeds(transporterId:string){
   select:{
    id:true,status:true,agreedPricePence:true,customerConfirmedAt:true,createdAt:true,
    customer:{select:{name:true}},disputes:{select:{id:true,status:true,resolution:true}},
-   job:{select:{id:true,vehicleMake:true,vehicleModel:true,registration:true,collection:true,delivery:true,collectionDate:true}},
+   job:{select:{id:true,vehiclePhotoPath:true,vehicleMake:true,vehicleModel:true,registration:true,collection:true,delivery:true,collectionDate:true}},
    payment:{select:{transporterProceedsPence:true,cancellationDeductionPence:true,refundedPence:true,payoutStatus:true,updatedAt:true,events:{where:{type:{in:['PAYOUT_PAID','PAYOUT_READY']}},select:{createdAt:true,type:true,note:true},orderBy:{createdAt:'desc'}}}}
   },orderBy:{createdAt:'desc'}
  });
