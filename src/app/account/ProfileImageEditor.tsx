@@ -3,6 +3,7 @@
 import {useEffect,useRef,useState} from 'react';
 import {useRouter} from 'next/navigation';
 import AccountIcon from '@/app/components/TransporterAccountIcon';
+import {prepareUploadImages} from '@/lib/prepare-message-images';
 
 type ProfileImageKind='logo'|'transporter'|'truck';
 type Images={logo:string|null;transporter:string|null;truck:string|null};
@@ -55,7 +56,8 @@ function MediaUpload({kind,title,description,icon,initialUrl,businessName,shape}
     try{
       const form=new FormData();
       form.append('kind',kind);
-      form.append('file',file);
+      const [prepared]=await prepareUploadImages([file],{preserveTransparency:kind==='logo'});
+      form.append('file',prepared);
       const response=await fetch('/api/account/profile-image',{method:'POST',body:form});
       const body=await response.json();
       if(!response.ok)throw new Error(body.error||'Could not upload image');

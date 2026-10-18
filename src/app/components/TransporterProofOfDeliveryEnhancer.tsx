@@ -1,5 +1,6 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
+import {prepareUploadImages} from '@/lib/prepare-message-images';
 
 type DeliveryLocation={latitude:number;longitude:number;accuracy:number;capturedAt:string};
 
@@ -69,7 +70,10 @@ function PodForm({booking,onDone}:{booking:any,onDone:()=>void|Promise<void>}){
   if(!recipient.trim()||!signature||photos.length<1||!confirmed){setMessage('Add the recipient name, delivery photos and signature, then confirm the handover.');return}
   inFlight.current=true;setBusy(true);setMessage(null);
   try{
-   const f=new FormData();f.set('bookingId',booking.id);f.set('recipientName',recipient);f.set('notes',notes);f.set('confirmed',String(confirmed));f.set('signature',signature);photos.forEach(p=>f.append('photos',p));
+   let prepared:File[];
+   try{prepared=await prepareUploadImages(photos,{reservedBytes:signature.size});}
+   catch(error){setMessage(error instanceof Error?error.message:'Unable to prepare delivery photos. Your details are still here.');return;}
+   const f=new FormData();f.set('bookingId',booking.id);f.set('recipientName',recipient);f.set('notes',notes);f.set('confirmed',String(confirmed));f.set('signature',signature);prepared.forEach(p=>f.append('photos',p));
    if(location){f.set('deliveryLatitude',String(location.latitude));f.set('deliveryLongitude',String(location.longitude));f.set('deliveryAccuracyMeters',String(location.accuracy));f.set('deliveryLocationCapturedAt',location.capturedAt)}
    const r=await fetch('/api/bookings/proof-of-delivery',{method:'POST',body:f});
    const d=await r.json().catch(()=>null);

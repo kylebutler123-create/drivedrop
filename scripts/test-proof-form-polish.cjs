@@ -2,7 +2,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const React=require('react'),{renderToStaticMarkup}=require('react-dom/server'),swc=require('next/dist/build/swc'),postcss=require('postcss');
 const root=path.resolve(__dirname,'..');let stateIndex=0;
 const react={...React,useState:value=>React.useState(stateIndex++===0?true:value)};
-function load(name){const exports={};const filename=path.join(root,'src/app/components',name);const {code}=swc.transformSync(fs.readFileSync(filename,'utf8'),{filename,jsc:{parser:{syntax:'typescript',tsx:true},target:'es2022',transform:{react:{runtime:'automatic'}}},module:{type:'commonjs'}});new Function('exports','require',code)(exports,id=>id==='react'?react:require(id));return exports.default;}
+function load(name){const exports={};const filename=path.join(root,'src/app/components',name);const {code}=swc.transformSync(fs.readFileSync(filename,'utf8'),{filename,jsc:{parser:{syntax:'typescript',tsx:true},target:'es2022',transform:{react:{runtime:'automatic'}}},module:{type:'commonjs'}});new Function('exports','require',code)(exports,id=>id==='react'?react:id==='@/lib/prepare-message-images'?{prepareUploadImages:async files=>files}:require(id));return exports.default;}
 const rendered=[];
 for(const [name,label,submit] of [['TransporterProofOfCollectionEnhancer.tsx','Collection photos','Submit proof &amp; complete collection'],['TransporterProofOfDeliveryEnhancer.tsx','Delivery photos','Submit proof &amp; complete delivery']]){
  stateIndex=0;const html=renderToStaticMarkup(React.createElement(load(name),{booking:{id:'example'},onDone(){}}));rendered.push(html);

@@ -2,6 +2,7 @@
 import {FormEvent,useEffect,useMemo,useRef,useState} from 'react';
 import Link from 'next/link';
 import MessageIcon from '../components/MessageDesignIcon';
+import {prepareMessageImages} from '@/lib/prepare-message-images';
 import '../customer-messages-polish.css';
 import '../admin-communication.css';
 
@@ -148,7 +149,9 @@ export default function MessagesPage(){
     f.set('bookingId',bookingId);
     if(me?.role==='ADMIN'&&adminRecipient.current?.bookingId===bookingId)f.set('recipientId',adminRecipient.current.recipientId);
     f.set('body',body);
-    images.forEach(img=>f.append('images',img));
+    let prepared:File[];
+    try{prepared=await prepareMessageImages(images);}catch(error){setNotice(error instanceof Error?error.message:'Unable to prepare images.');return;}
+    prepared.forEach(img=>f.append('images',img));
     r=await fetch('/api/bookings/messages',{method:'POST',body:f});
    }
    const d=await r.json().catch(()=>null);

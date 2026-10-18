@@ -2,16 +2,18 @@
 import {useRef,useState} from 'react';
 import {useCustomerPhoto} from '../components/CustomerAvatar';
 import Icon from '../components/AccountDesignIcon';
+import {prepareUploadImages} from '@/lib/prepare-message-images';
 export default function CustomerPhotoEditor({name}:{name:string}){
  const url=useCustomerPhoto(),input=useRef<HTMLInputElement>(null),inFlight=useRef(false);
  const [busy,setBusy]=useState(false),[notice,setNotice]=useState('');
  async function save(file:File){
   if(inFlight.current)return;
   if(!['image/jpeg','image/png','image/webp'].includes(file.type)){setNotice('Choose a JPG, PNG or WebP photo.');return}
-  if(file.size>2*1024*1024||file.size===0){setNotice('Choose a photo up to 2 MB.');return}
+  if(file.size>20*1024*1024||file.size===0){setNotice('Choose a photo up to 20 MB.');return}
   inFlight.current=true;setBusy(true);setNotice('');
   try{
-   const form=new FormData();form.append('file',file);
+   const [prepared]=await prepareUploadImages([file]);
+   const form=new FormData();form.append('file',prepared);
    const response=await fetch('/api/account/customer-photo',{method:'POST',body:form});
    const data=await response.json();if(!response.ok)throw new Error(data.error);
    window.dispatchEvent(new Event('drivedrop:customer-photo'));setNotice('Profile photo updated.');
