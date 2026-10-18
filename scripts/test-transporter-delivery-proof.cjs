@@ -1,0 +1,18 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),Module=require('node:module');
+const React=require('react'),{renderToStaticMarkup}=require('react-dom/server'),swc=require('next/dist/build/swc');
+const file=path.resolve('src/app/components/TransporterDeliveryProof.tsx');
+const m=new Module(file,module);m.filename=file;m.paths=module.paths;
+const requireOriginal=m.require.bind(m);
+m.require=(id)=>id.endsWith('.css')?{}:id==='./TransporterCompactRow'?{openActiveProof(){}}:id==='./DeliveryDesignIcon'?{__esModule:true,default:({name})=>React.createElement('svg',{'data-icon':name})}:requireOriginal(id);
+m._compile(swc.transformSync(fs.readFileSync(file,'utf8'),{filename:file,jsc:{parser:{syntax:'typescript',tsx:true},transform:{react:{runtime:'automatic'}},target:'es2020'},module:{type:'commonjs'}}).code,file);
+const {TransporterDeliveryProof:Proof,CompletedDeliveryProgress:Progress}=m.exports;
+const render=(props)=>renderToStaticMarkup(React.createElement(Proof,props));
+const base={id:'test',status:'IN_TRANSIT',evidence:[{id:'photo',type:'COLLECTION',createdAt:'2026-10-18T08:10:00Z'},{id:'signature',type:'COLLECTION',note:'__POC_SIGNATURE__',createdAt:'2026-10-18T08:10:00Z'}],proofOfCollection:{releasedByName:'Test person',condition:'EXISTING_DAMAGE',damageNotes:'Small scratch',submittedAt:'2026-10-18T08:10:00Z'}};
+let html=render({booking:base,type:'COLLECTION',active:true});
+assert.match(html,/Handover contact/);assert.match(html,/Small scratch/);assert.match(html,/View \(1\)/);assert.match(html,/\/api\/evidence\/signature/);assert.doesNotMatch(html,/Complete collection/);
+html=render({booking:base,type:'DELIVERY',active:true});assert.match(html,/Complete delivery/);assert.doesNotMatch(html,/\/api\/evidence\/photo/);assert.match(html,/has not been completed/);
+html=render({booking:{...base,status:'CONFIRMED',evidence:[],proofOfCollection:null},type:'COLLECTION',active:true});assert.match(html,/Complete collection/);assert.doesNotMatch(html,/Test person|No existing damage reported/);
+html=render({booking:{...base,status:'DELIVERED',deliveryLatitude:51.5,deliveryLongitude:-0.1},type:'DELIVERY'});assert.match(html,/maps\?q=51.5%2C-0.1/);assert.doesNotMatch(html,/Complete delivery/);
+html=renderToStaticMarkup(React.createElement(Progress,{booking:{...base,status:'DELIVERED',createdAt:'2026-10-17T09:00:00Z',customerConfirmedAt:null,trackingEvents:[{status:'DELIVERED',createdAt:'2026-10-18T12:00:00Z'}]}}));assert.match(html,/Awaiting confirmation/);assert.match(html,/Customer confirmed/);assert.match(html,/isPending/);
+const api=fs.readFileSync('src/app/api/transporter/delivered/route.ts','utf8');assert.match(api,/transporterId:user.id/);assert.match(api,/Prisma.join\(bookingIds\)/);assert.match(api,/trackingEvents:booking.trackingEvents.filter/);
+console.log('PASS: proof stage controls, signature/photo grouping, missing proof, delivery location, pending confirmation and authorised metadata scope.');

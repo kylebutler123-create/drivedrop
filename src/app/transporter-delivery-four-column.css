@@ -1,0 +1,121 @@
+/* Approved customer-style expanded delivery layout. Compact, mobile and tablet stay unchanged. */
+.tdFourProof,.tdFourHeaderTools,.tdFourMessages{display:none}
+@media screen and (min-width:1024px){
+ body.approvedDesktop.role-transporter main.dashboardShell :is(.transporterBooking:not(.isCollapsed),.transporterCompletedCard.isExpanded){border:1px solid #cfe5fe!important;border-radius:9px!important;background:#fff!important;box-shadow:none!important;color:#091650}
+ body.approvedDesktop.role-transporter main.dashboardShell :is(.transporterBooking:not(.isCollapsed),.transporterCompletedCard.isExpanded):before{content:'';position:absolute;left:0;top:0;width:7px;height:110px;background:#2188ff;z-index:1}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded:before{background:#35bf88}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdActiveReference{display:none!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner{display:flex!important;background:#e5f5ff!important;color:#0075ff!important;border:0!important;border-radius:5px!important;padding:9px 12px!important;margin:0 20px 16px 24px!important;font:13px/1.45 DriveDropApproved,Arial,sans-serif!important;box-shadow:none!important}
+ body.approvedDesktop.role-transporter .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner :is(strong,small){font:inherit!important;color:inherit!important}
+ body.approvedDesktop.role-transporter .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner>div{display:flex;align-items:center;gap:8px}
+ body.approvedDesktop.role-transporter .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner strong{display:none!important}
+ body.approvedDesktop.role-transporter .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner small{display:block!important;margin:0!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdFourColumns,
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourCompletedBody>.tdFourColumns{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:0!important;margin:0 20px 0 24px!important;padding:5px 0 16px!important;border:0!important;background:none!important;font:14px/1.45 DriveDropApproved,Arial,sans-serif}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourCompletedBody>.tdFourColumns{margin:0!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard>.tdFourCompletedBody{border:0!important;padding:5px 20px 0 24px!important;margin:0!important;font-family:DriveDropApproved,Arial,sans-serif}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns>.tdFourProgressHost,
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel,
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdCollectionNext,
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>:is([data-poc],[data-pod-mount]),
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdCollectionNext>[data-poc]{display:contents!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourProgress,.tdFourPayment,.tdFourProof){display:block;grid-row:1;min-width:0;margin:0!important;padding:0 20px!important;border:0!important;border-left:1px solid #d2e3f3!important;border-radius:0!important;background:none!important;box-shadow:none!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourProgress{grid-column:1;border:0!important;padding-left:0!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourPayment{grid-column:2}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourCollection{grid-column:3}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourDelivery{grid-column:4;padding-right:0!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns h3{font:700 18px/1.35 DriveDropApproved,Arial,sans-serif!important;letter-spacing:-.35px!important;color:#081344!important;margin:0 0 12px!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .infoPanel:not(form){padding:0!important;border:0!important;border-radius:0!important;background:none!important;margin:0!important;box-shadow:none!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.infoRow,.tdPayRow){display:flex!important;justify-content:space-between;align-items:baseline;gap:10px;padding:4px 0!important;margin:0!important;border:0!important;font:13px/1.5 DriveDropApproved,Arial,sans-serif!important;color:#405f95}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.infoRow,.tdPayRow) b{font:400 13px/1.5 DriveDropApproved,Arial,sans-serif!important;color:#081344;text-align:right;overflow-wrap:anywhere}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourText,.tdPayoutNote){font:12px/1.5 DriveDropApproved,Arial,sans-serif!important;color:#405f95!important;margin:7px 0 12px!important;overflow-wrap:anywhere}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourProofRow{display:flex;gap:8px;align-items:start;padding:4px 0;font:12px/1.5 DriveDropApproved,Arial,sans-serif;color:#405f95}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourProofRow>span{flex:0 0 40%}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourProofRow>b{flex:1;min-width:0;color:#081344;font-weight:400;overflow-wrap:anywhere}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourEvidence,.tdFourPhotos>summary,.tdFourUploads button){display:flex!important;align-items:center;justify-content:center;gap:12px;box-sizing:border-box;width:100%!important;min-height:34px!important;height:auto!important;padding:6px 8px!important;border:1px solid #8197bb!important;border-radius:5px!important;background:#fff!important;color:#081344!important;font:12px/1.4 DriveDropApproved,Arial,sans-serif!important;text-decoration:none;margin:7px 0 0!important;box-shadow:none!important;cursor:pointer;list-style:none;white-space:normal}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourPhotos{margin:0}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourPhotos>summary::-webkit-details-marker{display:none}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourEvidence,.tdFourPhotos>summary) u{color:#0075ff}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourEvidence,.tdFourPhotos>summary,.tdFourUploads) svg{width:17px;height:17px;flex:none}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourUploads>span{display:block!important;width:100%;margin:0!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourUploads .tdEvidenceLabel{display:flex!important;align-items:center;gap:12px}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourComplete{display:inline-flex;align-items:center;justify-content:center;gap:7px;max-width:100%;min-height:38px;padding:10px 14px;margin-top:10px;border:0;border-radius:6px;background:#ff681b;color:#fff;font:13px/1.4 DriveDropApproved,Arial,sans-serif;cursor:pointer}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgress{display:block!important;margin:8px 0 14px 9px!important;border-left:2px solid #007aff}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep{position:relative;padding:0 0 14px 21px!important;font:13px/1.45 DriveDropApproved,Arial,sans-serif;color:#647799}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep:last-child{padding-bottom:0!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep:after{display:none!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep:before{left:-10px;top:2px;width:17px;height:17px;background:#e3edf8;border:1px solid #bed3e9}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep.isReached{color:#091650}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep.isReached:before{content:'✓';background:#007aff;border:0;color:#fff;text-align:center;font:11px/17px Arial,sans-serif}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep b{font-weight:600}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep small{display:block;font:12px/1.45 DriveDropApproved,Arial,sans-serif;color:#405f95;margin-top:3px}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdStatusNotes,.tdFourStatusNotes){font:12px/1.5 DriveDropApproved,Arial,sans-serif;color:#405f95;margin:12px 0}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourTimeline{margin:8px 0 14px 9px;border-left:2px solid #007aff}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourEvent{position:relative;padding:0 0 14px 21px;font-size:13px}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourEvent:last-child{padding-bottom:0}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourEvent:before{content:'✓';position:absolute;left:-10px;top:2px;width:17px;height:17px;border-radius:50%;background:#007aff;color:#fff;text-align:center;font:11px/17px Arial,sans-serif}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourEvent.isPending:before{content:'';background:#e3edf8;border:1px solid #bed3e9}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourEvent small{display:block;color:#405f95;font-size:12px;margin-top:3px}
+ /* Keep the existing forms and state handlers in the grid; open forms span its full width. */
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>:is(.transporterNextActionIntro,span),
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdCollectionNext>div:not([data-poc]),
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is([data-poc],[data-pod-mount])>button{display:none!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>.actionButtons{grid-column:1;grid-row:2;display:flex;flex-wrap:wrap;gap:7px;align-self:start;margin:0 20px 0 0!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>.actionButtons:empty{display:none}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>.actionButtons>.btn{width:100%;font:12px/1.4 DriveDropApproved,Arial,sans-serif!important;padding:6px 8px!important;min-height:34px!important;border:1px solid #8197bb!important;background:#fff!important;color:#081344!important;border-radius:5px!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(form,.formNotice){grid-column:1/-1;margin-top:16px!important;min-width:0}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>[data-pod-mount]{display:contents!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdFourLegacyEvidence{display:none!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdFourMessages{display:block!important;margin:12px 20px 16px 24px!important;color:#405f95;font:12px/1.5 DriveDropApproved,Arial,sans-serif}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourMessages summary{cursor:pointer}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourLegacyEvidence>section+section{display:none!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourLegacyEvidence h3{font-size:13px!important;margin:0 0 6px!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourLegacyEvidence .muted{margin:4px 0!important;font-size:12px!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdActiveFooter,
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourFooter{display:flex!important;align-items:center;flex-wrap:wrap;gap:12px 22px;margin:0 20px 16px 24px!important;padding:13px 0 0!important;border-top:1px solid #d2e3f3;font:13px/1.5 DriveDropApproved,Arial,sans-serif;color:#52658e}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourFooter{margin:0!important;justify-content:space-between}
+ body.approvedDesktop.role-transporter main.dashboardShell :is(.tdFourFooter,.tdActiveFooter) b{font-weight:600;color:#091650}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdActiveFooter .tdFourCustomer{margin-left:auto}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdActiveFooter [data-desktop-cancel-slot]{display:block!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdActiveFooter .tdCancellationWarning{flex:1 1 100%;order:2;max-width:none;font-size:12px!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdActiveFooter [data-cancel-delivery]{padding:7px 12px!important;min-height:34px!important;background:#fff0f0!important;border-color:#efb8b8!important;color:#b4232c!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.reviewWindowNotice{order:0;margin:0 20px 16px 24px!important;background:#e5f5ff!important;color:#0075ff!important;padding:9px 12px!important;border:0!important;border-radius:5px!important;font:13px/1.45 DriveDropApproved,Arial,sans-serif}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.reviewWindowNotice strong{font-weight:400}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.reviewWindowNotice small{display:none}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.transporterCompletedContact{margin:0 20px 16px 24px!important;padding-top:12px!important;border:0!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourHeaderTools{position:absolute;right:178px;top:22px;display:flex;align-items:center;gap:18px;z-index:2}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourContacts{display:flex;gap:8px}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourContacts>a{width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:6px;background:#1478ed;color:#fff}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourContacts>a:last-child:not(:first-child){background:#16a16b}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourContacts svg{width:17px;height:17px}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourHeaderProceeds{width:120px;text-align:center}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourHeaderProceeds small{display:block;font-size:12px;color:#647799}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourHeaderProceeds b{font-size:18px;color:#091650}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdCompact-completed{grid-template-columns:48px minmax(0,1fr) 130px 170px 214px 112px 18px!important;gap:12px!important;min-height:100px}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdCompact-completed>.tdCompactStatusSlot{grid-column:6}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdCompact-completed>.tdCompactChevron{grid-column:7}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdCompactProofAction{visibility:visible!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveHeader{min-height:100px}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdCompact-active{height:auto;min-height:108px;grid-template-columns:48px minmax(0,1fr) 140px 178px 398px 18px!important;gap:18px!important;padding:8px 20px 8px 24px!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions{right:56px;width:398px;grid-template-columns:76px 174px 112px;gap:18px}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactContacts{width:76px;gap:8px}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactContacts>a{width:34px;flex-basis:34px;background:#1478ed}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactContacts>a[aria-label="Call customer"]{background:#16a16b}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactProofAction{width:174px;font-size:13px}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactStatus{width:112px;font-size:13px}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns a:focus-visible,body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns summary:focus-visible{outline:2px solid #0075ff;outline-offset:3px}
+}
+@media screen and (min-width:1024px) and (max-width:1199px){
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdCompact-active{grid-template-columns:40px minmax(0,1fr) 100px 125px 304px 18px!important;gap:10px!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions{right:48px;width:304px;grid-template-columns:66px 128px 94px;gap:8px}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactContacts{width:66px;gap:6px}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactContacts>a{width:30px;flex-basis:30px}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactProofAction{width:128px;font-size:12px}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactStatus{width:94px;font-size:12px}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdCompact-completed{grid-template-columns:40px minmax(0,1fr) 100px 125px 148px 94px 18px!important;gap:10px!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourHeaderTools{right:146px;gap:8px}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourHeaderProceeds{width:70px}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourPayment,.tdFourProof){padding-left:12px!important;padding-right:12px!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourDelivery{padding-right:0!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns h3{font-size:16px!important}
+}
