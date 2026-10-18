@@ -21,7 +21,7 @@
  .tdCardMessages .tdReplyAttachment{display:flex;align-items:center;gap:8px;width:fit-content;max-width:100%;box-sizing:border-box;margin-top:9px;border:1px solid #cfe2fc;background:#f3f8fe;border-radius:5px;padding:6px 9px;font-size:12px}
  .tdCardMessages .tdReplyAttachment span{overflow-wrap:anywhere;min-width:0}
  .tdCardMessages .tdReplyAttachment button{border:0;background:none;color:#52658e;font-size:19px;padding:0 3px;cursor:pointer}
- .tdCardMessages svg{width:17px;height:17px;flex:none}
+ .tdCardMessages .messageDesignIcon{display:inline-block;width:17px;height:17px;flex:none}
  .tdCardMessages button:disabled{opacity:.6;cursor:default}
  .tdCardMessages .tdReplyError{color:#b4232c;margin:8px 0 0}
  .tdCardMessages .tdReplySuccess{color:#18734d;margin:8px 0 0}
