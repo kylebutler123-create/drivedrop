@@ -1,7 +1,9 @@
 import type {ReactNode} from 'react';
-type Name='search'|'chat'|'truck'|'chevron'|'camera'|'trash'|'send';
+type Name='search'|'chat'|'truck'|'chevron'|'camera'|'trash'|'send'|'image'|'imagePlus';
 export default function MessageDesignIcon({name}:{name:Name}){
  const paths:Record<Name,ReactNode>={
+ image:<><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></>,
+ imagePlus:<><path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8M16 5h6m-3-3v6"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></>,
  search:<><circle cx="10.5" cy="10.5" r="7.5"/><path d="m16 16 5 5"/></>,
  chat:<path d="M21 11.5a9 9 0 0 1-9 9 10 10 0 0 1-4-.9L3 21l1.4-5A9 9 0 1 1 21 11.5Z"/>,
  truck:<><path d="M3 17H2V4h13v13H8m7-9h4l3 4v5h-2m-5 0h-1"/><circle cx="6" cy="17" r="2"/><circle cx="18" cy="17" r="2"/></>,

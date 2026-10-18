@@ -1,0 +1,28 @@
+.tdCardMessages{display:none}
+@media screen and (min-width:1024px){
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdCardMessages{margin-top:16px!important;border-top:1px solid #d2e3f3;padding-top:14px;font-family:DriveDropApproved,Arial,sans-serif}
+ .tdCardMessages summary{font-size:13px;color:#091650;font-weight:600}
+ .tdCardMessages .tdThreadHistory{padding:14px 0 4px}
+ .tdCardMessages .tdThreadMessage{padding:10px 14px;background:#f3f8fe;border:1px solid #e0ebf8;border-radius:6px;margin-bottom:10px;max-width:78%;color:#091650;font-size:13px}
+ .tdCardMessages .tdThreadMessage.isSent{margin-left:auto;background:#eaf3ff;border-color:#cfe2fc}
+ .tdCardMessages .tdThreadMeta{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:center;font-size:12px}
+ .tdCardMessages .tdThreadMeta time{color:#647799;font-size:11px}
+ .tdCardMessages .tdThreadMessage p{margin:5px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+ .tdCardMessages .tdThreadImages{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+ .tdCardMessages .tdThreadImages img{display:block;max-width:180px;max-height:150px;object-fit:contain;border-radius:5px}
+ .tdCardMessages .tdReplyCompose{display:block;margin-top:6px;padding:0;border:0;background:none}
+ .tdCardMessages .tdReplyCompose>label{display:block;font-size:12px;color:#405f95;margin-bottom:6px;letter-spacing:normal;text-transform:none;font-weight:400}
+ .tdCardMessages .tdReplyCompose textarea{display:block;box-sizing:border-box;width:100%;min-height:72px;resize:vertical;border:1px solid #b9cce5;border-radius:6px;padding:11px 12px;font:13px/1.5 DriveDropApproved,Arial,sans-serif;color:#091650;background:#fff}
+ .tdCardMessages .tdReplyCompose textarea::placeholder{color:#7789a5}
+ .tdCardMessages .tdReplyActions{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+ .tdCardMessages .tdReplyActions button{display:flex;gap:7px;align-items:center;justify-content:center;border-radius:6px;padding:8px 13px;min-height:36px;font:13px/1.45 DriveDropApproved,Arial,sans-serif;cursor:pointer}
+ .tdCardMessages .tdAttachImage{border:1px solid #b9cce5;background:#fff;color:#405f95}
+ .tdCardMessages .tdSendReply{border:1px solid #1478ed;background:#1478ed;color:#fff;min-width:92px}
+ .tdCardMessages .tdReplyAttachment{display:flex;align-items:center;gap:8px;width:fit-content;max-width:100%;box-sizing:border-box;margin-top:9px;border:1px solid #cfe2fc;background:#f3f8fe;border-radius:5px;padding:6px 9px;font-size:12px}
+ .tdCardMessages .tdReplyAttachment span{overflow-wrap:anywhere;min-width:0}
+ .tdCardMessages .tdReplyAttachment button{border:0;background:none;color:#52658e;font-size:19px;padding:0 3px;cursor:pointer}
+ .tdCardMessages svg{width:17px;height:17px;flex:none}
+ .tdCardMessages button:disabled{opacity:.6;cursor:default}
+ .tdCardMessages .tdReplyError{color:#b4232c;margin:8px 0 0}
+ .tdCardMessages .tdReplySuccess{color:#18734d;margin:8px 0 0}
+}
