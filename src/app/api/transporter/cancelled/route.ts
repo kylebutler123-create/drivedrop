@@ -14,7 +14,7 @@ export async function GET(){
    where:{transporterId:user.id,status:'CANCELLED'},
    select:{
     id:true,createdAt:true,
-    job:{select:{id:true,vehicleMake:true,vehicleModel:true,collection:true,delivery:true,registration:true,running:true,transportType:true,collectionDate:true}},
+    job:{select:{id:true,vehiclePhotoPath:true,vehicleMake:true,vehicleModel:true,collection:true,delivery:true,registration:true,running:true,transportType:true,collectionDate:true}},
     customer:{select:{name:true}},
     trackingEvents:{where:{status:'CANCELLED'},select:{createdAt:true,note:true},orderBy:{createdAt:'desc'},take:1}
    },

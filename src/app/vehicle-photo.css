@@ -1,0 +1,31 @@
+.vehiclePhotoField,.vehiclePhotoThumbnail{display:none!important}
+.vehiclePhotoSymbol{display:contents}
+@media(min-width:1024px){
+ body.approvedDesktop .vehiclePhotoThumbnail[hidden]{display:none!important}
+ body.approvedDesktop .availabilityVehicleIcon:has(.vehiclePhotoThumbnail){width:54px;height:54px;padding:0;flex:none}
+ body.approvedDesktop :is(.deliveryVehicleIcon,.quoteDesignVehicle).hasVehiclePhoto>svg{display:none!important}
+ body.approvedDesktop .adminBookingVehicle>.vehiclePhotoSymbol>.vehiclePhotoThumbnail{width:37px!important;height:37px!important;flex:none}
+ body.approvedDesktop .vehiclePhotoField{display:block!important;grid-column:1/-1;margin-top:16px;color:#081f3e;text-align:left}
+ body.approvedDesktop .vehiclePhotoLabel{display:block;font:600 14px/1.4 DriveDropApproved,Arial,sans-serif;margin-bottom:8px}
+ body.approvedDesktop .vehiclePhotoLabel small{font-weight:400;color:#677e9d;font-size:14px}
+ body.approvedDesktop .vehiclePhotoArea{display:flex;align-items:center;gap:15px;padding:14px;background:#f7fbff;border:1px dashed #b8c9dc;border-radius:6px}
+ body.approvedDesktop .vehiclePhotoPreview{display:grid;place-items:center;width:90px;height:68px;flex:none;border-radius:5px;background:#e8f1fc;overflow:hidden}
+ body.approvedDesktop .vehiclePhotoPreview img{display:block!important;width:100%;height:100%;object-fit:cover}
+ body.approvedDesktop .vehiclePhotoPreview svg{display:block!important;width:26px;height:26px}
+ body.approvedDesktop .vehiclePhotoCopy{flex:1;min-width:0}
+ body.approvedDesktop .vehiclePhotoCopy p{font:12px/1.5 DriveDropApproved,Arial,sans-serif!important;color:#536b8c;margin:0 0 8px!important}
+ body.approvedDesktop .vehiclePhotoActions{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+ body.approvedDesktop .vehiclePhotoActions .vehiclePhotoUpload{position:relative;display:flex!important;align-items:center;gap:7px;padding:8px 12px!important;background:#0075ff!important;color:#fff!important;border:0;border-radius:5px;font:400 12px/1.4 DriveDropApproved,Arial,sans-serif!important;overflow:hidden;margin:0!important;cursor:pointer}
+ body.approvedDesktop .vehiclePhotoUpload svg{display:block!important;width:16px;height:16px}
+ body.approvedDesktop .vehiclePhotoUpload input[type=file]{position:absolute;inset:0;opacity:0;width:100%!important;height:100%!important;min-height:0!important;margin:0!important;cursor:pointer}
+ body.approvedDesktop .vehiclePhotoUpload:focus-within{outline:2px solid #081f3e;outline-offset:3px}
+ body.approvedDesktop .vehiclePhotoActions .vehiclePhotoRemove{background:white;border:1px solid #cbd9e8;color:#526b8b;border-radius:5px;padding:8px 12px;font:12px/1.4 DriveDropApproved,Arial,sans-serif}
+ body.approvedDesktop .vehiclePhotoFeedback{display:block;font:12px/1.5 DriveDropApproved,Arial,sans-serif;margin-top:6px}
+ body.approvedDesktop .vehiclePhotoFeedback[role=alert]{color:#b42318}
+ body.approvedDesktop .vehiclePhotoThumbnail{display:block!important;width:100%!important;height:100%!important;object-fit:cover;border-radius:7px}
+ body.approvedDesktop .vehiclePhotoMobileFallback{display:none!important}
+ body.approvedDesktop .homeHeroPanelShell:not(.isQuoteExpanded) .vehiclePhotoField{display:none!important}
+ body.approvedDesktop .adminVehiclePhoto{display:block;float:left;width:48px;height:48px;margin:0 12px 0 0}
+ body.approvedDesktop .customerRequestDetailsPanel>.vehiclePhotoField{padding:0 16px 16px;margin-top:0}
+}
+@media(max-width:1023px){.adminVehiclePhoto{display:none!important}}

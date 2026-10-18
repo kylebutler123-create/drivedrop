@@ -15,7 +15,7 @@ export async function GET(){
    where:{transporterId:user.id,status:'DELIVERED'},
    select:{
     id:true,status:true,agreedPricePence:true,customerConfirmedAt:true,transporterAwaitingSeenEventKey:true,transporterReadySeenEventKey:true,transporterPaidSeenEventKey:true,deliveryLatitude:true,deliveryLongitude:true,deliveryLocationAccuracyMeters:true,deliveryLocationCapturedAt:true,createdAt:true,
-    job:{select:{id:true,collection:true,delivery:true,vehicleMake:true,vehicleModel:true,registration:true,running:true,transportType:true,collectionDate:true}},
+    job:{select:{id:true,vehiclePhotoPath:true,collection:true,delivery:true,vehicleMake:true,vehicleModel:true,registration:true,running:true,transportType:true,collectionDate:true}},
     customer:{select:{name:true,phone:true}},
     trackingEvents:{select:{id:true,status:true,createdAt:true,note:true},orderBy:{createdAt:'desc'}},
     evidence:{select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'asc'}},

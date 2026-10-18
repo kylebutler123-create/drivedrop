@@ -1,6 +1,7 @@
 'use client';
 import {useEffect} from 'react';
 import {usePathname} from 'next/navigation';
+import '../vehicle-photo.css';
 import {deliveryIconMarkup,vehicleTypeIcon} from './DeliveryDesignIcon';
 import {vehicleTypeDisplay} from '@/lib/vehicle-types';
 import {transportTypeDisplay} from '@/lib/transport-types';
@@ -150,6 +151,10 @@ function compactCollectionWindow(data:any,active:boolean){
  if(!active||!data.collectionFrom||!data.collectionUntil)return '';
  return `<span class="deliveryCollectionWindow" aria-label="Collection window, UK time"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>${escapeHtml(data.collectionFrom)} – ${escapeHtml(data.collectionUntil)} <small>UK time</small></span></span>`;
 }
+function insertVehiclePhoto(container:HTMLElement|null,url:string|undefined){
+ if(!container||!url||!url.startsWith('/api/jobs/'))return;
+ const image=document.createElement('img');image.className='vehiclePhotoThumbnail';image.hidden=true;image.alt="Customer's vehicle";image.onload=()=>{image.hidden=false;container.classList.add('hasVehiclePhoto')};image.onerror=()=>{image.remove();container.classList.remove('hasVehiclePhoto')};image.src=url;container.appendChild(image);
+}
 function syncDesignSummary(card:HTMLElement){
  const raw=card.dataset.designSummary;
  const button=card.querySelector<HTMLButtonElement>(':scope > .customerCardToggle');
@@ -164,6 +169,7 @@ function syncDesignSummary(card:HTMLElement){
  const transport=transportTypeDisplay(data.transportType).replace(/\s*[\p{Extended_Pictographic}\uFE0F]+/gu,'').trim();
  const details=historyCard||card.hasAttribute('data-active-summary')?`<span class="customerHistoryTransport"><span>${escapeHtml(transport)}</span><span>${escapeHtml(vehicleTypeDisplay(data.vehicleType))}</span><span>${data.running?'Runs & drives':'Non-running'}</span></span>`:'';
  summary.innerHTML=`<span class="deliveryVehicleIcon">${deliveryIconMarkup(icon)}</span><span class="deliveryDesignIdentity"><strong>${escapeHtml(data.title)}${data.registration?`<span class="desktopVehicleRegistration"> · ${escapeHtml(data.registration)}</span>`:''}</strong>${fullAddressMarkup(data.collection,data.delivery)}<small class="deliveryExpandedPartner">${escapeHtml(data.transporter)} · ${escapeHtml(data.registration)}</small><small>Delivery reference · ${escapeHtml(bookingReference(card.dataset.bookingId))}</small>${data.compactDetails?`<small class="deliveryCompactMetadata">${escapeHtml(data.compactDetails)}</small>`:''}</span>${details}<span class="deliveryHistoryDate"><small>${escapeHtml(historyCard&&data.rowDateLabel==='Cancelled'?'Cancelled on':data.rowDateLabel)}</small><span>${escapeHtml(data.rowDate)}</span>${compactCollectionWindow(data,card.hasAttribute('data-active-summary'))}</span><span class="deliveryDesignPayment"><span class="deliveryDesignStatus">${escapeHtml(card.hasAttribute('data-active-summary')&&data.status==='Confirmation required'?'Delivered':data.status)}</span><small>${escapeHtml(data.paymentLabel)}</small><strong>${escapeHtml(data.payment)}</strong></span><span class="deliveryDesignChevron">${deliveryIconMarkup('down')}</span>`;
+ insertVehiclePhoto(summary.querySelector('.deliveryVehicleIcon'),data.vehiclePhoto);
  lastDesignSummary.set(card,signature);
 }
 
@@ -186,11 +192,12 @@ function syncQuoteSummary(card:HTMLElement){
  const window=from&&until?`${from} – ${until}`:'';
  const registration=card.dataset.registration||'',transport=(card.dataset.transportLabel||'').replace(/\s*[\p{Extended_Pictographic}\uFE0F]+/gu,'').trim(),running=card.dataset.runningLabel||'';
  const vehicleType=vehicleTypeDisplay(cardVehicleType(card));
- const signature=JSON.stringify([title,route,date,status,count,icon,window,registration,transport,vehicleType,running]);
+ const signature=JSON.stringify([title,route,date,status,count,icon,window,registration,transport,vehicleType,running,card.dataset.vehiclePhoto]);
  let summary=button.querySelector<HTMLElement>('.quoteDesignSummary');
  if(summary&&lastQuoteSummary.get(card)===signature)return;
  if(!summary){summary=document.createElement('span');summary.className='quoteDesignSummary';button.appendChild(summary)}
 summary.innerHTML=`<span class="quoteDesignVehicle">${deliveryIconMarkup(icon)}</span><span class="quoteDesignIdentity"><strong>${escapeHtml(title)}${registration?`<span class="quoteVehicleRegistration"> · ${escapeHtml(registration)}</span>`:''}</strong>${fullAddressMarkup(stops[0],stops[1])}</span><span class="quoteTransportDetails"><span>${escapeHtml(transport)}</span><span>${escapeHtml(vehicleType)}</span><span>${escapeHtml(running)}</span></span><span class="quoteDesignDate"><small>Requested collection</small><span>${escapeHtml(date)}</span>${window?`<span class="quoteCollectionWindow"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>${escapeHtml(window)} <small>UK time</small></span></span>`:''}</span><span class="quoteDesignCount${count?'':' isAwaiting'}">${count?`<b>${escapeHtml(String(count))}</b><span>quote${count===1?'':'s'} received</span>`:escapeHtml(countLabel)}</span><span class="quoteDesignStatus">${escapeHtml(status)}</span><span class="quoteDesignChevron">${deliveryIconMarkup('down')}</span>`;
+ insertVehiclePhoto(summary.querySelector('.quoteDesignVehicle'),card.dataset.vehiclePhoto);
  lastQuoteSummary.set(card,signature);
 }
 
@@ -236,9 +243,9 @@ export default function CustomerCardExpander(){
   const schedule=()=>{if(frame===null)frame=requestAnimationFrame(scan)};
   scan();
   const observer=new MutationObserver(records=>{
-   for(const record of records){if(record.type==='attributes'&&record.target instanceof HTMLElement){syncDeliveryProgress(record.target);syncCompletedSummary(record.target);syncCompletedActivity(record.target);syncCancelledSummary(record.target);syncDesignSummary(record.target)}else schedule()}
+   for(const record of records){if(record.type==='attributes'&&record.target instanceof HTMLElement){syncDeliveryProgress(record.target);syncCompletedSummary(record.target);syncCompletedActivity(record.target);syncCancelledSummary(record.target);syncDesignSummary(record.target);syncQuoteSummary(record.target)}else schedule()}
   });
-  observer.observe(document.body,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['data-delivery-progress','data-completed-summary','data-design-summary']});
+  observer.observe(document.body,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['data-delivery-progress','data-completed-summary','data-design-summary','data-vehicle-photo']});
   return()=>{observer.disconnect();if(frame!==null)cancelAnimationFrame(frame)};
  },[pathname]);
  return null;

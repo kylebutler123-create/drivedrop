@@ -6,12 +6,14 @@ import {after,NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
 import {z} from 'zod';
+import {decodeVehiclePhoto} from '@/lib/vehicle-photo-input';
+import {createVehiclePhotoPath,uploadVehiclePhoto,removeVehiclePhoto} from '@/lib/supabase-storage';
 import {openQuoteRequestsWhere} from '@/lib/job-expiry';
 import {sendTransactionalEmailBatchSafely} from '@/lib/email';
 import {insuranceStatusForVerification} from '@/lib/insurance-expiry-notifications';
 
 
-const S=z.object({collection:z.string().min(2),delivery:z.string().min(2),transportType:z.enum(transportTypeValues),vehicleType:z.enum(vehicleTypes),vehicleMake:z.string().min(1),vehicleModel:z.string().min(1),registration:z.string().optional(),running:z.boolean().default(true),collectionDate:z.coerce.date(),collectionFrom:z.string().optional(),collectionUntil:z.string().optional()}).superRefine((data,context)=>{
+const S=z.object({vehiclePhoto:z.string().max(1_200_100).optional(),collection:z.string().min(2),delivery:z.string().min(2),transportType:z.enum(transportTypeValues),vehicleType:z.enum(vehicleTypes),vehicleMake:z.string().min(1),vehicleModel:z.string().min(1),registration:z.string().optional(),running:z.boolean().default(true),collectionDate:z.coerce.date(),collectionFrom:z.string().optional(),collectionUntil:z.string().optional()}).superRefine((data,context)=>{
  if(!data.collectionFrom||!data.collectionUntil)context.addIssue({code:z.ZodIssueCode.custom,path:['collectionFrom'],message:'Select both an Available from and Available until time.'});
  if(!isTransportVehicleCompatible(data.transportType,data.vehicleType))context.addIssue({code:z.ZodIssueCode.custom,path:['vehicleType'],message:enclosedTransportCompatibilityMessage});
  if(!isTransportRunningCompatible(data.transportType,data.running))context.addIssue({code:z.ZodIssueCode.custom,path:['running'],message:drivenTransportCompatibilityMessage});
@@ -24,8 +26,12 @@ export async function POST(r:Request){
  if(!parsed.success)return NextResponse.json({error:parsed.error.issues[0]?.message||'Please check the request details and try again.'},{status:400});
  const d=parsed.data;
  let window;try{window=validateCollectionWindow(d.collectionDate,d.collectionFrom,d.collectionUntil)}catch(e){return NextResponse.json({error:e instanceof Error?e.message:'Invalid collection window'},{status:400})}
- const {vehicleType,...jobData}=d;
- const job=await prisma.transportJob.create({data:{...jobData,collectionFrom:window.collectionFrom,collectionUntil:window.collectionUntil,customerId:u.id}});
+ const {vehicleType,vehiclePhoto,...jobData}=d;
+ let photo;try{photo=await decodeVehiclePhoto(vehiclePhoto)}catch(error){return NextResponse.json({error:error instanceof Error?error.message:'Invalid vehicle photo'},{status:400})}
+ const vehiclePhotoPath=photo?createVehiclePhotoPath(u.id,photo.extension):null;
+ if(photo&&vehiclePhotoPath){try{await uploadVehiclePhoto(vehiclePhotoPath,photo.file)}catch{return NextResponse.json({error:'The vehicle photo could not be uploaded. Your request has not been created. Please try again.'},{status:502})}}
+ let job;
+ try{job=await prisma.transportJob.create({data:{...jobData,vehiclePhotoPath,collectionFrom:window.collectionFrom,collectionUntil:window.collectionUntil,customerId:u.id}})}catch(error){if(vehiclePhotoPath)await removeVehiclePhoto(vehiclePhotoPath).catch(()=>{});throw error}
  await prisma.$executeRaw`UPDATE "TransportJob" SET "vehicleType"=${vehicleType} WHERE "id"=${job.id}`;
 
  after(async()=>{

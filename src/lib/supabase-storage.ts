@@ -6,6 +6,8 @@ export const VERIFICATION_BUCKET = 'transporter-verification';
 export const EVIDENCE_BUCKET = 'delivery-evidence';
 export const PROFILE_BUCKET = 'transporter-profiles';
 export const MESSAGE_BUCKET = 'message-attachments';
+export const VEHICLE_PHOTO_BUCKET = 'vehicle-photos';
+export const MAX_VEHICLE_PHOTO_SIZE = 900_000;
 export const MAX_VERIFICATION_FILE_SIZE = MAX_VERIFICATION_UPLOAD_SIZE;
 export const MAX_EVIDENCE_FILE_SIZE = 8 * 1024 * 1024;
 export const MAX_PROFILE_FILE_SIZE = 2 * 1024 * 1024;
@@ -74,6 +76,11 @@ export function validateMessageImage(file:File){return validateWithSignature(fil
 export function createMessageStoragePath(bookingId:string,userId:string,extension:string){return `${bookingId}/${userId}/${randomUUID()}.${extension}`}
 export async function uploadMessageImage(path:string,file:File){return upload(MESSAGE_BUCKET,path,file)}
 export async function downloadMessageImage(path:string){return download(MESSAGE_BUCKET,path)}
+export function validateVehiclePhoto(file:File){return validateWithSignature(file,messageTypes,MAX_VEHICLE_PHOTO_SIZE,'JPG/JPEG, PNG and WebP image')}
+export function createVehiclePhotoPath(userId:string,extension:string){return `${userId}/${randomUUID()}.${extension}`}
+export async function uploadVehiclePhoto(path:string,file:File){return upload(VEHICLE_PHOTO_BUCKET,path,file)}
+export async function downloadVehiclePhoto(path:string){return download(VEHICLE_PHOTO_BUCKET,path)}
+export async function removeVehiclePhoto(path:string){return remove(VEHICLE_PHOTO_BUCKET,path)}
 
 export function validateProfileImage(file:File){return validateWithSignature(file,profileTypes,MAX_PROFILE_FILE_SIZE,'JPG/JPEG, PNG and WebP image')}
 export type ProfileImageKind='logo'|'transporter'|'truck';

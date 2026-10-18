@@ -1,4 +1,5 @@
 'use client';
+import VehiclePhoto from '@/app/components/VehiclePhoto';
 import {refundAmounts,capturedPayment} from '@/lib/payout-policy';
 import {useEffect,useState} from 'react';
 import {useRouter} from 'next/navigation';
@@ -55,7 +56,7 @@ export default function AdminDisputeManagement({actionOnly=false}:{actionOnly?:b
    const parties=[{role:'customer',...b.customer},{role:'transporter',...b.transporter}];
    return <article key={d.id} className={`disputeReviewCard ${open?'isExpanded':''}`}>
     <button type="button" className="disputeReviewSummary" aria-expanded={open} onClick={()=>setExpanded(open?null:d.id)}>
-     <span className="disputeVehicleIcon"><Icon name="car"/></span><span><strong>{job.vehicleMake} {job.vehicleModel}{job.registration?` · ${job.registration}`:''}</strong><small>Reference · DD-{b.id.slice(-8).toUpperCase()}</small></span><span className="disputeStatus">{label(d.status)}</span><span className="disputeSummaryPayout">{p?`Payout · ${label(p.payoutStatus)}`:'No payment record'}</span><span className={`disputeChevron ${open?'open':''}`}><Icon name="chevronDown"/></span>
+     <span className="disputeVehicleIcon"><VehiclePhoto job={job}><Icon name="car"/></VehiclePhoto></span><span><strong>{job.vehicleMake} {job.vehicleModel}{job.registration?` · ${job.registration}`:''}</strong><small>Reference · DD-{b.id.slice(-8).toUpperCase()}</small></span><span className="disputeStatus">{label(d.status)}</span><span className="disputeSummaryPayout">{p?`Payout · ${label(p.payoutStatus)}`:'No payment record'}</span><span className={`disputeChevron ${open?'open':''}`}><Icon name="chevronDown"/></span>
     </button>
     {open&&<div className="disputeReviewBody">
      <div className="disputeReviewOverview"><div className="disputePayoutWarning"><Icon name="alert"/><div><h3>{paid?'Transporter already paid':held?'Payout held — transporter not yet paid':!p?'No payment record':p.payoutStatus==='CANCELLED'?'Payout cancelled — transporter not paid':'Transporter not yet paid'}</h3><p>{paid?`${d.payoutReleasedAt?`Payout released on ${date(d.payoutReleasedAt)}.`:'Payout is marked paid; the release date is not recorded.'} These funds cannot be held or released again. Any refund or recovery requires a separate process.`:held?'The transporter payout is paused while this dispute is reviewed. Choose a resolution below when the review is complete.':!p?'No financial action is available without a payment record.':p.payoutStatus==='CANCELLED'?'Review the cancellation and payment history before resolving this complaint.':`Payout status: ${label(p.payoutStatus)}. Review delivery and payment eligibility before approving release.`}</p></div></div>

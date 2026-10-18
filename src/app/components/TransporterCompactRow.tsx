@@ -1,6 +1,7 @@
 'use client';
 import {useState} from 'react';
 import Link from 'next/link';
+import VehiclePhoto from './VehiclePhoto';
 import Icon,{vehicleTypeIcon} from './DeliveryDesignIcon';
 import {transportTypeDisplay} from '@/lib/transport-types';
 import {vehicleTypeDisplay} from '@/lib/vehicle-types';
@@ -16,7 +17,7 @@ export const compactDate=(value:unknown)=>{
 export default function TransporterCompactRow({job,date,dateLabel='Collection',status,count,price,kind,open=false,collectionWindow}:{job:any;date:unknown;dateLabel?:string;status?:string;count?:number;price?:number;kind:'jobs'|'quotes'|'active'|'completed'|'cancelled';open?:boolean;collectionWindow?:{from?:string|null;until?:string|null}}){
  const window=collectionWindow??(kind==='jobs'?{from:job.collectionFrom,until:job.collectionUntil}:null);
  return <span className={`tdCompactRow tdCompact-${kind}`}>
-  <span className="tdCompactVehicle"><Icon name={vehicleTypeIcon(job.vehicleType)}/></span>
+  <span className="tdCompactVehicle"><VehiclePhoto job={job}><Icon name={vehicleTypeIcon(job.vehicleType)}/></VehiclePhoto></span>
   <span className="tdCompactIdentity"><strong>{job.vehicleMake} {job.vehicleModel}{job.registration&&<span className="desktopVehicleRegistration"> · {job.registration}</span>}</strong><span className="tdCompactAddresses"><span className="tdCompactAddress"><Icon name="pin"/><span><b>Collection:</b> {job.collection}</span></span><span className="tdCompactAddress"><Icon name="pin"/><span><b>Delivery:</b> {job.delivery}</span></span></span></span>
   <span className="tdCompactTransportDetails"><span>{transportTypeDisplay(job.transportType).replace(/\s*[\p{Extended_Pictographic}\uFE0F]+/gu,'')}</span><span>{vehicleTypeDisplay(job.vehicleType)}</span><span>{job.running?'Runs & drives':'Non-running'}</span></span>
   <span className="tdCompactDate"><small>{dateLabel}</small><span>{compactDate(date)}</span>{window?.from&&window.until&&<span className="tdCompactCollectionWindow"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>{window.from} – {window.until} <small>UK time</small></span></span>}</span>

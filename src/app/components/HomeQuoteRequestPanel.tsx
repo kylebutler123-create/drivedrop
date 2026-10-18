@@ -1,4 +1,5 @@
 'use client';
+import VehiclePhotoField from './VehiclePhotoField';
 import CollectionDateWindowField from './CollectionDateWindowField';
 import CollectionWindowFields,{Icon as CollectionIcon} from './CollectionWindowFields';
 
@@ -136,6 +137,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
         vehicleModel:fields.get('vehicleModel'),
         registration:fields.get('registration')||'',
         running:fields.get('running')==='true',
+        vehiclePhoto:fields.get('vehiclePhoto')||undefined,
       };
       const response=await fetch('/api/jobs',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(job)});
       const result=await response.json().catch(()=>null);
@@ -174,6 +176,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
             <div className="field"><label htmlFor="home-quote-registration">{fieldLabel('Registration')}</label><input id="home-quote-registration" name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters" disabled={submitting}/></div>
             <div className="field"><label htmlFor="home-quote-running">{fieldLabel('Running condition')}</label><select id="home-quote-running" name="running" defaultValue="" onChange={event=>setRunning(event.target.value)} required disabled={submitting}><option value="" disabled>{polished?'Select running condition':'Select'}</option><option value="true">Runs and drives</option><option value="false" disabled={['ANY','DRIVEN'].includes(transportType)}>Non-running</option></select></div>
           </div>
+          {desktop&&<VehiclePhotoField disabled={submitting}/>}
       </div>
       <div className={`homeQuoteSection homeQuoteTransport${expanded?'':' desktopCompactLocations'}`}>
         <strong>{wizard&&step===3?'Transport Type':'Collection & delivery'}</strong>

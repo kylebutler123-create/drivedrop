@@ -3,6 +3,7 @@
 import {useEffect,useState,type FormEventHandler,type ReactNode} from 'react';
 import CollectionWindowFields,{Icon as CollectionIcon} from './CollectionWindowFields';
 import CollectionDateWindowField from './CollectionDateWindowField';
+import VehiclePhotoField from './VehiclePhotoField';
 import Image from 'next/image';
 import Link from 'next/link';
 import AddressAutocomplete from './AddressAutocomplete';
@@ -74,6 +75,7 @@ export default function CustomerQuoteRequest(props: Props) {
             <div className="field quoteExampleField"><label htmlFor="request-vehicle-model"><FieldLabel mobile="MODEL" desktop="Model"/></label><input id="request-vehicle-model" name="vehicleModel" required placeholder=" "/><span className="quoteDesktopOnly quoteExample">e.g. 3 Series</span></div>
             <div className="field"><label htmlFor="request-registration"><FieldLabel mobile="REGISTRATION" desktop="Registration (optional)"/></label><input id="request-registration" name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters"/></div>
             <div className="field"><label htmlFor="request-running"><FieldLabel mobile="RUNNING?" desktop="Running condition"/></label><select id="request-running" name="running" required defaultValue="" onChange={event=>setRunning(event.target.value)}><option value="" disabled>Select running condition</option><option value="true">Runs and drives</option><option value="false" disabled={['ANY','DRIVEN'].includes(transport)}>Non-running</option></select></div>
+            {desktop&&<VehiclePhotoField disabled={props.submitting}/>}
           </div>
           {(transport==='DRIVEN'||running==='false')&&<p className="muted">Driven transport requires a vehicle that runs and drives. Non-running vehicles must be carried.</p>}
           {props.message && <div className={props.message.type === 'success' ? 'formNotice successNotice' : 'formNotice errorNotice'} role={props.message.type === 'success' ? 'status' : 'alert'}>{props.message.text}</div>}

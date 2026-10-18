@@ -179,6 +179,7 @@ model TransportJob {
   delivery       String
   vehicleMake    String
   vehicleModel   String
+  vehiclePhotoPath String?
   registration   String?
   running        Boolean     @default(true)
   transportType  String      @default("ANY")

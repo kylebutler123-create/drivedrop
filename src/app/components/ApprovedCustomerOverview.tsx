@@ -1,4 +1,5 @@
 import Icon from './ApprovedIcon';
+import VehiclePhoto from './VehiclePhoto';
 import DeliveryDesignIcon, {vehicleTypeIcon} from './DeliveryDesignIcon';
 
 const statusLabel=(status:string)=>status.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
@@ -24,7 +25,7 @@ export default function ApprovedCustomerOverview({bookings,loaded,unreadIds=[]}:
  {!loaded?<p role="status">Loading your deliveries…</p>:recent.length===0?<div className="approvedOverviewEmpty"><DeliveryDesignIcon name="car"/><h3>Your next journey starts here.</h3><p>Choose Get a Quote in the top navigation to arrange your first vehicle delivery.</p></div>:recent.map(b=>{
  const date=deliveryDate(b);
  return <a key={b.id} className={`approvedRecentRow${unreadIds.includes(b.id)?' hasUnreadCardActivity':''} deliveryRow-${b.status==='CANCELLED'?'cancelled':b.customerConfirmedAt?'completed':'active'}`} href={`/customer?view=${b.status==='CANCELLED'?'cancelled':b.customerConfirmedAt?'completed':'bookings'}#payment-booking-${b.id}`}>
- <span className="approvedVehicleSymbol"><DeliveryDesignIcon name={vehicleTypeIcon(b.job?.vehicleType)}/></span><span className="overviewVehicleCopy"><strong>{b.job?.vehicleMake} {b.job?.vehicleModel}{b.job?.registration&&<span className="desktopVehicleRegistration"> · {b.job.registration}</span>}</strong><span className="customerCompactAddresses"><span className="customerCompactAddress"><DeliveryDesignIcon name="pin"/><span><b>Collection:</b> {b.job?.collection}</span></span><span className="customerCompactAddress"><DeliveryDesignIcon name="pin"/><span><b>Delivery:</b> {b.job?.delivery}</span></span></span></span>
+ <span className="approvedVehicleSymbol"><VehiclePhoto job={b.job}><DeliveryDesignIcon name={vehicleTypeIcon(b.job?.vehicleType)}/></VehiclePhoto></span><span className="overviewVehicleCopy"><strong>{b.job?.vehicleMake} {b.job?.vehicleModel}{b.job?.registration&&<span className="desktopVehicleRegistration"> · {b.job.registration}</span>}</strong><span className="customerCompactAddresses"><span className="customerCompactAddress"><DeliveryDesignIcon name="pin"/><span><b>Collection:</b> {b.job?.collection}</span></span><span className="customerCompactAddress"><DeliveryDesignIcon name="pin"/><span><b>Delivery:</b> {b.job?.delivery}</span></span></span></span>
  <span className="overviewDeliveryDate"><small>{date.label}</small><span>{date.text}</span></span>
  <span className={`approvedLiveStatus status-${b.customerConfirmedAt?'completed':String(b.status).toLowerCase()}`}>{b.customerConfirmedAt?'Completed':statusLabel(b.status)}</span><DeliveryDesignIcon name="chevron"/></a>;
  })}</section></div>;
