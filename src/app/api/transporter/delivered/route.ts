@@ -19,7 +19,7 @@ export async function GET(){
     customer:{select:{name:true,phone:true}},
     trackingEvents:{select:{id:true,status:true,createdAt:true,note:true},orderBy:{createdAt:'desc'}},
     evidence:{select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'asc'}},
-    disputes:{select:{id:true,status:true,resolution:true,reason:true,createdAt:true},orderBy:{createdAt:'desc'}},
+    disputes:{select:{id:true,status:true,resolution:true,reason:true,createdAt:true,raisedBy:{select:{role:true}}},orderBy:{createdAt:'desc'}},
     payment:{select:{transporterProceedsPence:true,refundedPence:true,cancellationDeductionPence:true,payoutStatus:true,status:true,events:{where:{type:{in:['PAYOUT_PAID','PAYOUT_READY']}},select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'desc'}}}}
    },
    orderBy:{createdAt:'desc'}
