@@ -18,12 +18,13 @@ async function run(){
  fail=false;
  global.document.createElement=()=>({width:0,height:0,getContext(){return{fillRect(){},drawImage(){}}},toBlob(callback,type){callback(new Blob([new Uint8Array(300_000)],{type}))}});
  const six=await prepareUploadImages(Array(6).fill(original),{reservedBytes:200_000});assert(six.reduce((n,f)=>n+f.size,200_000)<=3_600_000);
+ const eight=await prepareUploadImages(Array(8).fill(original),{reservedBytes:200_000});assert(eight.reduce((n,f)=>n+f.size,200_000)<=3_600_000);
  const logo=(await prepareUploadImages([original],{preserveTransparency:true}))[0];assert.equal(logo.type,'image/png');assert(logo.name.endsWith('.png'));
  await assert.rejects(prepareUploadImages([original],{reservedBytes:1_000_001}),/signature/);
  await assert.rejects(prepareUploadImages([new File(['bad'],'bad.svg',{type:'image/svg+xml'})]),/JPG/);
  for(const file of ['src/app/components/TransporterProofOfDeliveryEnhancer.tsx','src/components/EvidenceUpload.tsx','src/app/account/CustomerPhotoEditor.tsx','src/app/account/ProfileImageEditor.tsx'])assert(fs.readFileSync(file,'utf8').includes('await prepareUploadImages('),file);
  assert(fs.readFileSync('src/app/messages/page.tsx','utf8').includes('await prepareMessageImages(images)'));
- const collection=fs.readFileSync('src/app/components/TransporterProofOfCollectionEnhancer.tsx','utf8');assert(collection.includes('const PHOTO_REQUEST_BUDGET=3*1024*1024'));assert(collection.includes('await preparePhotos(photos)'));
+ for(const stage of ['Collection','Delivery']){const source=fs.readFileSync(`src/app/components/TransporterProofOf${stage}Enhancer.tsx`,'utf8');assert(source.includes('await prepareUploadImages(photos,{reservedBytes:signature.size})'));assert(source.includes("f.set('signature',signature)"));assert(!source.includes('PHOTO_REQUEST_BUDGET'));}
  const verification=fs.readFileSync('src/lib/upload-verification-document.ts','utf8');assert(verification.includes('await prepareVerificationFile(file)'));assert(verification.includes('fetch(ticket.signedUrl'));
  console.log('PASS: 4.34 MiB, four/six-image request budgets with signature reserve, PNG logos, originals preserved, all upload entry points, existing collection and direct verification protection. Browser encoding is mocked.');
 }
