@@ -38,6 +38,7 @@
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourEvidence,.tdFourPhotos>summary) u{color:#0075ff}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourEvidence,.tdFourPhotos>summary,.tdFourUploads) svg{width:17px;height:17px;flex:none}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourUploads>span{display:block!important;width:100%;margin:0!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourUploads .tdEvidenceUploadButton .deliveryDesignIcon{display:inline-block!important;width:17px!important;height:17px!important;flex:none}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourUploads .tdEvidenceLabel{display:flex!important;align-items:center;gap:12px}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourComplete{display:inline-flex;align-items:center;justify-content:center;gap:7px;max-width:100%;min-height:38px;padding:10px 14px;margin-top:10px;border:0;border-radius:6px;background:#ff681b;color:#fff;font:13px/1.4 DriveDropApproved,Arial,sans-serif;cursor:pointer}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgress{display:block!important;margin:8px 0 14px 9px!important;border-left:2px solid #007aff}

@@ -1,6 +1,7 @@
 'use client';
 import {FormEvent,useEffect,useRef,useState} from 'react';
 import MessageIcon from './MessageDesignIcon';
+import {prepareMessageImages} from '@/lib/prepare-message-images';
 import '../transporter-card-messages.css';
 
 type Message={id:string;body:string;createdAt:string;senderId?:string;sender:{name:string;role:string};attachments?:{id:string}[]};
@@ -42,16 +43,20 @@ export default function TransporterCardMessages({bookingId,customerName,transpor
   inFlight.current=true;setSending(true);setError('');setSent(false);
   // Cancel any older read so it cannot overwrite the newly sent message.
   request.current?.abort();request.current=null;setLoading(false);
+  let requestStarted=false;
   try{
-   const form=new FormData();form.set('bookingId',bookingId);form.set('body',body.trim());images.forEach(file=>form.append('images',file));
+   const prepared=await prepareMessageImages(images);
+   if(!mounted.current)return;
+   const form=new FormData();form.set('bookingId',bookingId);form.set('body',body.trim());prepared.forEach(file=>form.append('images',file));
+   requestStarted=true;
    const response=await fetch('/api/bookings/messages',{method:'POST',body:form});
    const result=await response.json().catch(()=>null);
    if(!mounted.current)return;
-   if(!response.ok){setError(typeof result?.error==='string'?result.error:'Unable to send. Your message and images have been kept.');return;}
+   if(!response.ok){setError(response.status===413?'The images exceed the upload limit. Remove an image and try again.':typeof result?.error==='string'?result.error:'Unable to send. Your message and images have been kept.');return;}
    if(typeof result?.id!=='string'||typeof result?.createdAt!=='string'||!result?.sender){setError('Unable to confirm sending. Check the conversation before trying again.');return;}
    setMessages(current=>current.some(message=>message.id===result.id)?current:[...current,result]);
    setBody('');setImages([]);setSent(true);if(fileInput.current)fileInput.current.value='';
-  }catch{if(mounted.current)setError('Unable to confirm sending. Your draft is saved here; check the conversation before retrying.');}
+  }catch(error){if(mounted.current)setError(!requestStarted&&error instanceof Error?error.message:'Unable to confirm sending. Your draft is saved here; check the conversation before retrying.');}
   finally{inFlight.current=false;if(mounted.current)setSending(false);}
  }
  return <details ref={details} className="tdFourMessages tdCardMessages" onToggle={event=>setOpen(event.currentTarget.open)}>
