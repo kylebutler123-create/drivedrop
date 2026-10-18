@@ -3,7 +3,6 @@ import useDesktopCardActivity from './useDesktopCardActivity';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import Icon from './ApprovedIcon';
 import CompactRow from './TransporterCompactRow';
-import {transportTypeDisplay} from '@/lib/transport-types';
 import '../transporter-cancelled.css';
 
 type CancelledBooking={
@@ -85,10 +84,12 @@ export default function TransporterCancelledDeliveries({selected,onCountChange,o
       <span className="transporterCancelledDate"><small>Cancelled on</small><b>{date(booking.cancelledAt)}</b></span>
       <svg className="transporterCancelledChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
      </button>
-     <div className="transporterCancelledDetails tdExpandedBody" id={detailsId} hidden={!open}>
-      <div className="tdSecureRow"><span>Collection date · {date(booking.job.collectionDate)}</span><span>Delivery reference · {reference(booking.id)}</span></div>
-      <dl className="tdFacts tdFactsFour"><div><dt>Transport type</dt><dd>{transportTypeDisplay(booking.job.transportType).replace(/\s*[\p{Extended_Pictographic}\uFE0F]+/gu,'')}</dd></div><div><dt>Registration</dt><dd>{booking.job.registration||'Not provided'}</dd></div><div><dt>Running condition</dt><dd>{booking.job.running?'Runs & drives':'Non-running'}</dd></div><div><dt>Customer</dt><dd>{booking.customer.name}</dd></div></dl>
-      {booking.cancellationNote&&<div className="tdQuoteMessage"><small>Cancellation note</small><p>{booking.cancellationNote}</p></div>}
+     <div className="transporterCancelledDetails tdCancelledPolished" id={detailsId} hidden={!open}>
+      <div className="tdCancelledColumns">
+       <section><h3>Scheduled collection</h3><div className="tdCancelledScheduled"><Icon name="calendar"/><span>{date(booking.job.collectionDate)}</span></div></section>
+       <section><h3>Cancellation note</h3><p>{booking.cancellationNote||'No cancellation note recorded.'}</p></section>
+      </div>
+      <div className="tdCancelledFooter"><span>Delivery reference <b>{reference(booking.id)}</b></span><span>Customer <b>{booking.customer.name}</b></span></div>
      </div>
     </article>;
    })}

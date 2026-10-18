@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),{execFileSync}=require('node:child_process'),postcss=require('postcss');
+const file='src/app/components/TransporterCancelledDeliveries.tsx',source=fs.readFileSync(file,'utf8');
+const before=execFileSync('git',['show','cda88c8cbcc14bb67c5503236433bef1b7c5e938:'+file],{encoding:'utf8'});
+const toggle=s=>s.slice(s.indexOf('<button type="button" className="transporterCancelledToggle"'),s.indexOf('<div className="transporterCancelledDetails'));
+assert.equal(toggle(source),toggle(before),'Compact header, activity marking and toggle behaviour must be unchanged');
+const expanded=source.slice(source.indexOf('<div className="transporterCancelledDetails'));
+for(const label of ['Scheduled collection','Cancellation note','Delivery reference','Customer'])assert(expanded.includes(label));
+for(const duplicate of ['Transport type','Registration','Running condition','tdFacts','tdSecureRow'])assert(!expanded.includes(duplicate));
+assert(expanded.includes('hidden={!open}'));assert(expanded.includes('No cancellation note recorded.'));assert(source.includes('selected&&desktop'));
+const css=postcss.parse(fs.readFileSync('src/app/transporter-cancelled.css','utf8'));
+let count=0;css.walkRules(rule=>{if(!rule.selector.includes('.tdCancelled'))return;count++;assert.equal(rule.parent.params,'screen and (min-width:1024px)');});assert(count>8);
+console.log('PASS: desktop scope, unchanged compact header/toggle, no duplicate fields, note fallback and retained customer/reference.');

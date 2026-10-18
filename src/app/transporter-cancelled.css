@@ -35,6 +35,20 @@ body.approvedDesktop .transporterHero .dashboardSummary>[data-cancelled-summary]
  .transporterCancelledEmpty h3{margin:0 0 8px}.transporterCancelledEmpty p{margin:0;color:#526984}
  .transporterCancelledList .errorNotice{display:flex;gap:16px;align-items:center;justify-content:space-between}
 }
+/* Approved refined expanded card: compact header and its controls are untouched. */
+@media screen and (min-width:1024px){
+ body.approvedDesktop.role-transporter main.dashboardShell .tdCancelledPolished{margin:0 20px 16px 24px!important;padding:0!important;border:0!important;color:#091650;font:13px/1.45 DriveDropApproved,Arial,sans-serif}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdCancelledPolished[hidden]{display:none!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdCancelledColumns{display:grid;grid-template-columns:340px minmax(0,1fr);margin-top:4px;padding:15px 0 21px;border-top:1px solid #e2ecf8}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdCancelledColumns>section{min-width:0;padding-right:20px}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdCancelledColumns>section+section{border-left:1px solid #d2e3f3;padding:0 0 0 24px}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdCancelledColumns h3{font:700 16px/1.35 DriveDropApproved,Arial,sans-serif;letter-spacing:-.35px;margin:0 0 10px;color:#081344}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdCancelledScheduled{display:flex;align-items:center;gap:8px;color:#405f95}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdCancelledScheduled svg{display:inline-block;width:17px;height:17px;flex:none;color:#2188ff}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdCancelledColumns p{display:block;padding:0;border:0;margin:0;font:13px/1.6 DriveDropApproved,Arial,sans-serif;color:#405f95;white-space:pre-wrap;overflow-wrap:anywhere}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdCancelledFooter{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 22px;border-top:1px solid #d2e3f3;padding-top:13px;color:#52658e}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdCancelledFooter b{font-weight:600;color:#091650;overflow-wrap:anywhere}
+}
 @media screen and (min-width:1024px) and (max-width:1199px){
  .transporterCancelledToggle{grid-template-columns:36px minmax(160px,1.5fr) minmax(85px,1fr) 20px minmax(85px,1fr) 115px 20px;gap:14px;padding:22px 18px}
  .transporterCancelledToggle>.approvedIcon{width:34px;height:34px}
