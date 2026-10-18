@@ -1,9 +1,12 @@
 /* Approved customer-style expanded delivery layout. Compact, mobile and tablet stay unchanged. */
 .tdFourProof,.tdFourHeaderTools,.tdFourMessages{display:none}
 @media screen and (min-width:1024px){
- body.approvedDesktop.role-transporter main.dashboardShell :is(.transporterBooking:not(.isCollapsed),.transporterCompletedCard.isExpanded){border:1px solid #cfe5fe!important;border-radius:9px!important;background:#fff!important;box-shadow:none!important;color:#091650}
- body.approvedDesktop.role-transporter main.dashboardShell :is(.transporterBooking:not(.isCollapsed),.transporterCompletedCard.isExpanded):before{content:'';position:absolute;left:0;top:0;width:7px;height:110px;background:#2188ff;z-index:1}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded:before{background:#35bf88}
+ /* The completed header uses the same compact rules in both states. */
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourHeaderTools{display:flex;position:static;order:2;margin:14px 20px 0 24px}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourContacts>a{display:flex;width:auto;height:auto;min-height:34px;padding:8px 12px;gap:7px;font:12px/1.45 DriveDropApproved,Arial,sans-serif;text-decoration:none}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedContact>a[href^="/messages?"]{display:none!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed){border:1px solid #cfe5fe!important;border-radius:9px!important;background:#fff!important;box-shadow:none!important;color:#091650}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed):before{content:'';position:absolute;left:0;top:0;width:7px;height:110px;background:#2188ff;z-index:1}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdActiveReference{display:none!important}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner{display:flex!important;background:#e5f5ff!important;color:#0075ff!important;border:0!important;border-radius:5px!important;padding:9px 12px!important;margin:0 20px 16px 24px!important;font:13px/1.45 DriveDropApproved,Arial,sans-serif!important;box-shadow:none!important}
  body.approvedDesktop.role-transporter .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner :is(strong,small){font:inherit!important;color:inherit!important}
@@ -84,17 +87,10 @@
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.reviewWindowNotice strong{font-weight:400}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.reviewWindowNotice small{display:none}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.transporterCompletedContact{margin:0 20px 16px 24px!important;padding-top:12px!important;border:0!important}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourHeaderTools{position:absolute;right:178px;top:22px;display:flex;align-items:center;gap:18px;z-index:2}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourContacts{display:flex;gap:8px}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourContacts>a{width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:6px;background:#1478ed;color:#fff}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourContacts>a:last-child:not(:first-child){background:#16a16b}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourContacts svg{width:17px;height:17px}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourHeaderProceeds{width:120px;text-align:center}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourHeaderProceeds small{display:block;font-size:12px;color:#647799}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourHeaderProceeds b{font-size:18px;color:#091650}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdCompact-completed{grid-template-columns:48px minmax(0,1fr) 130px 170px 214px 112px 18px!important;gap:12px!important;min-height:100px}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdCompact-completed>.tdCompactStatusSlot{grid-column:6}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdCompact-completed>.tdCompactChevron{grid-column:7}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdCompactProofAction{visibility:visible!important}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveHeader{min-height:100px}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdCompact-active{height:auto;min-height:108px;grid-template-columns:48px minmax(0,1fr) 140px 178px 398px 18px!important;gap:18px!important;padding:8px 20px 8px 24px!important}
@@ -113,9 +109,6 @@
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactContacts>a{width:30px;flex-basis:30px}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactProofAction{width:128px;font-size:12px}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactStatus{width:94px;font-size:12px}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdCompact-completed{grid-template-columns:40px minmax(0,1fr) 100px 125px 148px 94px 18px!important;gap:10px!important}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourHeaderTools{right:146px;gap:8px}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourHeaderProceeds{width:70px}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourPayment,.tdFourProof){padding-left:12px!important;padding-right:12px!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourDelivery{padding-right:0!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns h3{font-size:16px!important}
