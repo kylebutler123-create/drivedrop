@@ -1,6 +1,7 @@
 import {vehicleTypeCategory} from '@/lib/vehicle-types';
 
 const paths = {
+ shieldAlert: 'M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11ZM12 8v4M12 16h.01',
  car: 'M5 9 6.5 5.5A2 2 0 0 1 8.3 4h7.4a2 2 0 0 1 1.8 1.5L19 9M5 9h14a3 3 0 0 1 3 3v6h-3v2h-3v-2H8v2H5v-2H2v-6a3 3 0 0 1 3-3ZM6 13h2m8 0h2M5 17h14',
  motorcycle: 'M8 17a3 3 0 1 1-6 0 3 3 0 0 1 6 0M23 17a3 3 0 1 1-6 0 3 3 0 0 1 6 0M5 17l5-7h6l-3 7H5M16 6h3l1 11M16 10l3-1M10 10 7 8H3l2 3h4M11 13h3',
  van: 'M3 17H2V8a2 2 0 0 1 2-2h11l5 6 2 1v4h-2M7 17h9M7 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0M20 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0M15 8v4h5M5 12h6',

@@ -1,6 +1,12 @@
 /* Approved customer-style expanded delivery layout. Compact, mobile and tablet stay unchanged. */
 .tdFourProof,.tdFourHeaderTools,.tdFourMessages{display:none}
 @media screen and (min-width:1024px){
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourPayment .tdHeldReason{margin-top:12px;padding:12px;background:#fff5e8;border:1px solid #f3d0a3;border-radius:5px;color:#a75100;font:13px/1.5 DriveDropApproved,Arial,sans-serif;overflow-wrap:anywhere}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason>strong{display:flex;gap:7px;align-items:center;font-size:13px;font-weight:700}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason>strong .deliveryDesignIcon{display:inline-block!important;width:16px;height:16px;flex:none}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason small{display:block;margin-top:10px;font-size:12px;color:#52658e}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason p{margin:3px 0 9px;color:#091650;font:13px/1.5 DriveDropApproved,Arial,sans-serif;white-space:pre-wrap}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason>span{font-size:12px;display:block}
  /* The completed header uses the same compact rules in both states. */
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.transporterCompletedSummary{box-shadow:inset 0 -1px 0 #cfe5fe!important}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourHeaderTools{display:flex;position:static;order:2;margin:14px 20px 0 24px}
