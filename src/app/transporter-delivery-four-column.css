@@ -2,6 +2,7 @@
 .tdFourProof,.tdFourHeaderTools,.tdFourMessages{display:none}
 @media screen and (min-width:1024px){
  /* The completed header uses the same compact rules in both states. */
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.transporterCompletedSummary{box-shadow:inset 0 -1px 0 #cfe5fe!important}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourHeaderTools{display:flex;position:static;order:2;margin:14px 20px 0 24px}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourContacts>a{display:flex;width:auto;height:auto;min-height:34px;padding:8px 12px;gap:7px;font:12px/1.45 DriveDropApproved,Arial,sans-serif;text-decoration:none}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedContact>a[href^="/messages?"]{display:none!important}
