@@ -59,7 +59,7 @@
  /* Keep the existing forms and state handlers in the grid; open forms span its full width. */
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>:is(.transporterNextActionIntro,span),
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdCollectionNext>div:not([data-poc]),
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is([data-poc],[data-pod-mount])>button{display:none!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking .tdFourColumns :is([data-poc],[data-pod-mount])>button.btn.orange.fullBtn{display:none!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>.actionButtons{grid-column:1;grid-row:2;display:flex;flex-wrap:wrap;gap:7px;align-self:start;margin:0 20px 0 0!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>.actionButtons:empty{display:none}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>.actionButtons>.btn{width:100%;font:12px/1.4 DriveDropApproved,Arial,sans-serif!important;padding:6px 8px!important;min-height:34px!important;border:1px solid #8197bb!important;background:#fff!important;color:#081344!important;border-radius:5px!important}
