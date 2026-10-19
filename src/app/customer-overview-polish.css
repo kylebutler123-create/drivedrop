@@ -56,7 +56,7 @@
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .customerDashboardSummary>[role=button]{padding-left:14px!important;padding-right:54px!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryDecoration{gap:6px;right:9px}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .overviewSummaryDecoration>.approvedIcon{width:22px;height:22px}
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow{grid-template-columns:38px minmax(0,1fr) 140px 105px 16px;gap:12px}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .approvedRecentRow{grid-template-columns:var(--vehicle-photo-column,38px) minmax(0,1fr) 140px 105px 16px;gap:12px}
 }
 
 @media screen and (min-width:1024px){

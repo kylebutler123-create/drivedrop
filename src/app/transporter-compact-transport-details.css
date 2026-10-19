@@ -1,7 +1,7 @@
 .tdCompactTransportDetails{display:none}
 /* Completed and cancelled cards retain their own date labels and status colours. */
 @media(min-width:1024px){
- body.approvedDesktop.role-transporter .tdCompactRow:is(.tdCompact-completed,.tdCompact-cancelled){grid-template-columns:48px minmax(0,1fr) 170px 195px 200px 18px;gap:18px}
+ body.approvedDesktop.role-transporter .tdCompactRow:is(.tdCompact-completed,.tdCompact-cancelled){grid-template-columns:var(--vehicle-photo-column,48px) minmax(0,1fr) 170px 195px 200px 18px;gap:18px}
  body.approvedDesktop.role-transporter .tdCompactRow>.tdCompactTransportDetails{gap:1px;font-size:13px;line-height:1.4}
  body.approvedDesktop.role-transporter :is(.tdCompact-completed,.tdCompact-cancelled)>.tdCompactDate{grid-column:4;grid-row:1;padding-left:18px;min-width:0}
  body.approvedDesktop.role-transporter :is(.tdCompact-completed,.tdCompact-cancelled)>.tdCompactMeta{display:none}
@@ -9,12 +9,12 @@
  body.approvedDesktop.role-transporter :is(.tdCompact-completed,.tdCompact-cancelled)>.tdCompactChevron{grid-column:6;grid-row:1}
 }
 @media(min-width:1024px) and (max-width:1199px){
- body.approvedDesktop.role-transporter .tdCompactRow:is(.tdCompact-completed,.tdCompact-cancelled){grid-template-columns:40px minmax(0,1fr) 135px 155px 170px 18px;gap:12px}
+ body.approvedDesktop.role-transporter .tdCompactRow:is(.tdCompact-completed,.tdCompact-cancelled){grid-template-columns:var(--vehicle-photo-column,40px) minmax(0,1fr) 135px 155px 170px 18px;gap:12px}
  body.approvedDesktop.role-transporter :is(.tdCompact-completed,.tdCompact-cancelled)>.tdCompactDate{padding-left:12px}
 }
 /* Approved active-delivery compact layout: full addresses and narrower actions. */
 @media(min-width:1024px){
- body.approvedDesktop.role-transporter .tdActiveHeader .tdCompactRow.tdCompact-active{grid-template-columns:48px minmax(0,1fr) 130px 170px 328px 18px;gap:12px;padding:10px 18px}
+ body.approvedDesktop.role-transporter .tdActiveHeader .tdCompactRow.tdCompact-active{grid-template-columns:var(--vehicle-photo-column,48px) minmax(0,1fr) 130px 170px 328px 18px;gap:12px;padding:10px 18px}
  body.approvedDesktop.role-transporter .tdCompact-active>.tdCompactTransportDetails{padding-left:12px}
  body.approvedDesktop.role-transporter .tdActiveHeader .tdCompact-active>.tdCompactDate{grid-column:4;grid-row:1;border-left:1px solid #d7e5fa;padding-left:12px;min-width:0}
  body.approvedDesktop.role-transporter .tdCompact-active>.tdCompactDate>small{font-size:14px;font-weight:600;color:#091650}
@@ -28,8 +28,8 @@
  body.approvedDesktop.role-transporter .tdActiveHeader .tdActiveCompactActions>.tdCompactStatus{width:94px;padding:7px 5px;font-size:12px}
 }
 @media(min-width:1024px){
- body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-jobs{grid-template-columns:48px minmax(0,1fr) 170px 195px 82px 165px 18px;gap:18px;padding:10px 18px;min-height:82px}
- body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-quotes{grid-template-columns:48px minmax(0,1fr) 145px 170px 160px 210px 18px;gap:10px;padding:10px 18px;min-height:82px}
+ body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-jobs{grid-template-columns:var(--vehicle-photo-column,48px) minmax(0,1fr) 170px 195px 82px 165px 18px;gap:18px;padding:10px 18px;min-height:82px}
+ body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-quotes{grid-template-columns:var(--vehicle-photo-column,48px) minmax(0,1fr) 145px 170px 160px 210px 18px;gap:10px;padding:10px 18px;min-height:82px}
  body.approvedDesktop.role-transporter .tdCompactTransportDetails{grid-column:3;grid-row:1;display:flex;flex-direction:column;justify-content:center;gap:5px;min-height:58px;min-width:0;border-left:1px solid #d7e5fa;padding-left:18px;color:#304d70;font:400 14px/1.4 Arial,sans-serif;overflow-wrap:anywhere}
  body.approvedDesktop.role-transporter :is(.tdCompact-jobs,.tdCompact-quotes)>.tdCompactDate{grid-column:4;grid-row:1;border-left:1px solid #d7e5fa;padding-left:18px;min-width:0}
  body.approvedDesktop.role-transporter .tdCompact-quotes>.tdCompactTransportDetails,body.approvedDesktop.role-transporter .tdCompact-quotes>.tdCompactDate{padding-left:12px}
@@ -46,8 +46,8 @@
  body.approvedDesktop.role-transporter .tdQuoteCard .requoteActions>.btn{padding:7px 10px;font-weight:500}
 }
 @media(min-width:1024px) and (max-width:1199px){
- body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-jobs{grid-template-columns:40px minmax(0,1fr) 120px 150px 60px 120px 18px;gap:10px;padding:10px 14px}
- body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-quotes{grid-template-columns:40px minmax(0,1fr) 120px 150px 120px 195px 18px;gap:10px;padding:10px 14px}
+ body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-jobs{grid-template-columns:var(--vehicle-photo-column,40px) minmax(0,1fr) 120px 150px 60px 120px 18px;gap:10px;padding:10px 14px}
+ body.approvedDesktop.role-transporter .tdCompactRow.tdCompact-quotes{grid-template-columns:var(--vehicle-photo-column,40px) minmax(0,1fr) 120px 150px 120px 195px 18px;gap:10px;padding:10px 14px}
  body.approvedDesktop.role-transporter .tdCompactTransportDetails{padding-left:10px;font-size:13px}
  body.approvedDesktop.role-transporter :is(.tdCompact-jobs,.tdCompact-quotes)>.tdCompactDate{padding-left:10px}
  body.approvedDesktop.role-transporter .tdCompact-quotes>.tdCompactMeta{flex-direction:column;gap:4px;align-items:flex-start}

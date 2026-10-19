@@ -4,7 +4,7 @@
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard:not(.isCollapsed){display:flex!important;flex-direction:column;gap:0!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard>.customerCardToggle{order:0;display:block!important;height:auto!important;min-height:0!important;width:100%;margin:0!important;padding:10px 18px!important;border:0!important;border-left:7px solid #ff681b!important;background:#fff!important;text-align:left}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard:before{display:none!important}
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignSummary{display:grid!important;grid-template-columns:48px minmax(0,1fr) 128px 194px 130px 164px 18px!important;align-items:center;gap:16px!important;height:auto!important;min-height:calc(var(--delivery-list-row-height,84px) - 22px);padding:0!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignSummary{display:grid!important;grid-template-columns:var(--vehicle-photo-column,48px) minmax(0,1fr) 128px 194px 130px 164px 18px!important;align-items:center;gap:16px!important;height:auto!important;min-height:calc(var(--delivery-list-row-height,84px) - 22px);padding:0!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignVehicle{width:48px;height:48px;border-radius:10px;background:#fff0e3}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignIdentity>strong{font:700 16px/1.4 DriveDropApproved,Arial,sans-serif;white-space:normal!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteVehicleRegistration{font:500 13px/1.4 DriveDropApproved,Arial,sans-serif;color:#52658e;white-space:nowrap;margin-left:4px}
@@ -54,7 +54,7 @@
  .customerSimpleQuotes :is(a,button,select):focus-visible{outline:2px solid #ff681b;outline-offset:3px}
 }
 @media(min-width:1024px) and (max-width:1240px){
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignSummary{grid-template-columns:48px minmax(0,1fr) 104px 194px 130px 164px 18px!important;gap:10px!important}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignSummary{grid-template-columns:var(--vehicle-photo-column,48px) minmax(0,1fr) 104px 194px 130px 164px 18px!important;gap:10px!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignVehicle{width:48px;height:48px}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .quoteRequestCard.quoteRequestCard .quoteDesignVehicle svg{width:30px;height:30px}
  .customerSimpleQuotes .simpleQuote{grid-template-columns:180px 125px minmax(0,1fr) auto;gap:14px;padding:16px}

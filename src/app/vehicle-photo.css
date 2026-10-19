@@ -2,10 +2,13 @@
 .vehiclePhotoSymbol{display:contents}
 @media(min-width:1024px){
  body.approvedDesktop .vehiclePhotoThumbnail[hidden]{display:none!important}
- body.approvedDesktop .vehiclePhotoThumbnail.financialVehiclePhoto{width:48px!important;height:40px!important;flex:none}
- body.approvedDesktop .availabilityVehicleIcon:has(.vehiclePhotoThumbnail){width:54px;height:54px;padding:0;flex:none}
+ /* Reserve the larger column only when a desktop card has a vehicle photo. */
+ body.approvedDesktop :is(.tdCompactRow,.deliveryDesignSummary,.quoteDesignSummary,.approvedRecentRow):has(.vehiclePhotoThumbnail:not([hidden])){--vehicle-photo-column:96px}
+ body.approvedDesktop :is(.tdCompactVehicle,.deliveryVehicleIcon,.quoteDesignVehicle,.approvedVehicleSymbol,.availabilityVehicleIcon,.disputeVehicleIcon):has(.vehiclePhotoThumbnail:not([hidden])){width:96px!important;height:68px!important;padding:0;flex:none}
+ body.approvedDesktop .vehiclePhotoThumbnail.financialVehiclePhoto{width:96px!important;height:68px!important;flex:none}
  body.approvedDesktop :is(.deliveryVehicleIcon,.quoteDesignVehicle).hasVehiclePhoto>svg{display:none!important}
- body.approvedDesktop .adminBookingVehicle>.vehiclePhotoSymbol>.vehiclePhotoThumbnail{width:37px!important;height:37px!important;flex:none}
+ body.approvedDesktop .adminBookingVehicle>.vehiclePhotoSymbol>.vehiclePhotoThumbnail{width:96px!important;height:68px!important;flex:none}
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminOperationsSection .adminBookingDesktopSummary:has(.vehiclePhotoThumbnail){grid-template-columns:minmax(260px,1.3fr) minmax(170px,1fr) minmax(290px,1.6fr) 120px 140px 24px!important}
  body.approvedDesktop .vehiclePhotoField{display:block!important;grid-column:1/-1;margin-top:16px;color:#081f3e;text-align:left}
  body.approvedDesktop .vehiclePhotoLabel{display:block;font:600 14px/1.4 DriveDropApproved,Arial,sans-serif;margin-bottom:8px}
  body.approvedDesktop .vehiclePhotoLabel small{font-weight:400;color:#677e9d;font-size:14px}
@@ -26,7 +29,10 @@
  body.approvedDesktop .vehiclePhotoThumbnail{display:block!important;width:100%!important;height:100%!important;object-fit:cover;border-radius:7px}
  body.approvedDesktop .vehiclePhotoMobileFallback{display:none!important}
  body.approvedDesktop .homeHeroPanelShell:not(.isQuoteExpanded) .vehiclePhotoField{display:none!important}
- body.approvedDesktop .adminVehiclePhoto{display:block;float:left;width:48px;height:48px;margin:0 12px 0 0}
+ body.approvedDesktop .adminVehiclePhoto{display:block;float:left;width:96px;height:68px;margin:0 12px 0 0}
  body.approvedDesktop .customerRequestDetailsPanel>.vehiclePhotoField{padding:0 16px 16px;margin-top:0}
 }
 @media(max-width:1023px){.adminVehiclePhoto{display:none!important}}
+@media(min-width:1024px) and (max-width:1199px){
+ body.approvedDesktop.role-admin:has(.adminDesktopNav) .adminOperationsSection .adminBookingDesktopSummary:has(.vehiclePhotoThumbnail){grid-template-columns:minmax(180px,1.2fr) minmax(100px,1fr) minmax(130px,1.4fr) 85px 110px 18px!important;gap:10px}
+}

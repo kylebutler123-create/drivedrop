@@ -208,7 +208,7 @@
 
 /* Approved compact delivery actions: 19px either side of the 174px action. */
 @media(min-width:1024px){
- body.approvedDesktop.role-transporter .tdActiveHeader .tdCompact-active{grid-template-columns:48px minmax(0,1fr) 230px 258px 112px 18px;gap:18px;padding-right:20px}
+ body.approvedDesktop.role-transporter .tdActiveHeader .tdCompact-active{grid-template-columns:var(--vehicle-photo-column,48px) minmax(0,1fr) 230px 258px 112px 18px;gap:18px;padding-right:20px}
  body.approvedDesktop.role-transporter .tdCompact-active>.tdCompactChevron{grid-column:6}
  body.approvedDesktop.role-transporter .tdActiveCompactActions{position:absolute;right:56px;top:50%;transform:translateY(-50%);display:grid;grid-template-columns:76px 174px 112px;gap:19px;align-items:center;width:400px}
  body.approvedDesktop.role-transporter .tdActiveCompactActions>.tdCompactContacts{position:static;transform:none;display:flex;gap:8px;width:76px}
@@ -219,7 +219,7 @@
  body.approvedDesktop.role-transporter .transporterBooking:not(.isCollapsed) .tdCompactProofAction{visibility:hidden}
 }
 @media(min-width:1024px) and (max-width:1240px){
- body.approvedDesktop.role-transporter .tdActiveHeader .tdCompact-active{grid-template-columns:40px minmax(0,1fr) 170px 400px 18px;gap:12px;padding-left:16px;padding-right:16px}
+ body.approvedDesktop.role-transporter .tdActiveHeader .tdCompact-active{grid-template-columns:var(--vehicle-photo-column,40px) minmax(0,1fr) 170px 400px 18px;gap:12px;padding-left:16px;padding-right:16px}
  body.approvedDesktop.role-transporter .tdCompact-active>.tdCompactStatusSlot{display:none}
  body.approvedDesktop.role-transporter .tdCompact-active>.tdCompactChevron{grid-column:5}
  body.approvedDesktop.role-transporter .tdActiveCompactActions{right:46px}

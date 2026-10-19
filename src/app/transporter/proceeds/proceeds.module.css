@@ -2,6 +2,7 @@
 
 /* The approved desktop layout is isolated from existing mobile/tablet styling. */
 .page .desktopIcon,.page .desktopCopy,.page .desktopBookingCount,.page .totalsNote,.page .vehicleIcon{display:none}
+@media(min-width:1024px){.page .cardTop .identity:has(:global(.vehiclePhotoThumbnail)){grid-template-columns:96px minmax(0,1fr)}}
 .breakdown b>.legacyCopy{font:inherit;color:inherit;text-transform:inherit}
 .cardBottom{display:contents}
 @media screen and (min-width:1024px){
