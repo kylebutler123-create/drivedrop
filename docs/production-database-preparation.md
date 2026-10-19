@@ -142,3 +142,19 @@ Private machine-readable evidence, outside Git:
 DriveDrop-hosted-restore-verification-2026-10-19.json.
 
 The 136-file backup/local restore and the hosted database restore are verified. Full hosted storage recovery and overall production readiness are NOT yet complete.
+
+
+## Bulk transfer tooling prepared — 19 October 2026
+
+The backup archive was rechecked and its SHA-256 is unchanged. The isolated test project remains ACTIVE_HEALTHY, and its four existing bucket configurations match the backup. GitHub, the Supabase database connector and the signed-in dashboard respond normally. Direct Storage access from the current execution environment still fails at the configured proxy; the earlier browser download failures remain unresolved.
+
+A guarded bulk restore tool and runbook are now available:
+- `scripts/storage_restore_test.py`
+- `scripts/test_storage_restore_test.py`
+- `docs/storage-restore-test.md`
+
+The tool is restricted to urzkdwvfplawjvnfubda and the exact dated archive. Default execution verifies all 136 files offline, with no network calls. Hosted writes require the explicit test destination and a securely entered legacy service_role key whose project claim matches the test. The tool preserves bucket visibility, creates only the missing private vehicle-photos bucket, uses original-path upserts, downloads and SHA-256-verifies every restored file, and tests one public/private access sample per bucket. It preserves unrelated objects, including the earlier duplicate, and can resume by rechecking every file.
+
+Validation: the real 136-file / 227,100,491-byte archive passed offline verification, and all 16 regression tests passed without credentials or network. Tests cover the two-existing/134-remaining case, full restore and rerun, corrupted readback, private-file exposure, bucket drift, denied access, wrong-project keys, path safety, redirects and retry bounds.
+
+These are preparation results only. The full hosted run still needs a trusted transfer environment with working Storage access and the isolated test project's credential. No additional uploaded files were restored during this preparation, no new cloud runner or Edge Function was deployed, and the remaining 134 hosted objects are still outstanding. The test project remains active; the prior cost and cleanup-approval requirements still apply.
