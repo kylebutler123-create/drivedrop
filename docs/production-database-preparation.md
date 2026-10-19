@@ -33,24 +33,22 @@ The existing production website and preview therefore remain connected to the or
 
 ## Outstanding gates
 
-- Verify dated backups in Supabase dashboard for the existing project. Pro plan eligibility alone is not evidence a particular backup can be restored.
-- Back up actual storage file bytes separately; database backups include object metadata, not uploaded file contents.
-- Restore a backup to an isolated destination and compare data counts and representative file hashes/access permissions. Do not restore over the working preview.
-- Keep credentials and personal-data backups out of this repository. Choose a protected durable backup destination before exporting.
+- Dated database backup availability is verified: seven COMPLETED physical backups dated 12–18 October 2026. The latest is 18 October 2026 04:40:54 UTC. Actual hosted recovery is still untested.
+- Storage byte backup and an isolated local file restore are complete; see verification below. This does not establish a database restore or hosted storage access test.
+- Restore the dated database backup to a separate disposable hosted project, compare recovered data, and test restored storage access. Neither the working preview nor the prepared production project is a restore-test target. The separate-project restore is awaiting approval of Supabase's quoted extra cost.
+- Keep credentials and personal-data backups out of this repository. The storage archive and verification report have been saved privately outside Git.
 - Configure production-only database/storage credentials at cutover; retain preview's existing credentials.
 - Bootstrap the real admin account securely; no accounts were seeded.
 - Test uploads/downloads through the application when production credentials are connected. Only database/bucket configuration has been verified here.
 - Complete live payment, email, scheduled-task and other readiness gates from the audit before launch.
 
-The connected Supabase tools do not expose backup history, backup download or restore.
-Backup verification is still incomplete. No code merge or website production deployment was performed.
+The connected Supabase tools do not expose backup history, backup download or a dated-backup restore. Dashboard access now works, and backup history has been verified there. Full hosted recovery remains incomplete. No code merge or website production deployment was performed.
 
-## Backup connectivity and inventory checkpoint — 19 October 2026
+## Storage backup and local restore verified — 19 October 2026
 
-GitHub file access and Supabase project/SQL access responded successfully in the continuation session. Both Supabase projects reported ACTIVE_HEALTHY.
-The browser also responded, but it was not signed in to Supabase. Automated sign-in is incomplete: after the selected GitHub / Apple sign-in route, automatic approval review blocked access to Apple's authentication origin pending explicit user authorization. Do not treat a submitted sign-in choice as successful authentication.
+Supabase dashboard access was established through GitHub sign-in. The earlier authentication blockage is resolved.
 
-The existing project's storage inventory was re-counted with read-only SQL:
+All 136 uploaded files were downloaded through 41 complete folder ZIP exports. The backup preserves bucket names, original object paths and the source storage metadata.
 
 | Bucket | Access | Objects | Bytes |
 | --- | --- | ---: | ---: |
@@ -61,13 +59,36 @@ The existing project's storage inventory was re-counted with read-only SQL:
 | vehicle-photos | Private | 1 | 174,623 |
 | **Total** | | **136** | **227,100,491** |
 
-These byte totals are database metadata, not proof that the file contents have been downloaded or verified.
-No storage RLS policies were returned for the source project. Preserve the bucket visibility configuration and verify actual download behavior during the restore test.
+Private saved artifacts, outside this repository:
+- DriveDrop-storage-backup-2026-10-19.zip — 227,369,898 bytes.
+- DriveDrop-storage-backup-verification-2026-10-19.json.
 
-The new production project was rechecked: zero application users, zero auth users, zero bookings and zero storage objects.
+Archive SHA-256: b05bcbaf828879b98f6b34e2d57500bfc9286bc295c621dbc2affe66a7408c40
 
-Bulk export has NOT started. No durable file backup, file-content hashes or isolated restore result is available yet. The connector exposes storage metadata through SQL but does not expose storage file downloads; dashboard access or an authenticated storage client is still needed.
+Verification:
+- Every downloaded object's size and MD5 matched the source storage metadata ETag: 136/136.
+- Before/after source inventories matched for buckets, object IDs, paths, versions, metadata, ownership and modification times. Final inventory check: 19 October 2026 03:33:59 UTC.
+- The archive was restored into a new, isolated private filesystem directory. All 136 restored files matched their SHA-256 hashes; total restored bytes: 227,100,491.
+- Restore files and directories have private filesystem permissions. A second run against the existing destination was refused and existing files remained unchanged.
+- The archive includes manifest.json, source-inventory.json, restore_files.py and README.txt. The restore script makes no network calls, validates entries and hashes, rejects unsafe paths and refuses to overwrite an existing destination.
 
-Resume by completing authorized Supabase dashboard authentication, verifying dated database backups, and selecting a protected durable destination outside Git. Export the actual bytes and a manifest of bucket, object path, size, content type and SHA-256. Check the source inventory again to detect changes during export. Restore into a separate disposable test destination; neither yozbuuvebzxitoqrvyer nor srqhjgrhgyyfdaxckjum is a restore-test target. Compare all 136 file hashes and counts, then verify private/public access behavior before marking the restore gate complete.
+This is a verified file-byte recovery test. It does NOT restore the Postgres database or verify hosted Supabase uploads, object ownership, bucket access behavior or application behavior. The original public/private bucket configuration is recorded; no source storage RLS policies were present.
 
-This continuation made no database/storage changes, changed no Vercel configuration and did not merge or publish to production.
+## Dated database backups and pending hosted test
+
+The existing project's dashboard lists these seven physical backups as COMPLETED (UTC):
+- 18 October 2026 04:40:54
+- 17 October 2026 04:39:13
+- 16 October 2026 04:41:23
+- 15 October 2026 04:40:18
+- 14 October 2026 04:45:00
+- 13 October 2026 04:39:08
+- 12 October 2026 04:41:51
+
+The separate-project restore workflow was opened for the latest dated backup. Its confirmation states that it creates a NEW project in the same organization and eu-central-1 region, copying database schema, data, indexes, roles, permissions and users. Storage objects/settings and other service settings require separate work.
+
+The quoted additional monthly cost is $9.68 compute + $0 disk = $9.68 total. The Continue button has NOT been pressed; no test project has been created. User approval of this quoted cost is required before proceeding.
+
+The latest daily database backup predates the storage export. Treat these as separate snapshots; do not claim they form a single transactionally consistent recovery point. When the hosted restore is approved, validate data against that dated snapshot and account for files added afterward.
+
+After the file backup, the prepared production project was rechecked: zero application users, zero auth users, zero bookings and zero storage objects. This continuation made no database/storage changes, changed no Vercel configuration and did not merge or publish to production.
