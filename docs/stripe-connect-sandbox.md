@@ -2,7 +2,9 @@
 
 ## Status
 
-Implementation is prepared on `feature/ui-polish`. It is **not activated**: the dedicated restricted Connect credential and two new event destinations have not been configured. Real Stripe onboarding, transfers and bank-payout tests must pass after activation; local simulated tests are not a substitute for these checks. Existing sandbox customer Checkout remains active. The additive migration `20261019213129_stripe_connect_sandbox` is applied to shared preview database `yozbuuvebzxitoqrvyer`; both new tables are empty. Client-role access is denied and RLS is enabled. All 16 users, 52 bookings and 136 stored-file rows retain their exact pre-change fingerprints.
+Implementation and credentials are configured on `feature/ui-polish`. A preview activation on 19 October 2026 passed the deployed security checks, but Stripe blocked the first connected-account creation pending a platform liability acknowledgement. `STRIPE_CONNECT_ENABLED` has been returned to `false`; redeploy the preview after any flag change. The acknowledgement has not been accepted. Real Stripe onboarding, transfers and bank-payout tests remain incomplete; local simulated tests are not a substitute for these checks.
+
+Existing sandbox customer Checkout remains active. The additive migration `20261019213129_stripe_connect_sandbox` is applied to shared preview database `yozbuuvebzxitoqrvyer`; both new tables are empty after isolated QA cleanup. Client-role access is denied and RLS is enabled. All 16 original users, 52 bookings and 136 stored-file rows retain their exact pre-change fingerprints. No connected account or transfer was created during this activation attempt.
 
 The user selected Stripe-hosted onboarding with the Express dashboard on 19 October 2026. Production and live money remain disabled. Do not merge or deploy production as part of this work.
 
@@ -26,6 +28,14 @@ A £25 eligible fine reduces that example's transfer to £75. Fine accounting re
 ## Negative balance liability
 
 DriveDrop is responsible for connected-account negative balances in this configuration. Stripe debits platform charges/refunds/disputes to DriveDrop; recovering transferred funds requires an explicit transfer reversal. An Express dashboard does not let a transporter manage platform-charge refunds or disputes. Stripe-backed post-booking refunds, dispute recovery and reversal failure handling remain the next phase and are a live-launch blocker.
+
+### Sandbox activation blocker
+
+The first real account-creation request failed with HTTP 400, `account_creation_losses_collector_unavailable` (Stripe request `req_v2xuP4yoyjLDa6AXw`). The sandbox Platform profile requires the **Refunds and chargebacks liability acknowledgement** before creating testmode accounts with `losses_collector=application`.
+
+The review form describes responsibility for refunds, chargebacks and fines; checking sellers against restricted-business/product rules; seller payment/risk support; and losses from seller fraud and connected-account negative balances. It also says Radar Pro is enabled and displays **£0.08 per screened transaction and £3.75 per connected account**, with plan changes available in Settings. The form does not specify a billing interval for the connected-account price; do not infer one.
+
+The agreement checkbox is unchecked. Obtain the user's explicit decision on this newly surfaced acknowledgement and pricing before accepting it in the sandbox. Earlier permission to configure credentials/webhooks does not cover this agreement. Do not silently change loss liability, charge pattern or dashboard experience to avoid the requirement. Live launch needs a separate review of liability, pricing and refund/reversal recovery.
 
 ## Risk management
 
@@ -56,11 +66,13 @@ For a later in-app account experience, Stripe recommends `notification_banner`, 
 
 Signed events trigger canonical account, transfer and bank-payout retrieval; duplicate and out-of-order events cannot establish readiness or send a second transfer.
 
-Activation requires:
+Configured in the approved sandbox:
 
-1. Existing platform webhook `/api/stripe/webhook`: keep the current six Checkout/PaymentIntent events and add `transfer.created`, `transfer.updated`, `transfer.reversed`.
-2. Connected-account snapshot destination `/api/stripe/connect/webhook`: `payout.created`, `payout.updated`, `payout.paid`, `payout.failed`, `payout.canceled`, connected-account events enabled.
-3. Accounts v2 thin-event destination `/api/stripe/connect/events`: account requirements and recipient-capability changes, with connected-account event context as required by the Accounts v2 event configuration.
+1. Existing platform webhook `we_1USMj9LAzgkvCvrIzq4UAION`, `/api/stripe/webhook`, API `2024-06-20`: retained all six Checkout/PaymentIntent events and added `transfer.created`, `transfer.updated`, `transfer.reversed`.
+2. Connected-account snapshot destination `we_1USOU7LAzgkvCvrIGrZUbMzB`, `/api/stripe/connect/webhook`, API `2026-09-30.endive`: `payout.created`, `payout.updated`, `payout.paid`, `payout.failed`, `payout.canceled`, with connected-account events enabled.
+3. Accounts v2 thin-event destination `ed_test_61VbmRecTPCFvX0Rl16VbS9L66E94D44RaGMWQTQuVse`, `/api/stripe/connect/events`: `v2.core.account[requirements].updated`, `v2.core.account[future_requirements].updated`, `v2.core.account[configuration.recipient].capability_status_updated`, `v2.core.account.closed`; `events_from=["@self","@accounts"]`.
+
+All three destinations are enabled. The two Connect handlers return 503 while the feature flag is false; no owned connected account exists yet. Existing customer-payment events remain enabled and their handler is independent of the Connect feature flag.
 
 Keep Vercel protection enabled. The approved automation bypass may be used on these preview webhook URLs; the entire URL is secret. Do not put the bypass value, API keys, signing secrets or account/login links in source or chat.
 
@@ -68,22 +80,26 @@ Keep Vercel protection enabled. The approved automation bypass may be used on th
 
 Only `acct_1US4BzLAzgkvCvrI` (drivedrop sandbox) is allowed. `STRIPE_CONNECT_ENABLED=true` is required; production remains blocked regardless of configuration. The SDK is pinned to Stripe Node 23.0.0 / API `2026-09-30.endive`; the existing customer-payment integration stays on its verified API version.
 
-Create one **separate restricted sandbox key**, named `DriveDrop preview Connect payouts`. Grant only the operations used by this implementation:
+The **separate restricted sandbox key** `DriveDrop preview Connect payouts` (`mk_1USOOgLAzgkvCvrIOAF4iATu`) is created and its sandbox identity was verified. Its permissions cover only the operations used by this implementation:
 
 - Read current platform account, PaymentIntents and Charges.
 - Create/read Accounts v2 recipient accounts; create Accounts v2 account links and Express login links.
 - Create/read Transfers (including retrieval of reversals through their transfer).
 - Read connected-account Payouts; no bank-payout creation permission is needed by the application.
 
-The Stripe connector does not expose restricted-key creation; dashboard access is needed for that step. Do not widen the existing Checkout key or reuse a live key. Store the new key only as sensitive `STRIPE_CONNECT_SECRET_KEY`, Preview / `feature/ui-polish` in project `prj_8BO4s7P2sffGKR4czg6nHOZqg4Ze`.
+The key was created through the approved Stripe Dashboard flow. The existing Checkout key was not widened. The new key is stored as sensitive `STRIPE_CONNECT_SECRET_KEY`, Preview / `feature/ui-polish` in project `prj_8BO4s7P2sffGKR4czg6nHOZqg4Ze`.
 
-Save the snapshot and thin signing secrets as sensitive `STRIPE_CONNECT_WEBHOOK_SECRET` and `STRIPE_CONNECT_EVENTS_SECRET` in the same branch scope. The code requires both webhook secrets and the existing recovery secret before making Connect API calls. These credentials are server-only. Set the feature flag last and redeploy the preview.
+The snapshot and thin signing secrets are stored as sensitive `STRIPE_CONNECT_WEBHOOK_SECRET` and `STRIPE_CONNECT_EVENTS_SECRET` in the same branch scope. The code requires both webhook secrets and the existing recovery secret before making Connect API calls. These credentials are server-only. After resolving the acknowledgement, set the feature flag last and redeploy the preview before continuing isolated QA.
 
 ## Verification
 
 Passed locally with mocked Stripe/DB boundaries: release rules, concurrent clicks, single fine reservation, correct net transfer/source charge, network failure, Stripe success with a lost response, Stripe success with a lost database commit, repeat reconciliation, zero-net fines, a newly opened dispute, old ambiguous attempts, account ownership/capabilities, live/environment/amount mismatches, reversal reconciliation, admin authorization, 202 semantics, unsigned-webhook rejection and stale bank-event handling.
 
 Existing payout-policy, fine-preview, adjustable-dispute-fine and payment-recovery checks passed. TypeScript and the Next production build passed with a dummy localhost DB URL. This build did not access the shared database.
+
+Deployed preview `dpl_JBcRaE5mGYkz6gne3xUVHMGRLUc9` reached READY with the feature enabled. Anonymous account-status access returned 403; the isolated transporter saw `NOT_STARTED`. All nine security probes passed: unsigned snapshot/thin rejection; signed snapshot/thin acceptance and duplicate acceptance; live-mode snapshot rejection; wrong-origin onboarding rejection; and rejection of a transporter trying the admin release endpoint. These were synthetic signed requests and do not establish actual Stripe event delivery or financial-flow correctness.
+
+Stripe then rejected real onboarding at account creation with the liability error above. Three temporary QA users, their sessions and the single incomplete account-creation row were removed. There are no remaining Connect accounts or payout instructions in the preview DB and no test funds to unwind from this attempt. Baseline fingerprints after cleanup: users `cee2156e48900d3181a655803ab0d167`, bookings `c71531a7810c2a5076f83f1dd45ae471`, stored files `ebbe346597d33536e580807e5b9ccf1a`.
 
 After activation, use isolated synthetic users/bookings to verify real Stripe-hosted onboarding, transfer amounts, repeated release, restricted accounts, webhook delivery, automatic recovery and bank-payout failures. Reconcile/refund/reverse test money before removing fixtures. Preserve all existing users, bookings and files. Capture baseline/final fingerprints as in `stripe-sandbox-setup.md`.
 
