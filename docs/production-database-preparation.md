@@ -207,3 +207,25 @@ Private saved evidence:
 - The original `DriveDrop-storage-backup-2026-10-19.zip` remains unchanged; archive SHA-256 is `b05bcbaf828879b98f6b34e2d57500bfc9286bc295c621dbc2affe66a7408c40`.
 
 **Still pending:** reconcile the 18 October database snapshot with the 19 October file snapshot before claiming complete application recovery; verify application-role authorization/uploads/downloads; finish payment, email, scheduled-task and other launch gates. The test project remains active and billable at the quoted $9.68/month; cleanup/retirement awaits explicit approval.
+
+## Cleanup and launch configuration review — 19 October 2026
+
+The user asked to continue after the recovery explanation. Deletion of **DriveDrop Restore Test 2026-10-19** (`urzkdwvfplawjvnfubda`) was prepared in the dashboard. Automatic approval review rejected the final action because explicit approval of the named project's permanent deletion and all its test data was not established. **The project was not deleted; it remains ACTIVE_HEALTHY and billable.** The disabled recovery worker remains in place. A concrete deletion confirmation is pending; do not retry deletion through another interface to bypass the review.
+
+Before cleanup, the saved original storage archive (227,369,898 bytes) and completed hosted verification report (135,202 bytes) were confirmed present with their persisted file identities. The original/shared and prepared-production projects are separate from the test destination.
+
+A read-only review of the `feature/ui-polish` code at `f2d1d32c324ac23c6a8af45038b3653ca80338ca` and current Vercel project environment metadata confirmed:
+
+| Gate | Current evidence | Work required before launch |
+| --- | --- | --- |
+| Payment integration | No `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` or `CRON_SECRET` entry is present in the project's environment metadata. The provider falls back to TEST without a Stripe key and explicitly rejects the production environment. | Configure branch-scoped Stripe **test** credentials, webhook delivery and authenticated payment reconciliation; complete real Stripe test-mode authorisation/capture/release/retry tests. Live payments, transporter payouts and real refunds need their separately reviewed implementation and rollout. |
+| Production email | `RESEND_API_KEY` is scoped only to preview. `src/lib/email.ts` explicitly returns false for production notifications. | Verify the sender/domain and intended messages, prepare production configuration and an explicit production enablement change, then obtain approval for actual test sends to named recipients. Adding a production key alone will not enable email. |
+| Scheduled work | `CRON_SECRET` is absent. The booking-authorisation and daily-summary routes deny requests when it is missing. `vercel.json` contains daily summary, quote-expiry and insurance-expiry schedules, but no booking-authorisation schedule. | Configure authenticated scheduling and retries in the appropriate environment, including payment reconciliation before using real Stripe test holds. The existing runbooks require a separate preview scheduler because Vercel Cron runs on production deployments. Do not invoke email/payment jobs merely to inspect them. |
+| Database separation | Project metadata still scopes `POSTGRES_PRISMA_URL` to production and preview together, and the server Storage settings to production/preview/development. No branch-specific override was returned. | At the explicitly approved cutover, assign prepared-production-only database/storage credentials and preserve preview's working configuration. |
+| Full application acceptance | Storage-byte and dated database recovery passed; no application was connected to the restore project. | Complete role authorization, uploads/downloads and the marketplace acceptance flow in an isolated test environment; reconcile recovery-point differences before claiming complete application recovery. |
+
+The latest inspected preview deployment for the reviewed commit was READY (`dpl_Bm99BRu9jstynDRfWLyMpirvRYeh`). This is build/deployment evidence, not a live payment or full application acceptance result. Environment values were not decrypted or displayed.
+
+Independent read-only checks again found source counts of 16 users, 52 bookings and 136 Storage records with the same full User, Booking and Storage metadata fingerprints as the completed restore test. Prepared production remained empty (zero users, auth users, bookings and Storage objects) with matching empty fingerprints.
+
+This continuation changed documentation only. No environment variable, production guard, database row, live payment, email send, scheduler or production deployment was changed.
