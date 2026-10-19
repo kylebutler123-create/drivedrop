@@ -1,5 +1,7 @@
 # Authorise first, capture on transporter confirmation
 
+Stripe sandbox checkout, webhooks and automatic recovery are now active on the preview branch. See [stripe-sandbox-setup.md](stripe-sandbox-setup.md) for approvals, deployed configuration, real sandbox test results and data-preservation checks. The preparation notes below are historical; their unconfigured/unapplied status statements no longer describe the preview.
+
 Prepared against feature/ui-polish cf67553d52b0e41ffc5170991a2c87d2c0e5acd4. Preview only; do not merge to production.
 
 ## Customer and transporter flow
