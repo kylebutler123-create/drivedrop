@@ -7,13 +7,13 @@
  body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason small{display:block;margin-top:10px;font-size:12px;color:#52658e}
  body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason p{margin:3px 0 9px;color:#091650;font:13px/1.5 DriveDropApproved,Arial,sans-serif;white-space:pre-wrap}
  body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason>span{font-size:12px;display:block}
+ /* Active headers share their compact layout in both states; retain the divider. */
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdActiveHeader:after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:#cfe5fe;pointer-events:none}
  /* The completed header uses the same compact rules in both states. */
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.transporterCompletedSummary{box-shadow:inset 0 -1px 0 #cfe5fe!important}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourHeaderTools{display:flex;position:static;order:2;margin:14px 20px 0 24px}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourContacts>a{display:flex;width:auto;height:auto;min-height:34px;padding:8px 12px;gap:7px;font:12px/1.45 DriveDropApproved,Arial,sans-serif;text-decoration:none}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedContact>a[href^="/messages?"]{display:none!important}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed){border:1px solid #cfe5fe!important;border-radius:9px!important;background:#fff!important;box-shadow:none!important;color:#091650}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed):before{content:'';position:absolute;left:0;top:0;width:7px;height:110px;background:#2188ff;z-index:1}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdActiveReference{display:none!important}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner{display:flex!important;background:#e5f5ff!important;color:#0075ff!important;border:0!important;border-radius:5px!important;padding:9px 12px!important;margin:0 20px 16px 24px!important;font:13px/1.45 DriveDropApproved,Arial,sans-serif!important;box-shadow:none!important}
  body.approvedDesktop.role-transporter .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner :is(strong,small){font:inherit!important;color:inherit!important}
@@ -99,23 +99,9 @@
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourContacts>a:last-child:not(:first-child){background:#16a16b}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourContacts svg{width:17px;height:17px}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdCompactProofAction{visibility:visible!important}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveHeader{min-height:100px}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdCompact-active{height:auto;min-height:108px;grid-template-columns:48px minmax(0,1fr) 140px 178px 398px 18px!important;gap:18px!important;padding:8px 20px 8px 24px!important}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions{right:56px;width:398px;grid-template-columns:76px 174px 112px;gap:18px}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactContacts{width:76px;gap:8px}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactContacts>a{width:34px;flex-basis:34px;background:#1478ed}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactContacts>a[aria-label="Call customer"]{background:#16a16b}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactProofAction{width:174px;font-size:13px}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactStatus{width:112px;font-size:13px}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns a:focus-visible,body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns summary:focus-visible{outline:2px solid #0075ff;outline-offset:3px}
 }
 @media screen and (min-width:1024px) and (max-width:1199px){
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdCompact-active{grid-template-columns:40px minmax(0,1fr) 100px 125px 304px 18px!important;gap:10px!important}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions{right:48px;width:304px;grid-template-columns:66px 128px 94px;gap:8px}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactContacts{width:66px;gap:6px}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactContacts>a{width:30px;flex-basis:30px}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactProofAction{width:128px;font-size:12px}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed) .tdActiveCompactActions>.tdCompactStatus{width:94px;font-size:12px}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourPayment,.tdFourProof){padding-left:12px!important;padding-right:12px!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourDelivery{padding-right:0!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns h3{font-size:16px!important}
