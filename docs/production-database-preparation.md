@@ -34,15 +34,15 @@ The existing production website and preview therefore remain connected to the or
 ## Outstanding gates
 
 - Dated database recovery is verified: the selected 18 October 2026 04:40:54 UTC physical backup was restored to a separate hosted test project on 19 October. Database integrity and snapshot comparisons passed; details below.
-- Storage byte backup and an isolated local file restore are complete: all 136 files match their SHA-256 hashes. Hosted storage verification is PARTIAL: two original-path samples were restored and public/private access behavior checked, but hosted download hash verification is blocked.
-- Finish the full hosted storage restore/readback in urzkdwvfplawjvnfubda (DriveDrop Restore Test 2026-10-19). The remaining 134 archive objects, three other buckets and application-level access checks are not verified there. Neither the working preview nor the prepared production project is a restore-test target. The approved test project remains active at the quoted additional $9.68/month compute cost.
+- Storage recovery is verified: all 136 archived files were restored at their original paths in the isolated hosted test project and read back with matching SHA-256 hashes (227,100,491 bytes). All five bucket access samples passed; details in the final section below.
+- Hosted file restore/readback in urzkdwvfplawjvnfubda is complete. Full application recovery/role-authorization checks remain pending because the dated database and later file snapshots differ and no website was connected to the test. The isolated project remains active at the quoted additional $9.68/month compute cost; deleting/retiring it needs separate cleanup approval.
 - Keep credentials and personal-data backups out of this repository. The storage archive and verification report have been saved privately outside Git.
 - Configure production-only database/storage credentials at cutover; retain preview's existing credentials.
 - Bootstrap the real admin account securely; no accounts were seeded.
 - Test uploads/downloads through the application when production credentials are connected. Only database/bucket configuration has been verified here.
 - Complete live payment, email, scheduled-task and other readiness gates from the audit before launch.
 
-The connected Supabase tools do not expose backup history, backup download or a dated-backup restore. Dashboard access now works, backup history is verified, and hosted database recovery has passed. Full hosted storage recovery remains incomplete. No code merge or website production deployment was performed.
+The connected Supabase tools do not expose backup history, backup download or a dated-backup restore. Dashboard access now works, backup history is verified, and hosted database recovery has passed. Full hosted storage recovery was subsequently completed through the authenticated dashboard and a temporary test-only worker. No code merge or website production deployment was performed.
 
 ## Storage backup and local restore verified — 19 October 2026
 
@@ -118,7 +118,7 @@ Full application-data fingerprints on the current source were unchanged across t
 The expected informational advisor notice is documented here:
 https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy
 
-## Hosted storage verification — PARTIAL
+## Initial hosted storage verification — partial (superseded below)
 
 The database restore recovered four bucket definitions and 131 storage metadata rows. Those rows are NOT evidence that their file contents were recovered. The later storage archive contains five buckets and 136 files.
 
@@ -141,7 +141,7 @@ Remaining work:
 Private machine-readable evidence, outside Git:
 DriveDrop-hosted-restore-verification-2026-10-19.json.
 
-The 136-file backup/local restore and the hosted database restore are verified. Full hosted storage recovery and overall production readiness are NOT yet complete.
+At this earlier checkpoint, full hosted storage recovery was incomplete. The later section records its successful completion; overall production readiness remains pending.
 
 
 ## Bulk transfer tooling prepared — 19 October 2026
@@ -174,3 +174,36 @@ Automatic approval review rejected the next upload (`pack-01.bin` through `pack-
 Private continuation bundle: DriveDrop-restore-resume-checkpoint-2026-10-19.zip. It contains the prepared worker, local tests, private manifest and checkpoint; no credentials or original photo bytes are included. It is saved outside Git. The original 227 MB backup remains intact.
 
 No Edge Function was deployed, no source or prepared production data was written, no Vercel configuration changed, and no production merge/deployment occurred. Remaining original-path hosted restores: 134, plus readback verification of all 136.
+
+## Full hosted storage restore verified — 19 October 2026
+
+**PASS: all 136 files / 227,100,491 bytes recovered at their original paths, with matching SHA-256 readback checksums.** The user explicitly approved uploading and verifying all 136 backed-up photos, attachments and verification documents in urzkdwvfplawjvnfubda using the temporary recovery function, resolving the prior automatic-approval block.
+
+The exact verified archive was split into 15 private transfer packs and uploaded through the signed-in Supabase dashboard into `drivedrop-restore-staging-20261019`. A temporary test-only `drivedrop-restore-worker` Edge Function verified each entire pack's SHA-256, checked every extracted object's input bytes, restored original paths with Storage API upserts, downloaded the hosted objects through the authenticated Storage API and compared their SHA-256 hashes with the fixed manifest. Hosted readback happened on the server; no browser file-download success is claimed.
+
+| Bucket | Access | Files verified | Bytes verified |
+| --- | --- | ---: | ---: |
+| delivery-evidence | Private | 104 | 179,040,935 |
+| message-attachments | Private | 5 | 10,358,355 |
+| transporter-profiles | Public | 3 | 1,509,484 |
+| transporter-verification | Private | 23 | 36,017,094 |
+| vehicle-photos | Private | 1 | 174,623 |
+| **Total** | | **136** | **227,100,491** |
+
+The run restored and verified the remaining 134 files and independently reverified the two earlier samples. Those two earlier samples' browser-default cache settings were subsequently restored to their original values and their bytes reverified. Final independent SQL comparison confirmed all 136 original paths, sizes, MIME types, cache-control values and null ownership match the archive. The missing private vehicle-photos bucket was created with its recorded limits. All five bucket visibility, size-limit and MIME configurations match the backup.
+
+Five anonymous public-route samples passed: transporter-profiles returned HTTP 200 and the expected bytes/hash; each of the four private buckets returned HTTP 400 with a not-found/denied response. Every private object's authenticated readback already passed during restoration. These are Storage-level checks, not application-role authorization tests.
+
+The complete per-file server reports were exported as JSON from the dashboard, then independently compared against the local archive manifest: 15 complete reports, 136 unique expected paths, matching per-file sizes/hashes and matching pack hashes. No missing, duplicate or unexpected path appears in the verified 136-file set.
+
+The test retains 137 application-bucket object records: the 136 expected files plus the previously documented profile '(1)' duplicate, which was not deleted. The separate private staging bucket retains 15 packs and 15 reports. No source files were deleted or replaced.
+
+The worker required the test project's existing service-role credential and gateway JWT verification throughout. No key was copied into chat, source control or reports. An unauthenticated request was rejected with HTTP 401. Thirteen local worker checks passed. After the successful report was independently validated, the worker was replaced with an inert handler; an authenticated test confirmed HTTP 410 and `recovery_worker_enabled: false`. The current function has no file-access or mutation logic.
+
+Source User, Booking and full Storage metadata fingerprints matched before/after the hosted run: 16 application users, 52 bookings and 136 storage objects. Prepared production remained at zero application users, auth users, bookings and storage objects, with matching empty fingerprints. The recovered test application still has 16 users and 52 bookings. No Vercel setting, source/production database data, merge or production deployment was changed.
+
+Private saved evidence:
+- `DriveDrop-hosted-storage-readback-2026-10-19.json`: full per-file SHA-256 reports, bucket access results, independent inventory/fingerprint checks, worker source/local tests and disabled-worker confirmation.
+- The original `DriveDrop-storage-backup-2026-10-19.zip` remains unchanged; archive SHA-256 is `b05bcbaf828879b98f6b34e2d57500bfc9286bc295c621dbc2affe66a7408c40`.
+
+**Still pending:** reconcile the 18 October database snapshot with the 19 October file snapshot before claiming complete application recovery; verify application-role authorization/uploads/downloads; finish payment, email, scheduled-task and other launch gates. The test project remains active and billable at the quoted $9.68/month; cleanup/retirement awaits explicit approval.
