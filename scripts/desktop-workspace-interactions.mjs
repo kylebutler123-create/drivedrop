@@ -111,14 +111,14 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
           await page.locator('.adminWorkspace .adminSectionGrid').getByRole('button').filter({hasText:'Dispute management'}).click();
           const card=page.locator('.disputeReviewCard').filter({hasText:'DD-ING-HELD'});
           await card.locator('.disputeReviewSummary').click();
-          await card.locator('.disputeAdditionalDetails > summary').click();
-          const amount=card.getByLabel('Fine amount (£)',{exact:true});
+          record('Admin: full route visible on compact dispute',await card.locator('.disputeCompactRoute').isVisible()&&(await card.locator('.disputeCompactRoute').innerText()).includes('Manchester'));
+          const amount=card.locator('.disputeDesktopFine').getByLabel('Fine amount (£)',{exact:true});
           await amount.fill('0');
-          await card.getByRole('button',{name:'Fine transporter…',exact:true}).click();
+          await card.locator('.disputeDesktopFine').getByRole('button',{name:'Fine transporter…',exact:true}).click();
           record('Admin: zero dispute fine rejected',await page.getByRole('alert').filter({hasText:'Enter a valid fine amount'}).isVisible());
           await amount.fill('75.25');
           const dialogPromise=page.waitForEvent('dialog');
-          const clicked=card.getByRole('button',{name:'Fine transporter…',exact:true}).click();
+          const clicked=card.locator('.disputeDesktopFine').getByRole('button',{name:'Fine transporter…',exact:true}).click();
           const dialog=await dialogPromise;
           record('Admin: confirmation shows entered £75.25 fine',dialog.message().includes('£75.25'));
           await dialog.dismiss();await clicked;

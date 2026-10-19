@@ -8,3 +8,104 @@
 @media(max-width:767px){.disputeReviewColumns,.disputeAdditionalGrid{grid-template-columns:1fr}.disputeReviewBody{padding:10px}.disputeReviewSummary strong{font-size:15px}.disputeFactStrip{grid-template-columns:1fr 1fr;gap:15px 0}.disputeFactStrip>div:nth-child(2){border:0}.disputeStatus{margin-left:auto}.disputeReviewFilters button{padding:10px 12px}.disputeResolutionActions{display:grid;grid-template-columns:1fr}.disputeContactGrid>div{grid-template-columns:1fr 1fr}.disputeMessage,.disputeCall{font-size:11px;padding:9px 6px;gap:6px}}
 
 .disputeFineControls{display:flex;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-top:12px}.disputeFineControls label{display:grid;gap:6px;font-size:12px;font-weight:600;color:#344e75}.disputeFineControls input{width:150px;max-width:100%;min-height:36px;padding:8px 10px;border:1px solid #bcc9db;border-radius:4px;background:#fff;color:#172033;font:inherit}.disputeFineControls button{margin-top:0}.disputeFineControls input:focus-visible{outline:3px solid #ff681b;outline-offset:3px}.disputeFineRecorded{margin:12px 0 0;font-weight:600;color:#091650}
+
+/* Approved desktop dispute cards: visible route and progressive review controls. */
+.disputeCompactRoute,.disputeCompactMeta,.disputeDesktopProtection,.disputeDesktopFine,.disputeDesktopCopy,.disputeContactIdentity{display:none}
+@media(min-width:1024px){
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewCard{border-left:4px solid #efa812;border-radius:6px;margin:14px 0;background:white}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewCard[data-dispute-status="UNDER_REVIEW"]{border-left-color:#0752df}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewCard:is([data-dispute-status="RESOLVED"],[data-dispute-status="CLOSED"]){border-left-color:#008d3c}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewSummary{display:grid;grid-template-columns:48px minmax(0,1fr) auto auto 20px;gap:0 16px;padding:0;background:white;color:#091650;font:inherit;align-items:center}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeVehicleIcon{margin:16px 0 16px 18px;background:transparent;width:40px;height:32px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeVehicleIcon svg{width:38px;height:30px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeVehicleTitle{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:16px 0}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeVehicleTitle strong{display:flex;align-items:center;gap:12px;font-size:19px;line-height:1.3}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputePlate:not(:empty){background:#f8faff;border:1px solid #d2dceb;border-radius:4px;font-size:12px;padding:5px 10px;white-space:nowrap}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeMobileSeparator,body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeMobileCopy,body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeRepeatedFact,body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewOverview,body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeLegacyFine{display:none!important}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopCopy{display:inline}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeVehicleTitle small{padding-left:18px;border-left:1px solid #bdcbe0;color:#526487;font-size:11px;margin:0}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeStatus,body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeSummaryPayout{background:#ffcf70;color:#633900;border-radius:18px;font-size:11px;font-weight:600;padding:6px 14px;white-space:nowrap}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeSummaryPayout{display:block;background:#fff0cf}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace [data-dispute-status="UNDER_REVIEW"] .disputeStatus{background:#eaf1fe;color:#0752df}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace :is([data-dispute-status="RESOLVED"],[data-dispute-status="CLOSED"]) .disputeStatus{background:#e6f5ed;color:#008346}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeChevron{margin-right:16px;justify-self:end}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCompactRoute{display:grid;grid-template-columns:1fr 1fr;grid-column:1 / -1;border-top:1px solid #d2dceb;padding:12px 24px;gap:24px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCompactRoute>span{display:flex;align-items:flex-start;gap:14px;min-width:0}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCompactRoute>span+span{border-left:1px solid #bdcbe0;padding-left:24px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCompactRoute svg{width:25px;height:28px;flex-shrink:0;color:#0752df}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCompactRoute small{color:#60718d;text-transform:uppercase;font-size:10px;margin:0 0 4px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCompactRoute b{font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCompactMeta{display:flex;grid-column:1 / -1;border-top:1px solid #d2dceb;background:#fafcff;padding:10px 24px;gap:10px 0;flex-wrap:wrap;font-size:11px;line-height:1.5}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCompactMeta>span{padding-right:20px;overflow-wrap:anywhere}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCompactMeta>span+span{border-left:1px solid #bdcbe0;padding-left:20px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCompactMeta b{margin-right:8px;font-weight:600}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewBody{padding:10px 16px 0;border-top:1px solid #d2dceb}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopProtection{display:flex;align-items:center;gap:16px;background:#fff0cf;border-radius:5px;padding:10px 14px;margin:0 0 16px;font-size:13px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopProtection>svg{width:28px;height:28px;flex-shrink:0;color:#8e4200}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopProtection strong{font-size:13px;font-weight:600}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopProtection p{margin:3px 0 0;font-size:11px;line-height:1.5;color:#526487}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewColumns{grid-template-columns:1fr 1fr;gap:26px;margin:0 8px 16px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewPanel{border:0;border-radius:0;overflow:visible}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewPanel>h3{padding:0!important;margin:0 0 12px!important;color:#091650!important;background:transparent!important;font-size:16px!important;font-weight:650!important}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewColumns>section+section{border-left:1px solid #d2dceb;padding-left:26px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputePanelContent{padding:0}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputePanelContent dl{grid-template-columns:70px minmax(0,1fr);gap:8px 12px;font-size:12px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputePanelContent dd{color:#344e75;line-height:1.6}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeSubmittedEvidence{display:flex;align-items:center;min-height:36px;border:1px solid #d2dceb;border-radius:4px;padding:8px 12px;font-size:12px;text-decoration:none}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeSubmittedEvidence:after{content:'›';margin-left:auto;font-size:20px;line-height:16px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeProofActions{display:grid;grid-template-columns:1fr;gap:8px;border:0;margin-top:8px;padding:0}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeEvidence summary{justify-content:flex-start;border-color:#d2dceb;padding:9px 12px;font-size:12px;list-style:none}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeEvidence summary::-webkit-details-marker{display:none}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeEvidence summary:after{content:'›';margin-left:auto;font-size:20px;line-height:16px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewColumns>section+section .disputePanelContent{display:flex;flex-direction:column}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeContactGrid{order:0;gap:8px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeContactGrid>div{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:8px;border-bottom:1px solid #d2dceb;padding-bottom:10px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeContactIdentity{display:grid;gap:4px;font-size:12px;min-width:0}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeContactIdentity small{font-size:11px;color:#526487;overflow-wrap:anywhere}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeMessage,body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCall{min-width:82px;font-size:12px;padding:9px 14px;gap:8px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeMessage{background:#0752df;color:white}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeContactGrid svg{width:16px;height:16px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeMissingPhone{font-size:10px;max-width:110px;padding:6px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeRecordLinks{order:1;display:grid;gap:8px;margin:8px 0 0;justify-content:stretch}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeRecordLinks a{border:1px solid #d2dceb;border-radius:4px;padding:8px 12px;min-height:36px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeRecordLinks a:after{content:'›';margin-left:auto;font-size:20px;line-height:16px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeNotes{border-top:1px solid #d2dceb;padding:12px 8px 0}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeNotes label{color:#091650!important;font-size:16px!important;font-weight:650!important}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeNotes .disputePanelContent{padding:0}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeNotes textarea{min-height:62px!important;height:62px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeNotes small{font-size:10px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeResolutionActions{display:flex;gap:10px;max-width:790px;padding:12px 8px 0}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeResolutionActions button{flex:1 1 220px;min-height:36px;font-size:11px;padding:8px 12px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeSave{background:#0752df;border-color:#0752df!important}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputePartial{background:white;color:#c26900;border-color:#e08b16!important}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeResolutionActions>.disputeSecondary:first-child{border-color:#0752df!important;color:#0752df}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeResolutionActions+.disputeActionHelp{margin:8px;font-size:10px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopFine{display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:#eef3f9;border-radius:5px;padding:12px 18px;margin-top:12px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopFine>strong{font-size:13px;margin-right:auto}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopFine .disputeFineControls{margin:0;align-items:center;gap:16px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopFine .disputeFineControls label{display:flex;align-items:center;gap:12px;font-weight:400;font-size:11px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopFine input{width:165px;min-height:34px;padding:7px 10px;font-size:12px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopFine button{border:1px solid #0752df!important;border-radius:4px;padding:8px 14px;color:#0752df;font-size:11px;font-weight:600;cursor:pointer}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopFine>.disputeActionHelp{max-width:205px;font-size:10px;line-height:1.5;margin:0}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopFine .disputeFineRecorded{margin:0;font-size:12px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeAdditionalDetails{border:0;margin:0;padding:14px 10px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeAdditionalDetails summary{font-weight:400}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeAdditionalGrid .disputeDesktopCopy{display:block}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewSummary:focus-visible{outline-offset:-3px}
+}
+@media(min-width:1024px) and (max-width:1279px){
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeVehicleTitle{gap:8px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeVehicleTitle strong{font-size:16px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeVehicleTitle small{border:0;padding:0}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewSummary{gap:0 10px;grid-template-columns:44px minmax(0,1fr) auto auto 20px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCompactRoute{padding:12px 18px;gap:16px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCompactRoute>span+span{padding-left:16px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewColumns{gap:16px;margin-inline:0}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeReviewColumns>section+section{padding-left:16px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeContactGrid>div{grid-template-columns:1fr 1fr}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeContactIdentity{grid-column:1 / -1}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeMessage,body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeCall{min-width:0;padding:8px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopFine{gap:12px}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeDesktopFine>.disputeActionHelp{max-width:none;width:100%}
+ body.approvedDesktop.role-admin .disputeReviewWorkspace .disputeResolutionActions button{flex-basis:180px}
+}
