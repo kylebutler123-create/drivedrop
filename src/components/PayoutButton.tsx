@@ -8,7 +8,7 @@ export default function PayoutButton({paymentId, amountPence, onReleased, compac
   const [busy, setBusy] = useState(false), [error, setError] = useState('');
   const router = useRouter();
   async function release() {
-    if (!confirm(retry ? 'Recheck this sandbox payout and retry the same transfer if it is safe to do so?' : `Release the eligible sandbox payout (currently £${(amountPence / 100).toFixed(2)} after fine deductions)? Stripe bank arrival is tracked separately.`)) return;
+    if (!confirm(retry ? 'Recheck this sandbox payout and retry the same transfer if it is safe to do so?' : `Release this eligible sandbox payout? Displayed amount: £${(amountPence / 100).toFixed(2)}. Fine deductions are checked before release; bank arrival is tracked separately.`)) return;
     setBusy(true); setError('');
     try {
       const response = await fetch('/api/admin/payments/payout', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({paymentId})});

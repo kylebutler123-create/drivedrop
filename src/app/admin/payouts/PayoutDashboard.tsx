@@ -36,8 +36,8 @@ export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:an
  const reviewNow=useReviewClock();const router=useRouter();const previousWaiting=useRef<number|null>(null);
  const[category,setCategory]=useState<Category>(initialBlockedOnly?'BLOCKED':'READY');
  const[query,setQuery]=useState('');
- const[released,setReleased]=useState<Record<string,{status:string;at:string}>>({});
- const liveRows=useMemo(()=>rows.map(row=>{const result=released[row.id];return result&&row.payoutStatus==='READY'?{...row,payoutStatus:result.status,updatedAt:result.at}:row}),[rows,released]);
+ const[released,setReleased]=useState<Record<string,{status:string;at:string;version:string;previousStatus:string}>>({});
+ const liveRows=useMemo(()=>rows.map(row=>{const result=released[row.id];return result&&row.payoutStatus===result.previousStatus&&String(row.updatedAt)===result.version?{...row,payoutStatus:result.status,updatedAt:result.at}:row}),[rows,released]);
  const counts=useMemo(()=>Object.fromEntries(categories.map(([key])=>[key,rowsForCategory(liveRows,key,reviewNow).length])) as Record<Category,number>,[liveRows,reviewNow]);
  useEffect(()=>{if(previousWaiting.current!==null&&counts.WAITING<previousWaiting.current)router.refresh();previousWaiting.current=counts.WAITING},[counts.WAITING,router]);
  useEffect(()=>{if(!counts.PROCESSING)return;const timer=window.setInterval(()=>router.refresh(),8000);return()=>window.clearInterval(timer)},[counts.PROCESSING,router]);
@@ -62,7 +62,7 @@ export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:an
   link.href=url;link.download='drivedrop-'+category.toLowerCase()+'-payouts-'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(link);link.click();link.remove();window.setTimeout(()=>URL.revokeObjectURL(url),0);
  };
  const selectCategory=(next:Category)=>setCategory(next);
- const payoutReleased=(paymentId:string,result:PayoutResult)=>{const status=result.payoutStatus==='PROCESSING'?'PROCESSING':result.payoutStatus==='HELD'?'HELD':'PAID';setReleased(current=>({...current,[paymentId]:{status,at:new Date().toISOString()}}));setCategory(status);setQuery('')};
+ const payoutReleased=(paymentId:string,result:PayoutResult)=>{const status=result.payoutStatus==='PROCESSING'?'PROCESSING':result.payoutStatus==='HELD'?'HELD':'PAID';const previous=rows.find(row=>row.id===paymentId);setReleased(current=>({...current,[paymentId]:{status,at:new Date().toISOString(),version:String(previous?.updatedAt),previousStatus:previous?.payoutStatus}}));setCategory(status);setQuery('')};
  const title=category==='PROCESSING'?'Processing payouts':category==='FAILED'?'Payouts needing attention':category==='WAITING'?'24-hour payout holds':category==='BLOCKED'?'Blocked payouts':category==='READY'?'Ready for payout':category==='HELD'?'Held payouts':'Released payouts';
  const eyebrow=category==='BLOCKED'?'Details required':category==='READY'?'Action required':category==='HELD'?'Protected funds':'Finance history';
  const emptyLabel=query?'matching '+category.toLowerCase()+' payouts':category==='BLOCKED'?'blocked payouts':category==='READY'?'payouts ready for release':undefined;
