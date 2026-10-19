@@ -1,6 +1,8 @@
 # Bulk Storage restore test
 
-Prepared on 19 October 2026. **The hosted run is still pending.**
+Prepared on 19 October 2026. **Hosted file recovery PASSED on 19 October 2026.**
+
+All 136 files (227,100,491 bytes) were restored and read back with matching SHA-256 hashes in the isolated test project. All five bucket access samples and original-path/size/MIME/cache-setting comparisons passed. The transfer used private dashboard-uploaded batches and a temporary service-role-only Edge Function; that function is now disabled. The Python tool below remains an optional fallback and was not used for the completed hosted transfer. Full evidence and the remaining application-recovery limits are recorded in [production-database-preparation.md](production-database-preparation.md#full-hosted-storage-restore-verified--19-october-2026).
 
 The tool is `scripts/storage_restore_test.py`. It uses Python 3.10 or later and
 only the standard library. It is locked to **DriveDrop Restore Test 2026-10-19**
@@ -25,7 +27,7 @@ temporary `(1)` duplicate is preserved. It does not change the database schema,
 application rows, website settings, source project or production project.
 Objects outside the archive are not inventoried by this script.
 
-## Run from a trusted computer
+## Optional fallback: run from a trusted computer
 
 1. Download `DriveDrop-storage-backup-2026-10-19.zip` from the saved backup.
    Keep it in a private folder outside this repository and outside any shared
