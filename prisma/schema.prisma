@@ -134,6 +134,7 @@ model User {
   passwordHash                     String
   accountStatus                    AccountStatus             @default(ACTIVE)
   workRestricted                   Boolean                   @default(false)
+  dailyJobEmails                   Boolean                   @default(true)
   adminNote                        String?
   createdAt                        DateTime                  @default(now())
   sessions                         Session[]
@@ -156,6 +157,24 @@ model User {
   reviewedTransporterVerifications TransporterVerification[] @relation("VerificationAdminReviewer")
   disputesRaised                   Dispute[]                 @relation("DisputeRaisedBy")
   disputesReviewed                 Dispute[]                 @relation("DisputeReviewer")
+
+  @@index([role, accountStatus, dailyJobEmails, id])
+}
+
+// One durable cursor per environment/day. Only the server can access this table.
+model JobDigestRun {
+  id          String   @id
+  windowEnd   DateTime
+  cursor      String?
+  pending     Json?
+  leaseToken  String?
+  leaseUntil  DateTime?
+  completed   Boolean  @default(false)
+  sentCount   Int      @default(0)
+  skippedCount Int     @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
 }
 
 model PasswordResetToken {
@@ -193,6 +212,7 @@ model TransportJob {
   createdAt      DateTime    @default(now())
 
   @@index([customerId, status, createdAt])
+  @@index([status, createdAt])
 }
 
 model Quote {

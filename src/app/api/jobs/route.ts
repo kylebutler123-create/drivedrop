@@ -1,16 +1,14 @@
 import {validateCollectionWindow} from '@/lib/availability-time';
 import {vehicleTypes} from '@/lib/vehicle-types';
-import {transportTypeDisplay,transportTypeValues} from '@/lib/transport-types';
+import {transportTypeValues} from '@/lib/transport-types';
 import {enclosedTransportCompatibilityMessage,isTransportVehicleCompatible,drivenTransportCompatibilityMessage,isTransportRunningCompatible} from '@/lib/transport-compatibility';
-import {after,NextResponse} from 'next/server';
+import {NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
 import {z} from 'zod';
 import {decodeVehiclePhoto} from '@/lib/vehicle-photo-input';
 import {createVehiclePhotoPath,uploadVehiclePhoto,removeVehiclePhoto} from '@/lib/supabase-storage';
 import {openQuoteRequestsWhere} from '@/lib/job-expiry';
-import {sendTransactionalEmailBatchSafely} from '@/lib/email';
-import {insuranceStatusForVerification} from '@/lib/insurance-expiry-notifications';
 
 
 const S=z.object({vehiclePhoto:z.string().max(1_200_100).optional(),collection:z.string().min(2),delivery:z.string().min(2),transportType:z.enum(transportTypeValues),vehicleType:z.enum(vehicleTypes),vehicleMake:z.string().min(1),vehicleModel:z.string().min(1),registration:z.string().optional(),running:z.boolean().default(true),collectionDate:z.coerce.date(),collectionFrom:z.string().optional(),collectionUntil:z.string().optional()}).superRefine((data,context)=>{
@@ -34,33 +32,7 @@ export async function POST(r:Request){
  try{job=await prisma.transportJob.create({data:{...jobData,vehiclePhotoPath,collectionFrom:window.collectionFrom,collectionUntil:window.collectionUntil,customerId:u.id}})}catch(error){if(vehiclePhotoPath)await removeVehiclePhoto(vehiclePhotoPath).catch(()=>{});throw error}
  await prisma.$executeRaw`UPDATE "TransportJob" SET "vehicleType"=${vehicleType} WHERE "id"=${job.id}`;
 
- after(async()=>{
-  try{
-   const transporters=await prisma.user.findMany({
-    where:{role:'TRANSPORTER',accountStatus:'ACTIVE',workRestricted:false,transporterVerification:{is:{status:'APPROVED'}}},
-    select:{email:true,name:true,transporterVerification:{select:{id:true,status:true,reviewedAt:true,documents:{where:{type:'INSURANCE',status:{not:'REJECTED'}},select:{id:true,type:true,status:true,expiresAt:true,createdAt:true},orderBy:{createdAt:'desc'}}}}},
-   });
-   const eligible=transporters.filter(transporter=>{
-    const verification=transporter.transporterVerification;
-    if(!verification)return false;
-    const insurance=insuranceStatusForVerification(verification);
-    return insurance.state!=='MISSING'&&insurance.state!=='EXPIRED';
-   });
-   const vehicle=`${vehicleType}: ${d.vehicleMake} ${d.vehicleModel}`.replace(/\s+/g,' ').trim();
-   const collectionDate=d.collectionDate.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'Europe/London'});
-   await sendTransactionalEmailBatchSafely(eligible.map(transporter=>({
-    to:transporter.email,
-    subject:`New ${vehicleType.toLowerCase()} transport job available`,
-    heading:'New transport job available',
-    preheader:`${vehicle} — ${d.collection} to ${d.delivery}`,
-    body:`Hi ${transporter.name?.trim()||'there'},\n\nA new customer transport request is now available for quotes.\n\nVehicle: ${vehicle}\nTransport type: ${transportTypeDisplay(d.transportType)}\nCollection: ${d.collection}\nDelivery: ${d.delivery}\nCollection date: ${collectionDate}\n\nSign in to review the full job details and submit a quote.`,
-    ctaLabel:'View available jobs',
-    ctaPath:'/transporter',
-   })),`new-job-${job.id}`);
-  }catch(error){
-   console.error('New available job email notification failed',{jobId:job.id,error});
-  }
- });
+ // New-job emails are grouped by the daily digest worker.
 
  return NextResponse.json({...job,vehicleType},{status:201});
 }

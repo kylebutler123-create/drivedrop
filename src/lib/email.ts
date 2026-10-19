@@ -1,4 +1,4 @@
-export type SendEmailInput={to:string;subject:string;heading:string;body:string;ctaLabel?:string;ctaPath?:string;preheader?:string};
+export type SendEmailInput={to:string;subject:string;heading:string;body:string;ctaLabel?:string;ctaPath?:string;preheader?:string;preferencesPath?:string};
 
 const EMAIL_FROM='DriveDrop <account@contact.drive-drop.com>';
 const RESEND_BATCH_SIZE=100;
@@ -18,10 +18,11 @@ export function transactionalNotificationsEnabled(){
 
 function escapeHtml(value:string){return value.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]||c))}
 
-function resendMessage(input:SendEmailInput){
+export function resendMessage(input:SendEmailInput){
   const ctaUrl=input.ctaPath?`${appOrigin()}${input.ctaPath.startsWith('/')?input.ctaPath:`/${input.ctaPath}`}`:null;
   const html=`<!doctype html><html><body style="margin:0;background:#f4f6f8;font-family:Arial,sans-serif;color:#172033"><div style="display:none;max-height:0;overflow:hidden">${escapeHtml(input.preheader||input.subject)}</div><div style="max-width:600px;margin:0 auto;padding:28px 16px"><div style="background:#172033;color:#fff;padding:22px 26px;border-radius:14px 14px 0 0"><div style="font-size:22px;font-weight:800;letter-spacing:-.3px">DriveDrop</div></div><div style="background:#fff;padding:30px 26px;border-radius:0 0 14px 14px"><h1 style="font-size:24px;margin:0 0 16px">${escapeHtml(input.heading)}</h1><p style="font-size:16px;line-height:1.6;margin:0 0 22px;white-space:pre-line">${escapeHtml(input.body)}</p>${ctaUrl&&input.ctaLabel?`<p style="margin:0 0 24px"><a href="${ctaUrl}" style="display:inline-block;background:#c85c0b;color:#fff;text-decoration:none;padding:12px 18px;border-radius:8px;font-weight:700">${escapeHtml(input.ctaLabel)}</a></p>`:''}<p style="font-size:13px;color:#667085;margin:26px 0 0">This is an automated DriveDrop account notification.</p></div></div></body></html>`;
-  return {from:EMAIL_FROM,to:[input.to],subject:input.subject,html};
+  const preferences=input.preferencesPath?`<p style="font-size:13px;margin:20px 26px"><a href="${escapeHtml(`${appOrigin()}${input.preferencesPath}`)}">Manage job email preferences</a></p>`:'';
+  return {from:EMAIL_FROM,to:[input.to],subject:input.subject,html:html.replace('</body>',`${preferences}</body>`)};
 }
 
 export async function sendTransactionalEmail(input:SendEmailInput){
