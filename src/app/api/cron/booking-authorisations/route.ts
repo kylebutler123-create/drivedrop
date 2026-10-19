@@ -1,12 +1,24 @@
-import {NextResponse} from 'next/server';
-import {prisma} from '@/lib/prisma';
-import {reconcileRequest} from '@/lib/booking-authorisation';
+import {after,NextResponse} from 'next/server';
 import {paymentEnvironment} from '@/lib/booking-authorisation-provider';
-import {notifyAvailability} from '@/lib/availability-notifications';
+import {claimPreviewRecoveryRun,completePreviewRecoveryRun,reconcileBookingAuthorisations} from '@/lib/booking-authorisation-recovery';
 export const dynamic='force-dynamic';
+export const maxDuration=180;
 export async function GET(request:Request){
  if(!process.env.CRON_SECRET||request.headers.get('authorization')!==`Bearer ${process.env.CRON_SECRET}`)return NextResponse.json({error:'Forbidden'},{status:403});
- const rows=await prisma.availabilityRequest.findMany({where:{paymentEnvironment:paymentEnvironment(),OR:[{status:'CAPTURING'},{paymentState:'RELEASE_PENDING'},{status:{in:['AWAITING_AUTHORISATION','AWAITING_TRANSPORTER']},respondBy:{lte:new Date()}}]},orderBy:{updatedAt:'asc'},take:100});
- let failed=0;for(const row of rows){try{const next=await reconcileRequest(row.id);if(next.status!==row.status)await notifyAvailability(row.id);}catch{failed++;}}
- return NextResponse.json({checked:rows.length,failed},{status:failed?503:200});
+ if(new URL(request.url).searchParams.get('dispatch')==='1'){
+  if(paymentEnvironment()!=='preview')return NextResponse.json({error:'Preview recovery only'},{status:403});
+  try{
+   const run=await claimPreviewRecoveryRun();
+   if(!run)return NextResponse.json({error:'Recovery dispatcher busy'},{status:503});
+   if(run.created)after(()=>completePreviewRecoveryRun(run.id));
+   // Accepted is deliberately distinct from completed. The private run record is
+   // the completion evidence; next minute's tick retries interrupted work.
+   return NextResponse.json({accepted:true,runId:run.id,reused:!run.created},{status:202});
+  }catch{
+   console.error('Preview recovery dispatch failed');
+   return NextResponse.json({error:'Recovery dispatch failed'},{status:503});
+  }
+ }
+ const result=await reconcileBookingAuthorisations();
+ return NextResponse.json(result,{status:result.failed?503:200});
 }
