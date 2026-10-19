@@ -45,6 +45,8 @@ export function connectErrorMessage(error: unknown) {
 // Payment/identity data and raw Stripe error bodies must never reach logs or clients.
 export function connectFailureCode(error: unknown) {
   if (error instanceof ConnectError) return error.code;
+  // Keep database failures diagnosable without logging queries or parameters.
+  if (error instanceof Error && 'code' in error && typeof error.code === 'string' && /^P\d{4}$/.test(error.code)) return error.code;
   if (error instanceof Stripe.errors.StripeError) {
     if (error.type === 'StripePermissionError' || error.type === 'StripeAuthenticationError') return 'CONFIGURATION';
     if (error.code === 'balance_insufficient') return 'INSUFFICIENT_BALANCE';

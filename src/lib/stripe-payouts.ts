@@ -49,7 +49,8 @@ export async function prepareStripePayout(paymentId: string, actorId: string) {
       throw new ConnectError('Payment changed during release. Refresh and retry.', 'PAYMENT_MISMATCH');
     }
     // Serialize fine reservations across different bookings for this transporter.
-    await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${`dd-payout-fines-${fresh.booking.transporterId}`}))`;
+    // PostgreSQL returns void for this lock; Prisma cannot decode that type.
+    await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${`dd-payout-fines-${fresh.booking.transporterId}`}))::text`;
     const fees = await applyCancellationFeesToPayout({tx, transporterId: fresh.booking.transporterId,
       paymentId, completedAt: fresh.booking.customerConfirmedAt || fresh.booking.trackingEvents[0]?.createdAt || new Date(),
       proceedsPence: fresh.transporterProceedsPence});

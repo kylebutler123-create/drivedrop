@@ -1,6 +1,6 @@
 import {after,NextResponse} from 'next/server';
 import {prepareStripePayout,reconcileStripePayout} from '@/lib/stripe-payouts';
-import {connectErrorMessage} from '@/lib/stripe-connect-provider';
+import {connectErrorMessage,connectFailureCode} from '@/lib/stripe-connect-provider';
 export const maxDuration=180;
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
@@ -31,7 +31,10 @@ export async function POST(r:Request){
    const payout=await prepareStripePayout(paymentId,u.id);
    if(!['TRANSFERRED','DEDUCTED','REVERSED'].includes(payout.status))after(()=>reconcileStripePayout(payout.id));
    return NextResponse.json({accepted:true,payoutStatus:['TRANSFERRED','DEDUCTED'].includes(payout.status)?'PAID':payout.status==='REVERSED'?'HELD':'PROCESSING',payoutId:payout.id},{status:202});
-  }catch(error){return NextResponse.json({error:connectErrorMessage(error)},{status:400});}
+  }catch(error){
+   console.error('Stripe payout preparation deferred',{paymentId,code:connectFailureCode(error)});
+   return NextResponse.json({error:connectErrorMessage(error)},{status:400});
+  }
  }
  try{
   const result=await prisma.$transaction(async(tx:any)=>{
