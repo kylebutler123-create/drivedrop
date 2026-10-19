@@ -49,12 +49,13 @@ export async function PATCH(r:Request){
     const updated=await tx.dispute.update({where:{id:d.disputeId},data:{reviewerId:u.id,reviewedAt:new Date()}});
     return{updated,booking:dispute.booking,previousStatus:dispute.status,refundAmountPence};
    }
+   if(payment&&['PROCESSING','FAILED'].includes(payment.payoutStatus)&&d.resolution)throw Error('Reconcile the pending Stripe payout before changing its financial resolution.');
    if(payment?.payoutStatus==='PAID'&&d.resolution&&['RELEASE_PAYOUT','REFUND_CUSTOMER','PARTIAL_REFUND'].includes(d.resolution))throw Error('Transporter already paid. Use the separate refund/recovery outcome process; this dispute cannot move released funds.');
    if(d.status==='CLOSED'&&payment?.payoutStatus==='HELD')throw Error('Resolve this held-payout dispute using Close without adjustment so payout eligibility is recalculated.');
    if(d.status!=='RESOLVED'&&d.resolution)throw Error('Financial resolutions require a resolved dispute status');
    if(d.resolution==='RELEASE_PAYOUT'&&(!payment||payment.payoutStatus==='CANCELLED'))throw Error('No eligible transporter payout exists for this booking');
    const otherHold=await tx.dispute.count({where:{bookingId:dispute.bookingId,id:{not:dispute.id},status:{in:['OPEN','UNDER_REVIEW']}}});
-   if(d.status==='UNDER_REVIEW'&&payment&&payment.payoutStatus!=='PAID'&&payment.payoutStatus!=='CANCELLED'&&payment.payoutStatus!=='HELD')await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:'HELD'}});
+   if(d.status==='UNDER_REVIEW'&&payment&&payment.payoutStatus!=='PAID'&&payment.payoutStatus!=='CANCELLED'&&payment.payoutStatus!=='HELD'&&payment.payoutStatus!=='PROCESSING'&&payment.payoutStatus!=='FAILED')await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:'HELD'}});
    if(d.status==='RESOLVED'&&d.resolution==='RELEASE_PAYOUT'&&payment){if(!capturedPayment(payment.status))throw new Error('Customer payment must be paid before payout can be released');if(dispute.booking.status!=='DELIVERED')throw new Error('Delivery must be completed before payout can be released');if(payment.payoutStatus==='PAID')throw new Error('Payout has already been released');await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:otherHold?'HELD':'READY'}})}
    if(d.status==='RESOLVED'&&d.resolution==='NO_ACTION'&&payment&&payment.payoutStatus==='HELD'){const prior=await tx.dispute.findMany({where:{bookingId:dispute.bookingId}});const events=await tx.financeEvent.findMany({where:{paymentId:payment.id,type:'PAYOUT_READY'}});const eligible=capturedPayment(payment.status)&&dispute.booking.status==='DELIVERED'&&(!!dispute.booking.customerConfirmedAt||adminPayoutApproved(prior,events));await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:otherHold?'HELD':eligible?'READY':'NOT_READY'}})}
    if(d.status==='RESOLVED'&&['REFUND_CUSTOMER','PARTIAL_REFUND'].includes(d.resolution||'')){

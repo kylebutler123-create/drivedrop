@@ -105,7 +105,7 @@ export async function applyCancellationFeesToPayout(input:{
      AND earlier_booking."customerConfirmedAt" IS NOT NULL
      AND earlier_booking."customerConfirmedAt">=${fee.createdAt}
      AND earlier_booking."customerConfirmedAt"<${completedAt}
-     AND earlier_payment."payoutStatus" IN ('READY','HELD')
+     AND earlier_payment."payoutStatus" IN ('READY','HELD','PROCESSING','FAILED')
    ) AS "exists"
   `;
   if(earlier[0]?.exists)continue;
@@ -162,7 +162,7 @@ export async function applyCancellationFeesToPayout(input:{
      AND earlier_booking."customerConfirmedAt" IS NOT NULL
      AND earlier_booking."customerConfirmedAt">=${fine.createdAt}
      AND earlier_booking."customerConfirmedAt"<${completedAt}
-     AND earlier_payment."payoutStatus" IN ('READY','HELD')
+     AND earlier_payment."payoutStatus" IN ('READY','HELD','PROCESSING','FAILED')
    ) AS "exists"
   `;
   if(earlier[0]?.exists)continue;

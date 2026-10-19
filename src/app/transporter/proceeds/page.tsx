@@ -35,7 +35,9 @@ type ProceedsFilter='BOOKED'|'IN_PROGRESS'|'READY'|'HELD'|'PAID'|'FINES';
 type AdjustmentFilter='ALL'|'FINES'|'REFUNDS';
 const payoutLabel=(booking:any)=>{
  const status=booking.payment?.payoutStatus;
- if(status==='PAID')return'Paid';
+ if(status==='PAID')return booking.payment?.provider==='STRIPE'?'Released to Stripe':'Paid';
+ if(status==='PROCESSING')return'Payout processing';
+ if(status==='FAILED')return'Payout needs attention';
  if(status==='HELD')return'Held';
  if(status==='WAITING')return'24-hour hold';
  if(status==='READY')return'Ready for release';

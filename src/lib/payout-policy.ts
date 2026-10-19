@@ -13,10 +13,12 @@ export function adminPayoutApproved(disputes:{id:string;status:string;resolution
  return disputes.some(d=>d.status==='RESOLVED'&&(d.resolution==='RELEASE_PAYOUT'||d.resolution==='PARTIAL_REFUND'&&events.some(e=>e.note===payoutApprovalMarker(d.id))));
 }
 export const capturedPayment=(status:string)=>['PAID','PARTIALLY_REFUNDED'].includes(status);
-export const completedPayoutLabels={WAITING:'24-hour hold',AWAITING:'Awaiting customer confirmation',READY:'Ready for release',PAID:'Paid',HELD:'Payout held',BLOCKED:'Payout blocked — bank details required',REFUNDED:'Refunded — payout cancelled',CANCELLED:'Payout cancelled',NOT_READY:'Payout not ready'};
+export const completedPayoutLabels={WAITING:'24-hour hold',AWAITING:'Awaiting customer confirmation',READY:'Ready for release',PROCESSING:'Payout processing',FAILED:'Payout needs attention',PAID:'Paid',HELD:'Payout held',BLOCKED:'Payout blocked — account setup required',REFUNDED:'Refunded — payout cancelled',CANCELLED:'Payout cancelled',NOT_READY:'Payout not ready'};
 export type CompletedPayoutStatus=keyof typeof completedPayoutLabels;
 export function completedPayoutStatus(booking:ReviewBooking & {payment?:{payoutStatus?:string;status?:string;events?:{note?:string|null}[]}|null},detailsComplete:boolean,now=Date.now()):CompletedPayoutStatus{
  const p=booking.payment;
+ if(p?.payoutStatus==='PROCESSING')return 'PROCESSING';
+ if(p?.payoutStatus==='FAILED')return 'FAILED';
  if(p?.payoutStatus==='PAID')return 'PAID';
  if(p?.status==='REFUNDED')return 'REFUNDED';
  if(p?.payoutStatus==='CANCELLED')return 'CANCELLED';
@@ -34,7 +36,7 @@ export function disputeDeadline(confirmedAt:unknown):number|null{
  return Number.isFinite(value)?value+DISPUTE_WINDOW_MS:null;
 }
 export function customerCanDispute(booking:ReviewBooking,now=Date.now()){
- if(booking.status==='CANCELLED'||booking.customerDisputeClosed||booking.payment?.payoutStatus==='PAID')return false;
+ if(booking.status==='CANCELLED'||booking.customerDisputeClosed||['PAID','PROCESSING','FAILED'].includes(booking.payment?.payoutStatus||''))return false;
  const deadline=disputeDeadline(booking.customerConfirmedAt);
  return !booking.customerConfirmedAt||(deadline!==null&&now<deadline);
 }

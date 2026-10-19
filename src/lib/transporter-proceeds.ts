@@ -29,7 +29,7 @@ export async function loadProceeds(transporterId:string){
    id:true,status:true,agreedPricePence:true,customerConfirmedAt:true,createdAt:true,
    customer:{select:{name:true}},disputes:{select:{id:true,status:true,resolution:true}},
    job:{select:{id:true,vehiclePhotoPath:true,vehicleMake:true,vehicleModel:true,registration:true,collection:true,delivery:true,collectionDate:true}},
-   payment:{select:{transporterProceedsPence:true,cancellationDeductionPence:true,refundedPence:true,payoutStatus:true,updatedAt:true,events:{where:{type:{in:['PAYOUT_PAID','PAYOUT_READY']}},select:{createdAt:true,type:true,note:true},orderBy:{createdAt:'desc'}}}}
+   payment:{select:{provider:true,transporterProceedsPence:true,cancellationDeductionPence:true,refundedPence:true,payoutStatus:true,updatedAt:true,events:{where:{type:{in:['PAYOUT_PAID','PAYOUT_READY']}},select:{createdAt:true,type:true,note:true},orderBy:{createdAt:'desc'}}}}
   },orderBy:{createdAt:'desc'}
  });
  return rows.map(({agreedPricePence,...row})=>({...row,payment:row.payment?{...row.payment,payoutStatus:inPayoutReviewWindow(row)?'WAITING':row.payment.payoutStatus,events:row.payment.events.filter(e=>e.type==='PAYOUT_PAID').slice(0,1).map(e=>({createdAt:e.createdAt})),refundedPence:transporterRefund(agreedPricePence,row.payment)}:null}));
@@ -44,7 +44,7 @@ export function proceedsCsv(rows:ProceedsBooking[]){
  const records=rows.filter(r=>r.payment).map(r=>{
   const p=r.payment!;const net=p.payoutStatus==='CANCELLED'?0:p.transporterProceedsPence||0;
   const fine=p.cancellationDeductionPence||0;
-  return [r.id,'DD-'+r.id.slice(-8).toUpperCase(),londonDate(r.createdAt),r.customer.name,[r.job.vehicleMake,r.job.vehicleModel].join(' '),r.job.registration,r.job.collection,r.job.delivery,r.job.collectionDate?londonDate(r.job.collectionDate):'',r.status,p.payoutStatus,((net+fine)/100).toFixed(2),(fine/100).toFixed(2),(net/100).toFixed(2),((p.refundedPence||0)/100).toFixed(2),p.events[0]?londonDate(p.events[0].createdAt):''];
+  return [r.id,'DD-'+r.id.slice(-8).toUpperCase(),londonDate(r.createdAt),r.customer.name,[r.job.vehicleMake,r.job.vehicleModel].join(' '),r.job.registration,r.job.collection,r.job.delivery,r.job.collectionDate?londonDate(r.job.collectionDate):'',r.status,p.provider==='STRIPE'&&p.payoutStatus==='PAID'?'RELEASED_TO_STRIPE':p.payoutStatus,((net+fine)/100).toFixed(2),(fine/100).toFixed(2),(net/100).toFixed(2),((p.refundedPence||0)/100).toFixed(2),p.events[0]?londonDate(p.events[0].createdAt):''];
  });
  return '\uFEFF'+[header,...records].map(row=>row.map(cell).join(',')).join('\r\n')+'\r\n';
 }

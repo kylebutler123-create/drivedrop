@@ -3,6 +3,7 @@ import {prisma} from './prisma';
 import {reconcileRequest} from './booking-authorisation';
 import {paymentEnvironment} from './booking-authorisation-provider';
 import {notifyAvailability} from './availability-notifications';
+import {recoverStripePayouts} from './stripe-payouts';
 
 // Payment requests are the durable work queue. Runs record execution, not ownership
 // of money: canonical Stripe state and the existing job locks remain authoritative.
@@ -65,6 +66,9 @@ export async function completePreviewRecoveryRun(id: string) {
   let result = {checked: 0, failed: 0};
   try {
     result = await reconcileBookingAuthorisations();
+    const payouts = await recoverStripePayouts();
+    result.checked += payouts.checked;
+    result.failed += payouts.failed;
   } catch {
     result.failed++;
     console.error('Booking authorisation recovery run failed', {runId: id});

@@ -27,6 +27,7 @@
     "pdf-lib": "1.17.1",
     "react": "latest",
     "react-dom": "latest",
+    "stripe": "23.0.0",
     "zod": "latest"
   },
   "devDependencies": {

@@ -111,6 +111,8 @@ enum PaymentStatus {
 enum PayoutStatus {
   NOT_READY
   READY
+  PROCESSING
+  FAILED
   PAID
   HELD
   CANCELLED
@@ -125,6 +127,7 @@ enum FinanceEventType {
 }
 
 model User {
+  stripeConnectAccounts             StripeConnectAccount[]
   disputeReviewNotes               DisputeReviewNote[]
   id                               String                    @id @default(cuid())
   email                            String                    @unique
@@ -483,6 +486,7 @@ model VerificationDocument {
 }
 
 model BookingPayment {
+  stripePayout              StripePayout?
   id                       String        @id @default(cuid())
   bookingId                String        @unique
   booking                  Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
@@ -502,6 +506,64 @@ model BookingPayment {
   createdAt                DateTime      @default(now())
   updatedAt                DateTime      @updatedAt
   events                   FinanceEvent[]
+}
+
+// Server-only Connect records. Bank/identity details stay with Stripe.
+model StripeConnectAccount {
+  id                    String   @id @default(uuid())
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  environment           String
+  stripeAccountId       String?  @unique
+  status                String   @default("CREATING")
+  transfersEnabled      Boolean  @default(false)
+  payoutsEnabled        Boolean  @default(false)
+  requirementsDue       Boolean  @default(true)
+  creationStartedAt     DateTime?
+  creationEmail         String
+  creationName          String
+  lastCheckedAt         DateTime?
+  lastBankPayoutId       String?
+  lastBankPayoutStatus   String?
+  lastBankPayoutCreated  Int?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  payouts               StripePayout[]
+
+  @@unique([userId, environment])
+  @@index([environment, lastCheckedAt])
+}
+
+// Immutable release instruction. Reuse its Stripe idempotency key on every retry.
+model StripePayout {
+  id                    String   @id @default(uuid())
+  paymentId             String   @unique
+  payment               BookingPayment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  connectAccountId      String
+  connectAccount        StripeConnectAccount @relation(fields: [connectAccountId], references: [id], onDelete: Restrict)
+  environment           String
+  destinationAccountId  String
+  paymentIntentId       String
+  sourceChargeId        String
+  grossPence            Int
+  finePence             Int
+  amountPence           Int
+  paidPence             Int
+  refundedPence         Int
+  status                String   @default("PENDING")
+  stripeTransferId      String?  @unique
+  transferredAt         DateTime?
+  reversedPence         Int      @default(0)
+  firstAttemptAt        DateTime?
+  attemptCount          Int      @default(0)
+  retryAfter            DateTime?
+  leaseUntil            DateTime?
+  failureCode           String?
+  actorId               String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([environment, status, retryAfter])
 }
 
 model FinanceEvent {

@@ -13,7 +13,7 @@ async function blockers(userId:string){
     prisma.booking.count({where:{customerId:userId,status:{notIn:['DELIVERED','CANCELLED']}}}),
     prisma.booking.count({where:{transporterId:userId,status:{notIn:['DELIVERED','CANCELLED']}}}),
     prisma.dispute.count({where:{raisedById:userId,status:{in:['OPEN','UNDER_REVIEW']}}}),
-    prisma.bookingPayment.count({where:{booking:{transporterId:userId},payoutStatus:{in:['READY','HELD']}}})
+    prisma.bookingPayment.count({where:{booking:{transporterId:userId},payoutStatus:{in:['READY','HELD','PROCESSING','FAILED']}}})
   ]);
   return {liveJobs,activeBookings:activeCustomerBookings+activeTransporterBookings,openDisputes,unsettledTransporterPayments};
 }

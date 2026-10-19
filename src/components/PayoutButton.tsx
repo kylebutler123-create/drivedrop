@@ -1,4 +1,22 @@
 'use client';
 import {useState} from 'react';
 import {useRouter} from 'next/navigation';
-export default function PayoutButton({paymentId,amountPence,onReleased,compactLabel=false}:{paymentId:string,amountPence:number,onReleased?:()=>void,compactLabel?:boolean}){const[busy,setBusy]=useState(false);const router=useRouter();async function release(){if(!confirm(`Release £${(amountPence/100).toFixed(2)} sandbox payout to the transporter?`))return;setBusy(true);try{const r=await fetch('/api/admin/payments/payout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({paymentId})});const d=await r.json().catch(()=>null);if(!r.ok){alert(d?.error||'Unable to release payout');return;}onReleased?.();router.refresh();}finally{setBusy(false)}}return <button className="btn orange" disabled={busy} onClick={release}>{busy?'Releasing test payout…':compactLabel?'Release test payout':`Release £${(amountPence/100).toFixed(2)} test payout`}</button>}
+export type PayoutResult = {payoutStatus?: string; accepted?: boolean};
+export default function PayoutButton({paymentId, amountPence, onReleased, compactLabel = false, retry = false}: {
+  paymentId: string; amountPence: number; onReleased?: (result: PayoutResult) => void; compactLabel?: boolean; retry?: boolean;
+}) {
+  const [busy, setBusy] = useState(false), [error, setError] = useState('');
+  const router = useRouter();
+  async function release() {
+    if (!confirm(retry ? 'Recheck this sandbox payout and retry the same transfer if it is safe to do so?' : `Release the eligible sandbox payout (currently £${(amountPence / 100).toFixed(2)} after fine deductions)? Stripe bank arrival is tracked separately.`)) return;
+    setBusy(true); setError('');
+    try {
+      const response = await fetch('/api/admin/payments/payout', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify({paymentId})});
+      const data = await response.json().catch(() => null);
+      if (!response.ok) { setError(data?.error || 'Unable to release payout'); return; }
+      onReleased?.(data); router.refresh();
+    } catch { setError('The request was interrupted. Refresh the payout status before retrying.'); }
+    finally { setBusy(false); }
+  }
+  return <><button className="btn orange" disabled={busy} onClick={release}>{busy ? 'Checking payout…' : retry ? 'Check / retry payout' : compactLabel ? 'Release test payout' : `Release £${(amountPence / 100).toFixed(2)} test payout`}</button>{error && <p className="formNotice errorNotice" role="alert">{error}</p>}</>;
+}

@@ -1,4 +1,7 @@
-import {NextResponse} from 'next/server';
+import {after,NextResponse} from 'next/server';
+import {prepareStripePayout,reconcileStripePayout} from '@/lib/stripe-payouts';
+import {connectErrorMessage} from '@/lib/stripe-connect-provider';
+export const maxDuration=180;
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
 import {createNotificationSafely} from '@/lib/notifications';
@@ -18,10 +21,18 @@ function testFinanceDisabled(){
 export async function POST(r:Request){
  if(testFinanceDisabled())return NextResponse.json({error:'Test finance is permanently disabled in production'},{status:403});
  const u=await currentUser();
- if(!u||u.role!=='ADMIN')return NextResponse.json({error:'Admin required'},{status:403});
- const parsed=S.safeParse(await r.json());
+ if(!u||u.role!=='ADMIN'||u.accountStatus!=='ACTIVE')return NextResponse.json({error:'Admin required'},{status:403});
+ const parsed=S.safeParse(await r.json().catch(()=>null));
  if(!parsed.success)return NextResponse.json({error:'Invalid payout request'},{status:400});
  const{paymentId}=parsed.data;
+ const provider=await prisma.bookingPayment.findUnique({where:{id:paymentId},select:{provider:true}});
+ if(provider?.provider==='STRIPE'){
+  try{
+   const payout=await prepareStripePayout(paymentId,u.id);
+   if(!['TRANSFERRED','DEDUCTED','REVERSED'].includes(payout.status))after(()=>reconcileStripePayout(payout.id));
+   return NextResponse.json({accepted:true,payoutStatus:['TRANSFERRED','DEDUCTED'].includes(payout.status)?'PAID':payout.status==='REVERSED'?'HELD':'PROCESSING',payoutId:payout.id},{status:202});
+  }catch(error){return NextResponse.json({error:connectErrorMessage(error)},{status:400});}
+ }
  try{
   const result=await prisma.$transaction(async(tx:any)=>{
    const ref=await tx.bookingPayment.findUniqueOrThrow({where:{id:paymentId},select:{bookingId:true}});await tx.$queryRaw`SELECT id FROM "Booking" WHERE id=${ref.bookingId} FOR UPDATE`;

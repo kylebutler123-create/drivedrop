@@ -113,7 +113,7 @@ Final counts and whole-row fingerprints exactly match the pre-change baseline:
 
 Pending preview authorisations/captures/releases after cleanup: zero. The sandbox checkout, enabled webhook and active recovery timer remain available for preview testing.
 
-Stripe Connect onboarding/transporter payouts, real post-booking refunds, production payment configuration and production rollout are separate work. Existing simulated admin refund/payout endpoints reject STRIPE records. Do not describe those as completed by this checkpoint.
+Stripe Connect onboarding/transporter payouts, real post-booking refunds, production payment configuration and production rollout are separate work. Connect sandbox implementation is now prepared but not activated; see `stripe-connect-sandbox.md` for the current status and activation gate. Existing simulated admin refund/payout endpoints reject STRIPE records. Do not describe those as completed by this checkpoint.
 
 ## Rollback
 

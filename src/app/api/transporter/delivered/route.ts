@@ -1,3 +1,4 @@
+import {payoutAccountReadiness} from '@/lib/stripe-connect-accounts';
 import {transporterRefund} from '@/lib/price-visibility';
 import {NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
@@ -20,7 +21,7 @@ export async function GET(){
     trackingEvents:{select:{id:true,status:true,createdAt:true,note:true},orderBy:{createdAt:'desc'}},
     evidence:{select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'asc'}},
     disputes:{select:{id:true,status:true,resolution:true,reason:true,createdAt:true,raisedBy:{select:{role:true}}},orderBy:{createdAt:'desc'}},
-    payment:{select:{transporterProceedsPence:true,refundedPence:true,cancellationDeductionPence:true,payoutStatus:true,status:true,events:{where:{type:{in:['PAYOUT_PAID','PAYOUT_READY']}},select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'desc'}}}}
+    payment:{select:{provider:true,transporterProceedsPence:true,refundedPence:true,cancellationDeductionPence:true,payoutStatus:true,status:true,events:{where:{type:{in:['PAYOUT_PAID','PAYOUT_READY']}},select:{id:true,type:true,note:true,createdAt:true},orderBy:{createdAt:'desc'}}}}
    },
    orderBy:{createdAt:'desc'}
   }),
@@ -33,8 +34,9 @@ export async function GET(){
  const bookingIds=bookings.map(booking=>booking.id);
  const proofRows=bookingIds.length?await prisma.$queryRaw<Array<{id:string;pocReleasedByName:string|null;pocCondition:string|null;pocDamageNotes:string|null;pocSubmittedAt:Date|null;podRecipientName:string|null;podNotes:string|null;podSubmittedAt:Date|null}>>(Prisma.sql`SELECT "id","pocReleasedByName","pocCondition","pocDamageNotes","pocSubmittedAt","podRecipientName","podNotes","podSubmittedAt" FROM "Booking" WHERE "id" IN (${Prisma.join(bookingIds)})`):[];
  const proofMap=new Map(proofRows.map(row=>[row.id,row]));
+ const stripeReady=await payoutAccountReadiness([user.id]);
  const completedBookings=bookings
-  .map(booking=>{const proof=proofMap.get(booking.id);return {...booking,trackingEvents:booking.trackingEvents.filter(event=>event.status==='DELIVERED').slice(0,1),deliveryProgressEvents:booking.trackingEvents,proofOfCollection:{releasedByName:proof?.pocReleasedByName,condition:proof?.pocCondition,damageNotes:proof?.pocDamageNotes,submittedAt:proof?.pocSubmittedAt},proofOfDelivery:{recipientName:proof?.podRecipientName,notes:proof?.podNotes,submittedAt:proof?.podSubmittedAt},payment:booking.payment?{...booking.payment,refundedPence:transporterRefund(booking.agreedPricePence,booking.payment)}:null,job:{...booking.job,vehicleType:vehicleTypes.get(booking.job.id)||null}}})
+  .map(booking=>{const proof=proofMap.get(booking.id);return {...booking,payoutDetailsComplete:booking.payment?.provider==='STRIPE'?!!stripeReady.get(user.id):payoutDetails.length>0,trackingEvents:booking.trackingEvents.filter(event=>event.status==='DELIVERED').slice(0,1),deliveryProgressEvents:booking.trackingEvents,proofOfCollection:{releasedByName:proof?.pocReleasedByName,condition:proof?.pocCondition,damageNotes:proof?.pocDamageNotes,submittedAt:proof?.pocSubmittedAt},proofOfDelivery:{recipientName:proof?.podRecipientName,notes:proof?.podNotes,submittedAt:proof?.podSubmittedAt},payment:booking.payment?{...booking.payment,refundedPence:transporterRefund(booking.agreedPricePence,booking.payment)}:null,job:{...booking.job,vehicleType:vehicleTypes.get(booking.job.id)||null}}})
   .sort((a,b)=>{
    const aCompletedAt=new Date(a.trackingEvents.find(event=>event.status==='DELIVERED')?.createdAt||a.createdAt).getTime();
    const bCompletedAt=new Date(b.trackingEvents.find(event=>event.status==='DELIVERED')?.createdAt||b.createdAt).getTime();
