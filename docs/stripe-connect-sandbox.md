@@ -2,9 +2,9 @@
 
 ## Status
 
-Implementation and credentials are configured on `feature/ui-polish`. The user explicitly approved the platform liability acknowledgement on 19 October 2026, and Stripe now shows it completed. `STRIPE_CONNECT_ENABLED=true` is active on preview deployment `dpl_6AtJ4yuv8RFvUXHAzTaQPvvbAiqa` (commit `fa25b3bb7d10ba7067db6cf2e24aad7237b20d47`, preview target only). Account creation and the hosted test identity/bank steps work. Final onboarding submission is awaiting separate approval for Stripe's Connected Account Agreement. Transfers and bank-payout tests remain incomplete; local simulated tests are not a substitute for these checks.
+Implementation and credentials are configured on `feature/ui-polish`. Both platform liability acknowledgement and the synthetic transporter's Connected Account Agreement were explicitly approved and completed on 19 October 2026. `STRIPE_CONNECT_ENABLED=true` is active on preview deployment `dpl_5NCsJiReEkcd2jFYwmdUdD9cogFA` (runtime commit `ce0b614cc39452a0d96c92f43865c75a7e71f91d`, preview target only). Real sandbox onboarding, Express access, captured-payment release, fine deduction, duplicate protection, automatic recovery and transfer reversal passed. Bank-payout success/failure testing remains incomplete: Stripe Express failed twice to load the existing GBP test-bank edit form.
 
-Existing sandbox customer Checkout remains active. The additive migration `20261019213129_stripe_connect_sandbox` is applied to shared preview database `yozbuuvebzxitoqrvyer`. Client-role access is denied and RLS is enabled. All 16 original users, 52 bookings and 136 stored-file rows retain their exact pre-change fingerprints. One synthetic transporter and its pending Connect row are retained to resume onboarding; all other new fixtures and sessions were removed. There are no Stripe payout instructions and no test funds were moved.
+Existing sandbox customer Checkout remains active. The additive migration `20261019213129_stripe_connect_sandbox` is applied to shared preview database `yozbuuvebzxitoqrvyer`. Client-role access is denied and RLS is enabled. All 16 original users, 52 bookings and 136 stored-file rows retain their exact pre-change fingerprints. The £75 test transfer was fully reversed, the £110 customer test charge fully refunded, and the zero-balance synthetic Stripe account closed. All temporary app fixtures, Connect records and sessions were removed; Stripe audit history remains in the sandbox.
 
 The user selected Stripe-hosted onboarding with the Express dashboard on 19 October 2026. Production and live money remain disabled. Do not merge or deploy production as part of this work.
 
@@ -37,11 +37,11 @@ The review form describes responsibility for refunds, chargebacks and fines; che
 
 The user approved this acknowledgement and its disclosed pricing before it was submitted. Do not silently change loss liability, charge pattern or dashboard experience. Live launch needs a separate review of liability, pricing and refund/reversal recovery.
 
-### Current hosted-onboarding approval blocker
+### Hosted-onboarding agreement completed
 
-The synthetic transporter `dd_connect_20261019b_transporter` maps to account `acct_1USOoTLAzgOujhnB` and DB row `89cb4cef-ba6a-4f63-a525-f55ebc48c37b`. Hosted onboarding reached **Review and submit** using Stripe's built-in test phone/code and test bank shortcuts, a synthetic identity with the documented successful-verification DOB/address values, and a sandbox-only service description. No real identity or bank information was used.
+The temporary transporter `dd_connect_20261019b_transporter` mapped to account `acct_1USOoTLAzgOujhnB` and DB row `89cb4cef-ba6a-4f63-a525-f55ebc48c37b`. Hosted onboarding used Stripe's built-in test phone/code and test bank shortcuts, a synthetic identity with the documented successful-verification DOB/address values, and a sandbox-only service description. No real identity or bank information was used.
 
-Automatic approval review rejected the final **Agree and submit** click because it accepts the separate **Connected Account Agreement**, certifies the supplied details and includes autodialed-text-message consent; approval for the earlier platform acknowledgement does not cover it. The click was not completed. Obtain approval for this exact final submission for the synthetic sandbox transporter before continuing; do not submit attestations through an API or use another route around the rejection. The live browser review page is retained for resumption.
+Automatic approval review initially rejected **Agree and submit** because the earlier platform approval did not cover this separate agreement. The user then explicitly approved the Connected Account Agreement, certification of the supplied test details and autodialed-text-message consent. The approved submission succeeded at approximately 22:26 UTC. Stripe reported both capabilities active; a real thin webhook updated the preview row to `READY` at 22:27:22 UTC before any app status refresh. The authenticated status endpoint subsequently returned `ready=true`, `requirementsDue=false`.
 
 ## Risk management
 
@@ -95,21 +95,45 @@ The **separate restricted sandbox key** `DriveDrop preview Connect payouts` (`mk
 
 The key was created through the approved Stripe Dashboard flow. The existing Checkout key was not widened. The new key is stored as sensitive `STRIPE_CONNECT_SECRET_KEY`, Preview / `feature/ui-polish` in project `prj_8BO4s7P2sffGKR4czg6nHOZqg4Ze`.
 
-The snapshot and thin signing secrets are stored as sensitive `STRIPE_CONNECT_WEBHOOK_SECRET` and `STRIPE_CONNECT_EVENTS_SECRET` in the same branch scope. The code requires both webhook secrets and the existing recovery secret before making Connect API calls. These credentials are server-only. The feature flag was enabled last and the preview redeployed after platform acknowledgement. Continue isolated QA after approval of the pending connected-account submission.
+The snapshot and thin signing secrets are stored as sensitive `STRIPE_CONNECT_WEBHOOK_SECRET` and `STRIPE_CONNECT_EVENTS_SECRET` in the same branch scope. The code requires both webhook secrets and the existing recovery secret before making Connect API calls. These credentials are server-only. The feature flag was enabled last and remains enabled on the verified preview deployment. The existing customer-payment key, production configuration and UI design were not changed during this QA pass.
 
 ## Verification
 
-Passed locally with mocked Stripe/DB boundaries: release rules, concurrent clicks, single fine reservation, correct net transfer/source charge, network failure, Stripe success with a lost response, Stripe success with a lost database commit, repeat reconciliation, zero-net fines, a newly opened dispute, old ambiguous attempts, account ownership/capabilities, live/environment/amount mismatches, reversal reconciliation, admin authorization, 202 semantics, unsigned-webhook rejection and stale bank-event handling.
+Local tests with mocked Stripe/DB boundaries cover release rules, concurrent requests, one fine reservation, source-charge matching, network/response/commit loss, zero-net fines, new disputes, stale ambiguous attempts, account ownership/capabilities, live/environment/amount mismatches, reversal handling, admin authorization, 202 semantics and stale bank-event handling. Existing payout-policy, adjustable-dispute-fine and payment-recovery checks also passed. The final lock fix passed `test-stripe-connect.cjs`, `test-dispute-fines.cjs`, TypeScript and the Vercel production build. Mocks did not reveal the PostgreSQL result-type issue described below.
 
-Existing payout-policy, fine-preview, adjustable-dispute-fine and payment-recovery checks passed. TypeScript and the Next production build passed with a dummy localhost DB URL. This build did not access the shared database.
+Nine deployed security probes passed: unsigned snapshot/thin rejection; signed snapshot/thin acceptance and duplicate acceptance; live-mode snapshot rejection; wrong-origin onboarding rejection; and rejection of a transporter calling the admin release endpoint. These synthetic signed probes alone do not prove Stripe event delivery.
 
-Deployed preview `dpl_JBcRaE5mGYkz6gne3xUVHMGRLUc9` reached READY with the feature enabled. Anonymous account-status access returned 403; the isolated transporter saw `NOT_STARTED`. All nine security probes passed: unsigned snapshot/thin rejection; signed snapshot/thin acceptance and duplicate acceptance; live-mode snapshot rejection; wrong-origin onboarding rejection; and rejection of a transporter trying the admin release endpoint. These were synthetic signed requests and do not establish actual Stripe event delivery or financial-flow correctness.
+### Actual sandbox flow, 19 October 2026
 
-Stripe then rejected real onboarding at account creation with the liability error above. Three temporary QA users, their sessions and the single incomplete account-creation row were removed. There are no remaining Connect accounts or payout instructions in the preview DB and no test funds to unwind from this attempt. Baseline fingerprints after cleanup: users `cee2156e48900d3181a655803ab0d167`, bookings `c71531a7810c2a5076f83f1dd45ae471`, stored files `ebbe346597d33536e580807e5b9ccf1a`.
+| Check | Evidence |
+| --- | --- |
+| Restricted-account release gate | Before onboarding submission, authenticated admin release returned 400: transporter must complete Stripe verification; no release instruction was created. |
+| Hosted onboarding and real account event | Approved submission completed; canonical Stripe capabilities became active and the thin webhook independently set preview status to READY. |
+| Customer payment | App quote selection created request `cmvfttcht0001l808vuq6oldb`. Hosted Checkout authorised £110 using Stripe's documented international test card that bypasses the pending balance. The actual transporter-confirm endpoint captured intent `pi_3USP4JLAzgkvCvrI0yXGZdWM`. |
+| Release prerequisites | Only the synthetic booking was advanced to delivered/customer-confirmed beyond 24 hours. A £25 eligible dispute-fine ledger fixture was seeded. This pass tests reservation/deduction, not the already-tested dispute-fine input UI. |
+| Correct release | Instruction `e0e4e44e-96db-4b79-909d-5d9a09496c89`: gross 10000p, fine 2500p, transfer 7500p. Stripe transfer `tr_3USP4JLAzgkvCvrI0KqInlQw` targets the synthetic account and source charge `ch_3USP4JLAzgkvCvrI08hgIgjL`; GBP and livemode=false verified. |
+| Repeated/concurrent release | Two concurrent admin requests returned the same instruction with PAID status. Stripe returned exactly one transfer; the database held one fine application and one payout-completed event. |
+| Lost database completion | Only this fixture's completion fields/event were reset while its external transfer and immutable fine reservation remained. The automatic cron run at 22:42:01 UTC recovered the same transfer, checked=1/failed=0. One transfer, fine application and completion event remained. |
+| Express dashboard | App-created login link worked with Stripe's built-in test-code shortcut. Express visibly showed £75 earnings and £75 available balance. |
+| Transfer reversal and real platform webhook | Full reversal `trr_1USPNDLAzgkvCvrIs385tUZ5` returned 7500p. The actual Stripe webhook changed the instruction to REVERSED and payment release to HELD. Another admin release stayed HELD on the same instruction. |
+| Refund and cleanup | Refund `re_3USP4JLAzgkvCvrI0McOI7ga` succeeded for 11000p; canonical charge showed fully refunded. The connected-account dashboard showed £0 balance and £0 in transit before deletion; Accounts v2 then returned closed=true. All temporary application records and sessions were removed. |
 
-After the platform acknowledgement, the second attempt created the sandbox account successfully and returned a hosted onboarding link. The deployed status endpoint reports `PENDING`, `ready=false`, `connected=true`. An authenticated admin release against a disposable synthetic booking was rejected with HTTP 400, **The transporter must complete Stripe verification before release.** No payout instruction was created. This verified the readiness gate only; that fixture had no real Stripe charge. The fixture booking/payment/job/quote, verification fixtures, temporary customer/admin and all three app sessions were removed. Only the pending transporter and its Connect row remain. Fingerprints of all original users/bookings/files still match the baseline above.
+The first real release attempts completed every Stripe read with HTTP 200 but failed before writing the payout instruction. PostgreSQL's advisory-lock function returns `void`, which Prisma cannot deserialize through `$queryRaw`. Casting that result to `text` preserved the transaction lock and fixed release on the deployed preview. Safe error-code logging was added to preparation failures; raw queries, parameters, payment details and Stripe error bodies are not logged.
 
-After activation, use isolated synthetic users/bookings to verify real Stripe-hosted onboarding, transfer amounts, repeated release, restricted accounts, webhook delivery, automatic recovery and bank-payout failures. Reconcile/refund/reverse test money before removing fixtures. Preserve all existing users, bookings and files. Capture baseline/final fingerprints as in `stripe-sandbox-setup.md`.
+### Remaining bank-payout verification
+
+Stripe Express returned **We couldn't load your account information** on both attempts to edit the existing GBP test bank. No bank details were changed and no bank payout was created. Real `payout.paid`/`payout.failed` delivery, canonical connected-account payout reads using the restricted key, and account-level remediation after a bank failure remain unverified. Keep this explicit limitation separate from the verified platform-to-transporter transfer. Do not treat the synthetic signed snapshot probe or Express's estimated payout date as a successful bank payout.
+
+Once Stripe's test-bank management works, use a new disposable fixture to finish successful and failed bank-payout tests. Stripe-backed application refunds/disputes and reversal-failure recovery also remain a separate live-launch blocker; the manual QA reversal and refund above do not implement those product flows.
+
+### Preservation and final state
+
+- Original users: 16, fingerprint `cee2156e48900d3181a655803ab0d167`.
+- Original bookings: 52, fingerprint `c71531a7810c2a5076f83f1dd45ae471`.
+- Stored-file rows: 136, fingerprint `ebbe346597d33536e580807e5b9ccf1a`.
+- Preview Connect-account rows, payout instructions and fixture sessions: zero after cleanup.
+- All temporary users, verification/insurance metadata, job/quote/request/booking/payment, finance events and six synthetic notifications were removed. No storage files were created.
+- Private QA credentials, cookies and onboarding/checkout/Express URLs were removed from temporary files. No live funds or production changes occurred.
 
 ## Rollback
 
