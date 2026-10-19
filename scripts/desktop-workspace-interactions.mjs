@@ -112,6 +112,8 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
           const card=page.locator('.disputeReviewCard').filter({hasText:'DD-ING-HELD'});
           await card.locator('.disputeReviewSummary').click();
           record('Admin: full route visible on compact dispute',await card.locator('.disputeCompactRoute').isVisible()&&(await card.locator('.disputeCompactRoute').innerText()).includes('Manchester'));
+          record('Admin: payment breakdown visible without additional details',await card.locator('.disputePaymentPanel').isVisible()&&(await card.locator('.disputePaymentPanel').innerText()).includes('£330.00'));
+          record('Admin: three desktop dispute columns',await card.locator('.disputeReviewColumns').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length===3));
           const amount=card.locator('.disputeDesktopFine').getByLabel('Fine amount (£)',{exact:true});
           await amount.fill('0');
           await card.locator('.disputeDesktopFine').getByRole('button',{name:'Fine transporter…',exact:true}).click();
