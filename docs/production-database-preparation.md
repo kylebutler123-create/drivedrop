@@ -158,3 +158,19 @@ The tool is restricted to urzkdwvfplawjvnfubda and the exact dated archive. Defa
 Validation: the real 136-file / 227,100,491-byte archive passed offline verification, and all 16 regression tests passed without credentials or network. Tests cover the two-existing/134-remaining case, full restore and rerun, corrupted readback, private-file exposure, bucket drift, denied access, wrong-project keys, path safety, redirects and retry bounds.
 
 These are preparation results only. The full hosted run still needs a trusted transfer environment with working Storage access and the isolated test project's credential. No additional uploaded files were restored during this preparation, no new cloud runner or Edge Function was deployed, and the remaining 134 hosted objects are still outstanding. The test project remains active; the prior cost and cleanup-approval requirements still apply.
+
+## Server-side restore preparation checkpoint — 19 October 2026
+
+The interrupted session was resumed. The test project is ACTIVE_HEALTHY and the dashboard remains signed in. The private `drivedrop-restore-staging-20261019` bucket already existed; it has a 20 MiB limit, no public access and no storage RLS policies.
+
+The local archive was prepared as 15 checksum-verified binary transfer packs containing the same 136 files. The first pack, `pack-00.bin`, uploaded successfully through the dashboard; a read-only database query independently confirmed its 16,543,419-byte record. It contains 9 archive objects. This is a staging upload only: no new files were restored to original paths in this attempt, and the staged pack has not yet received a hosted SHA-256 check.
+
+A temporary recovery worker is prepared privately but NOT deployed. It is locked to urzkdwvfplawjvnfubda, requires the test project's existing service-role authorization with gateway JWT verification, expires automatically on 21 October 2026 at 00:00 UTC, and only processes fixed paths and checksums from the private backup manifest. Its intended flow verifies each staged pack, upserts original object paths, downloads and hashes each object inside the test project, and verifies all five bucket access samples. It does not delete files, change existing bucket visibility, touch application data, or connect a website.
+
+Ten local checks passed: service-role restriction, project restriction, corrupted pack rejection, bucket-drift rejection, original-path restoration, safe rerun, readback evidence, private access denial, corrupted readback rejection and unexpected public-access rejection. These are local tests, not hosted results.
+
+Automatic approval review rejected the next upload (`pack-01.bin` through `pack-04.bin`), stating that explicit authorization for the sensitive backup payload and named destination was not established. No retry or alternative transfer was attempted. Further transfers are paused pending that specific approval. The user should not be asked to install software or perform manual transfer steps.
+
+Private continuation bundle: DriveDrop-restore-resume-checkpoint-2026-10-19.zip. It contains the prepared worker, local tests, private manifest and checkpoint; no credentials or original photo bytes are included. It is saved outside Git. The original 227 MB backup remains intact.
+
+No Edge Function was deployed, no source or prepared production data was written, no Vercel configuration changed, and no production merge/deployment occurred. Remaining original-path hosted restores: 134, plus readback verification of all 136.
