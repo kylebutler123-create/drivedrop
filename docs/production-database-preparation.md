@@ -35,7 +35,7 @@ The existing production website and preview therefore remain connected to the or
 
 - Dated database backup availability is verified: seven COMPLETED physical backups dated 12–18 October 2026. The latest is 18 October 2026 04:40:54 UTC. Actual hosted recovery is still untested.
 - Storage byte backup and an isolated local file restore are complete; see verification below. This does not establish a database restore or hosted storage access test.
-- Restore the dated database backup to a separate disposable hosted project, compare recovered data, and test restored storage access. Neither the working preview nor the prepared production project is a restore-test target. The separate-project restore is awaiting approval of Supabase's quoted extra cost.
+- Restore the dated database backup to a separate disposable hosted project, compare recovered data, and test restored storage access. Neither the working preview nor the prepared production project is a restore-test target. The separate-project restore cost has been approved; its final creation form is awaiting user entry of the new database password.
 - Keep credentials and personal-data backups out of this repository. The storage archive and verification report have been saved privately outside Git.
 - Configure production-only database/storage credentials at cutover; retain preview's existing credentials.
 - Bootstrap the real admin account securely; no accounts were seeded.
@@ -74,7 +74,7 @@ Verification:
 
 This is a verified file-byte recovery test. It does NOT restore the Postgres database or verify hosted Supabase uploads, object ownership, bucket access behavior or application behavior. The original public/private bucket configuration is recorded; no source storage RLS policies were present.
 
-## Dated database backups and pending hosted test
+## Dated database backups and approved hosted test
 
 The existing project's dashboard lists these seven physical backups as COMPLETED (UTC):
 - 18 October 2026 04:40:54
@@ -87,8 +87,10 @@ The existing project's dashboard lists these seven physical backups as COMPLETED
 
 The separate-project restore workflow was opened for the latest dated backup. Its confirmation states that it creates a NEW project in the same organization and eu-central-1 region, copying database schema, data, indexes, roles, permissions and users. Storage objects/settings and other service settings require separate work.
 
-The quoted additional monthly cost is $9.68 compute + $0 disk = $9.68 total. The Continue button has NOT been pressed; no test project has been created. User approval of this quoted cost is required before proceeding.
+The quoted additional monthly cost is $9.68 compute + $0 disk = $9.68 total. The user approved this cost on 19 October 2026. Continue was pressed, opening the final creation form, and the proposed name is DriveDrop Restore Test 2026-10-19. Supabase requires a new database password; the form has been handed to the user to enter it securely and submit Restore to new project. The final form has NOT been submitted by the agent, and no test project has yet been verified as created.
 
-The latest daily database backup predates the storage export. Treat these as separate snapshots; do not claim they form a single transactionally consistent recovery point. When the hosted restore is approved, validate data against that dated snapshot and account for files added afterward.
+Before proceeding, a read-only source check found no pg_cron, pg_net or wrappers extension, no cron.job table, no enabled logical subscriptions and no foreign servers. This reduces the risk of cloned database jobs initiating live external work; the restored project must still be checked independently.
+
+The latest daily database backup predates the storage export. Treat these as separate snapshots; do not claim they form a single transactionally consistent recovery point. After the hosted restore completes, validate data against that dated snapshot and account for files added afterward.
 
 After the file backup, the prepared production project was rechecked: zero application users, zero auth users, zero bookings and zero storage objects. This continuation made no database/storage changes, changed no Vercel configuration and did not merge or publish to production.
