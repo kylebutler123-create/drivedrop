@@ -44,3 +44,30 @@ The existing production website and preview therefore remain connected to the or
 
 The connected Supabase tools do not expose backup history, backup download or restore.
 Backup verification is still incomplete. No code merge or website production deployment was performed.
+
+## Backup connectivity and inventory checkpoint — 19 October 2026
+
+GitHub file access and Supabase project/SQL access responded successfully in the continuation session. Both Supabase projects reported ACTIVE_HEALTHY.
+The browser also responded, but it was not signed in to Supabase. Automated sign-in is incomplete: after the selected GitHub / Apple sign-in route, automatic approval review blocked access to Apple's authentication origin pending explicit user authorization. Do not treat a submitted sign-in choice as successful authentication.
+
+The existing project's storage inventory was re-counted with read-only SQL:
+
+| Bucket | Access | Objects | Bytes |
+| --- | --- | ---: | ---: |
+| delivery-evidence | Private | 104 | 179,040,935 |
+| message-attachments | Private | 5 | 10,358,355 |
+| transporter-profiles | Public | 3 | 1,509,484 |
+| transporter-verification | Private | 23 | 36,017,094 |
+| vehicle-photos | Private | 1 | 174,623 |
+| **Total** | | **136** | **227,100,491** |
+
+These byte totals are database metadata, not proof that the file contents have been downloaded or verified.
+No storage RLS policies were returned for the source project. Preserve the bucket visibility configuration and verify actual download behavior during the restore test.
+
+The new production project was rechecked: zero application users, zero auth users, zero bookings and zero storage objects.
+
+Bulk export has NOT started. No durable file backup, file-content hashes or isolated restore result is available yet. The connector exposes storage metadata through SQL but does not expose storage file downloads; dashboard access or an authenticated storage client is still needed.
+
+Resume by completing authorized Supabase dashboard authentication, verifying dated database backups, and selecting a protected durable destination outside Git. Export the actual bytes and a manifest of bucket, object path, size, content type and SHA-256. Check the source inventory again to detect changes during export. Restore into a separate disposable test destination; neither yozbuuvebzxitoqrvyer nor srqhjgrhgyyfdaxckjum is a restore-test target. Compare all 136 file hashes and counts, then verify private/public access behavior before marking the restore gate complete.
+
+This continuation made no database/storage changes, changed no Vercel configuration and did not merge or publish to production.
