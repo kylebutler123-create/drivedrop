@@ -1,4 +1,6 @@
 'use client';
+import useUkToday from './useUkToday';
+import {ukParts} from '@/lib/availability-time';
 import VehiclePhotoField from './VehiclePhotoField';
 import CollectionDateWindowField from './CollectionDateWindowField';
 import CollectionWindowFields,{Icon as CollectionIcon} from './CollectionWindowFields';
@@ -17,6 +19,7 @@ type Props={expanded:boolean;onExpandChange:(expanded:boolean)=>void;wizard?:boo
 type AccountMode='create'|'login';
 
 function CollectionDatePicker({value,onChange,disabled,combined=false}:{value:string;onChange:(date:string)=>void;disabled:boolean;combined?:boolean}){
+  const today=useUkToday();
   const [open,setOpen]=useState(false);
   const [month,setMonth]=useState(()=>{const today=new Date();return new Date(today.getFullYear(),today.getMonth(),1)});
   const [position,setPosition]=useState({top:0,left:0});
@@ -53,10 +56,10 @@ function CollectionDatePicker({value,onChange,disabled,combined=false}:{value:st
   return <div className={combined?'dd-date-column homeQuoteCombinedDate':'field homeQuoteCalendarField'} ref={container}>
     {combined?<label htmlFor="home-quote-date-button">Collection date</label>:<span className="homeQuoteFieldLabel" id="home-quote-date-label"><span className="homeQuoteDateLegacyLabel">COLLECTION DATE</span><span className="homeQuoteDatePolishLabel">Collection date</span></span>}
     <input type="hidden" name="collectionDate" value={value}/>
-    <button id="home-quote-date-button" type="button" className={combined?`dd-field dd-date-contained${value?' has-value':''}`:'homeQuoteDateButton'} aria-label={`Collection date: ${label}`} aria-expanded={open} aria-haspopup="dialog" onClick={()=>setOpen(current=>!current)} disabled={disabled}>{combined?<><CollectionIcon name="calendar"/><span>{label}</span><CollectionIcon name="chevron"/></>:<>{label}<span aria-hidden="true">▦</span></>}</button>
+    <button id="home-quote-date-button" type="button" className={combined?`dd-field dd-date-contained${value?' has-value':''}`:'homeQuoteDateButton'} aria-label={`Collection date: ${label}`} aria-expanded={open} aria-haspopup="dialog" onClick={()=>{if(!open)setMonth(new Date((value>=ukParts().date?value:ukParts().date).slice(0,7)+'-01T12:00:00'));setOpen(current=>!current)}} disabled={disabled}>{combined?<><CollectionIcon name="calendar"/><span>{label}</span><CollectionIcon name="chevron"/></>:<>{label}<span aria-hidden="true">▦</span></>}</button>
     {open&&createPortal(<div ref={popup} className="homeQuoteCalendar" role="dialog" aria-label="Choose collection date" style={position}>
-      <div className="homeQuoteCalendarHeader"><button type="button" aria-label="Previous month" onClick={()=>setMonth(current=>new Date(current.getFullYear(),current.getMonth()-1,1))}>‹</button><strong>{month.toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</strong><button type="button" aria-label="Next month" onClick={()=>setMonth(current=>new Date(current.getFullYear(),current.getMonth()+1,1))}>›</button></div>
-      <div className="homeQuoteCalendarDays">{['M','T','W','T','F','S','S'].map((day,index)=><span key={index} aria-hidden="true">{day}</span>)}{Array.from({length:firstDay},(_,index)=><span key={`empty-${index}`}/>)}{Array.from({length:days},(_,index)=>{const day=index+1;const date=`${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;return <button type="button" key={day} aria-label={new Date(`${date}T12:00:00`).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})} aria-pressed={value===date} onClick={()=>{onChange(date);setOpen(false)}}>{day}</button>})}</div>
+      <div className="homeQuoteCalendarHeader"><button type="button" aria-label="Previous month" disabled={`${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,'0')}`<=today.slice(0,7)} onClick={()=>setMonth(current=>new Date(current.getFullYear(),current.getMonth()-1,1))}>‹</button><strong>{month.toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</strong><button type="button" aria-label="Next month" onClick={()=>setMonth(current=>new Date(current.getFullYear(),current.getMonth()+1,1))}>›</button></div>
+      <div className="homeQuoteCalendarDays">{['M','T','W','T','F','S','S'].map((day,index)=><span key={index} aria-hidden="true">{day}</span>)}{Array.from({length:firstDay},(_,index)=><span key={`empty-${index}`}/>)}{Array.from({length:days},(_,index)=>{const day=index+1;const date=`${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;return <button type="button" key={day} aria-label={new Date(`${date}T12:00:00`).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})} aria-pressed={value===date} disabled={date<today} onClick={()=>{if(date<ukParts().date)return;onChange(date);setOpen(false)}}>{day}</button>})}</div>
     </div>,document.body)}
   </div>;
 }

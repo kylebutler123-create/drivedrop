@@ -89,3 +89,4 @@
   .homeQuoteCalendarHeader button{width:32px;height:32px}
   .homeQuoteCalendarDays span,.homeQuoteCalendarDays button{height:32px;font-size:13px}
 }
+.homeQuoteCalendarDays button:disabled,.homeQuoteCalendarHeader button:disabled{opacity:.35;cursor:not-allowed;background:transparent;box-shadow:none}
