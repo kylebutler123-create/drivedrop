@@ -91,6 +91,21 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
         });
       }
       if (role === 'admin') {
+        await check('payout-card-details', async () => {
+          await page.goto(base + '/admin/payouts', {waitUntil:'domcontentloaded'});
+          const card=page.locator('.payoutPolished').first();
+          const summary=card.locator('.payoutPolishedSummary');
+          record('Admin: compact payout shows one net amount',await card.locator('.payoutPolishedAmount').count()===1);
+          record('Admin: payment breakdown hidden until expanded',await card.locator('.payoutPolishedBreakdown').count()===0);
+          await summary.click();
+          record('Admin: payout details expand',await summary.getAttribute('aria-expanded')==='true'&&await card.locator('.payoutPolishedBreakdown').isVisible());
+          record('Admin: release checks retained',await card.locator('.payoutPolishedChecks').isVisible());
+          record('Admin: one visible test release action',await card.getByRole('button',{name:'Release test payout',exact:true}).isVisible());
+          await card.locator('.payoutPolishedEvidence summary').first().click();
+          record('Admin: evidence disclosure opens',await card.locator('.payoutPolishedEvidence details').first().getAttribute('open')!==null);
+          await summary.click();
+          record('Admin: payout details collapse',await card.locator('.payoutPolishedDetails').count()===0);
+        });
         await check('custom-dispute-fine', async () => {
           await page.goto(base + '/admin', {waitUntil: 'domcontentloaded'});
           await page.locator('.adminWorkspace .adminSectionGrid').getByRole('button').filter({hasText:'Dispute management'}).click();

@@ -4,8 +4,8 @@ const postcss = require('postcss');
 const sheet = postcss.parse(fs.readFileSync('src/app/admin-payouts-desktop.css', 'utf8'));
 for (const node of sheet.nodes) {
   if (node.type === 'comment') continue;
-  if (node.type === 'rule' && node.selector === '.payoutFinePreview') {
-    assert.equal(node.nodes.length,1); assert.equal(node.nodes[0].prop,'display'); assert.equal(node.nodes[0].value,'none'); continue;
+  if (node.type === 'rule' && ['.payoutFinePreview','.payoutPolished','.payoutLegacy'].includes(node.selector)) {
+    assert.equal(node.nodes.length,1); assert.equal(node.nodes[0].prop,'display'); assert.equal(node.nodes[0].value,node.selector==='.payoutLegacy'?'contents':'none'); continue;
   }
   assert.equal(node.type, 'atrule');
   assert.equal(node.name, 'media');
