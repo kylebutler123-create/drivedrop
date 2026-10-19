@@ -1,6 +1,5 @@
 import {Prisma} from '@prisma/client';
 import {prisma} from '@/lib/prisma';
-import {DISPUTE_FINE_PENCE} from '@/lib/cancellation-fees';
 import type {OutstandingPayoutFine} from '@/lib/payout-fine-preview';
 
 /** Admin-only caller; one parameterised, read-only query for both fine sources. */
@@ -12,7 +11,7 @@ export async function outstandingPayoutFines(transporterIds:string[]):Promise<Ou
   WHERE "transporterId" IN (${Prisma.join(transporterIds)})
    AND "status" IN ('PENDING','PARTIALLY_APPLIED') AND "appliedPence"<"amountPence"
   UNION ALL
-  SELECT b."transporterId", GREATEST(0,${DISPUTE_FINE_PENCE}-COALESCE((
+  SELECT b."transporterId", GREATEST(0,fine."amountPence"-COALESCE((
    SELECT SUM(applied."amountPence") FROM "FinanceEvent" applied
    WHERE applied."note"='ADMIN_DISPUTE_FINE_APPLIED:' || substring(fine."note" from length('ADMIN_DISPUTE_FINE:')+1)
   ),0))::integer AS "outstandingPence", fine."createdAt"

@@ -1,7 +1,7 @@
 import {randomUUID} from 'crypto';
+import {validDisputeFinePence} from './dispute-fine-amount';
 
 export const CANCELLATION_FEE_PENCE=5000;
-export const DISPUTE_FINE_PENCE=5000;
 
 export const disputeFineMarker=(disputeId:string)=>`ADMIN_DISPUTE_FINE:${disputeId}`;
 const disputeFineAppliedMarker=(disputeId:string)=>`ADMIN_DISPUTE_FINE_APPLIED:${disputeId}`;
@@ -20,6 +20,7 @@ type PendingFee={
 
 type PendingDisputeFine={
  id:string;
+ amountPence:number;
  note:string;
  createdAt:Date;
 };
@@ -43,8 +44,10 @@ export async function recordTransporterDisputeFine(input:{
  disputeId:string;
  paymentId:string;
  actorId:string;
+ amountPence:number;
 }){
- const {tx,disputeId,paymentId,actorId}=input;
+ const {tx,disputeId,paymentId,actorId,amountPence}=input;
+ if(!validDisputeFinePence(amountPence))throw new Error('Enter a valid positive dispute fine amount');
  const marker=disputeFineMarker(disputeId);
 
  // Serialise requests for one dispute so repeated taps cannot add the fine twice.
@@ -63,7 +66,7 @@ export async function recordTransporterDisputeFine(input:{
   INSERT INTO "FinanceEvent"
    ("id","paymentId","type","amountPence","note","actorId","createdAt")
   VALUES
-   (${randomUUID()},${paymentId},'PAYMENT_CREATED',${DISPUTE_FINE_PENCE},${marker},${actorId},NOW())
+   (${randomUUID()},${paymentId},'PAYMENT_CREATED',${amountPence},${marker},${actorId},NOW())
  `;
  return true;
 }
@@ -133,7 +136,7 @@ export async function applyCancellationFeesToPayout(input:{
  }
 
  const disputeFines=await tx.$queryRaw<PendingDisputeFine[]>`
-  SELECT fine."id",fine."note",fine."createdAt"
+  SELECT fine."id",fine."amountPence",fine."note",fine."createdAt"
   FROM "FinanceEvent" fine
   INNER JOIN "BookingPayment" source_payment ON source_payment."id"=fine."paymentId"
   INNER JOIN "Booking" source_booking ON source_booking."id"=source_payment."bookingId"
@@ -170,7 +173,7 @@ export async function applyCancellationFeesToPayout(input:{
    WHERE "note"=${appliedMarker}
   `;
   const appliedPence=Number(applied[0]?.amountPence||0);
-  const outstandingPence=Math.max(0,DISPUTE_FINE_PENCE-appliedPence);
+  const outstandingPence=Math.max(0,fine.amountPence-appliedPence);
   const amountPence=Math.min(outstandingPence,availablePence);
   if(amountPence<=0)continue;
   await tx.$executeRaw`

@@ -2,6 +2,7 @@
 import VehiclePhoto from '@/app/components/VehiclePhoto';
 import {refundAmounts,capturedPayment} from '@/lib/payout-policy';
 import {useEffect,useState} from 'react';
+import {parseDisputeFinePence} from '@/lib/dispute-fine-amount';
 import {useRouter} from 'next/navigation';
 import Link from 'next/link';
 import Icon from '@/app/components/ApprovedIcon';
@@ -15,7 +16,7 @@ function ProofGroup({type,evidence}:{type:'COLLECTION'|'DELIVERY';evidence:any[]
  const rows=evidence.filter(e=>e.type===type);return <details className="disputeEvidence"><summary><Icon name="file"/>View {type==='COLLECTION'?'collection':'delivery'} evidence <span>({rows.length})</span></summary>{rows.length?<div>{rows.map((e,i)=><a key={e.id} href={`/api/evidence/${e.id}`} target="_blank" rel="noreferrer">{e.note===`__${type==='COLLECTION'?'POC':'POD'}_SIGNATURE__`?'Signed confirmation':`Photo ${i+1}`}{e.note&&!e.note.startsWith('__')?` — ${e.note}`:''}</a>)}</div>:<p>No evidence recorded.</p>}</details>;
 }
 export default function AdminDisputeManagement({actionOnly=false}:{actionOnly?:boolean}){
- const router=useRouter();const[items,setItems]=useState<any[]>([]),[loading,setLoading]=useState(true),[busy,setBusy]=useState<string|null>(null),[expanded,setExpanded]=useState<string|null>(null),[error,setError]=useState(''),[message,setMessage]=useState(''),[filter,setFilter]=useState<Filter>('OPEN'),[notes,setNotes]=useState<Record<string,string>>({});
+ const router=useRouter();const[items,setItems]=useState<any[]>([]),[loading,setLoading]=useState(true),[busy,setBusy]=useState<string|null>(null),[expanded,setExpanded]=useState<string|null>(null),[error,setError]=useState(''),[message,setMessage]=useState(''),[filter,setFilter]=useState<Filter>('OPEN'),[notes,setNotes]=useState<Record<string,string>>({}),[fineAmounts,setFineAmounts]=useState<Record<string,string>>({});
  async function load(initial=false){if(initial)setLoading(true);try{const r=await fetch('/api/admin/disputes',{cache:'no-store'}),d=await r.json().catch(()=>null);if(!r.ok)throw Error(d?.error||'Unable to load disputes');setItems(Array.isArray(d)?d:[])}catch(e){setError(e instanceof Error?e.message:'Unable to load disputes')}finally{setLoading(false)}}
  useEffect(()=>{load(true)},[]);
  const counts=(key:Filter)=>items.filter(d=>key==='RESOLVED'?['RESOLVED','CLOSED'].includes(d.status):d.status===key).length;
@@ -44,7 +45,16 @@ export default function AdminDisputeManagement({actionOnly=false}:{actionOnly?:b
   if(!confirm(warning))return;
   await send(d,{status:'RESOLVED',resolution,resolutionNote,refundAmountPence,approvedProceedsPence},resolution==='RELEASE_PAYOUT'?'Payout approved. Other active disputes may keep it held; otherwise it is ready for admin release.':resolution==='NO_ACTION'?(paid?'Dispute closed. The released payment is unchanged.':'Dispute closed and payout eligibility recalculated.'):'Refund recorded and dispute resolved. Any remaining payout requires a separate admin release.');
  }
- async function fineTransporter(d:any){if(!confirm(`Fine ${d.booking.transporter.name} £50? This will be deducted from their next completed job payout.`))return;setBusy(d.id);setError('');setMessage('');try{const r=await fetch('/api/admin/disputes',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({disputeId:d.id,action:'FINE_TRANSPORTER'})}),data=await r.json().catch(()=>null);if(!r.ok)throw Error(data?.error||'Unable to record fine');await load();setMessage('£50 fine recorded for deduction from the next completed job payout.');router.refresh()}catch(e){setError(e instanceof Error?e.message:'Unable to record fine')}finally{setBusy(null)}}
+ async function fineTransporter(d:any){
+  const amountPence=parseDisputeFinePence(fineAmounts[d.id]||'');
+  if(amountPence===null){setError('Enter a valid fine amount greater than £0 with no more than two decimal places.');return;}
+  if(!confirm(`Fine ${d.booking.transporter.name} ${money(amountPence)}? This will be deducted from their next completed job payout.`))return;
+  setBusy(d.id);setError('');setMessage('');
+  try{const r=await fetch('/api/admin/disputes',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({disputeId:d.id,action:'FINE_TRANSPORTER',amountPence})}),data=await r.json().catch(()=>null);if(!r.ok)throw Error(data?.error||'Unable to record fine');await load();setMessage(`${money(data.amountPence)} fine recorded for deduction from the next completed job payout.`);router.refresh()}
+  catch(e){setError(e instanceof Error?e.message:'Unable to record fine')}
+  finally{setBusy(null)}
+ }
+
  if(loading)return <div className="dashboardCard">Loading disputes…</div>;
  return <div className="adminDisputes disputeReviewWorkspace" data-action-only={actionOnly}>
   <div className="disputeReviewFilters" role="group" aria-label="Filter disputes by status">{filters.map(key=><button type="button" key={key} aria-pressed={filter===key} onClick={()=>{setFilter(key);setExpanded(null);setError('');setMessage('')}}>{label(key)} <b>{counts(key)}</b></button>)}</div>
@@ -78,7 +88,7 @@ export default function AdminDisputeManagement({actionOnly=false}:{actionOnly?:b
       {!paid&&p&&p.provider!=='TEST'&&refundable>0&&<p className="disputeActionHelp">Refund processing for this payment provider is not available through these controls. Use the separate supported refund process.</p>}
      </>}
      {!active&&<p className="disputeActionHelp">{label(d.status)}{d.resolution?` · ${label(d.resolution)}`:''}</p>}
-     <details className="disputeAdditionalDetails"><summary>Booking, finance & additional admin controls</summary><div className="disputeAdditionalGrid"><dl><dt>Vehicle type</dt><dd>{job.vehicleType||'Not recorded'}</dd><dt>Running condition</dt><dd>{job.running?'Runs and drives':'Non-running'}</dd><dt>Collection</dt><dd>{job.collection}</dd><dt>Delivery</dt><dd>{job.delivery}</dd><dt>Customer email</dt><dd>{b.customer.email||'Not provided'}</dd><dt>Transporter email</dt><dd>{b.transporter.email||'Not provided'}</dd></dl><div><dl><dt>Customer paid</dt><dd>{money(p?.paidPence)}</dd><dt>Already refunded</dt><dd>{money(p?.refundedPence)}</dd><dt>{paid?'Remaining customer payment':'Remaining refundable balance'}</dt><dd>{money(refundable)}</dd></dl><button type="button" className="disputeSecondary" disabled={!!busy||d.transporterFineRecorded||!p} onClick={()=>fineTransporter(d)}>{d.transporterFineRecorded?'£50 fine recorded':'Fine transporter £50'}</button><p className="disputeActionHelp">A separate fine is deducted from the next completed job payout. It does not reverse this payout.</p></div></div></details>
+     <details className="disputeAdditionalDetails"><summary>Booking, finance & additional admin controls</summary><div className="disputeAdditionalGrid"><dl><dt>Vehicle type</dt><dd>{job.vehicleType||'Not recorded'}</dd><dt>Running condition</dt><dd>{job.running?'Runs and drives':'Non-running'}</dd><dt>Collection</dt><dd>{job.collection}</dd><dt>Delivery</dt><dd>{job.delivery}</dd><dt>Customer email</dt><dd>{b.customer.email||'Not provided'}</dd><dt>Transporter email</dt><dd>{b.transporter.email||'Not provided'}</dd></dl><div><dl><dt>Customer paid</dt><dd>{money(p?.paidPence)}</dd><dt>Already refunded</dt><dd>{money(p?.refundedPence)}</dd><dt>{paid?'Remaining customer payment':'Remaining refundable balance'}</dt><dd>{money(refundable)}</dd></dl>{d.transporterFineRecorded?<p className="disputeFineRecorded">{money(d.transporterFineAmountPence)} fine recorded</p>:<div className="disputeFineControls"><label htmlFor={`dispute-fine-${d.id}`}>Fine amount (£)<input id={`dispute-fine-${d.id}`} type="number" inputMode="decimal" min="0.01" max="21474836.47" step="0.01" placeholder="Enter amount" value={fineAmounts[d.id]||''} onChange={e=>setFineAmounts(amounts=>({...amounts,[d.id]:e.target.value}))} disabled={!!busy||!p}/></label><button type="button" className="disputeSecondary" disabled={!!busy||!p} onClick={()=>fineTransporter(d)}>Fine transporter…</button></div>}<p className="disputeActionHelp">A separate fine is deducted from the next completed job payout. It does not reverse this payout.</p></div></div></details>
     </div>}
    </article>;
   })}

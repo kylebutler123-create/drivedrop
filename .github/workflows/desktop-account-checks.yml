@@ -55,6 +55,8 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Create schema in disposable local PostgreSQL only
         run: npx prisma db push --skip-generate
+      - name: Check dispute fine validation and deductions
+        run: node scripts/test-dispute-fines.cjs
       - name: Build updated and baseline applications
         run: |
           npm run build

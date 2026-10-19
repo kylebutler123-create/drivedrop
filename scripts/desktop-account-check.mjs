@@ -172,10 +172,10 @@ try{
  record('Existing fee calculation remains authoritative',booking.payment?.transportValuePence===22000&&booking.payment?.transporterProceedsPence===20000,JSON.stringify(booking.payment));
  const sent=await apis.customer.post('/api/bookings/messages',{multipart:{bookingId:booking.id,body:'Isolated CI message; no real customer or recipient.'}});record('Real local booking message can be sent',sent.status()===201);
  const received=await apis.transporter.get(`/api/bookings/messages?bookingId=${booking.id}`);const messages=await received.json();record('Other booking party can read the local message',received.ok()&&Array.isArray(messages)&&messages.some(x=>x.body.startsWith('Isolated CI message')));
- const fine=await apis.admin.post('/api/admin/disputes',{data:{disputeId:'ci-dispute-held',action:'FINE_TRANSPORTER'}});record('Admin records existing £50 fine in test database',fine.ok(),String(fine.status()));
+ const fine=await apis.admin.post('/api/admin/disputes',{data:{disputeId:'ci-dispute-held',action:'FINE_TRANSPORTER',amountPence:7525}});record('Admin records custom £75.25 fine in test database',fine.ok(),String(fine.status()));
  const confirmation=await apis.customer.patch('/api/bookings/confirm-delivery',{data:{bookingId:'ci-booking-awaiting'}});record('Customer confirms delivered test booking',confirmation.ok());
  const payout=await apis.admin.post('/api/admin/payments/payout',{data:{paymentId:'ci-payment-awaiting'}});const payment=await payout.json();record('Existing sandbox payout releases after confirmation',payout.ok()&&payment.payoutStatus==='PAID',JSON.stringify({status:payout.status(),error:payment.error}));
- record('Existing £50 fine deducted once from eligible test proceeds',payment.cancellationDeductionPence===5000&&payment.transporterProceedsPence===25000);
+ record('Custom £75.25 fine deducted once from eligible test proceeds',payment.cancellationDeductionPence===7525&&payment.transporterProceedsPence===22475);
  const repeat=await apis.admin.post('/api/admin/payments/payout',{data:{paymentId:'ci-payment-awaiting'}});record('Repeated payout request does not pay twice',repeat.status()===400);
  const held=await apis.admin.post('/api/admin/payments/payout',{data:{paymentId:'ci-payment-held'}});record('Active dispute prevents payout',held.status()===400);
  for(const api of [...Object.values(apis),guest])await api.dispose();

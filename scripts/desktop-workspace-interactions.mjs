@@ -91,6 +91,24 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
         });
       }
       if (role === 'admin') {
+        await check('custom-dispute-fine', async () => {
+          await page.goto(base + '/admin', {waitUntil: 'domcontentloaded'});
+          await page.locator('.adminWorkspace .adminSectionGrid').getByRole('button').filter({hasText:'Dispute management'}).click();
+          const card=page.locator('.disputeReviewCard').filter({hasText:'DD-ING-HELD'});
+          await card.locator('.disputeReviewSummary').click();
+          await card.locator('.disputeAdditionalDetails > summary').click();
+          const amount=card.getByLabel('Fine amount (£)',{exact:true});
+          await amount.fill('0');
+          await card.getByRole('button',{name:'Fine transporter…',exact:true}).click();
+          record('Admin: zero dispute fine rejected',await page.getByRole('alert').filter({hasText:'Enter a valid fine amount'}).isVisible());
+          await amount.fill('75.25');
+          const dialogPromise=page.waitForEvent('dialog');
+          const clicked=card.getByRole('button',{name:'Fine transporter…',exact:true}).click();
+          const dialog=await dialogPromise;
+          record('Admin: confirmation shows entered £75.25 fine',dialog.message().includes('£75.25'));
+          await dialog.dismiss();await clicked;
+          record('Admin: cancelled confirmation preserves editable amount',await amount.inputValue()==='75.25'&&await card.locator('.disputeFineRecorded').count()===0);
+        });
         for (const title of ['User manager','Transporter verification','Dispute management','Bookings & deliveries']) {
           await check(`rail-${title.toLowerCase().replace(/[^a-z]+/g,'-')}`, async () => {
             await page.goto(base + '/admin', {waitUntil: 'domcontentloaded'});
