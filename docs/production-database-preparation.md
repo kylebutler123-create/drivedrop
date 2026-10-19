@@ -33,9 +33,11 @@ The existing production website and preview therefore remain connected to the or
 
 ## Outstanding gates
 
+**Cleanup complete:** the disposable restore-test project was permanently deleted with explicit approval on 19 October 2026. The original preview/shared project and prepared production project remain healthy. Earlier test/preparation sections below are historical; the final cleanup section records the current state.
+
 - Dated database recovery is verified: the selected 18 October 2026 04:40:54 UTC physical backup was restored to a separate hosted test project on 19 October. Database integrity and snapshot comparisons passed; details below.
 - Storage recovery is verified: all 136 archived files were restored at their original paths in the isolated hosted test project and read back with matching SHA-256 hashes (227,100,491 bytes). All five bucket access samples passed; details in the final section below.
-- Hosted file restore/readback in urzkdwvfplawjvnfubda is complete. Full application recovery/role-authorization checks remain pending because the dated database and later file snapshots differ and no website was connected to the test. The isolated project remains active at the quoted additional $9.68/month compute cost; deleting/retiring it needs separate cleanup approval.
+- Hosted file restore/readback in urzkdwvfplawjvnfubda is complete. Full application recovery/role-authorization checks remain pending because the dated database and later file snapshots differ and no website was connected to the test. The isolated project was subsequently deleted after explicit approval; its additional compute usage has ended.
 - Keep credentials and personal-data backups out of this repository. The storage archive and verification report have been saved privately outside Git.
 - Configure production-only database/storage credentials at cutover; retain preview's existing credentials.
 - Bootstrap the real admin account securely; no accounts were seeded.
@@ -206,9 +208,11 @@ Private saved evidence:
 - `DriveDrop-hosted-storage-readback-2026-10-19.json`: full per-file SHA-256 reports, bucket access results, independent inventory/fingerprint checks, worker source/local tests and disabled-worker confirmation.
 - The original `DriveDrop-storage-backup-2026-10-19.zip` remains unchanged; archive SHA-256 is `b05bcbaf828879b98f6b34e2d57500bfc9286bc295c621dbc2affe66a7408c40`.
 
-**Still pending:** reconcile the 18 October database snapshot with the 19 October file snapshot before claiming complete application recovery; verify application-role authorization/uploads/downloads; finish payment, email, scheduled-task and other launch gates. The test project remains active and billable at the quoted $9.68/month; cleanup/retirement awaits explicit approval.
+**Still pending:** reconcile the 18 October database snapshot with the 19 October file snapshot before claiming complete application recovery; verify application-role authorization/uploads/downloads; finish payment, email, scheduled-task and other launch gates. The test project was subsequently deleted after explicit cleanup approval; see the final cleanup section.
 
 ## Cleanup and launch configuration review — 19 October 2026
+
+This section records the pre-approval checkpoint. The deletion block was subsequently resolved by explicit user approval; cleanup is complete as recorded below.
 
 The user asked to continue after the recovery explanation. Deletion of **DriveDrop Restore Test 2026-10-19** (`urzkdwvfplawjvnfubda`) was prepared in the dashboard. Automatic approval review rejected the final action because explicit approval of the named project's permanent deletion and all its test data was not established. **The project was not deleted; it remains ACTIVE_HEALTHY and billable.** The disabled recovery worker remains in place. A concrete deletion confirmation is pending; do not retry deletion through another interface to bypass the review.
 
@@ -229,3 +233,22 @@ The latest inspected preview deployment for the reviewed commit was READY (`dpl_
 Independent read-only checks again found source counts of 16 users, 52 bookings and 136 Storage records with the same full User, Booking and Storage metadata fingerprints as the completed restore test. Prepared production remained empty (zero users, auth users, bookings and Storage objects) with matching empty fingerprints.
 
 This continuation changed documentation only. No environment variable, production guard, database row, live payment, email send, scheduler or production deployment was changed.
+
+## Approved test-project deletion completed — 19 October 2026
+
+The user explicitly approved permanent deletion of **DriveDrop Restore Test 2026-10-19** (`urzkdwvfplawjvnfubda`), including its database, uploaded test files and recovery function, after the irreversible consequences and the separation from preview were explained.
+
+The named project was deleted through its Supabase dashboard confirmation. The dashboard returned to the organization's project list without the restore test, and the Supabase connector independently returned only the original/shared project, prepared DriveDrop Production project and unrelated AutoMove project. Deletion was verified by 12:20 UTC (13:20 BST). No alternate interface was used to bypass the earlier approval review.
+
+Post-deletion checks:
+- Original preview/shared `yozbuuvebzxitoqrvyer`: ACTIVE_HEALTHY; 16 application users, 52 bookings, 0 Supabase Auth users and 136 Storage records.
+- Original full User, Booking and Storage metadata fingerprints exactly match the pre-deletion/restore-run values.
+- Prepared production `srqhjgrhgyyfdaxckjum`: ACTIVE_HEALTHY; zero users, auth users, bookings and Storage records, with the same empty fingerprints.
+- The privately saved original storage archive remains 227,369,898 bytes, SHA-256 `b05bcbaf828879b98f6b34e2d57500bfc9286bc295c621dbc2affe66a7408c40`.
+- The privately saved completed hosted verification report remains 135,202 bytes, SHA-256 `a653ba7a9d89c47d60c201df90d38118d642354435ae082f194e022ce5bffa4f`. Its historical evidence is unchanged.
+
+Deleting the disposable project removes its restored copies, staging packs/reports, temporary duplicate and disabled worker. It stops further usage for that project; usage already incurred can still appear on the bill. Supabase's documented behavior: https://supabase.com/docs/guides/platform/delete-project
+
+The recovery test is closed. The fixed-target Python hosted restore instructions are now historical because their destination no longer exists; offline archive verification remains usable. Any future hosted test requires a newly reviewed isolated destination.
+
+No preview/source or prepared-production data, website environment settings or application code changed. No production merge or production deployment was performed. Payment, email, scheduling, cutover and full application-acceptance gates remain as recorded above.
