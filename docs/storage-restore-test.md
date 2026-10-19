@@ -1,8 +1,10 @@
 # Bulk Storage restore test
 
-Prepared on 19 October 2026. **Hosted file recovery PASSED on 19 October 2026.**
+Prepared on 19 October 2026. **Hosted file recovery PASSED; the disposable test project was deleted with explicit approval on 19 October 2026.**
 
-All 136 files (227,100,491 bytes) were restored and read back with matching SHA-256 hashes in the isolated test project. All five bucket access samples and original-path/size/MIME/cache-setting comparisons passed. The transfer used private dashboard-uploaded batches and a temporary service-role-only Edge Function; that function is now disabled. The Python tool below remains an optional fallback and was not used for the completed hosted transfer. Full evidence and the remaining application-recovery limits are recorded in [production-database-preparation.md](production-database-preparation.md#full-hosted-storage-restore-verified--19-october-2026).
+**Historical hosted procedure:** `urzkdwvfplawjvnfubda` no longer exists. Do not run the hosted commands below against the original preview or prepared production project. Offline archive verification still works. A future hosted test requires a newly reviewed isolated target and corresponding guard updates.
+
+All 136 files (227,100,491 bytes) were restored and read back with matching SHA-256 hashes in the isolated test project. All five bucket access samples and original-path/size/MIME/cache-setting comparisons passed. The transfer used private dashboard-uploaded batches and a temporary service-role-only Edge Function; that function was disabled after verification and removed with the approved project deletion. The Python tool below was prepared as a fallback and was not used for the completed hosted transfer. Full evidence and the remaining application-recovery limits are recorded in [production-database-preparation.md](production-database-preparation.md#full-hosted-storage-restore-verified--19-october-2026).
 
 The tool is `scripts/storage_restore_test.py`. It uses Python 3.10 or later and
 only the standard library. It is locked to **DriveDrop Restore Test 2026-10-19**
@@ -27,7 +29,7 @@ temporary `(1)` duplicate is preserved. It does not change the database schema,
 application rows, website settings, source project or production project.
 Objects outside the archive are not inventoried by this script.
 
-## Optional fallback: run from a trusted computer
+## Historical fallback procedure (hosted destination retired)
 
 1. Download `DriveDrop-storage-backup-2026-10-19.zip` from the saved backup.
    Keep it in a private folder outside this repository and outside any shared
@@ -85,7 +87,7 @@ Its default concurrency is three files, with bounded retries and request timeout
 - Reconcile the older database snapshot with the later file snapshot before
   claiming a complete application recovery. This tool verifies file bytes and
   bucket access samples, not application authorization or database consistency.
-- Retire the test project only after explicit cleanup approval.
+- Completed: the test project was retired after explicit cleanup approval. The source and prepared production were independently verified healthy with unchanged fingerprints; the original archive and verification report remain saved privately.
 
 ## Preparation evidence
 
