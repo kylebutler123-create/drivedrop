@@ -2,6 +2,16 @@
 
 ## Status
 
+**21 October 2026, current checkpoint:** The explicitly approved £1.10 sandbox refund and £1 recovery completed through the actual administrator UI. Stripe confirms exactly one successful 110p refund and one 100p reversal of the original booking transfer. The app finished SUCCEEDED / RECOVERED, cleared its reservation, and shows the payment fully refunded with payout cancelled and zero fee/proceeds. [Admin result](evidence/stripe-recovery-completed.jpg).
+
+**Refunds are OFF.** READY ordinary preview `dpl_6JeNBhqCp4a25pB2Fsvze8HaR78A`, runtime `441fa2d3eeace91b9f6f2f8dd4618e4c04d3c8f9`, has only the feature alias. Authenticated admin GET confirms the false flag. Only the existing Preview / `feature/ui-polish` flag was toggled; all other environment metadata and the production deployment/aliases are unchanged.
+
+The expected insufficient-balance hold did **not** occur: Stripe allowed the reversal and the connected balance became -£1. The approved £1 sandbox funding restored it to £0 future payouts; the earlier £2 in transit remains separate. This verifies successful recovery, but leaves the genuine insufficient-balance/retry gate unverified. The daily / 7-day schedule and saved bank ending 1116 are unchanged. [Restored balance](evidence/stripe-recovery-balance-restored.jpg).
+
+The settled recovery fixture and its eight notifications were removed with transaction guards. All 31 table/storage fingerprints exactly match the previous checkpoint after its fixture exclusions; the signed-in administrator session, original failed-refund record and all original preview data are preserved. See [stripe-refund-preparation.md](stripe-refund-preparation.md) for exact Stripe/audit IDs, remaining charge-dispute and retry gates, and the earlier operational notes. Restricted-key permissions remain the approved table below. The original failed-refund case remains held and unsettled.
+
+### Previous paused checkpoint (historical; superseded)
+
 **20 October 2026, current checkpoint:** Administrator sign-in is complete. The actual admin payout page verifies the repaired late-refund-failure notice, £110 captured / £0 refunded, £10 fee / £100 proceeds, and the retained payout hold. [Admin evidence](evidence/stripe-late-refund-admin.jpg). Both replacement restricted keys work; their permissions remain the approved nine/three rows below.
 
 **Refunds are OFF again.** READY ordinary preview `dpl_EU2LM7ZMyBH6P5Mj2GoN8F4iVgEt`, runtime `7a17a0455a2666f893451903c7114004c8118867`, has only the feature-branch alias. The flag was briefly enabled for a bounded synthetic pass, then disabled after automatic approval review rejected clicking **Refund customer £1.10** because it required explicit approval for enabling refunds and processing that payment. No refund request was submitted; canonical Stripe confirms `livemode=false`, 110p captured and 0p refunded, with zero new refund instructions. Do not retry through another API or bypass the review.

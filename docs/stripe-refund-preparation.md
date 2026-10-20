@@ -1,6 +1,34 @@
-# Stripe refund preparation — 20 October 2026
+# Stripe refund preparation — 21 October 2026
 
-## Admin UI verified; recovery refund paused for explicit approval
+## Approved 110p refund and 100p recovery completed; refunds off
+
+The user explicitly approved temporarily enabling preview refunds, refunding the retained £1.10 sandbox payment and completing its £1 recovery test. This resolved the earlier automatic-review block. The actual administrator **Refund customer £1.10** control and confirmation were submitted once on ordinary feature preview `dpl_5UVqQdY4isetMfSURmkTDnUJS7c2`, runtime `441fa2d3eeace91b9f6f2f8dd4618e4c04d3c8f9`. No new customer payment was created in this continuation.
+
+At 23:13 UTC on 20 October (00:13 BST on 21 October), Stripe confirmed one 110p refund and one 100p reversal of the original booking transfer. Canonical Stripe lists contain exactly one matching refund and reversal. The application instruction finished SUCCEEDED / RECOVERED on its first worker attempt, released its payment reservation, and recorded exactly one refund event and one recovery event. Payment became REFUNDED / payout CANCELLED, refunded 110p, fee 0p and proceeds 0p. The actual admin panel shows **Customer refund confirmed · £1.10** and **Transporter funds recovered · £1.00**. [Completed recovery](evidence/stripe-recovery-completed.jpg).
+
+| Verified object | Identifier / result |
+| --- | --- |
+| Refund instruction | `7bae732e-a3d1-43e3-9bba-a2aaecd22342`, SUCCEEDED / RECOVERED, reservation cleared |
+| Customer refund | `re_3USlqULAzgkvCvrI0bncXale`, 110p, succeeded |
+| Original transfer | `tr_3USlqULAzgkvCvrI0SipQwTl`, 100p, fully reversed |
+| Transfer reversal | `trr_1USmDlLAzgkvCvrINuEKPfGC`, 100p, linked to this refund instruction |
+| Refund audit event | `cmvhaudfz0001l108fdbmh8ib`, 110p |
+| Recovery audit event | `cmvhaul2y0003l108jqrum28p`, 100p |
+| Sandbox balance restoration | `tr_1USmGkLAzgkvCvrI9P4QJwaA`, 100p, group `dd_recovery_20261021a` |
+
+**The insufficient-balance hold/retry scenario did not occur.** Despite £0 available before the refund, Stripe accepted the reversal and the connected Dashboard showed future payouts of **-£1.00**. There was no `INSUFFICIENT_BALANCE` response, REVIEW state or recovery retry. This pass verifies successful post-bank-payout recovery and duplicate-free accounting, but must not be counted as a real insufficient-balance/retry test. No liability or reserve setting was changed to force a failure.
+
+The approved 100p sandbox funding was used to clear that negative balance after recovery. The Dashboard then showed future payouts **£0.00**, with the earlier **£2.00 in transit** still separately displayed. [Restored balance](evidence/stripe-recovery-balance-restored.jpg). Platform canonical available balance is 177p, pending 9880p and Connect reserve 0p. The restoration transfer remains unreversed to avoid recreating the test deficit. All relevant Stripe objects are in `acct_1US4BzLAzgkvCvrI` sandbox with `livemode=false`; Stripe audit history remains intact. The original daily / delay_days=7 schedule and saved bank ending 1116 are canonically unchanged.
+
+`STRIPE_REFUNDS_ENABLED=false` was restored and deployed on READY ordinary preview `dpl_6JeNBhqCp4a25pB2Fsvze8HaR78A`, `drivedrop-nj32nue5o-future-9f39.vercel.app`, same runtime commit, with only the feature alias. Authenticated read-only `/api/admin/disputes` shows false on all 20 records; `/api/health` returned 200 at 23:19:21 UTC. All 29 environment entries remain, with only the existing flag's update timestamp changed. All three production aliases still belong to `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz`.
+
+After canonical settlement, guarded transactional cleanup removed only the new recovery instruction, payout instruction, payment/booking/job/quote/request, its tracking event, four finance events and eight test notifications. All **31 table/storage fingerprints exactly match the previous post-sign-in checkpoint after its fixture exclusions**, including the administrator session, original failed-refund case and all 136 storage rows. No temporary API session was created in this pass. The original failed-refund case is still retained and held. Structured, secret-free results are saved in [verification evidence](evidence/stripe-recovery-verification.json).
+
+A broad canonical-read output inadvertently included this completed test PaymentIntent's client secret in the tool transcript. It was not a Stripe API key, was not copied into files/configuration, and the cached response was discarded. Subsequent canonical outputs were explicitly limited to non-secret fields. No restricted-key secret was retrieved or displayed in this continuation.
+
+Remaining actual gates: reproduce a genuine insufficient-balance reversal failure and retry in an appropriate disposable sandbox configuration; verify charge-dispute event delivery/handling and dispute-driven refund UI; complete remaining event-order/lost-response scenarios. Keep refunds off between bounded passes. Do not treat this sandbox outcome as proof that the real insufficient-balance branch passed. The earlier paused fixture section below is historical; its recovery fixture is now settled and removed.
+
+## Historical: admin UI verified; recovery refund paused for explicit approval
 
 The user completed DriveDrop administrator sign-in in the cloud browser. Fresh `/admin` shows Administrator / Control Centre; no further Vercel sign-in is needed. The actual held-payout panel shows the late-failure warning, 0p refunded, £10 fee / £100 proceeds and no payout-release action. [Verified admin hold](evidence/stripe-late-refund-admin.jpg).
 
