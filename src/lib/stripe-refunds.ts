@@ -382,9 +382,10 @@ export async function handleStripeRefundEvent(event: any) {
   if (typeof chargeId !== 'string') return;
   const completed = await prisma.stripeRefund.findMany({where: {sourceChargeId: chargeId, environment: paymentEnvironment(), ledgerAppliedAt: {not: null}}});
   for (const row of completed) await reconcileStripeRefundFailure(row.id);
-  if (!stripeRefundsEnabled()) return;
   const rows = await prisma.stripeRefund.findMany({where: {sourceChargeId: chargeId, environment: paymentEnvironment(), activePaymentId: {not: null}}});
-  for (const row of rows) await reconcileStripeRefund(row.id);
+  // The creation flag gates money movement, not canonical safety checks. Stripe
+  // can dispute an existing charge while new refunds are switched off.
+  if (stripeRefundsEnabled()) for (const row of rows) await reconcileStripeRefund(row.id);
   // External refunds/disputes on a booking with no active instruction must also
   // hold future release. Never mirror event amounts into the accounting ledger.
   const intentId = typeof object?.payment_intent === 'string' ? object.payment_intent : object?.payment_intent?.id;

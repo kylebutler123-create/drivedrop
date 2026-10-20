@@ -92,6 +92,31 @@ function context(options = {}) {
  c=context();c.state().payment.booking.disputes.push({id:'dispute',bookingId:'booking',status:'OPEN'});row=await c.engine.prepareStripeRefund({...c.input(5500),disputeId:'dispute',resolution:'PARTIAL_REFUND',resolutionNote:'Reviewed synthetic evidence',approvedProceedsPence:2500});assert.equal(c.state().payment.booking.disputes[0].status,'UNDER_REVIEW');await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.booking.disputes[0].status,'RESOLVED');assert.equal(c.state().payment.payoutStatus,'PAID');
  c=context();row=await c.engine.prepareStripeRefund(c.input(5500));c.transfer.amount_reversed=6000;await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().refunds[0].recoveryStatus,'REVIEW');assert.equal(c.reversalCalls.length,0);assert.equal(c.state().payment.payoutStatus,'HELD');
 
+ // Real sandbox regression: charge.dispute.created was delivered with HTTP 200
+ // while refunds were off, but the booking remained NOT_READY instead of HELD.
+ // These events only trigger canonical reads; their amounts/statuses are not a
+ // ledger and stale or duplicate deliveries must never release held proceeds.
+ const disputeEvent=type=>({type,livemode:false,data:{object:{charge:'ch_test',payment_intent:'pi_test',amount:999999,status:'won'}}});
+ for(const enabled of ['false','true'])for(const type of ['charge.dispute.created','charge.dispute.updated','charge.dispute.closed']){
+  process.env.STRIPE_REFUNDS_ENABLED=enabled;c=context({transferred:false});c.state().payment.payoutStatus='NOT_READY';c.intent.latest_charge.disputed=true;
+  const before=clone(c.state().payment);await Promise.all([c.engine.handleStripeRefundEvent(disputeEvent(type)),c.engine.handleStripeRefundEvent(disputeEvent(type))]);
+  assert.equal(c.state().payment.payoutStatus,'HELD',`${enabled}: ${type}`);
+  for(const field of ['status','paidPence','refundedPence','platformFeePence','transporterProceedsPence','cancellationDeductionPence'])assert.equal(c.state().payment[field],before[field]);
+  assert.equal(c.state().refunds.length,0);assert.equal(c.state().events.length,0);assert.equal(c.state().notifications.length,0);assert.equal(c.refundCalls.length,0);assert.equal(c.reversalCalls.length,0);
+  c.intent.latest_charge.disputed=false;await c.engine.handleStripeRefundEvent(disputeEvent('charge.dispute.closed'));assert.equal(c.state().payment.payoutStatus,'HELD');
+ }
+ process.env.STRIPE_REFUNDS_ENABLED='false';
+ for(const mutate of [e=>e.livemode=true,e=>e.account='acct_unrelated']){
+  c=context({transferred:false});c.intent.latest_charge.disputed=true;const event=disputeEvent('charge.dispute.created');mutate(event);await c.engine.handleStripeRefundEvent(event);assert.equal(c.state().payment.payoutStatus,'READY');
+ }
+ // An old event alone cannot hold a canonically undisputed payment.
+ c=context({transferred:false});await c.engine.handleStripeRefundEvent(disputeEvent('charge.dispute.created'));assert.equal(c.state().payment.payoutStatus,'READY');
+ // Disabling creation also keeps an already prepared instruction from moving
+ // money during an unrelated webhook; the existing reservation/hold remains.
+ process.env.STRIPE_REFUNDS_ENABLED='true';c=context({transferred:false});row=await c.engine.prepareStripeRefund(c.input());process.env.STRIPE_REFUNDS_ENABLED='false';
+ await c.engine.handleStripeRefundEvent(disputeEvent('charge.dispute.updated'));assert.equal(c.state().refunds[0].status,'PENDING');assert.equal(c.state().refunds[0].activePaymentId,'pay');assert.equal(c.state().payment.payoutStatus,'HELD');assert.equal(c.refundCalls.length,0);assert.equal(c.reversalCalls.length,0);
+ process.env.STRIPE_REFUNDS_ENABLED='true';
+
  // Actual sandbox regression: Stripe 5126 card succeeds first, then fails.
  // The correction must still run with creation disabled and after reservation release.
  const failedEvent=(type='refund.failed')=>({type,livemode:false,data:{object:{charge:'ch_test',payment_intent:'pi_test',status:'failed'}}});
@@ -174,6 +199,7 @@ function context(options = {}) {
  assert.doesNotMatch(markup({status:'FAILED',failureCode:'STRIPE_REFUND_FAILED_AFTER_SUCCESS',recoveryStatus:'RECOVERED'}),/balance has not changed|Customer refund confirmed/);
  const olderFailure=renderToStaticMarkup(React.createElement(Notice,{payment:{stripeRefunds:[{id:'newer',status:'SUCCEEDED',amountPence:5500,recoveryStatus:'NOT_REQUIRED'},{id:'older',status:'FAILED',amountPence:5500,failureCode:'STRIPE_REFUND_FAILED_AFTER_SUCCESS',recoveryStatus:'RECOVERED'}]}}));
  assert.match(olderFailure,/Customer refund failed/);assert.doesNotMatch(olderFailure,/Customer refund confirmed/);
+ console.log('PASS: charge-dispute holds with refunds on/off, canonical/stale/duplicate events, unchanged accounting, no off-flag money movement and platform sandbox isolation');
  console.log('PASS: late success-to-failure compensation, off-flag webhook/scheduler recovery, duplicate/stale events, later refunds, fine/reversal preservation, dispute reopening, lost correction commits and stale-worker fencing');
  console.log('PASS: active-admin/origin/version/production guards, asynchronous HTTP 202 and pending/failed/recovery UI states');
  console.log('PASS: refund concurrency, response/commit loss, partial/full sequential recovery, fine restoration, pending/failed refunds, insufficient funds, stale attempts, external refunds, canonical ownership, dispute confirmation, over-reversal and environment gates');
