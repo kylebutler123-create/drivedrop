@@ -5,7 +5,7 @@ export function refundAmounts(payment:Payment,amountPence:number){
  if(!Number.isInteger(amountPence)||amountPence<=0||amountPence>balance)throw Error('Refund must be within the remaining paid balance');
  const remaining=balance-amountPence;
  // Retain the booking's recorded fee proportion, including legacy commission rates.
- const platformFeePence=remaining?Math.round(payment.platformFeePence*remaining/balance):0;
+ const platformFeePence=remaining?Number((BigInt(2)*BigInt(payment.platformFeePence)*BigInt(remaining)+BigInt(balance))/(BigInt(2)*BigInt(balance))):0;
  if(platformFeePence<0||platformFeePence>remaining)throw Error('Payment amounts require review before refunding');
  return {refundedPence:payment.refundedPence+amountPence,platformFeePence,transporterProceedsPence:remaining-platformFeePence};
 }
@@ -20,6 +20,7 @@ export function completedPayoutStatus(booking:ReviewBooking & {payment?:{payoutS
  if(p?.payoutStatus==='PROCESSING')return 'PROCESSING';
  if(p?.payoutStatus==='FAILED')return 'FAILED';
  if(p?.payoutStatus==='PAID')return 'PAID';
+ if(p?.payoutStatus==='HELD')return 'HELD';
  if(p?.status==='REFUNDED')return 'REFUNDED';
  if(p?.payoutStatus==='CANCELLED')return 'CANCELLED';
  if(p?.payoutStatus==='HELD'||booking.disputes?.some(d=>['OPEN','UNDER_REVIEW'].includes(d.status)))return 'HELD';

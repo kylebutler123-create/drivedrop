@@ -3,6 +3,7 @@ import {prisma} from './prisma';
 import {reconcileRequest} from './booking-authorisation';
 import {paymentEnvironment} from './booking-authorisation-provider';
 import {notifyAvailability} from './availability-notifications';
+import {recoverStripeRefunds} from './stripe-refunds';
 import {recoverStripePayouts} from './stripe-payouts';
 
 // Payment requests are the durable work queue. Runs record execution, not ownership
@@ -69,6 +70,9 @@ export async function completePreviewRecoveryRun(id: string) {
     const payouts = await recoverStripePayouts();
     result.checked += payouts.checked;
     result.failed += payouts.failed;
+    const refunds = await recoverStripeRefunds();
+    result.checked += refunds.checked;
+    result.failed += refunds.failed;
   } catch {
     result.failed++;
     console.error('Booking authorisation recovery run failed', {runId: id});

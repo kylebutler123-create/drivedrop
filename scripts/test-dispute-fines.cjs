@@ -38,7 +38,7 @@ async function main(){
  events=[];await fine(1250);earlier=true;assert.equal((await payout(10000)).deductedPence,0);earlier=false;assert.equal((await payout(10000)).deductedPence,1250,'smaller fine uses its saved amount');
  events=[];cancellations=[];await fees.recordTransporterCancellationFee(tx,'t','cancelled');assert.equal(cancellations[0].amountPence,5000,'active-delivery cancellation stays fixed at £50');await fine(7525);assert.deepEqual(await payout(20000),{deductedPence:12525,netProceedsPence:7475},'separate cancellation and dispute fine add correctly');
  events=[];cancellations=[];
- let user={id:'admin',role:'ADMIN'},enabled=true,notifications=[],transactions=0;
+ let user={id:'admin',role:'ADMIN',accountStatus:'ACTIVE'},enabled=true,notifications=[],transactions=0;
  const booking={payment:{id:'source'},job:{vehicleMake:'Audi',vehicleModel:'A6'},transporter:{id:'t',name:'Test Transporter'},customer:{}};
  tx.dispute={findUniqueOrThrow:async()=>({id:'d',booking})};
  const prisma={
@@ -47,6 +47,7 @@ async function main(){
   $queryRawUnsafe:async()=>[]
  };
  const route=load('src/app/api/admin/disputes/route.ts',{
+  '@/lib/stripe-refunds':{stripeRefundsEnabled:()=>false,refundSummarySelect:{}},'@/lib/stripe-connect-provider':{},
   '@/lib/prisma':{prisma},'@/lib/auth':{currentUser:async()=>user},'@/lib/features':{disputesEnabled:()=>enabled},
   '@/lib/email':{sendTransactionalEmailSafely:async()=>{throw Error('Fine must not send email')}},
   '@/lib/notifications':{createNotificationSafely:async n=>notifications.push(n)},'@/lib/payout-policy':{},
@@ -54,7 +55,7 @@ async function main(){
  });
  const request=amount=>new Request('http://localhost/api/admin/disputes',{method:'POST',body:JSON.stringify({disputeId:'d',action:'FINE_TRANSPORTER',amountPence:amount})});
  for(const role of ['CUSTOMER','TRANSPORTER']){user={id:'other',role};assert.equal((await route.POST(request(7525))).status,403)}
- user=null;assert.equal((await route.POST(request(7525))).status,403);user={id:'admin',role:'ADMIN'};
+ user=null;assert.equal((await route.POST(request(7525))).status,403);user={id:'admin',role:'ADMIN',accountStatus:'ACTIVE'};
  enabled=false;assert.equal((await route.POST(request(7525))).status,404);enabled=true;
  for(const invalid of [undefined,0,-1,7.5,'7525',2147483648])assert.equal((await route.POST(request(invalid))).status,400);
  assert.equal((await route.POST(new Request('http://localhost',{method:'POST',body:'{'}))).status,400);

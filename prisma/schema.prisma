@@ -361,6 +361,7 @@ model Evidence {
 }
 
 model Dispute {
+  stripeRefunds  StripeRefund[]
   reviewNotes    DisputeReviewNote[]
   id             String             @id @default(cuid())
   bookingId      String
@@ -486,6 +487,7 @@ model VerificationDocument {
 }
 
 model BookingPayment {
+  stripeRefunds             StripeRefund[]
   stripePayout              StripePayout?
   id                       String        @id @default(cuid())
   bookingId                String        @unique
@@ -564,6 +566,61 @@ model StripePayout {
   updatedAt             DateTime @updatedAt
 
   @@index([environment, status, retryAfter])
+}
+
+// Customer refund and recovery of a separate transfer have independent outcomes.
+// Keep the active reservation through errors/review; never automatically create a
+// replacement instruction for an ambiguous or failed operation.
+model StripeRefund {
+  id                       String   @id @default(uuid())
+  paymentId                String
+  payment                  BookingPayment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  activePaymentId          String?  @unique
+  environment              String
+  paymentIntentId          String
+  sourceChargeId           String
+  paidPence                Int
+  amountPence              Int
+  priorRefundedPence       Int
+  priorPlatformFeePence    Int
+  priorProceedsPence       Int
+  priorDeductionPence      Int
+  priorPayoutStatus        String
+  platformFeePence         Int
+  transporterProceedsPence Int
+  cancellationDeductionPence Int
+  fineRestorePence         Int
+  payoutId                 String?
+  stripeTransferId         String?
+  requiredReversedPence    Int
+  baselineReversedPence    Int
+  recoveryAmountPence      Int
+  status                   String   @default("PENDING")
+  recoveryStatus           String   @default("NOT_REQUIRED")
+  stripeRefundId           String?  @unique
+  stripeReversalId         String?  @unique
+  ledgerAppliedAt          DateTime?
+  firstAttemptAt           DateTime?
+  recoveryFirstAttemptAt   DateTime?
+  attemptCount             Int      @default(0)
+  leaseUntil               DateTime?
+  leaseToken               String?
+  retryAfter               DateTime?
+  failureCode              String?
+  recoveryFailureCode      String?
+  actorId                  String
+  disputeId                String?
+  dispute                  Dispute? @relation(fields: [disputeId], references: [id], onDelete: Restrict)
+  resolution               String?
+  resolutionNote           String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  @@unique([paymentId, priorRefundedPence])
+  @@index([environment, status, retryAfter])
+  @@index([environment, recoveryStatus, retryAfter])
+  @@index([disputeId])
+  @@index([sourceChargeId, environment])
 }
 
 model FinanceEvent {

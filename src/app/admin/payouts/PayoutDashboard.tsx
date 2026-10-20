@@ -7,7 +7,7 @@ import {useRouter} from 'next/navigation';
 import type {PayoutResult} from '@/components/PayoutButton';
 import PayoutRecords from './PayoutRecords';
 
-type Category='WAITING'|'READY'|'BLOCKED'|'HELD'|'PAID'|'PROCESSING'|'FAILED';
+type Category='WAITING'|'READY'|'BLOCKED'|'HELD'|'PAID'|'PROCESSING'|'FAILED'|'CANCELLED';
 const categories:[Category,string,string][]=[
  ['READY','Ready','£'],
  ['WAITING','24-hour hold','◷'],
@@ -15,7 +15,8 @@ const categories:[Category,string,string][]=[
  ['HELD','Held','🛡️'],
  ['PAID','Released','✓'],
  ['PROCESSING','Processing','◷'],
- ['FAILED','Needs attention','!']
+ ['FAILED','Needs attention','!'],
+ ['CANCELLED','Refunded / cancelled','↩']
 ];
 const money=(p:number)=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(p/100);
 const bookingReference=(value:any)=>{const id=String(value??'').trim();return id?`DD-${id.slice(-8).toUpperCase()}`:''};
@@ -63,7 +64,7 @@ export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:an
  };
  const selectCategory=(next:Category)=>setCategory(next);
  const payoutReleased=(paymentId:string,result:PayoutResult)=>{const status=result.payoutStatus==='PROCESSING'?'PROCESSING':result.payoutStatus==='HELD'?'HELD':'PAID';const previous=rows.find(row=>row.id===paymentId);setReleased(current=>({...current,[paymentId]:{status,at:new Date().toISOString(),version:String(previous?.updatedAt),previousStatus:previous?.payoutStatus}}));setCategory(status);setQuery('')};
- const title=category==='PROCESSING'?'Processing payouts':category==='FAILED'?'Payouts needing attention':category==='WAITING'?'24-hour payout holds':category==='BLOCKED'?'Blocked payouts':category==='READY'?'Ready for payout':category==='HELD'?'Held payouts':'Released payouts';
+ const title=category==='CANCELLED'?'Refunded and cancelled payouts':category==='PROCESSING'?'Processing payouts':category==='FAILED'?'Payouts needing attention':category==='WAITING'?'24-hour payout holds':category==='BLOCKED'?'Blocked payouts':category==='READY'?'Ready for payout':category==='HELD'?'Held payouts':'Released payouts';
  const eyebrow=category==='BLOCKED'?'Details required':category==='READY'?'Action required':category==='HELD'?'Protected funds':'Finance history';
  const emptyLabel=query?'matching '+category.toLowerCase()+' payouts':category==='BLOCKED'?'blocked payouts':category==='READY'?'payouts ready for release':undefined;
  return <>

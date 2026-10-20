@@ -1,3 +1,4 @@
+import {handleStripeRefundEvent} from '@/lib/stripe-refunds';
 import {NextResponse} from 'next/server';
 import {prisma} from '@/lib/prisma';
 import {verifyStripeEvent} from '@/lib/booking-authorisation-provider';
@@ -9,6 +10,9 @@ export const runtime='nodejs';
 export const maxDuration=180;
 export async function POST(request:Request){
  let event;try{event=verifyStripeEvent(await request.text(),request.headers.get('stripe-signature'));}catch{return NextResponse.json({error:'Invalid webhook signature'},{status:400});}
+ if(['refund.created','refund.updated','refund.failed','charge.refunded','charge.dispute.created','charge.dispute.updated','charge.dispute.closed'].includes(event.type)){
+  try{await handleStripeRefundEvent(event);return NextResponse.json({received:true});}catch{return NextResponse.json({error:'Refund reconciliation pending'},{status:500});}
+ }
  if(['transfer.created','transfer.updated','transfer.reversed'].includes(event.type)){
   if(!connectEnabled())return NextResponse.json({error:'Connect is disabled'},{status:503});
   try{await handleConnectSnapshot(event);return NextResponse.json({received:true});}catch{return NextResponse.json({error:'Transfer reconciliation pending'},{status:500});}

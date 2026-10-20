@@ -44,6 +44,7 @@ export async function prepareStripePayout(paymentId: string, actorId: string) {
     const prior = await tx.stripePayout.findUnique({where: {paymentId}});
     if (prior) return prior;
     const fresh = await tx.bookingPayment.findUniqueOrThrow({where: {id: paymentId}, include: paymentInclude});
+    if(process.env.STRIPE_REFUNDS_ENABLED==='true'&&await tx.stripeRefund.findUnique({where:{activePaymentId:paymentId}}))throw new ConnectError('A refund is pending.','PAYOUT_HELD');
     assertPayoutEligible(fresh);
     if (fresh.paidPence !== payment.paidPence || fresh.refundedPence !== payment.refundedPence || fresh.providerReference !== source.intentId) {
       throw new ConnectError('Payment changed during release. Refresh and retry.', 'PAYMENT_MISMATCH');
@@ -85,7 +86,14 @@ async function finishPayout(tx: any, payout: any, transfer: Stripe.Transfer | nu
     status, stripeTransferId: transfer?.id || null, transferredAt: fresh.transferredAt || new Date(),
     reversedPence: reversed, leaseUntil: null, retryAfter: null, failureCode: reversed ? 'REVERSED' : null,
   }});
-  const payment = await tx.bookingPayment.update({where: {id: payout.paymentId}, data: {payoutStatus: reversed ? 'HELD' : 'PAID'}});
+  const currentPayment = await tx.bookingPayment.findUniqueOrThrow({where: {id: payout.paymentId}});
+  const refundManaged = currentPayment.refundedPence > payout.refundedPence ||
+    process.env.STRIPE_REFUNDS_ENABLED === 'true' && await tx.stripeRefund.findUnique({where: {activePaymentId: payout.paymentId}});
+  // Refund accounting owns this payment after a refund reservation. Late transfer
+  // events must never overwrite CANCELLED/HELD or make refunded funds releasable.
+  const payment = refundManaged ? (reversed !== fresh.reversedPence ?
+    await tx.bookingPayment.update({where: {id: payout.paymentId}, data: {payoutStatus: 'HELD'}}) : currentPayment) :
+    await tx.bookingPayment.update({where: {id: payout.paymentId}, data: {payoutStatus: reversed ? 'HELD' : 'PAID'}});
   if (!completedBefore) await tx.financeEvent.create({data: {paymentId: payout.paymentId, type: 'PAYOUT_PAID',
     amountPence: payout.amountPence, actorId: payout.actorId,
     note: transfer ? `Stripe sandbox transfer ${transfer.id}; credited to transporter Stripe balance, bank payout separate` : 'Stripe sandbox payout fully offset by reserved fines; no bank transfer',
@@ -128,6 +136,7 @@ export async function reconcileStripePayout(id: string) {
       const current = await tx.stripePayout.findUniqueOrThrow({where: {id}});
       if (terminal(current.status)) return current;
       const fresh = await tx.bookingPayment.findUniqueOrThrow({where: {id: current.paymentId}, include: paymentInclude});
+      if(process.env.STRIPE_REFUNDS_ENABLED==='true'&&await tx.stripeRefund.findUnique({where:{activePaymentId:current.paymentId}}))throw new ConnectError('A refund is pending.','PAYOUT_HELD');
       assertPayoutEligible(fresh, true);
       if (fresh.paidPence !== current.paidPence || fresh.refundedPence !== current.refundedPence ||
           fresh.transporterProceedsPence !== current.amountPence || fresh.cancellationDeductionPence !== current.finePence) {
