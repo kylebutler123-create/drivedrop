@@ -1,5 +1,17 @@
 # Stripe refund preparation — 20 October 2026
 
+## Deployed correction verified with refunds disabled
+
+The feature branch now contains the tested fix in `717e8e49e3325d9412dd63846babdafbda50ef06`. Vercel's Git integration created READY ordinary preview `dpl_HF1MkfVbPQb4tdSGoBLTS17ASpap` at `drivedrop-1wu474073-future-9f39.vercel.app`; only the feature-branch alias was assigned. `/api/health` reports that commit. Production's three aliases still point to `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz`.
+
+The first real worker run found a schema gap omitted from the mocked regression suite: the old `StripeRefund_success_check` equated any ledger application with SUCCEEDED, so PostgreSQL rolled the correction back. Migration `20261020220726_stripe_refund_late_failure` changes that constraint only. Already-applied FAILED / REVIEW rows require their corresponding explicit late-failure code, a Stripe refund ID and the payment reservation; ordinary pending/failed rows cannot masquerade as applied refunds. All 19 cases in `scripts/sql/verify-stripe-refund-lifecycle.sql` pass against the actual stored PostgreSQL expression. RLS stays enabled, with no anon/authenticated table privileges.
+
+At **22:08:06 UTC**, the deployed background worker reconciled the retained failed refund without a direct ledger edit or new Stripe money operation. The instruction is FAILED / `STRIPE_REFUND_FAILED_AFTER_SUCCESS`, reserves payment `cmvh5nyop0002l507vqfjq5fl`, and retains its original `ledgerAppliedAt`. Payment is PAID, refunded **0p**, fee **1000p**, proceeds **10000p**, deduction **0p**, payout **HELD**. One **-11000p** `STRIPE_REFUND_FAILURE_CONFIRMED` event and one corrective notification per customer/transporter were created; original success evidence remains. Subsequent worker runs are successful and do not duplicate the correction or notifications. This corrects accounting; the customer still has not received a refund. Retain the case until separately settled.
+
+Authenticated read-only admin disputes GET returned 200 with `stripeRefundsEnabled=false` on all 20 records. The fixture customer's bookings GET returned PAID / refundedPence=0. The Connect replacement key successfully retrieved canonical sandbox state. The booking replacement key created and retrieved unpaid Checkout `cs_test_a14Bt9E4q1FbABxDboQRoDR27m8zeyCJDXatR5dkmqZ4orx2T4mUcs8D95`; a timed-out caller response reused the same session. Withdrawal returned 200 / WITHDRAWN / RELEASED. No card, PaymentIntent or booking was created for this credential check. Temporary verification metadata and QA sessions are tracked for cleanup at the end of this pass.
+
+The older deployment/credential handoff sections below are historical. Refund creation remains off while the remaining bank-payout and dispute checks are assessed.
+
 ## Both replacement secrets saved; disabled preview deployment pending
 
 The user saved both replacement restricted sandbox keys directly in Vercel. Metadata verifies that `STRIPE_CONNECT_SECRET_KEY` and `STRIPE_SECRET_KEY` were updated and remain sensitive entries scoped only to Preview / `feature/ui-polish`. All 29 entries remain present, and `STRIPE_REFUNDS_ENABLED=false`. No secret value was retrieved for this check. Correctness of the saved values still needs runtime verification after deployment.
