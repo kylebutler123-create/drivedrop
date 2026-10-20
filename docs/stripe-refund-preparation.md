@@ -2,7 +2,7 @@
 
 ## Scope and current state
 
-Durable refund execution is implemented on `feature/ui-polish`, including admin refunds/dispute resolutions, status notices, fine restoration, separate transfer recovery, webhook handling and the recovery scheduler. It is **disabled** unless `STRIPE_REFUNDS_ENABLED=true` and the existing sandbox Connect gates pass. No live or production activation is permitted by the code.
+Durable refund execution is deployed to the preview in runtime commit `9698c5f82fd83bf239b41e14013187174d5ade27` (`dpl_GHFtnNbMEYLS13F4pNgqdypNYXCG`, READY) on `feature/ui-polish`, including admin refunds/dispute resolutions, status notices, fine restoration, separate transfer recovery, webhook handling and the recovery scheduler. It is **disabled** unless `STRIPE_REFUNDS_ENABLED=true` and the existing sandbox Connect gates pass. No live or production activation is permitted by the code.
 
 Migration `20261020193911_stripe_refund_sandbox` is applied to preview project `yozbuuvebzxitoqrvyer`. `StripeRefund` is empty, RLS is enabled and anon/authenticated access is revoked. The Supabase CLI install could not complete because its network approval was cancelled. The connected migration tool applied the reviewed SQL; its actual provider-generated migration version was then saved in the Prisma migration directory. No migration timestamp was invented.
 
