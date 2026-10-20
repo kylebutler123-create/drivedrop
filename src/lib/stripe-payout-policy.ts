@@ -15,7 +15,7 @@ export function assertPayoutEligible(payment: any, reserved = false) {
   }
 }
 
-export function assertCapturedSource(intent: any, payment: any, request: any) {
+export function assertCapturedSource(intent: any, payment: any, request: any, options: {allowDisputed?: boolean} = {}) {
   const charge = intent.latest_charge;
   if (request.paymentProvider !== 'STRIPE' || request.paymentEnvironment !== payment.environment ||
       request.status !== 'BOOKED' || request.authorisedAmountPence !== payment.paidPence || request.bookingId !== payment.bookingId || request.paymentIntentId !== intent.id ||
@@ -23,7 +23,7 @@ export function assertCapturedSource(intent: any, payment: any, request: any) {
       intent.amount_received !== payment.paidPence || intent.amount !== payment.paidPence ||
       intent.metadata?.availabilityRequestId !== request.id || intent.metadata?.environment !== payment.environment ||
       !charge || typeof charge === 'string' || charge.livemode !== false || !charge.paid || !charge.captured ||
-      charge.disputed || charge.amount_refunded !== payment.refundedPence || charge.currency !== 'gbp' ||
+      (!options.allowDisputed && charge.disputed) || charge.amount_refunded !== payment.refundedPence || charge.currency !== 'gbp' ||
       charge.amount !== payment.paidPence || charge.payment_intent !== intent.id) {
     throw new ConnectError('The captured Stripe payment needs review before release.', 'PAYMENT_MISMATCH');
   }

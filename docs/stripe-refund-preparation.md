@@ -1,6 +1,48 @@
 # Stripe refund preparation — 20 October 2026
 
-## Scope and current state
+## Both replacement secrets saved; disabled preview deployment pending
+
+The user saved both replacement restricted sandbox keys directly in Vercel. Metadata verifies that `STRIPE_CONNECT_SECRET_KEY` and `STRIPE_SECRET_KEY` were updated and remain sensitive entries scoped only to Preview / `feature/ui-polish`. All 29 entries remain present, and `STRIPE_REFUNDS_ENABLED=false`. No secret value was retrieved for this check. Correctness of the saved values still needs runtime verification after deployment.
+
+The tested local changes are being published to the requested feature branch for an ordinary preview deployment with refunds off. A fresh pre-deployment read confirms the retained payment still records 11000p refunded, fee/proceeds zero and payout HELD. Baseline hashes cover all 30 application tables and storage rows, with separate nonfixture financial/notification hashes for preservation checks. The older credential handoff and local-only checkpoints below are historical; follow the current deployment result when it is recorded.
+
+## Credential rotation verified; direct Vercel entry pending
+
+The user completed the three sandbox key rotations. The Dashboard shows three active keys created on 20 October. The replacement Connect key is `mk_1USkboLAzgkvCvrI7soNoQCy`; its nine permission rows exactly match the approved table in `stripe-connect-sandbox.md`. The replacement booking key is `mk_1USkdrLAzgkvCvrIB5RRBL5V`; it retains only own-account Write for Charges and Refunds, Checkout Sessions and Payment Intents, with no connected-account permissions. No permission was edited during verification and no replacement secret value was displayed.
+
+Automatic approval review rejected exporting the two restricted key values to a temporary shared filesystem file, citing the unapproved credential export/storage and the available direct secret-management path. The file does not exist; that call did not change Stripe or Vercel. No indirect export workaround was attempted. Temporary credential variables were cleared.
+
+The safer continuation is prepared in the signed-in Vercel Dashboard: project `drivedrop`, team `future-9f39`, existing `STRIPE_CONNECT_SECRET_KEY` editor, Secret type, Preview / `feature/ui-polish`. The Value field is empty; the visible `sk_live_51H8a…` text is Vercel's placeholder, not a configured live credential. The user must paste the replacement restricted sandbox Connect key and save, then update `STRIPE_SECRET_KEY` with **DriveDrop preview booking authorisations**, keeping the same scope and Secret type. Leave all other entries unchanged, including the unused `STRIPE_SANDBOX_PENDING_KEY`; the default full-access Stripe key is not used by the application. Never paste keys in chat.
+
+The 29-variable inventory was read again; refunds remain `false` on the feature branch. No environment value, deployment, application data, payment or production setting was changed in this continuation. Local commits `2c4e3e4` and `91d1f99` remain unpushed; remote `feature/ui-polish` is still `e1230bcfd4374756ec4bc278ea9a690604839e55`. After the two values are saved, verify the scoped metadata, push the tested fix to `feature/ui-polish`, deploy an ordinary preview with refunds off, and verify the retained late-failure case using the steps below. The old deployment still contains the now-expired key values until redeployment.
+
+Prepared destination: [empty preview secret editor](evidence/vercel-preview-secret-editor.jpg).
+
+## Approved follow-up: late-failure fix prepared locally
+
+The user approved the next-step fix and sandbox credential replacement on 20 October 2026. The implementation below is prepared and tested in an isolated checkout based on `e1230bcfd4374756ec4bc278ea9a690604839e55`, the remote `feature/ui-polish` head. **It is not deployed yet.** Deployment and further Stripe mutations are waiting for replacement of the sandbox credentials disclosed in the earlier accessibility response. No additional key permission is requested.
+
+The current disabled preview is the documentation-only deployment `dpl_6N4Zq2hEvdBdn5BxWmPP6hmGqA7E` at `drivedrop-hrh1v2m49-future-9f39.vercel.app` (commit `e1230bc`); the earlier runtime deployment recorded below is historical. The branch-specific refund flag was read again and is still `false`. A fresh canonical read still shows charge `ch_3USjwcLAzgkvCvrI1oqvK6Qk` with `amount_refunded=0`, while the retained application payment remains REFUNDED/11000p. The retained case has not been manually repaired.
+
+Prepared changes:
+
+- Reconcile already-applied refunds from canonical sandbox charge/refund history on webhooks and through the existing scheduler, including when new refunds are disabled. A charge dispute still blocks new money movement but does not block this read-only Stripe reconciliation.
+- Under the shared booking lock, compensate only the failed refund's accounting delta. This preserves later successful refunds. Record a negative refund audit event and once-only corrective notifications, retain the original success audit, and reopen only the dispute resolution actually completed by that refund. A newer human decision is preserved.
+- Keep one blocking reservation, hold the payout, revoke later worker leases and prevent another refund/reversal based on the old balance. Payout and dispute-resolution holds now apply even with the refund creation flag off.
+- Preserve actual transfer reversals and fine-restoration history. Do not automatically replace a refund or transfer, or reapply a restored fine that may already have been collected elsewhere. Restored proceeds remain held for administrator reconciliation. Unknown external refunds or a ledger mismatch produce an explicit late-failure review state without overwriting amounts.
+- Display a failed/refund-review notice ahead of any later success notice so the withdrawn confirmation is visible.
+
+Validation passed: `test-stripe-refunds.cjs`, `test-stripe-connect.cjs`, `test-stripe-refund-policy.cjs`, `test-admin-payout-polish.cjs`, `test-dispute-fines.cjs`, `npm run typecheck`, and the normal `npm run build` (Next.js 16.3.8 / Turbopack). The regression cases include duplicate and stale events, disabled-flag webhook/scheduler correction, later successful refunds, reused fine restorations, lost correction commits, stale worker leases, disputed charges and preservation of newer human resolutions. These are local mocked tests, not proof of the deployed fix. The optional webpack build encountered a pre-existing global CSS module selector error; the project's normal build passed. Only a nonconnecting local database placeholder was used.
+
+Credential handoff checkpoint: code is saved in local commit `2c4e3e4` on isolated branch `codex/stripe-late-refund-failure`, based on the requested `feature/ui-polish` branch; it has not been pushed. Secure Stripe sign-in succeeded and the existing Connect key's **Rotate secret key** dialog is open with **Now** selected. **Rotate has not been submitted.** The browser's credential-change rule requires the user to complete that final action. The other affected keys are **DriveDrop preview booking authorisations** and **Secret key** (default sandbox key). Preserve all permissions. Do not paste replacement keys in chat. The existing preview mappings are Connect → `STRIPE_CONNECT_SECRET_KEY` and booking authorisations → `STRIPE_SECRET_KEY`; `STRIPE_SANDBOX_PENDING_KEY` is an unused copy of the booking key, not an application input. The default full-access key is not an application dependency. No webhook signing secret needs replacement for API-key rotation.
+
+The reauthenticated connected-account overview now confirms **£0.00 total balance**, **£0.00 future payouts**, **£0.00 in transit**, the same bank ending1116 and the original daily/7-day schedule. This closes only the earlier fresh-balance-read gap; it does not prove any bank payout succeeded. All three production aliases were read again and still point to `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz`. This follow-up performed no database mutations, new Stripe money operations, key rotation, environment updates or deployments.
+
+The prepared dialog is recorded in [the secret-free review screenshot](evidence/stripe-key-rotation-review.jpg).
+
+Next operator steps: replace the two exposed restricted sandbox keys and the exposed default sandbox secret key while preserving permissions, update only their existing Preview / `feature/ui-polish` secret configuration where used, then deploy this fix with `STRIPE_REFUNDS_ENABLED=false` and an ordinary preview target. Verify the retained case through canonical reconciliation: refunded total 0p, fee 1000p, proceeds 10000p, payout HELD, one -11000p correction event, one corrective notification per affected user, no extra Stripe refund/transfer. Repeat delivery must not change these totals. Retain the failed fixture and audit until separately settled; it remains an unpaid customer refund, not a successful refund. Bank payout destination/success/failure, actual insufficient-balance recovery, and charge-dispute/UI checks below are still pending.
+
+## Previous QA checkpoint (before this fix)
 
 **20 October 2026 sandbox QA completed with an activation blocker. Refunds are OFF on the active preview.** The existing restricted key was updated only at **Charges and Refunds → Your account → Write**. All other permissions were compared and preserved. No application source was changed in this continuation.
 

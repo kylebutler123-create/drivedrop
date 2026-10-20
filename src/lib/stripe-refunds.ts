@@ -7,6 +7,7 @@ import {ConnectError, connectEnabled, connectFailureCode, verifiedConnectClient}
 import {assertCapturedSource, assertTransferMatches} from './stripe-payout-policy';
 import {planStripeRefund, assertStripeRefundMatches, refundCreateRetrySafe, refundIdempotencyKey} from './stripe-refund-policy';
 import {restoreRefundFines} from './stripe-refund-fines';
+import {failedRefundAmounts, LATE_REFUND_FAILED, LATE_REFUND_REVIEW} from './stripe-refund-failure-policy';
 import {adminPayoutApproved, payoutApprovalMarker} from './payout-policy';
 
 export const refundSummarySelect = {id: true, status: true, recoveryStatus: true, amountPence: true,
@@ -21,6 +22,8 @@ type RefundInput = {paymentId: string; amountPence: number; expectedRefundedPenc
   disputeId?: string; resolution?: 'REFUND_CUSTOMER' | 'PARTIAL_REFUND'; resolutionNote?: string; approvedProceedsPence?: number};
 const review = (message: string): never => {throw new ConnectError(message, 'REFUND_REVIEW');};
 
+const lateFailure = (row: StripeRefund) => [LATE_REFUND_FAILED, LATE_REFUND_REVIEW].includes(row.failureCode || '');
+
 async function listAll<T extends {id: string}>(page: (cursor?: string) => Promise<{data: T[]; has_more: boolean}>) {
   const rows: T[] = []; let cursor: string | undefined;
   for (let n = 0; n < 20; n++) {
@@ -31,6 +34,88 @@ async function listAll<T extends {id: string}>(page: (cursor?: string) => Promis
     cursor = last;
   }
   return review('Stripe history is too large or incomplete for automatic reconciliation.');
+}
+
+// Reads Stripe only. This must keep working with new refunds switched off: a
+// bank can reject an earlier successful refund after its reservation was freed.
+// The booking lock also fences in-flight refund/reversal workers. No replacement
+// refund, transfer or fine application is created by this path.
+export async function reconcileStripeRefundFailure(id: string) {
+  if (!connectEnabled()) return false;
+  const original = await prisma.stripeRefund.findUniqueOrThrow({where: {id}, include: {payment: {select: {bookingId: true}}}});
+  if (original.environment !== paymentEnvironment()) return review('Refund environment mismatch.');
+  if (!original.ledgerAppliedAt || original.failureCode === LATE_REFUND_FAILED) return false;
+  const stripe = await verifiedConnectClient();
+  return prisma.$transaction(async tx => {
+    await tx.$queryRaw`SELECT id FROM "Booking" WHERE id=${original.payment.bookingId} FOR UPDATE`;
+    const row = await tx.stripeRefund.findUniqueOrThrow({where: {id}});
+    if (!row.ledgerAppliedAt || row.failureCode === LATE_REFUND_FAILED) return false;
+    const payment = await tx.bookingPayment.findUniqueOrThrow({where: {id: row.paymentId}, include: paymentInclude});
+    const request = await tx.availabilityRequest.findFirst({where: {bookingId: payment.bookingId,
+      paymentIntentId: row.paymentIntentId, paymentProvider: 'STRIPE', paymentEnvironment: paymentEnvironment()}});
+    if (!request) return review('The captured sandbox payment could not be matched.');
+    const intent = await stripe.paymentIntents.retrieve(row.paymentIntentId, {expand: ['latest_charge']});
+    const charge = intent.latest_charge as Stripe.Charge | null;
+    // A charge dispute forbids new money movement, but does not invalidate a
+    // canonical failed-refund correction. This read-only path always holds release.
+    const chargeId = assertCapturedSource(intent, {...payment, environment: paymentEnvironment(), refundedPence: charge?.amount_refunded}, request, {allowDisputed: true});
+    if (chargeId !== row.sourceChargeId || payment.providerReference !== row.paymentIntentId) return review('Refund source changed.');
+    const refunds = await listAll(cursor => stripe.refunds.list({charge: chargeId, limit: 100, ...(cursor ? {starting_after: cursor} : {})}));
+    const own = refunds.filter(r => r.id === row.stripeRefundId || r.metadata?.driveDropRefundId === row.id);
+    if (own.length !== 1) return review('The recorded refund could not be uniquely matched.');
+    const result = assertStripeRefundMatches(own[0], row);
+    if (!result.failed) {
+      // Round-robin recovery scans completed instructions, including missed events.
+      await tx.stripeRefund.update({where: {id}, data: {updatedAt: new Date()}});
+      return false;
+    }
+    const known = await tx.stripeRefund.findMany({where: {paymentId: row.paymentId, environment: paymentEnvironment()}, orderBy: [{createdAt: 'asc'}, {id: 'asc'}]});
+    let correction: ReturnType<typeof failedRefundAmounts> | null = null;
+    try {
+      let succeeded = 0, unsettled = 0;
+      for (const refund of refunds) {
+        const instruction = known.find(k => k.stripeRefundId === refund.id || refund.metadata?.driveDropRefundId === k.id);
+        if (!instruction) return review('An external refund needs reconciliation.');
+        const state = assertStripeRefundMatches(refund, instruction);
+        if (state.confirmed) succeeded += refund.amount;
+        else if (!state.failed) unsettled += refund.amount;
+      }
+      if (known.some(k => k.ledgerAppliedAt && !refunds.some(r => r.id === k.stripeRefundId)) ||
+          (charge!.amount_refunded !== succeeded && charge!.amount_refunded !== succeeded + unsettled)) return review('Stripe refund history does not balance.');
+      const recorded = (known[0]?.priorRefundedPence || 0) + known.filter(k => k.ledgerAppliedAt && k.failureCode !== LATE_REFUND_FAILED).reduce((n, k) => n + k.amountPence, 0);
+      correction = failedRefundAmounts(payment, {amountPence: row.amountPence, paidPence: row.paidPence,
+        priorPlatformFeePence: row.priorPlatformFeePence, platformFeePence: row.platformFeePence,
+        priorRefundedPence: row.priorRefundedPence, priorProceedsPence: row.priorProceedsPence,
+        priorDeductionPence: row.priorDeductionPence, transporterProceedsPence: row.transporterProceedsPence,
+        cancellationDeductionPence: row.cancellationDeductionPence}, recorded);
+    } catch (error) {
+      if (!(error instanceof ConnectError) || !['REFUND_REVIEW', 'REFUND_MISMATCH'].includes(error.code)) throw error;
+      // A confirmed failure must not keep a success label even if other ledger
+      // changes prevent safe compensation. Preserve evidence and the release hold.
+    }
+    for (const other of known.filter(k => k.id !== id && k.activePaymentId)) {
+      await tx.stripeRefund.update({where: {id: other.id}, data: {activePaymentId: null, leaseToken: null, leaseUntil: null, retryAfter: null,
+        ...(other.ledgerAppliedAt ? {recoveryStatus: 'REVIEW', recoveryFailureCode: 'PRIOR_REFUND_FAILED'} : {status: 'REVIEW', failureCode: 'PRIOR_REFUND_FAILED'})}});
+    }
+    await tx.stripeRefund.update({where: {id}, data: {status: correction ? 'FAILED' : 'REVIEW',
+      failureCode: correction ? LATE_REFUND_FAILED : LATE_REFUND_REVIEW, activePaymentId: row.paymentId,
+      leaseToken: null, leaseUntil: null, retryAfter: null,
+      ...(['PENDING', 'RETRY'].includes(row.recoveryStatus) ? {recoveryStatus: 'REVIEW', recoveryFailureCode: 'CUSTOMER_REFUND_FAILED'} : {})}});
+    await tx.bookingPayment.update({where: {id: payment.id}, data: correction || {payoutStatus: 'HELD'}});
+    if (correction) await tx.financeEvent.create({data: {paymentId: payment.id, actorId: row.actorId,
+      type: 'REFUND_CREATED', amountPence: -row.amountPence,
+      note: `STRIPE_REFUND_FAILURE_CONFIRMED:${row.id}:${own[0].id}`}});
+    if (row.disputeId) await tx.dispute.updateMany({where: {id: row.disputeId, bookingId: payment.bookingId,
+      status: 'RESOLVED', resolution: row.resolution as 'REFUND_CUSTOMER' | 'PARTIAL_REFUND',
+      resolutionNote: row.resolutionNote, reviewerId: row.actorId, reviewedAt: {lte: row.ledgerAppliedAt}},
+      data: {status: 'UNDER_REVIEW', resolution: null, resolutionNote: null, reviewedAt: null}});
+    for (const [userId, href] of [[payment.booking.customerId, '/customer?view=bookings'], [payment.booking.transporterId, '/transporter/proceeds']]) {
+      const notificationId = `refund-failed-${row.id}-${correction ? 'corrected' : 'review'}-${userId}`;
+      const body = `The earlier £${(row.amountPence / 100).toFixed(2)} refund confirmation no longer applies: Stripe reported that the refund failed. ${correction ? 'This amount has been removed from the refunded total.' : 'The payment amounts need review.'} Please contact support. The transporter payout remains on hold.`;
+      await tx.$executeRaw`INSERT INTO "Notification" ("id","userId","type","title","body","href","createdAt") VALUES (${notificationId},${userId},'PAYMENT','Customer refund failed',${body},${href},NOW()) ON CONFLICT ("id") DO NOTHING`;
+    }
+    return true;
+  }, {timeout: 35_000, maxWait: 5_000});
 }
 
 // Read canonical parent state: Refund objects do not expose livemode. Unknown
@@ -134,7 +219,7 @@ async function settlePayment(tx: Prisma.TransactionClient, row: StripeRefund, pa
   const payoutStatus = !done(row) ? 'HELD' : full ? 'CANCELLED' : activeDisputes ? 'HELD' : row.payoutId ? 'PAID' :
     !row.disputeId && row.priorPayoutStatus === 'HELD' ? 'HELD' : eligible ? 'READY' : 'NOT_READY';
   await tx.bookingPayment.update({where: {id: payment.id}, data: {payoutStatus}});
-  if (done(row)) await tx.stripeRefund.update({where: {id: row.id}, data: {activePaymentId: null}});
+  if (done(row) && !lateFailure(row)) await tx.stripeRefund.update({where: {id: row.id}, data: {activePaymentId: null}});
 }
 
 async function finishRefund(tx: Prisma.TransactionClient, row: StripeRefund, refund: Stripe.Refund) {
@@ -197,7 +282,7 @@ async function recoverTransfer(stripe: Stripe, original: StripeRefund, token: st
   await prisma.$transaction(async tx => {
     await tx.$queryRaw`SELECT id FROM "Booking" WHERE id=${bookingId} FOR UPDATE`;
     const row = await tx.stripeRefund.findUniqueOrThrow({where: {id: original.id}});
-    if (row.leaseToken !== token || !row.ledgerAppliedAt || done(row)) return;
+    if (row.leaseToken !== token || !row.ledgerAppliedAt || done(row) || lateFailure(row) || row.recoveryFailureCode === 'PRIOR_REFUND_FAILED') return;
     if (!reversal && transfer.amount_reversed < row.requiredReversedPence) {
       if (!refundCreateRetrySafe(row.recoveryFirstAttemptAt)) return review('Recovery retry expired.');
       reversal = await stripe.transfers.createReversal(transfer.id, {amount: row.recoveryAmountPence,
@@ -219,10 +304,12 @@ async function recoverTransfer(stripe: Stripe, original: StripeRefund, token: st
 }
 
 export async function reconcileStripeRefund(id: string) {
-  requireEnabled();
+  if (!connectEnabled()) requireEnabled();
+  await reconcileStripeRefundFailure(id);
   const original = await prisma.stripeRefund.findUniqueOrThrow({where: {id}, include: {payment: {select: {bookingId: true}}}});
   if (original.environment !== paymentEnvironment()) return review('Refund environment mismatch.');
-  if (done(original) || original.status === 'FAILED') return original;
+  if (lateFailure(original) || done(original) || original.status === 'FAILED' || original.failureCode === 'PRIOR_REFUND_FAILED' || original.recoveryFailureCode === 'PRIOR_REFUND_FAILED') return original;
+  requireEnabled();
   const token = randomUUID();
   const claimed = await prisma.stripeRefund.updateMany({where: {id, OR: [{leaseUntil: null}, {leaseUntil: {lt: new Date()}}]},
     data: {leaseUntil: new Date(Date.now() + 180_000), leaseToken: token, attemptCount: {increment: 1}}});
@@ -239,7 +326,7 @@ export async function reconcileStripeRefund(id: string) {
     await prisma.$transaction(async tx => {
       await tx.$queryRaw`SELECT id FROM "Booking" WHERE id=${original.payment.bookingId} FOR UPDATE`;
       const row = await tx.stripeRefund.findUniqueOrThrow({where: {id}});
-      if (row.leaseToken !== token) return;
+      if (row.leaseToken !== token || lateFailure(row) || row.failureCode === 'PRIOR_REFUND_FAILED' || row.recoveryFailureCode === 'PRIOR_REFUND_FAILED') return;
       if (source.refund) {await finishRefund(tx, row, source.refund); return;}
       const fresh = await tx.bookingPayment.findUniqueOrThrow({where: {id: row.paymentId}, include: paymentInclude});
       assertLedgerUnchanged(fresh, row);
@@ -266,20 +353,36 @@ export async function reconcileStripeRefund(id: string) {
 }
 
 export async function recoverStripeRefunds() {
-  if (!stripeRefundsEnabled()) return {checked: 0, failed: 0};
+  if (!connectEnabled()) return {checked: 0, failed: 0};
+  const completed = await prisma.stripeRefund.findMany({where: {environment: paymentEnvironment(), ledgerAppliedAt: {not: null},
+    OR: [{status: 'SUCCEEDED'}, {failureCode: LATE_REFUND_REVIEW}]}, orderBy: {updatedAt: 'asc'}, take: 1});
+  let checked = completed.length, failed = 0;
+  for (const row of completed) {
+    try {await reconcileStripeRefundFailure(row.id);}
+    catch (error) {
+      failed++;
+      // Rotate a transient read failure so one account cannot starve the scan.
+      await prisma.stripeRefund.update({where: {id: row.id}, data: {updatedAt: new Date()}});
+      console.error('Stripe refund outcome check deferred', {refundId: row.id, code: connectFailureCode(error)});
+    }
+  }
+  if (!stripeRefundsEnabled()) return {checked, failed};
   const rows = await prisma.stripeRefund.findMany({where: {environment: paymentEnvironment(), activePaymentId: {not: null},
     OR: [{status: {in: ['PENDING', 'RETRY', 'PENDING_STRIPE']}}, {status: 'SUCCEEDED', recoveryStatus: {in: ['PENDING', 'RETRY']}}],
     AND: [{OR: [{retryAfter: null}, {retryAfter: {lte: new Date()}}]}, {OR: [{leaseUntil: null}, {leaseUntil: {lt: new Date()}}]}]}, orderBy: {updatedAt: 'asc'}, take: 1});
-  let failed = 0;
+  checked += rows.length;
   for (const row of rows) if (!done(await reconcileStripeRefund(row.id))) failed++;
-  return {checked: rows.length, failed};
+  return {checked, failed};
 }
 
 export async function handleStripeRefundEvent(event: any) {
-  if (!stripeRefundsEnabled() || event.account || event.livemode !== false) return;
+  if (!connectEnabled() || event.account || event.livemode !== false) return;
   const object = event.data?.object;
   const chargeId = event.type.startsWith('charge.dispute.') ? (typeof object?.charge === 'string' ? object.charge : object?.charge?.id) : event.type === 'charge.refunded' ? object?.id : object?.charge;
   if (typeof chargeId !== 'string') return;
+  const completed = await prisma.stripeRefund.findMany({where: {sourceChargeId: chargeId, environment: paymentEnvironment(), ledgerAppliedAt: {not: null}}});
+  for (const row of completed) await reconcileStripeRefundFailure(row.id);
+  if (!stripeRefundsEnabled()) return;
   const rows = await prisma.stripeRefund.findMany({where: {sourceChargeId: chargeId, environment: paymentEnvironment(), activePaymentId: {not: null}}});
   for (const row of rows) await reconcileStripeRefund(row.id);
   // External refunds/disputes on a booking with no active instruction must also

@@ -38,7 +38,7 @@ function fixture() {
       disputes: [], trackingEvents: [{createdAt: at}]}};
 }
 function context(options = {}) {
-  let state = {payment: fixture(), payout: null, events: [], reservations: 0};
+  let state = {payment: fixture(), payout: null, events: [], reservations: 0, activeRefund: null};
   const external = [], keys = [], attempts = [];
   let transactionTail = Promise.resolve(), loseCommit = !!options.loseCommit, timeoutOnce = !!options.timeoutOnce, failOnce = !!options.failOnce;
   const request = {id: 'request_test', bookingId: 'book_test', paymentIntentId: 'pi_test', paymentProvider: 'STRIPE', paymentEnvironment: 'preview', authorisedAmountPence:11000, status: 'BOOKED'};
@@ -55,6 +55,7 @@ function context(options = {}) {
     bookingPayment: {findUniqueOrThrow: async () => clone(state.payment), update: async ({data}) => update(state.payment, data)},
     availabilityRequest: {findFirst: async () => clone(request)},
     stripeConnectAccount: {findUnique: async () => clone(account)},
+    stripeRefund: {findUnique: async () => clone(state.activeRefund)},
     stripePayout: {
       findUnique: async args => getPayout(args), findUniqueOrThrow: async args => {assert(state.payout); return getPayout(args);},
       findMany: async () => state.payout ? [clone(state.payout)] : [],
@@ -132,6 +133,15 @@ function context(options = {}) {
   c = context(); c.account.payoutsEnabled = false; await assert.rejects(() => c.engine.prepareStripePayout('pay_test', 'admin')); assert.equal(c.state().reservations, 0);
   c = context(); await c.engine.prepareStripePayout('pay_test', 'admin'); await c.engine.reconcileStripePayout('release_test'); c.external[0].amount_reversed = 7500; await c.engine.reconcileStripePayout('release_test');
   assert.equal(c.state().payout.status, 'REVERSED'); assert.equal(c.state().payment.payoutStatus, 'HELD'); assert.equal(c.state().events.length, 1); assert.equal(c.external.length, 1);
+  // Switching new refunds off must never bypass an existing refund reservation.
+  process.env.STRIPE_REFUNDS_ENABLED='false';
+  c=context();c.state().activeRefund={id:'failed_refund',status:'FAILED',activePaymentId:'pay_test'};
+  await assert.rejects(()=>c.engine.prepareStripePayout('pay_test','admin'));assert.equal(c.state().reservations,0);assert.equal(c.attempts.length,0);
+  c=context();await c.engine.prepareStripePayout('pay_test','admin');c.state().activeRefund={id:'failed_refund',status:'FAILED',activePaymentId:'pay_test'};
+  await c.engine.reconcileStripePayout('release_test');assert.equal(c.attempts.length,0);assert.equal(c.state().payment.payoutStatus,'HELD');
+  c=context();await c.engine.prepareStripePayout('pay_test','admin');await c.engine.reconcileStripePayout('release_test');
+  c.state().activeRefund={id:'failed_refund',status:'FAILED',activePaymentId:'pay_test'};c.state().payment.payoutStatus='HELD';
+  await c.engine.reconcileStripePayout('release_test');assert.equal(c.state().payment.payoutStatus,'HELD');assert.equal(c.attempts.length,1);
   for (const env of ['production', 'preview']) { process.env.VERCEL_ENV = env; assert.equal(provider.connectEnabled(), env === 'preview'); }
   process.env.STRIPE_CONNECT_SECRET_KEY = 'sk_test_disallowed'; assert.throws(() => provider.connectClient(), /restricted/);
   process.env.STRIPE_CONNECT_SECRET_KEY = 'rk_live_disallowed'; assert.throws(() => provider.connectClient(), /restricted/);

@@ -66,7 +66,7 @@ export async function PATCH(r:Request){
     const updated=await tx.dispute.update({where:{id:d.disputeId},data:{reviewerId:u.id,reviewedAt:new Date()}});
     return{updated,booking:dispute.booking,previousStatus:dispute.status,refundAmountPence};
    }
-   if(payment?.provider==='STRIPE'&&stripeRefundsEnabled()&&await tx.stripeRefund.findUnique({where:{activePaymentId:payment.id}}))throw Error('A customer refund or transfer recovery is pending. Refresh its status before changing the resolution.');
+   if(payment?.provider==='STRIPE'&&await tx.stripeRefund.findUnique({where:{activePaymentId:payment.id}}))throw Error('A customer refund or transfer recovery needs review before changing the resolution.');
    if(payment&&['PROCESSING','FAILED'].includes(payment.payoutStatus)&&d.resolution)throw Error('Reconcile the pending Stripe payout before changing its financial resolution.');
    if(payment?.payoutStatus==='PAID'&&d.resolution&&['RELEASE_PAYOUT','REFUND_CUSTOMER','PARTIAL_REFUND'].includes(d.resolution))throw Error('Transporter already paid. Use the separate refund/recovery outcome process; this dispute cannot move released funds.');
    if(d.status==='CLOSED'&&payment?.payoutStatus==='HELD')throw Error('Resolve this held-payout dispute using Close without adjustment so payout eligibility is recalculated.');

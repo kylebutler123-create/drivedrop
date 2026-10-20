@@ -2,6 +2,14 @@
 
 ## Status
 
+**20 October deployment continuation:** Both rotated restricted keys are now saved in their existing sensitive Vercel entries, scoped only to Preview / `feature/ui-polish`. Metadata confirms both saves; secret values were not retrieved or displayed. The 29-entry inventory is unchanged and `STRIPE_REFUNDS_ENABLED=false`. The tested late-failure fix is being published to the feature branch for an ordinary preview deployment; runtime verification is pending. The credential handoff paragraphs below are historical.
+
+**Credential continuation:** The user rotated all three sandbox keys. The replacement Connect key `mk_1USkboLAzgkvCvrI7soNoQCy` retains the exact nine permissions below; the booking key retains its three own-account Write scopes and no connected-account permissions. Vercel still needs the two active preview secret values entered directly. Automatic approval review rejected an intermediate shared-file credential transfer; no file or configuration change occurred. The scoped Vercel editor is prepared for user entry. Deployment and further Stripe QA remain pending; refunds stay off. See the first section of [stripe-refund-preparation.md](stripe-refund-preparation.md).
+
+**Approved follow-up prepared locally:** The late-success-to-failure refund fix now has passing regression tests, TypeScript and a complete normal Next build. It has not been deployed. Canonical Stripe and the retained fixture were read again: Stripe refunded total is 0p; the application still records 11000p. Refunds remain OFF. Credential replacement is the next gate before deployment or further Stripe QA; no new permission is needed. See the first section of [stripe-refund-preparation.md](stripe-refund-preparation.md) for the correction rules, tests and exact continuation steps. The active preview is documentation-only deployment `dpl_6N4Zq2hEvdBdn5BxWmPP6hmGqA7E`, commit `e1230bc`.
+
+### Prior sandbox QA checkpoint
+
 
 **Latest verification — 20 October 2026:** The approved restricted-key permission is saved: **Charges and Refunds → Your account → Write**. The other eight configured permission rows and every connected-account scope remain unchanged. Actual before/after-transfer partial/full refunds, £75 transfer recovery, £25 applied-fine restoration, duplicate/stale-request protection and pending-to-success webhook reconciliation passed. **A later `refund.failed` leaves the app's successful refund ledger unchanged while holding the payout. This blocks activation.**
 
