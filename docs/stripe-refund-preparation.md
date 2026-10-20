@@ -1,8 +1,38 @@
 # Stripe refund preparation — 20 October 2026
 
-## Deployed correction verified with refunds disabled
+## Admin UI verified; recovery refund paused for explicit approval
 
-The tested application fix is commit `717e8e49e3325d9412dd63846babdafbda50ef06`; the constraint repair/checks are commit `da30c09a4dbf0cab94622de609f89a6b358de662`. Current READY ordinary preview `dpl_7ffRL8W9wRC6QzSVGh7KoEkMQN3B` at `drivedrop-e6gczlc3j-future-9f39.vercel.app` serves the latter commit, verified through `/api/health`. Only the feature-branch alias was assigned. Production's three aliases still point to `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz`. Refund creation stayed disabled throughout this continuation.
+The user completed DriveDrop administrator sign-in in the cloud browser. Fresh `/admin` shows Administrator / Control Centre; no further Vercel sign-in is needed. The actual held-payout panel shows the late-failure warning, 0p refunded, £10 fee / £100 proceeds and no payout-release action. [Verified admin hold](evidence/stripe-late-refund-admin.jpg).
+
+A bounded continuation created a disposable £1.10 recovery test and an unused £1.10 charge-dispute fixture. Only the recovery case reached payment. Stripe's documented international bypass-pending test card was used, with saved Link details disabled. The actual app authorisation and transporter-confirmation routes captured 110p. Delivery/customer-confirmation metadata and the 24-hour window were simulated only on this new fixture. The actual admin UI released its £1 transfer; a successful sandbox bank payout then left £0 available in the connected account. This prepares a real insufficient-balance recovery condition, but does not itself verify recovery.
+
+| Retained recovery object | Identifier / state |
+| --- | --- |
+| Job / quote / request prefix | `dd_verify_20261020d_recovery` (`_job`, `_quote`, `_request`) |
+| Booking / payment | `cmvha0bbc0001js08k7xulhtv` / `cmvha0bbc0002js08wyecnbtb` |
+| Checkout | `cs_test_a1iyFsT65OrWmiOJcpSNNHrY7rGfCbnwjC3LrbMyOyVaZT21dGLL9UeYLP` |
+| PaymentIntent / charge | `pi_3USlqULAzgkvCvrI0gzSXCJJ` / `ch_3USlqULAzgkvCvrI0N8E5pgI` |
+| StripePayout instruction | `ca1f67ee-0666-4585-8402-4e0b0a30aeb7`, TRANSFERRED |
+| Transfer | `tr_3USlqULAzgkvCvrI0SipQwTl`, 100p, reversed 0p |
+| Bank payout | `po_1USlvVLAzgvhqEGkfPpj96Nb`, 100p, real webhook recorded paid at 22:54:41 UTC |
+| Canonical payment | succeeded, GBP 110p, refunded 0p, `livemode=false` |
+| App ledger | PAID / payout PAID, fee 10p, proceeds 100p; no refund instruction |
+
+An additional **£2 sandbox Simulate Top-up** supplied platform funds so a customer refund can complete independently of the empty connected balance. Platform available balance is £2.87, pending £98.80. No real bank or live payment was used. Original connected schedule **daily / delay_days=7** is restored and verified; saved bank `ba_1USi9NLAzgvhqEGkObd4eDE7` ending 1116 is unchanged.
+
+The existing feature-preview-only flag was enabled on ordinary preview `dpl_Gkg7y4B2MSnfdbT1jRU4PpTDidNy`, runtime `7a17a0455a2666f893451903c7114004c8118867`. Automatic approval review then rejected the **Refund customer £1.10** click, saying it was a financial refund without explicit authorization to enable refunds/process that payment. The click was not retried by UI, API or another route. Subsequent canonical Stripe and database reads confirm zero refunded and zero new instructions. Stripe itself marks this as a sandbox payment; no refund occurred.
+
+`STRIPE_REFUNDS_ENABLED=false` was restored and deployed on READY ordinary preview `dpl_EU2LM7ZMyBH6P5Mj2GoN8F4iVgEt`, `drivedrop-g833357de-future-9f39.vercel.app`, same runtime commit. Only the feature alias is assigned. Fresh admin UI shows this retained payment and no refund control. [Paused payment evidence](evidence/stripe-recovery-test-paused.jpg). Request explicit user approval for this 110p sandbox refund and its 100p recovery test before enabling/retrying; this is an automatic-review requirement, not a new Stripe permission requirement.
+
+Cleanup removed the untouched `dd_verify_20261020d_dispute` job/quote/request (no Checkout, PaymentIntent or booking), temporary verification/insurance metadata and both test API sessions. Preserve the signed-in administrator session and the retained paid recovery fixture/audit. The six new availability/capture notifications remain with that fixture; duplicate notifications were observed from concurrent request/webhook notification paths, while capture/booking/transfer stayed single. Do not classify notification duplication as duplicate money movement.
+
+All 31 table/storage fingerprints were checked after excluding the retained new fixture and its six notifications: every pre-existing row matches the post-user-sign-in baseline except the documented synthetic Connect bank-outcome metadata. The original failed-refund record and correction evidence are unchanged. The user's manual sign-in normally replaced their prior login session before this baseline. All 29 environment entries remain; only the refund flag's update timestamp changed. All three production aliases still point to `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz`.
+
+Remaining actual checks: approve and perform this 110p refund against the empty connected balance; verify held recovery and retry after a 100p sandbox transfer restores funds; verify charge-dispute event delivery/handling and dispute-driven refund UI; complete remaining event-order/lost-response scenarios. The unused dispute case can be recreated after approval. Keep refunds off between bounded passes. Do not delete either retained paid fixture until separately settled.
+
+## Earlier deployed correction verified with refunds disabled
+
+The tested application fix is commit `717e8e49e3325d9412dd63846babdafbda50ef06`; the constraint repair/checks are commit `da30c09a4dbf0cab94622de609f89a6b358de662`. Current READY ordinary preview `dpl_7ffRL8W9wRC6QzSVGh7KoEkMQN3B` at `drivedrop-e6gczlc3j-future-9f39.vercel.app` serves the latter commit, verified through `/api/health`. Only the feature-branch alias was assigned. Production's three aliases still point to `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz`. Refund creation stayed disabled throughout that earlier deployment and bank-payout pass.
 
 The first real worker run found a schema gap omitted from the mocked regression suite: the old `StripeRefund_success_check` equated any ledger application with SUCCEEDED, so PostgreSQL rolled the correction back. Repository migration `20261020220726_stripe_refund_late_failure` changes that constraint only; Supabase recorded its application as `20261020220749` / `stripe_refund_late_failure` in preview project `yozbuuvebzxitoqrvyer`. Already-applied FAILED / REVIEW rows require their corresponding explicit late-failure code, a Stripe refund ID and the payment reservation; ordinary pending/failed rows cannot masquerade as applied refunds. All 19 cases in `scripts/sql/verify-stripe-refund-lifecycle.sql` pass against the actual stored PostgreSQL expression. RLS stays enabled, with no anon/authenticated table privileges.
 
@@ -27,7 +57,7 @@ The connected dashboard shows £0 incoming and £0 available, with the £1 Paid 
 
 All 31 table/storage fingerprints were compared after cleanup. The only changed tables are `BookingPayment`, `FinanceEvent`, `Notification`, `StripeRefund` (the retained late-failure correction) and `StripeConnectAccount` (the disposable account's bank outcome). Original financial/notification subsets match: 52 payments `4204f15a384c0516968f9c2b6b1569d9`, 135 finance events `48b81d9246a3cfc11fdc2e0abb5508f0`, 401 notifications `184e8c473c8c03ff1241e048de923af2`. User, Booking, Session and all 136 storage rows match their complete pre-continuation fingerprints. All 29 environment entry metadata records are unchanged; the branch flag is still false.
 
-The preview administrator page requires sign-in before the remaining actual admin UI checks. No replacement customer refund or original-data mutation was performed in this continuation. The deployment/credential handoff sections immediately below are historical; use this current result and the remaining-check list near the end.
+At that earlier checkpoint the preview administrator page required sign-in; this is now complete as recorded above. No replacement customer refund or original-data mutation was performed in this continuation. The deployment/credential handoff sections immediately below are historical; use this current result and the remaining-check list near the end.
 
 ## Historical: both replacement secrets saved; deployment pending
 
@@ -138,8 +168,8 @@ Example: £110 paid = £10 recorded platform fee + £100 transporter gross. A £
 ## Remaining activation and verification
 
 1. The late-failure accounting repair and regression/constraint checks are complete, including the retained real case with refunds off. Keep the failed case, its original ledger timestamp, correction audit and payout hold until the customer refund is separately settled.
-2. Bank-payout success/failure are complete. Actual insufficient-balance transfer recovery and recovery after funding still need verification. These account-level bank tests do not prove that customer-refund workflow. Do not add Payouts Write merely for QA.
-3. Verify actual `charge.dispute.created`, `charge.dispute.updated` and `charge.dispute.closed` delivery/handling, dispute-driven refund UI, and remaining event-order/lost-response recovery scenarios. Delivered refund events do not establish these checks. The cloud preview currently requires an administrator sign-in for actual UI submissions.
+2. Bank-payout success/failure are complete. The 110p `QA20 REC` case is prepared with £0 connected available balance and retained pending explicit refund/recovery approval. Actual insufficient-balance transfer recovery and recovery after funding still need verification. These account-level bank tests do not prove that customer-refund workflow. Do not add Payouts Write merely for QA.
+3. Verify actual `charge.dispute.created`, `charge.dispute.updated` and `charge.dispute.closed` delivery/handling, dispute-driven refund UI, and remaining event-order/lost-response recovery scenarios. Delivered refund events do not establish these checks. Administrator sign-in is now complete; automatic approval review blocks the first current refund submission as recorded above.
 4. Re-enable only the feature-branch preview for a bounded synthetic QA pass when its fixtures and authenticated admin UI are ready, then disable it again. Use an ordinary preview deployment: when calling Vercel's create-deployment API, omit `target`; `target=staging` assigns a convenience alias and must not be used here.
 5. Reconcile any separately settled failed case in Stripe and the application before removing only its fixtures. The disposable connected balance is currently £0; recheck before eventually closing the account. Preserve all original records and live/production settings.
 
