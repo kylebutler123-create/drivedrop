@@ -2,23 +2,40 @@
 
 ## Deployed correction verified with refunds disabled
 
-The feature branch now contains the tested fix in `717e8e49e3325d9412dd63846babdafbda50ef06`. Vercel's Git integration created READY ordinary preview `dpl_HF1MkfVbPQb4tdSGoBLTS17ASpap` at `drivedrop-1wu474073-future-9f39.vercel.app`; only the feature-branch alias was assigned. `/api/health` reports that commit. Production's three aliases still point to `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz`.
+The tested application fix is commit `717e8e49e3325d9412dd63846babdafbda50ef06`; the constraint repair/checks are commit `da30c09a4dbf0cab94622de609f89a6b358de662`. Current READY ordinary preview `dpl_7ffRL8W9wRC6QzSVGh7KoEkMQN3B` at `drivedrop-e6gczlc3j-future-9f39.vercel.app` serves the latter commit, verified through `/api/health`. Only the feature-branch alias was assigned. Production's three aliases still point to `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz`. Refund creation stayed disabled throughout this continuation.
 
-The first real worker run found a schema gap omitted from the mocked regression suite: the old `StripeRefund_success_check` equated any ledger application with SUCCEEDED, so PostgreSQL rolled the correction back. Migration `20261020220726_stripe_refund_late_failure` changes that constraint only. Already-applied FAILED / REVIEW rows require their corresponding explicit late-failure code, a Stripe refund ID and the payment reservation; ordinary pending/failed rows cannot masquerade as applied refunds. All 19 cases in `scripts/sql/verify-stripe-refund-lifecycle.sql` pass against the actual stored PostgreSQL expression. RLS stays enabled, with no anon/authenticated table privileges.
+The first real worker run found a schema gap omitted from the mocked regression suite: the old `StripeRefund_success_check` equated any ledger application with SUCCEEDED, so PostgreSQL rolled the correction back. Repository migration `20261020220726_stripe_refund_late_failure` changes that constraint only; Supabase recorded its application as `20261020220749` / `stripe_refund_late_failure` in preview project `yozbuuvebzxitoqrvyer`. Already-applied FAILED / REVIEW rows require their corresponding explicit late-failure code, a Stripe refund ID and the payment reservation; ordinary pending/failed rows cannot masquerade as applied refunds. All 19 cases in `scripts/sql/verify-stripe-refund-lifecycle.sql` pass against the actual stored PostgreSQL expression. RLS stays enabled, with no anon/authenticated table privileges.
 
 At **22:08:06 UTC**, the deployed background worker reconciled the retained failed refund without a direct ledger edit or new Stripe money operation. The instruction is FAILED / `STRIPE_REFUND_FAILED_AFTER_SUCCESS`, reserves payment `cmvh5nyop0002l507vqfjq5fl`, and retains its original `ledgerAppliedAt`. Payment is PAID, refunded **0p**, fee **1000p**, proceeds **10000p**, deduction **0p**, payout **HELD**. One **-11000p** `STRIPE_REFUND_FAILURE_CONFIRMED` event and one corrective notification per customer/transporter were created; original success evidence remains. Subsequent worker runs are successful and do not duplicate the correction or notifications. This corrects accounting; the customer still has not received a refund. Retain the case until separately settled.
 
-Authenticated read-only admin disputes GET returned 200 with `stripeRefundsEnabled=false` on all 20 records. The fixture customer's bookings GET returned PAID / refundedPence=0. The Connect replacement key successfully retrieved canonical sandbox state. The booking replacement key created and retrieved unpaid Checkout `cs_test_a14Bt9E4q1FbABxDboQRoDR27m8zeyCJDXatR5dkmqZ4orx2T4mUcs8D95`; a timed-out caller response reused the same session. Withdrawal returned 200 / WITHDRAWN / RELEASED. No card, PaymentIntent or booking was created for this credential check. Temporary verification metadata and QA sessions are tracked for cleanup at the end of this pass.
+Authenticated read-only admin disputes GET returned 200 with `stripeRefundsEnabled=false` on all 20 records. The fixture customer's bookings GET returned PAID / refundedPence=0. The Connect replacement key successfully retrieved canonical sandbox state. The booking replacement key created and retrieved unpaid Checkout `cs_test_a14Bt9E4q1FbABxDboQRoDR27m8zeyCJDXatR5dkmqZ4orx2T4mUcs8D95`; a timed-out caller response reused the same session. Withdrawal returned 200 / WITHDRAWN / RELEASED. No card, PaymentIntent or booking was created for this credential check. Canonical Stripe retrieval confirms the Checkout is expired/unpaid, with no PaymentIntent. The new `dd_verify_20261020c` job/quote/request, verification/insurance metadata, withdrawal notification and both temporary app sessions were removed. No stored file was created; the original session fingerprint is unchanged.
 
-The older deployment/credential handoff sections below are historical. Refund creation remains off while the remaining bank-payout and dispute checks are assessed.
+The original failed-refund event resend was requested in Stripe, but the delivery list did not show a new attempt after refresh; do not count this as verified fresh redelivery. Canonical state, the database correction and subsequent worker stability are verified.
 
-## Both replacement secrets saved; disabled preview deployment pending
+## Actual bank payout failure and success verified
+
+Disposable account `acct_1USi72LAzgvhqEGk` received one £1 transfer `tr_1USlR6LAzgkvCvrIogErjBuC`, transfer group `dd_bank_20261020c`, `livemode=false`. A sandbox **Simulate Top-up** of £8.20 covered the platform's prior -£6.20 available balance and left £2 available before this transfer. No real bank was charged and no customer charge/refund was created in this continuation.
+
+With the schedule temporarily manual, **Pay out account balance → Choose a test use case** supplied valid ad hoc test destinations. The same £1 was used for both tests:
+
+| Test | Stripe payout | Destination | Verified DriveDrop webhook result |
+| --- | --- | --- | --- |
+| Failed payout (`no_account`) | `po_1USlTzLAzgvhqEGk6uwo6wRa` | Test bank ending 5433 | `lastBankPayoutStatus=failed`, 22:26:16 UTC; £1 returned |
+| Successful payout | `po_1USlW0LAzgvhqEGkPUQ9n458` | Test bank ending 5432 | `lastBankPayoutStatus=paid`, 22:28:20 UTC |
+
+The connected dashboard shows £0 incoming and £0 available, with the £1 Paid and £1 Failed results. Original schedule **daily, delay_days=7** is canonically restored. Saved bank `ba_1USi9NLAzgvhqEGkObd4eDE7`, ending 1116, remains unchanged. No Payouts Write permission was added. The funding transfer remains unreversed because its funds completed the successful sandbox bank payout; retain this Stripe audit history. No booking payout instruction was created. [Screenshot of the verified outcomes](evidence/stripe-bank-payout-outcomes.jpg).
+
+All 31 table/storage fingerprints were compared after cleanup. The only changed tables are `BookingPayment`, `FinanceEvent`, `Notification`, `StripeRefund` (the retained late-failure correction) and `StripeConnectAccount` (the disposable account's bank outcome). Original financial/notification subsets match: 52 payments `4204f15a384c0516968f9c2b6b1569d9`, 135 finance events `48b81d9246a3cfc11fdc2e0abb5508f0`, 401 notifications `184e8c473c8c03ff1241e048de923af2`. User, Booking, Session and all 136 storage rows match their complete pre-continuation fingerprints. All 29 environment entry metadata records are unchanged; the branch flag is still false.
+
+The preview administrator page requires sign-in before the remaining actual admin UI checks. No replacement customer refund or original-data mutation was performed in this continuation. The deployment/credential handoff sections immediately below are historical; use this current result and the remaining-check list near the end.
+
+## Historical: both replacement secrets saved; deployment pending
 
 The user saved both replacement restricted sandbox keys directly in Vercel. Metadata verifies that `STRIPE_CONNECT_SECRET_KEY` and `STRIPE_SECRET_KEY` were updated and remain sensitive entries scoped only to Preview / `feature/ui-polish`. All 29 entries remain present, and `STRIPE_REFUNDS_ENABLED=false`. No secret value was retrieved for this check. Correctness of the saved values still needs runtime verification after deployment.
 
 The tested local changes are being published to the requested feature branch for an ordinary preview deployment with refunds off. A fresh pre-deployment read confirms the retained payment still records 11000p refunded, fee/proceeds zero and payout HELD. Baseline hashes cover all 30 application tables and storage rows, with separate nonfixture financial/notification hashes for preservation checks. The older credential handoff and local-only checkpoints below are historical; follow the current deployment result when it is recorded.
 
-## Credential rotation verified; direct Vercel entry pending
+## Historical: credential rotation verified; direct entry pending
 
 The user completed the three sandbox key rotations. The Dashboard shows three active keys created on 20 October. The replacement Connect key is `mk_1USkboLAzgkvCvrI7soNoQCy`; its nine permission rows exactly match the approved table in `stripe-connect-sandbox.md`. The replacement booking key is `mk_1USkdrLAzgkvCvrIB5RRBL5V`; it retains only own-account Write for Charges and Refunds, Checkout Sessions and Payment Intents, with no connected-account permissions. No permission was edited during verification and no replacement secret value was displayed.
 
@@ -30,7 +47,7 @@ The 29-variable inventory was read again; refunds remain `false` on the feature 
 
 Prepared destination: [empty preview secret editor](evidence/vercel-preview-secret-editor.jpg).
 
-## Approved follow-up: late-failure fix prepared locally
+## Historical: approved late-failure fix prepared locally
 
 The user approved the next-step fix and sandbox credential replacement on 20 October 2026. The implementation below is prepared and tested in an isolated checkout based on `e1230bcfd4374756ec4bc278ea9a690604839e55`, the remote `feature/ui-polish` head. **It is not deployed yet.** Deployment and further Stripe mutations are waiting for replacement of the sandbox credentials disclosed in the earlier accessibility response. No additional key permission is requested.
 
@@ -80,7 +97,7 @@ These were real Stripe sandbox requests, not mocks. Hosted Checkout ran in the c
 
 Before-release refunds: `re_3USjemLAzgkvCvrI0YJ35bCV`, `re_3USjemLAzgkvCvrI0MeGxbam`. After-release refunds: `re_3USjivLAzgkvCvrI1Wb9Qfbm`, `re_3USjivLAzgkvCvrI10RgToh9`; reversals: `trr_1USjlHLAzgkvCvrIYbnxj0ur` (5000p), `trr_1USjuXLAzgkvCvrIHT6GrWJ7` (2500p). Stripe retains this sandbox audit history after fixture cleanup.
 
-## Activation blocker: late refund failure
+## Historical activation blocker: late refund failure (accounting now repaired)
 
 The retained case is deliberately unrepaired so the mismatch can be reproduced and a reviewed repair can be verified:
 
@@ -120,19 +137,21 @@ Example: £110 paid = £10 recorded platform fee + £100 transporter gross. A £
 
 ## Remaining activation and verification
 
-1. Keep refunds off until the late-failure lifecycle and accounting repair are implemented and verified against the retained case. Add meaningful regression tests for success followed by failure, duplicate/out-of-order events and a later refund instruction; then repeat actual sandbox verification.
-2. Complete bank-payout success/failure and insufficient-balance transfer-recovery checks. No bank payout was submitted in this continuation. Do not add Payouts write permission merely for QA.
-3. Verify actual `charge.dispute.created`, `charge.dispute.updated` and `charge.dispute.closed` delivery/handling, dispute-driven refund UI, and remaining event-order/lost-response recovery scenarios. Delivered refund events do not establish these checks.
-4. Re-enable only the feature-branch preview for a bounded synthetic QA pass after the blocker is fixed. Use an ordinary preview deployment: when calling Vercel's create-deployment API, omit `target`; `target=staging` assigns a convenience alias and must not be used here.
-5. Reconcile the failed case in Stripe and the application, then remove only its fixtures. Recheck the connected-account balance before eventually closing the disposable account. Preserve all original records and live/production settings.
+1. The late-failure accounting repair and regression/constraint checks are complete, including the retained real case with refunds off. Keep the failed case, its original ledger timestamp, correction audit and payout hold until the customer refund is separately settled.
+2. Bank-payout success/failure are complete. Actual insufficient-balance transfer recovery and recovery after funding still need verification. These account-level bank tests do not prove that customer-refund workflow. Do not add Payouts Write merely for QA.
+3. Verify actual `charge.dispute.created`, `charge.dispute.updated` and `charge.dispute.closed` delivery/handling, dispute-driven refund UI, and remaining event-order/lost-response recovery scenarios. Delivered refund events do not establish these checks. The cloud preview currently requires an administrator sign-in for actual UI submissions.
+4. Re-enable only the feature-branch preview for a bounded synthetic QA pass when its fixtures and authenticated admin UI are ready, then disable it again. Use an ordinary preview deployment: when calling Vercel's create-deployment API, omit `target`; `target=staging` assigns a convenience alias and must not be used here.
+5. Reconcile any separately settled failed case in Stripe and the application before removing only its fixtures. The disposable connected balance is currently £0; recheck before eventually closing the account. Preserve all original records and live/production settings.
 
-## Bank-payout blocker
+## Historical bank-payout blocker (resolved)
+
+Resolved by selecting **Choose a test use case** in the platform payout dialog; see the actual results above. The following is the earlier failed attempt, preserved for context.
 
 Express payout settings and the bank-edit form loaded this time. The disposable account's existing test bank still ends **1116** (`no_account`); the built-in **Use test account** shortcut did not yield a verified replacement. Temporarily switching its schedule to manual exposed **Pay out account balance**, but the payout dialog's destination was **No valid option available**. No payout confirmation was submitted.
 
 The original schedule was restored and verified through canonical account retrieval: **daily, delay_days=7**. The bank remains `ba_1USi9NLAzgvhqEGkObd4eDE7`, last4=1116, status=new, default_for_currency=true. Both payout and transfer capabilities remain active, and the app's lastBankPayoutId/status remain null. The £75 test transfer was fully reversed. Browser sessions returned to sign-in on refresh, so a fresh zero-balance UI read was not obtained; do not cite the previously cached £25 balance as current. The account and mapping are retained for the remaining supported bank-management flow.
 
-## Preservation, cleanup and operational notes
+## Earlier preservation, cleanup and operational notes
 
 - Three settled fixture bookings, five successful refund instructions, the fully reversed payout instruction, their job/quote/request/payment/tracking/finance records, synthetic fine/dispute, verification/insurance metadata and completed-case notifications were removed. No storage object was created.
 - The one failed-refund fixture and associated audit/notification evidence remain. All three temporary app sessions were revoked and private QA cookies/links were removed from local scratch files.
@@ -140,7 +159,7 @@ The original schedule was restored and verified through canonical account retrie
 - Original users: 16, `cee2156e48900d3181a655803ab0d167`; original bookings: 52, `c71531a7810c2a5076f83f1dd45ae471`; stored-file rows: 136, `ebbe346597d33536e580807e5b9ccf1a`.
 - Production remains on `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz`, main commit `8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c`. The pink, main and project convenience aliases all resolve to it. No live payment or production deployment was created.
 - Deployment incident: the initial QA request used Vercel `target=staging`, which temporarily reassigned `drivedrop-future-9f39.vercel.app` to the preview. It was restored to the original production deployment before QA charges. The disabled deployment omitted `target` and assigned only the feature-branch alias. The incident was disclosed to the user; do not describe production routing as having been untouched throughout.
-- Credential-output incident: Stripe unexpectedly included full sandbox key values in an initial accessibility response without Reveal/Copy being clicked. The values were not copied into source, docs or configuration, and subsequent reads were redacted. No key was rotated or replaced. The user was informed; do not claim the secret was never displayed.
+- Credential-output incident: Stripe unexpectedly included full sandbox key values in an initial accessibility response without Reveal/Copy being clicked. The values were not copied into source, docs or configuration, and subsequent reads were redacted. No key was rotated or replaced during that earlier pass; the user subsequently rotated all three keys as recorded above. The user was informed; do not claim the secret was never displayed.
 - Automatic approval review rejected the final write-shaped disabled-refund probe because it could attempt a refund after shutdown. It was not retried. The safer authenticated GET above verified the runtime flag is false.
 
 Sources checked: Stripe [testing](https://docs.stripe.com/testing), [Connect testing](https://docs.stripe.com/connect/testing), [manual payouts](https://docs.stripe.com/connect/manual-payouts), [separate charges and transfers](https://docs.stripe.com/connect/separate-charges-and-transfers), [refunds and disputes](https://docs.stripe.com/connect/marketplace/tasks/refunds-disputes), and [refund creation](https://docs.stripe.com/api/refunds/create).
