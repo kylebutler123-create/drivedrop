@@ -2,6 +2,35 @@
 
 ## Status
 
+
+**Latest verification — 20 October 2026:** The approved restricted-key permission is saved: **Charges and Refunds → Your account → Write**. The other eight configured permission rows and every connected-account scope remain unchanged. Actual before/after-transfer partial/full refunds, £75 transfer recovery, £25 applied-fine restoration, duplicate/stale-request protection and pending-to-success webhook reconciliation passed. **A later `refund.failed` leaves the app's successful refund ledger unchanged while holding the payout. This blocks activation.**
+
+Refunds are now **OFF** (`STRIPE_REFUNDS_ENABLED=false`, Preview / `feature/ui-polish`) on READY deployment `dpl_FFkzDEdd16pHLVg8VUJXTxG1ia1y`, `drivedrop-jrcchbx0b-future-9f39.vercel.app`, runtime commit `471e22a190822d1f819099f1be50ca64dcb99d73`. Authenticated read-only `/api/admin/disputes` returns 200 and false for the refund flag. No application source changed. See [stripe-refund-preparation.md](stripe-refund-preparation.md) for actual Stripe IDs, the retained failing case, cleanup and remaining checks.
+
+All settled QA fixtures were removed after their charges were fully refunded and the transfer fully reversed. One failed-refund fixture is retained; no temporary QA sessions remain. All 29 original-data table counts/fingerprints match, plus the original 16 users, 52 bookings and 136 stored-file fingerprints below. The retained disposable Connect account's check metadata is the only pre-existing synthetic row that changed.
+
+Bank payout testing remains blocked by **No valid option available** in Stripe's payout destination field. No bank payout was submitted. The disposable account still has test bank ending1116, and its original daily/7-day schedule is restored and canonically verified. A fresh balance UI read was blocked by session expiry; the full £75 transfer reversal is canonically verified.
+
+Two disclosed operational incidents are recorded in the refund document: Stripe unexpectedly included sandbox key values in one accessibility response, and the initial Vercel staging deployment temporarily moved a production convenience alias. No keys were copied into source/configuration or rotated; later reads were redacted. The alias was restored before QA charges. All production aliases now resolve to the original deployment, all existing environment entries match the baseline, and no live payment or production deployment was created.
+
+### Verified restricted-key permissions
+
+Key name: `DriveDrop preview Connect payouts`; object ID: `mk_1USOOgLAzgkvCvrIOAF4iATu`; sandbox: `acct_1US4BzLAzgkvCvrI`. The saved permission summary was reopened after saving. This table records permission labels only, never the secret key.
+
+| Resource | Your account | Connected accounts |
+| --- | --- | --- |
+| Account Links | Write | None |
+| Accounts | Read | None |
+| Accounts v2 | Read | Read |
+| Charges and Refunds | **Write (only change)** | None |
+| Login Links | Write | None |
+| Payment Intents | Read | None |
+| Payouts | None | Read |
+| Recipient Configuration | Write | Write |
+| Transfers | Write | None |
+
+### Earlier checkpoints (historical; superseded by the current status above)
+
 **Verified preview deployment:** `dpl_GHFtnNbMEYLS13F4pNgqdypNYXCG` is READY at `drivedrop-g9j6uh2ej-future-9f39.vercel.app`, target preview/null, branch `feature/ui-polish`, runtime commit `9698c5f82fd83bf239b41e14013187174d5ade27`. The stable preview `/api/health` returns 200/ok and unauthenticated `/api/admin/disputes` returns 403. No error/fatal runtime logs were found for this deployment in the checked window. The project environment-variable inventory confirms no `STRIPE_REFUNDS_ENABLED` entry. The original data fingerprints match; the new refund table and all payout instructions remain empty. These are deployment/gate checks, not authenticated UI or real-money-flow verification.
 
 **Latest continuation — durable refunds implemented, activation off:** `src/lib/stripe-refunds.ts` now connects the tested refund policy to durable instructions, admin routes, dispute confirmation, fine restoration, separate transfer recovery, webhooks and the background scheduler. Preview migration `20261020193911_stripe_refund_sandbox` is applied with RLS and no client access. The table contains zero records. Local concurrency/failure/accounting/API/UI tests and a complete Next build pass; actual Stripe refund/bank-payout QA remains unverified. `STRIPE_REFUNDS_ENABLED` is absent/off, and Stripe key permissions have not changed. The platform webhook now includes seven refund/charge-dispute events in addition to the existing nine; its URL, bypass and API version are unchanged. See `docs/stripe-refund-preparation.md` for exact remaining gates.
@@ -100,7 +129,7 @@ Only `acct_1US4BzLAzgkvCvrI` (drivedrop sandbox) is allowed. `STRIPE_CONNECT_ENA
 
 The **separate restricted sandbox key** `DriveDrop preview Connect payouts` (`mk_1USOOgLAzgkvCvrIOAF4iATu`) is created and its sandbox identity was verified. Its permissions cover only the operations used by this implementation:
 
-- Read current platform account, PaymentIntents and Charges.
+- Read current platform account and PaymentIntents; write own-account Charges and Refunds (approved and verified 20 October).
 - Create/read Accounts v2 recipient accounts; create Accounts v2 account links and Express login links.
 - Create/read Transfers (including retrieval of reversals through their transfer).
 - Read connected-account Payouts; no bank-payout creation permission is needed by the application.
@@ -132,13 +161,13 @@ Nine deployed security probes passed: unsigned snapshot/thin rejection; signed s
 
 The first real release attempts completed every Stripe read with HTTP 200 but failed before writing the payout instruction. PostgreSQL's advisory-lock function returns `void`, which Prisma cannot deserialize through `$queryRaw`. Casting that result to `text` preserved the transaction lock and fixed release on the deployed preview. Safe error-code logging was added to preparation failures; raw queries, parameters, payment details and Stripe error bodies are not logged.
 
-### Remaining bank-payout verification
+### Earlier bank-payout verification checkpoint
 
 Stripe Express returned **We couldn't load your account information** on both attempts to edit the existing GBP test bank. No bank details were changed and no bank payout was created. Real `payout.paid`/`payout.failed` delivery, canonical connected-account payout reads using the restricted key, and account-level remediation after a bank failure remain unverified. Keep this explicit limitation separate from the verified platform-to-transporter transfer. Do not treat the synthetic signed snapshot probe or Express's estimated payout date as a successful bank payout.
 
 Once Stripe's test-bank management works, use a new disposable fixture to finish successful and failed bank-payout tests. Stripe-backed application refunds/disputes and reversal-failure recovery also remain a separate live-launch blocker; the manual QA reversal and refund above do not implement those product flows.
 
-### Preservation and final state
+### Preservation and final state of the 19 October pass
 
 - Original users: 16, fingerprint `cee2156e48900d3181a655803ab0d167`.
 - Original bookings: 52, fingerprint `c71531a7810c2a5076f83f1dd45ae471`.

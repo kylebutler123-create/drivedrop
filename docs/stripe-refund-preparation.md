@@ -2,17 +2,50 @@
 
 ## Scope and current state
 
-Durable refund execution is deployed to the preview in runtime commit `9698c5f82fd83bf239b41e14013187174d5ade27` (`dpl_GHFtnNbMEYLS13F4pNgqdypNYXCG`, READY) on `feature/ui-polish`, including admin refunds/dispute resolutions, status notices, fine restoration, separate transfer recovery, webhook handling and the recovery scheduler. It is **disabled** unless `STRIPE_REFUNDS_ENABLED=true` and the existing sandbox Connect gates pass. No live or production activation is permitted by the code.
+**20 October 2026 sandbox QA completed with an activation blocker. Refunds are OFF on the active preview.** The existing restricted key was updated only at **Charges and Refunds → Your account → Write**. All other permissions were compared and preserved. No application source was changed in this continuation.
 
-Migration `20261020193911_stripe_refund_sandbox` is applied to preview project `yozbuuvebzxitoqrvyer`. `StripeRefund` is empty, RLS is enabled and anon/authenticated access is revoked. The Supabase CLI install could not complete because its network approval was cancelled. The connected migration tool applied the reviewed SQL; its actual provider-generated migration version was then saved in the Prisma migration directory. No migration timestamp was invented.
+Controlled QA ran on `feature/ui-polish`, runtime commit `471e22a190822d1f819099f1be50ca64dcb99d73`, deployment `dpl_8XXmMBUSNuZYUaE3mindppAsrygn`. After the failure below, branch-scoped `STRIPE_REFUNDS_ENABLED=false` was deployed as **`dpl_FFkzDEdd16pHLVg8VUJXTxG1ia1y`**, READY, target preview/null, at `drivedrop-jrcchbx0b-future-9f39.vercel.app`. The stable feature-branch alias points to this disabled runtime. An authenticated, read-only `GET /api/admin/disputes` returned 200 with `stripeRefundsEnabled=false` on all 20 records. All 28 pre-existing environment entries, including all 17 production entries, match their initial inventory; only the branch-specific refund flag was added.
 
-The restricted Connect key still has Charges and Refunds **read** permission. The seven refund/charge-dispute webhook events are configured on the existing platform destination; all nine previous events remain enabled, and the URL, bypass and API version 2024-06-20 are unchanged. The activation flag remains absent/off. These gates and real Stripe verification must be completed before activation. Browser control timed out again while restoring documentation on this continuation; no further browser retry was made. There is no new customer charge, transfer, refund, bank payout or app session from this continuation.
+The prior QA deployment is superseded and was built with refunds enabled. Do not use that immutable deployment for further testing. Temporary QA sessions have been revoked. No deployment-delete capability was available in this session.
+
+Migration `20261020193911_stripe_refund_sandbox` remains applied to preview project `yozbuuvebzxitoqrvyer`, with RLS enabled and client access revoked. One synthetic failed-refund case is retained for diagnosis. Completed cases were fully refunded/reversed and their application fixtures removed.
+
+## Actual sandbox verification, 20 October 2026
+
+These were real Stripe sandbox requests, not mocks. Hosted Checkout ran in the cloud browser using documented synthetic cards; transporter capture and admin refund/release operations used authenticated preview API requests. Admin refund/dispute UI submission is still unverified.
+
+| Check | Observed result |
+| --- | --- |
+| Before release, partial then full refund | Captured £110 on `pi_3USjemLAzgkvCvrI07KCEGJN`. Two £55 refunds succeeded. After the first, fee/proceeds were £5/£50; after the second, both were zero, refunded total £110, payout CANCELLED. Canonical charge was fully refunded. |
+| Duplicate and stale balance | Repeating the first request returned the same instruction, without a second refund. A different amount against the old refunded-balance version returned 409. Customer and unauthenticated requests returned 403. |
+| After release with £25 fine | Captured £110 on `pi_3USjivLAzgkvCvrI1vea6rJM`. Release created one £75 transfer, `tr_3USjivLAzgkvCvrI1HxKu1Kg`. The first £55 refund recovered £50; the second recovered £25. Stripe confirms amount=7500, amount_reversed=7500, reversed=true, livemode=false. |
+| Fine restoration | The full refund restored the applied £25 fine: original fine event remained +2500p, application entries were +2500p and -2500p, and one restoration audit event was created. Final payment fee, proceeds and applied deduction were zero. No original fine was modified. |
+| Pending → succeeded | Card ending 7726 produced refund `re_3USjtxLAzgkvCvrI0qDFVnpS`, initially PENDING_STRIPE with no ledger application and payout HELD. The real `refund.updated` webhook completed it at 20:48:38 UTC, without an admin refresh/retry: £110 refunded, payout CANCELLED. The scheduler also attempted reconciliation while it was pending. |
+| Succeeded → failed | Card ending 5126 produced `re_3USjwcLAzgkvCvrI1EI8LdZI`, initially succeeded. Stripe subsequently emitted `refund.failed` with `expired_or_canceled_card`; event `evt_3USjwcLAzgkvCvrI1B8md0bH` has pending_webhooks=0. Canonical charge then had amount_refunded=0 and refunded=false. **The app still says SUCCEEDED / REFUNDED / refundedPence=11000. Payout is HELD. This is a failed verification, not a successful refund.** |
+| Real webhook delivery | `refund.created`, `refund.updated`, `refund.failed` and `charge.refunded` were delivered with pending_webhooks=0. Platform endpoint `we_1USMj9LAzgkvCvrIzq4UAION` retains 16 events and API 2024-06-20. Connected snapshot and thin destinations, URLs and bypass values were unchanged. |
+
+Before-release refunds: `re_3USjemLAzgkvCvrI0YJ35bCV`, `re_3USjemLAzgkvCvrI0MeGxbam`. After-release refunds: `re_3USjivLAzgkvCvrI1Wb9Qfbm`, `re_3USjivLAzgkvCvrI10RgToh9`; reversals: `trr_1USjlHLAzgkvCvrIYbnxj0ur` (5000p), `trr_1USjuXLAzgkvCvrIHT6GrWJ7` (2500p). Stripe retains this sandbox audit history after fixture cleanup.
+
+## Activation blocker: late refund failure
+
+The retained case is deliberately unrepaired so the mismatch can be reproduced and a reviewed repair can be verified:
+
+- Request/job/quote prefix: `dd_refund_20261020b_failed_`.
+- Booking: `cmvh5nyop0001l507711bxm28`; payment: `cmvh5nyop0002l507vqfjq5fl`.
+- PaymentIntent: `pi_3USjwcLAzgkvCvrI15yEcbMR`; charge: `ch_3USjwcLAzgkvCvrI1oqvK6Qk`.
+- Refund instruction: `983a6c2d-474b-47bf-b564-8f10559cd308`; Stripe refund: `re_3USjwcLAzgkvCvrI1EI8LdZI`.
+- Synthetic customer/admin: `dd_refund_20261020b_customer`, `dd_refund_20261020b_admin`; password login disabled, no retained QA sessions.
+- Transporter: the existing `dd_bank_20261020a_transporter` and connected account `acct_1USi72LAzgvhqEGk`.
+
+Code inspection explains the observation: completed instructions clear `activePaymentId`; `handleStripeRefundEvent` only selects active instructions; `reconcileStripeRefund` returns early for completed instructions. The canonical source check catches the changed balance and holds the payment, but leaves the completed instruction, ledger and earlier success notifications unchanged. Fixing only the status label is insufficient: the repair must address confirmed accounting, notifications, dispute resolution and any previously restored fines/recovered transfers, with concurrency and later-refund cases covered. Do not issue an automatic replacement refund/transfer or directly overwrite this financial ledger to make the check pass.
+
+The failed £110 sandbox refund returned funds to the platform charge. No transfer or bank payout was made for this case. It remains financially unsettled from the customer's perspective and must not be deleted or described as cleaned up.
 
 ## Implemented behavior and local verification
 
 - Immutable source/accounting snapshots, a unique payment/refunded-balance version and one active instruction per payment prevent duplicate submissions. Conflicting requests return a refresh/review error.
 - Booking locks, worker leases with ownership tokens, separately persisted first-attempt timestamps, stable Stripe idempotency keys and paginated refund/reversal recovery handle response or database-commit loss. Ambiguous creation beyond 23 hours requires review.
-- Only a canonical successful refund updates payment amounts, restores applicable fines, resolves its dispute and creates durable in-app notifications. Pending, requires-action and failed refunds never count as completion. The async route returns HTTP 202 and the UI says confirmation is pending.
+- A canonical successful refund updates payment amounts, restores applicable fines, resolves its dispute and creates durable in-app notifications. Pending, requires-action and initially failed refunds are handled separately. **The real late-failure test above exposed a gap after success; the earlier mock coverage did not prove this case.** The async route returns HTTP 202 and the UI says confirmation is pending.
 - Transfer recovery has an independent status and retry path. Insufficient balance leaves the confirmed customer refund intact, holds the payment and shows the recovery amount for review. Manual over-reversals never trigger a replacement transfer.
 - Failed refund instructions retain their reservation for review. The app deliberately has no automatic replacement-refund or manual-ledger-repair control; operators must reconcile canonical Stripe state before a separate corrective change.
 - Late transfer events cannot undo confirmed refund accounting. An unexpected later reversal holds the payment for review. Existing manual holds are preserved after partial refunds unless an approved dispute resolution authorises remaining proceeds.
@@ -33,16 +66,27 @@ Example: £110 paid = £10 recorded platform fee + £100 transporter gross. A £
 
 ## Remaining activation and verification
 
-1. Recover a responding Stripe browser session without repeated five-minute retries. Keep the existing zero-funded bank-test account; its secure post-login state is unknown.
-2. Review and apply only the restricted Connect key's own-account Charges and Refunds write permission. Keep the existing Transfers write, connected Payouts read and all other scopes unchanged. Never substitute the legacy Checkout key or add Payouts write just for testing.
-3. Verify delivery and handling of the newly configured `refund.created`, `refund.updated`, `refund.failed`, `charge.refunded`, `charge.dispute.created`, `charge.dispute.updated`, `charge.dispute.closed` events. Platform endpoint `we_1USMj9LAzgkvCvrIzq4UAION` now has 16 enabled events; the existing nine, URL, bypass and API version were preserved. The connected-account and thin destinations are unchanged.
-4. Enable `STRIPE_REFUNDS_ENABLED=true` only on `feature/ui-polish` for controlled synthetic QA. Verify actual full/partial refunds before and after release, pending/failed customer refunds, insufficient-balance recovery, repeated/stale events, refund/reversal permissions and scheduler recovery. Browser UI→API→Stripe→database verification is still pending.
-5. Finish bank-payout success/failure testing through Stripe's supported UI, then reverse/refund synthetic funds, close zero-balance disposable accounts and remove only fixture data. Production remains untouched.
+1. Keep refunds off until the late-failure lifecycle and accounting repair are implemented and verified against the retained case. Add meaningful regression tests for success followed by failure, duplicate/out-of-order events and a later refund instruction; then repeat actual sandbox verification.
+2. Complete bank-payout success/failure and insufficient-balance transfer-recovery checks. No bank payout was submitted in this continuation. Do not add Payouts write permission merely for QA.
+3. Verify actual `charge.dispute.created`, `charge.dispute.updated` and `charge.dispute.closed` delivery/handling, dispute-driven refund UI, and remaining event-order/lost-response recovery scenarios. Delivered refund events do not establish these checks.
+4. Re-enable only the feature-branch preview for a bounded synthetic QA pass after the blocker is fixed. Use an ordinary preview deployment: when calling Vercel's create-deployment API, omit `target`; `target=staging` assigns a convenience alias and must not be used here.
+5. Reconcile the failed case in Stripe and the application, then remove only its fixtures. Recheck the connected-account balance before eventually closing the disposable account. Preserve all original records and live/production settings.
 
-## Browser blocker and resumable test fixture
+## Bank-payout blocker
 
-The separate bank-payout QA account is `acct_1USi72LAzgvhqEGk`, mapped to `dd_bank_20261020a_transporter`. It completed onboarding with Stripe's documented GBP `no_account` test bank and has received no funds. Express's payout settings showed a generic loading error. Browser calls then timed out twice after secure platform sign-in; sign-in completion is unverified. The original users/bookings/files remain unchanged, and the temporary app session/private links have been removed. Resume from a fresh observed browser state; do not repeat password/OTP entry based on the failed tool result alone. Bank payout success/failure remains unverified.
+Express payout settings and the bank-edit form loaded this time. The disposable account's existing test bank still ends **1116** (`no_account`); the built-in **Use test account** shortcut did not yield a verified replacement. Temporarily switching its schedule to manual exposed **Pay out account balance**, but the payout dialog's destination was **No valid option available**. No payout confirmation was submitted.
 
-If Express bank editing continues to fail, investigate the supported hosted-onboarding update flow using a newly generated account link. Do not widen application Payout permissions merely for QA, use an unrelated account, or bypass a platform/authentication restriction.
+The original schedule was restored and verified through canonical account retrieval: **daily, delay_days=7**. The bank remains `ba_1USi9NLAzgvhqEGkObd4eDE7`, last4=1116, status=new, default_for_currency=true. Both payout and transfer capabilities remain active, and the app's lastBankPayoutId/status remain null. The £75 test transfer was fully reversed. Browser sessions returned to sign-in on refresh, so a fresh zero-balance UI read was not obtained; do not cite the previously cached £25 balance as current. The account and mapping are retained for the remaining supported bank-management flow.
 
-Sources checked: Stripe [Connect testing](https://docs.stripe.com/connect/testing), [manual payouts](https://docs.stripe.com/connect/manual-payouts), [separate charges and transfers](https://docs.stripe.com/connect/separate-charges-and-transfers), [refunds and disputes](https://docs.stripe.com/connect/marketplace/tasks/refunds-disputes), and [refund creation](https://docs.stripe.com/api/refunds/create).
+## Preservation, cleanup and operational notes
+
+- Three settled fixture bookings, five successful refund instructions, the fully reversed payout instruction, their job/quote/request/payment/tracking/finance records, synthetic fine/dispute, verification/insurance metadata and completed-case notifications were removed. No storage object was created.
+- The one failed-refund fixture and associated audit/notification evidence remain. All three temporary app sessions were revoked and private QA cookies/links were removed from local scratch files.
+- All 29 original-data table counts and full-row fingerprints match the before-QA baseline after excluding the documented new fixture. The only other changed table is the retained synthetic `StripeConnectAccount` check metadata.
+- Original users: 16, `cee2156e48900d3181a655803ab0d167`; original bookings: 52, `c71531a7810c2a5076f83f1dd45ae471`; stored-file rows: 136, `ebbe346597d33536e580807e5b9ccf1a`.
+- Production remains on `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz`, main commit `8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c`. The pink, main and project convenience aliases all resolve to it. No live payment or production deployment was created.
+- Deployment incident: the initial QA request used Vercel `target=staging`, which temporarily reassigned `drivedrop-future-9f39.vercel.app` to the preview. It was restored to the original production deployment before QA charges. The disabled deployment omitted `target` and assigned only the feature-branch alias. The incident was disclosed to the user; do not describe production routing as having been untouched throughout.
+- Credential-output incident: Stripe unexpectedly included full sandbox key values in an initial accessibility response without Reveal/Copy being clicked. The values were not copied into source, docs or configuration, and subsequent reads were redacted. No key was rotated or replaced. The user was informed; do not claim the secret was never displayed.
+- Automatic approval review rejected the final write-shaped disabled-refund probe because it could attempt a refund after shutdown. It was not retried. The safer authenticated GET above verified the runtime flag is false.
+
+Sources checked: Stripe [testing](https://docs.stripe.com/testing), [Connect testing](https://docs.stripe.com/connect/testing), [manual payouts](https://docs.stripe.com/connect/manual-payouts), [separate charges and transfers](https://docs.stripe.com/connect/separate-charges-and-transfers), [refunds and disputes](https://docs.stripe.com/connect/marketplace/tasks/refunds-disputes), and [refund creation](https://docs.stripe.com/api/refunds/create).
