@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict');
+const Stripe = require('stripe');
 const fs = require('node:fs'), path = require('node:path'), swc = require('next/dist/build/swc');
 const root = path.resolve(__dirname, '..'), clone = v => structuredClone(v);
 process.env.VERCEL_ENV = 'preview'; process.env.STRIPE_CONNECT_ENABLED = 'true'; process.env.STRIPE_REFUNDS_ENABLED = 'true';
@@ -65,7 +66,7 @@ function context(options = {}) {
  },transfers:{
   retrieve:async()=>({...clone(transfer),amount_reversed:transfer.amount_reversed+reversals.reduce((n,r)=>n+r.amount,0)}),
   listReversals:async()=>({data:clone(reversals),has_more:false}),
-  createReversal:async(id,params,opts)=>{reversalCalls.push({params,opts});if(options.insufficient)throw new provider.ConnectError('Insufficient balance','INSUFFICIENT_BALANCE');let r=reversals.find(r=>r.key===opts.idempotencyKey);if(!r){r={id:'trr_'+(reversals.length+1),transfer:id,currency:'gbp',...clone(params),key:opts.idempotencyKey};reversals.push(r)}if(lostReversal){lostReversal=false;throw Error('lost reversal response')}return clone(r)},
+  createReversal:async(id,params,opts)=>{reversalCalls.push({params,opts});if(options.insufficient)throw new Stripe.errors.StripeInvalidRequestError({type:'invalid_request_error',code:'balance_insufficient',message:'Insufficient balance',statusCode:400});let r=reversals.find(r=>r.key===opts.idempotencyKey);if(!r){r={id:'trr_'+(reversals.length+1),transfer:id,currency:'gbp',...clone(params),key:opts.idempotencyKey};reversals.push(r)}if(lostReversal){lostReversal=false;throw Error('lost reversal response')}return clone(r)},
  }};
  const engine=loader({[path.join(root,'src/lib/prisma.ts')]:{prisma:db},[path.join(root,'src/lib/stripe-connect-provider.ts')]:{...provider,verifiedConnectClient:async()=>stripe}})('src/lib/stripe-refunds.ts');
  const input=(amount=11000,prior=0)=>({paymentId:'pay',amountPence:amount,expectedRefundedPence:prior,actorId:'admin'});
@@ -85,7 +86,39 @@ function context(options = {}) {
  c=context({fine:10000});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.payoutStatus,'CANCELLED');assert.equal(c.reversals.length,0);
  c=context({pending:true});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.refundedPence,0);assert.equal(c.state().refunds[0].status,'PENDING_STRIPE');assert.equal(c.reversalCalls.length,0);c.external[0].status='succeeded';await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.refundedPence,11000);assert.equal(c.refundCalls.length,1);
  c=context({failed:true});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.refundedPence,0);assert.equal(c.state().refunds[0].status,'FAILED');assert.equal(c.reversalCalls.length,0);
- c=context({insufficient:true});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().refunds[0].status,'SUCCEEDED');assert.equal(c.state().refunds[0].recoveryStatus,'REVIEW');assert.equal(c.state().refunds[0].recoveryFailureCode,'INSUFFICIENT_BALANCE');assert.equal(c.state().payment.payoutStatus,'HELD');assert.equal(c.external.length,1);c.options.insufficient=false;await c.engine.reconcileStripeRefund(row.id);assert.equal(c.external.length,1);assert.equal(c.refundCalls.length,1);assert.equal(c.state().payment.payoutStatus,'CANCELLED');
+ // SDK-shaped provider failure: this remains a local simulation, not a Stripe
+ // sandbox reproduction or proof of Stripe's cached-error/idempotency behavior.
+ c=context({insufficient:true});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);
+ assert.equal(c.state().refunds[0].status,'SUCCEEDED');assert.equal(c.state().refunds[0].recoveryStatus,'REVIEW');
+ assert.equal(c.state().refunds[0].recoveryFailureCode,'INSUFFICIENT_BALANCE');assert.equal(c.state().payment.payoutStatus,'HELD');
+ assert.equal(c.state().payment.refundedPence,11000);assert.equal(c.external.length,1);assert.equal(c.reversals.length,0);
+ const confirmedLedgerAt=c.state().refunds[0].ledgerAppliedAt.getTime();
+ const confirmedEvents=clone(c.state().events),confirmedNotices=clone(c.state().notifications);
+ // REVIEW requires an administrator check; background scans must not keep
+ // issuing money requests for a known balance problem.
+ await c.engine.recoverStripeRefunds();assert.equal(c.reversalCalls.length,1);assert.equal(c.refundCalls.length,1);
+ await c.engine.reconcileStripeRefund(row.id);
+ assert.equal(c.state().payment.payoutStatus,'HELD');assert.equal(c.reversalCalls.length,2);
+ assert.deepEqual(c.state().events,confirmedEvents);assert.deepEqual(c.state().notifications,confirmedNotices);
+ assert.equal(c.state().refunds[0].ledgerAppliedAt.getTime(),confirmedLedgerAt);
+ // Simulate the provider accepting recovery after funds become available.
+ c.options.insufficient=false;await c.engine.reconcileStripeRefund(row.id);await c.engine.reconcileStripeRefund(row.id);
+ assert.equal(c.refundCalls.length,1);assert.equal(c.external.length,1);assert.equal(c.reversals.length,1);
+ assert.equal(c.reversalCalls.length,3);assert.equal(new Set(c.reversalCalls.map(x=>x.opts.idempotencyKey)).size,1);
+ assert.equal(c.state().payment.refundedPence,11000);assert.equal(c.state().payment.payoutStatus,'CANCELLED');
+ assert.equal(c.state().refunds[0].recoveryStatus,'RECOVERED');assert.equal(c.state().refunds[0].activePaymentId,null);
+ assert.equal(c.state().refunds[0].ledgerAppliedAt.getTime(),confirmedLedgerAt);
+ assert.equal(c.state().events.filter(e=>e.note.startsWith('STRIPE_REFUND_CONFIRMED:')).length,1);
+ assert.equal(c.state().events.filter(e=>e.note.startsWith('STRIPE_REFUND_RECOVERED:')).length,1);
+ assert.deepEqual(c.state().notifications,confirmedNotices);
+ // A later administrator check outside the safe create window must stop for
+ // review, even if the mocked provider would now allow the reversal.
+ c=context({insufficient:true});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);
+ c.state().refunds[0].recoveryFirstAttemptAt=new Date(Date.now()-24*3600000);c.options.insufficient=false;
+ await c.engine.reconcileStripeRefund(row.id);assert.equal(c.reversalCalls.length,1);assert.equal(c.refundCalls.length,1);
+ assert.equal(c.state().refunds[0].recoveryStatus,'REVIEW');assert.equal(c.state().payment.payoutStatus,'HELD');
+ assert.equal(c.state().payment.refundedPence,11000);assert.equal(c.reversals.length,0);
+ console.log('PASS: SDK balance_insufficient preserves the confirmed refund, pauses background money retries, recovers once on administrator reconciliation, and stops after the safe retry window');
  c=context();row=await c.engine.prepareStripeRefund(c.input());c.state().refunds[0].firstAttemptAt=new Date(Date.now()-24*3600000);await c.engine.reconcileStripeRefund(row.id);assert.equal(c.refundCalls.length,0);assert.equal(c.state().refunds[0].status,'REVIEW');
  c=context();c.external.push({id:'re_external',amount:100,status:'pending'});await assert.rejects(()=>c.engine.prepareStripeRefund(c.input()));assert.equal(c.refundCalls.length,0);
  for(const mutate of [i=>i.livemode=true,i=>i.latest_charge.disputed=true,i=>i.metadata.environment='production',i=>i.amount_received--]){c=context();mutate(c.intent);await assert.rejects(()=>c.engine.prepareStripeRefund(c.input()));assert.equal(c.state().refunds.length,0)}

@@ -1,6 +1,14 @@
 # Stripe refund preparation — 21 October 2026
 
-## Latest: committed alternative-refund recording passed in sandbox
+## Latest: insufficient-balance investigation and readiness review
+
+The 21 October continuation rechecked the sandbox's Express / `controller.losses.payments=application` configuration and current Stripe guidance. No supported reproduction of a genuine insufficient-balance reversal error was established without changing the approved setup. The earlier zero-balance reversal success does not verify that failure. **Keep the provider gate open and use the prepared Stripe Support question before another balance-draining experiment.** No support message was sent.
+
+`scripts/test-stripe-refunds.cjs` now exercises an actual Stripe SDK `StripeInvalidRequestError` carrying `balance_insufficient`, including repeated failures, no scheduled money retry while REVIEW, one recovery on a simulated later success, unchanged customer refund accounting/notices and rejection outside the safe retry window. The refund, Connect and policy suites pass. This improves local evidence; it does not establish Stripe's real failure response or cached-error/retry behavior.
+
+Refunds remained off throughout. No application source, financial operation, database mutation, permission, setting or production deployment changed. The latest five dispatch/worker runs succeeded (idle, zero checked/failed). All 30 original business/storage fingerprints match; the one active administrator session differs from the previous checkpoint and is recorded separately. The original £110 case remains held/reserved; the £1.10 QA21 ALT audit remains retained. [Readiness review and before-live requirements](stripe-payment-readiness-review.md) · [Exact fresh evidence](evidence/stripe-payment-readiness-review.json).
+
+## Previous: committed alternative-refund recording passed in sandbox
 
 The approved separate **QA21 ALT / DD-AFDVANK7** test passed on 21 October at **16:26 UTC** through the actual deployed administrator form. Its **£1.10 alternative repayment is explicitly simulated**; no real bank transfer or receipt of funds is represented. The two-step form accepted the labelled PDF, completed its canonical checks and committed once. The result shows **Stripe refunded £0.00 / alternative repayment £1.10**, payment REFUNDED, payout CANCELLED and zero fee/proceeds. [Completed result](evidence/stripe-alternative-refund-e2e-completed.jpg) · [Review step](evidence/stripe-alternative-refund-e2e-review.jpg) · [Detailed evidence](evidence/stripe-alternative-refund-e2e-verification.json).
 
@@ -385,7 +393,7 @@ Example: £110 paid = £10 recorded platform fee + £100 transporter gross. A £
 
 ## Remaining activation and verification
 
-1. Establish a Stripe-supported genuine insufficient-balance reversal failure/retry reproduction under the approved configuration. The connected account assigns negative-balance responsibility to the application, and the earlier zero-balance reversal succeeded. Keep this gate unverified; do not substitute successful reversals or mocks, alter liability/reserves or add Payouts Write to force a failure.
+1. Obtain Stripe's supported reproduction/retry procedure for the genuine insufficient-balance reversal gate; the latest investigation and ready-to-send question are in [the payment-readiness review](stripe-payment-readiness-review.md). The account assigns negative-balance responsibility to the application and the earlier zero-balance reversal succeeded. Keep this gate unverified; do not substitute successful reversals or mocks, alter liability/reserves or add Payouts Write to force a failure.
 2. Keep the original failed £110 case, its ledger timestamp, correction audit and payout hold until the customer refund is separately authorized and settled. Reconcile Stripe and the application before removing only that case's fixtures. No replacement refund was authorized in this pass.
 3. Keep refunds off between bounded approved feature-preview tests. When using Vercel's create-deployment API, omit `target`; `target=staging` assigns a convenience alias and must not be used here. Preserve all original data and live/production settings.
 4. Recheck connected balance and outstanding bank payouts before eventually closing the disposable account. This pass fully reversed its new 100p transfer and made no bank payout or extra funding.

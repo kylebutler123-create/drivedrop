@@ -1,6 +1,14 @@
 # Stripe Connect sandbox implementation
 
-## Latest: committed alternative-refund sandbox test passed
+## Latest: recovery investigation and payment-readiness review
+
+The 21 October review found no documented supported way to force a genuine insufficient-balance transfer-reversal failure under the unchanged Express / application-liability setup. The account configuration was read again, and official Stripe guidance is consistent with the earlier successful zero-balance reversal. **This gate remains unverified; do not repeat that successful experiment or substitute a payout/top-up failure as proof.** A precise Stripe Support question is prepared, not sent.
+
+The local refund test now uses the actual Stripe SDK error class and verifies repeated failure, held review, no scheduled money retry for REVIEW, one recovery after a simulated success, unchanged customer refund/notices and safe-window expiry. Refund/Connect/policy tests pass. No application source, Stripe object, database row, setting, key permission or production deployment was changed. Refunds remain off. Thirty original business/storage fingerprints match; the single active administrator session changed between checkpoints and is explicitly disclosed rather than counted as unchanged.
+
+See the [payment-readiness review](stripe-payment-readiness-review.md) for the evidence matrix, live-activation work still required, retention rules and fresh operational checks. The result is readiness for continued controlled preview testing, not approval to launch live payments. [Exact evidence](evidence/stripe-payment-readiness-review.json).
+
+## Previous: committed alternative-refund sandbox test passed
 
 On **21 October 2026 at 16:26 UTC**, the actual administrator form recorded the separate **QA21 ALT / DD-AFDVANK7** scenario once. This was a clearly labelled **£1.10 simulated alternative repayment**, not a real bank payment or evidence of real funds received. The result shows **Stripe refunded £0.00 / alternative repayment £1.10**, payment REFUNDED, payout CANCELLED and zero fee/proceeds. One immutable repayment audit, one accounting event and one in-app notice per synthetic party were committed. The private PDF downloaded successfully and its SHA-256 matched the uploaded file. [Completed browser result](evidence/stripe-alternative-refund-e2e-completed.jpg) · [Review step](evidence/stripe-alternative-refund-e2e-review.jpg) · [Exact verification](evidence/stripe-alternative-refund-e2e-verification.json).
 
