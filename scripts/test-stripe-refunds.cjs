@@ -177,6 +177,25 @@ function context(options = {}) {
  process.env.STRIPE_REFUNDS_ENABLED='true';
  for(const mutate of [e=>e.livemode=true,e=>e.account='acct_unrelated']){c=context({transferred:false});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);c.external[0].status='failed';const e=failedEvent();mutate(e);await c.engine.handleStripeRefundEvent(e);assert.equal(c.state().payment.refundedPence,11000)}
  process.env.STRIPE_REFUNDS_ENABLED='false';assert.equal(c.engine.stripeRefundsEnabled(),false);await assert.rejects(()=>c.engine.prepareStripeRefund(c.input()));process.env.STRIPE_REFUNDS_ENABLED='true';process.env.VERCEL_ENV='production';assert.equal(c.engine.stripeRefundsEnabled(),false);process.env.VERCEL_ENV='preview';
+ // Separate external totals: stale events cannot replay the failed refund or
+ // reopen a correctly cancelled payout. New external money requires review.
+ c=context({transferred:false});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);
+ c.external[0].status='failed';await c.engine.reconcileStripeRefundFailure(row.id);
+ Object.assign(c.state().payment,{refundedPence:11000,platformFeePence:0,transporterProceedsPence:0,status:'REFUNDED',payoutStatus:'CANCELLED',alternativeRefund:{amountPence:11000,stripeRefundedPence:0}});
+ c.state().refunds[0].activePaymentId=null;
+ const alternativeAudit=clone(c.state().events),alternativeNotices=clone(c.state().notifications);
+ for(const enabled of ['false','true']){
+  process.env.STRIPE_REFUNDS_ENABLED=enabled;
+  await c.engine.handleStripeRefundEvent(failedEvent('refund.updated'));await c.engine.reconcileStripeRefund(row.id);
+  assert.equal(c.state().payment.payoutStatus,'CANCELLED');assert.equal(c.state().payment.refundedPence,11000);
+  assert.deepEqual(c.state().events,alternativeAudit);assert.deepEqual(c.state().notifications,alternativeNotices);
+  assert.equal(c.refundCalls.length,1);assert.equal(c.reversalCalls.length,0);
+ }
+ c.external.push({id:'re_unexpected',amount:100,currency:'gbp',status:'succeeded'});
+ await c.engine.handleStripeRefundEvent(failedEvent('refund.updated'));
+ assert.equal(c.state().payment.payoutStatus,'HELD');assert.equal(c.state().payment.refundedPence,11000);assert.deepEqual(c.state().events,alternativeAudit);
+ console.log('PASS: separate alternative/Stripe totals, stale events with refunds on/off, unchanged failed audit and external inconsistencies held without another repayment');
+
  let actor=null,queued=[],prepared=0;
  const refundRoute=loader({'next/server':{NextResponse:{json:Response.json},after:fn=>queued.push(fn)},
   [path.join(root,'src/lib/auth.ts')]:{currentUser:async()=>actor},[path.join(root,'src/lib/prisma.ts')]:{prisma:{bookingPayment:{findUnique:async()=>({provider:'STRIPE'})}}},

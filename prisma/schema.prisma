@@ -127,6 +127,7 @@ enum FinanceEventType {
 }
 
 model User {
+  alternativeRefunds               AlternativeRefund[]
   stripeConnectAccounts             StripeConnectAccount[]
   disputeReviewNotes               DisputeReviewNote[]
   id                               String                    @id @default(cuid())
@@ -487,6 +488,7 @@ model VerificationDocument {
 }
 
 model BookingPayment {
+  alternativeRefund        AlternativeRefund?
   stripeRefunds             StripeRefund[]
   stripePayout              StripePayout?
   id                       String        @id @default(cuid())
@@ -500,6 +502,8 @@ model BookingPayment {
   cancellationDeductionPence Int          @default(0)
   remainingBalancePence    Int
   paidPence                Int           @default(0)
+  // Combined customer reimbursement; subtract AlternativeRefund.amountPence
+  // when comparing with Stripe's canonical amount_refunded.
   refundedPence            Int           @default(0)
   status                   PaymentStatus @default(PENDING)
   payoutStatus             PayoutStatus  @default(NOT_READY)
@@ -572,6 +576,7 @@ model StripePayout {
 // Keep the active reservation through errors/review; never automatically create a
 // replacement instruction for an ambiguous or failed operation.
 model StripeRefund {
+  alternativeRefund        AlternativeRefund?
   id                       String   @id @default(uuid())
   paymentId                String
   payment                  BookingPayment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
@@ -621,6 +626,37 @@ model StripeRefund {
   @@index([environment, recoveryStatus, retryAfter])
   @@index([disputeId])
   @@index([sourceChargeId, environment])
+}
+
+// Immutable, server-only evidence of an already-completed alternative repayment.
+// Evidence is bounded and committed atomically with the ledger (no orphan upload).
+model AlternativeRefund {
+  id                       String   @id
+  paymentId                String   @unique
+  payment                  BookingPayment @relation(fields: [paymentId], references: [id], onDelete: Restrict)
+  failedRefundId           String   @unique
+  failedRefund             StripeRefund @relation(fields: [failedRefundId], references: [id], onDelete: Restrict)
+  actorId                  String
+  actor                    User @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  environment              String
+  amountPence              Int
+  stripeRefundedPence       Int
+  method                   String
+  reference                String
+  referenceHash            String
+  settledOn                DateTime @db.Date
+  note                     String
+  requestHash              String
+  evidenceName             String
+  evidenceType             String
+  evidenceSha256           String
+  evidenceBytes            Bytes
+  canonicalCheckedAt       DateTime
+  createdAt                DateTime @default(now())
+
+  @@unique([environment, referenceHash])
+  @@unique([environment, evidenceSha256])
+  @@index([actorId])
 }
 
 model FinanceEvent {

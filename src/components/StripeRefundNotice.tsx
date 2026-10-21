@@ -14,6 +14,15 @@ export default function StripeRefundNotice({payment, onRefresh}: {payment: any; 
     const timer = window.setInterval(() => {router.refresh(); onRefresh?.();}, 8000);
     return () => window.clearInterval(timer);
   }, [pending, router, onRefresh]);
+  if (payment.alternativeRefund) {
+    const alternative = payment.alternativeRefund;
+    return <div className={`formNotice ${payment.payoutStatus === 'HELD' ? 'errorNotice' : 'successNotice'}`} role="status">
+      <strong>Repaid by alternative method · {money(alternative.amountPence)}</strong>
+      <p>{alternative.method === 'BANK_TRANSFER' ? 'Bank transfer' : alternative.method === 'CHEQUE' ? 'Cleared cheque' : 'Alternative repayment'} settled on {new Date(alternative.settledOn).toLocaleDateString('en-GB', {timeZone: 'UTC'})}, as recorded by an administrator. Stripe refunded: {money(alternative.stripeRefundedPence)}. Alternative repayment: {money(alternative.amountPence)}.</p>
+      <p>{payment.payoutStatus === 'HELD' ? 'A separate payment inconsistency now needs review. The alternative repayment remains recorded; do not repay the customer again.' : 'The customer balance is fully repaid and the transporter payout is cancelled. No money was sent by this recording action.'}</p>
+      <details><summary>Original Stripe refund failed</summary><p>The original failed refund and its audit history are retained. It has not been relabelled as successful or retried.</p></details>
+    </div>;
+  }
   if (!row) return null;
   const review = ['FAILED', 'REVIEW'].includes(row.status) || row.recoveryStatus === 'REVIEW';
   async function refresh() {

@@ -1,5 +1,7 @@
 -- Read-only regression check against the deployed constraint, not a copied predicate.
 -- Every returned row must have passed=true; no application record is changed.
+-- Reservation release now has a cross-table trigger guard, exercised separately
+-- by verify-alternative-refund.sql. The CHECK permits a settled late failure.
 WITH cases(label, status, applied, code, active, refund, expected) AS (VALUES
  ('pending', 'PENDING', false, NULL, 'pay', NULL, true),
  ('initial failure', 'FAILED', false, NULL, 'pay', 're_test', true),
@@ -12,7 +14,7 @@ WITH cases(label, status, applied, code, active, refund, expected) AS (VALUES
  ('review with unexplained ledger', 'REVIEW', true, NULL, 'pay', 're_test', false),
  ('corrected late failure', 'FAILED', true, 'STRIPE_REFUND_FAILED_AFTER_SUCCESS', 'pay', 're_test', true),
  ('late failure review', 'REVIEW', true, 'LATE_REFUND_FAILURE_REVIEW', 'pay', 're_test', true),
- ('late failure without hold', 'FAILED', true, 'STRIPE_REFUND_FAILED_AFTER_SUCCESS', NULL, 're_test', false),
+ ('late failure released (requires alternative-settlement trigger)', 'FAILED', true, 'STRIPE_REFUND_FAILED_AFTER_SUCCESS', NULL, 're_test', true),
  ('late review without hold', 'REVIEW', true, 'LATE_REFUND_FAILURE_REVIEW', NULL, 're_test', false),
  ('late failure wrong payment hold', 'FAILED', true, 'STRIPE_REFUND_FAILED_AFTER_SUCCESS', 'other', 're_test', false),
  ('late failure without prior ledger', 'FAILED', false, 'STRIPE_REFUND_FAILED_AFTER_SUCCESS', 'pay', 're_test', false),

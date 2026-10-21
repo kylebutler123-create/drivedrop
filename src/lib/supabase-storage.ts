@@ -28,6 +28,10 @@ async function download(bucket:string,path:string){const{url,serviceRoleKey}=con
 async function remove(bucket:string,path:string){const{url,serviceRoleKey}=config();const response=await fetch(`${url}/storage/v1/object/${bucket}`,{method:'DELETE',headers:{apikey:serviceRoleKey,Authorization:`Bearer ${serviceRoleKey}`,'Content-Type':'application/json'},body:JSON.stringify({prefixes:[path]})});if(!response.ok)console.error('Storage delete failed',response.status,await response.text().catch(()=>''))}
 
 export function validateVerificationFile(file:File){return validateWithSignature(file,verificationTypes,MAX_VERIFICATION_FILE_SIZE,'PDF, JPG/JPEG and PNG')}
+// Low-volume financial evidence is stored atomically in the private audit table.
+// Keep the multipart request below Vercel's request body limit.
+export const MAX_ALTERNATIVE_REFUND_FILE_SIZE = 3 * 1024 * 1024;
+export function validateAlternativeRefundFile(file:File){return validateWithSignature(file,verificationTypes,MAX_ALTERNATIVE_REFUND_FILE_SIZE,'PDF, JPG/JPEG and PNG')}
 export function createVerificationStoragePath(userId:string,verificationId:string,extension:string){return `${userId}/${verificationId}/${randomUUID()}.${extension}`}
 export async function uploadVerificationFile(path:string,file:File){return upload(VERIFICATION_BUCKET,path,file)}
 export async function downloadVerificationFile(path:string){return download(VERIFICATION_BUCKET,path)}

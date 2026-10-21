@@ -9,6 +9,7 @@ import {planStripeRefund, assertStripeRefundMatches, refundCreateRetrySafe, refu
 import {restoreRefundFines} from './stripe-refund-fines';
 import {failedRefundAmounts, LATE_REFUND_FAILED, LATE_REFUND_REVIEW} from './stripe-refund-failure-policy';
 import {adminPayoutApproved, payoutApprovalMarker} from './payout-policy';
+import {stripeRefundedTotal} from './alternative-refund-policy';
 
 export const refundSummarySelect = {id: true, status: true, recoveryStatus: true, amountPence: true,
   recoveryAmountPence: true, failureCode: true, recoveryFailureCode: true, activePaymentId: true,
@@ -16,7 +17,7 @@ export const refundSummarySelect = {id: true, status: true, recoveryStatus: true
 export function stripeRefundsEnabled() {return connectEnabled() && process.env.STRIPE_REFUNDS_ENABLED === 'true';}
 function requireEnabled() {if (!stripeRefundsEnabled()) throw new ConnectError('Stripe sandbox refunds are not enabled yet.', 'REFUNDS_DISABLED');}
 const done = (r: StripeRefund) => r.status === 'SUCCEEDED' && ['NOT_REQUIRED', 'RECOVERED'].includes(r.recoveryStatus);
-const paymentInclude = {stripePayout: true, booking: {include: {disputes: true}}, events: {where: {type: 'PAYOUT_READY' as const}}};
+const paymentInclude = {stripePayout: true, alternativeRefund: {select: {amountPence: true, stripeRefundedPence: true}}, booking: {include: {disputes: true}}, events: {where: {type: 'PAYOUT_READY' as const}}};
 type Payment = Prisma.BookingPaymentGetPayload<{include: typeof paymentInclude}>;
 type RefundInput = {paymentId: string; amountPence: number; expectedRefundedPence: number; actorId: string;
   disputeId?: string; resolution?: 'REFUND_CUSTOMER' | 'PARTIAL_REFUND'; resolutionNote?: string; approvedProceedsPence?: number};
@@ -143,7 +144,8 @@ async function sourceState(stripe: Stripe, payment: Payment, row?: StripeRefund)
   for (const prior of known) if (!refunds.some(r => r.id === prior.stripeRefundId)) return review('A recorded refund is missing from Stripe.');
   if (row?.stripeRefundId && !own) return review('The recorded refund could not be found.');
   // A pending refund can already be included in the charge's refunded amount.
-  const baseline = row?.ledgerAppliedAt ? payment.refundedPence : row?.priorRefundedPence ?? payment.refundedPence;
+  const stripeTotal = stripeRefundedTotal(payment);
+  const baseline = row?.ledgerAppliedAt ? stripeTotal : row?.priorRefundedPence ?? stripeTotal;
   const extra = own && !row?.ledgerAppliedAt && !['failed', 'canceled'].includes(own.status || '') ? own.amount : 0;
   const expected = baseline + extra;
   if (charge!.amount_refunded !== expected && !(own?.status === 'pending' && charge!.amount_refunded === baseline)) return review('Stripe and the booking refund balances differ.');
@@ -394,7 +396,7 @@ export async function handleStripeRefundEvent(event: any) {
   if (!payment || rows.length) return;
   try {await sourceState(await verifiedConnectClient(), payment);}
   catch (error) {
-    if (!(error instanceof ConnectError) || !['PAYMENT_MISMATCH', 'REFUND_REVIEW'].includes(error.code)) throw error;
+    if (!(error instanceof ConnectError) || !['PAYMENT_MISMATCH', 'REFUND_REVIEW', 'ALTERNATIVE_REFUND_REVIEW'].includes(error.code)) throw error;
     await prisma.$transaction(async tx => {
       await tx.$queryRaw`SELECT id FROM "Booking" WHERE id=${payment.bookingId} FOR UPDATE`;
       await tx.bookingPayment.update({where: {id: payment.id}, data: {payoutStatus: 'HELD'}});
