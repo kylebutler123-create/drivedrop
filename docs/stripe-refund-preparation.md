@@ -1,6 +1,41 @@
 # Stripe refund preparation — 21 October 2026
 
-## Actual refund connection loss verified; refunds off
+## Current: booking notices fixed and actual reversal connection loss verified; refunds off
+
+The approved **QA21 REV / DD-XSMTG5ZY** pass completed in sandbox `acct_1US4BzLAzgkvCvrI`, `livemode=false`, on Preview / `feature/ui-polish`. Stripe confirms one successful **110p customer refund** and one **100p reversal** of the original booking transfer. The deployed recovery worker reconciled the genuinely interrupted reversal response without repeating the refund ledger or notifications. [Recovered administrator view](evidence/stripe-reversal-network-recovered.jpg) · [Temporary recovery hold](evidence/stripe-reversal-network-pending.jpg) · [Exact verification evidence](evidence/stripe-reversal-network-verification.json).
+
+### Booking-confirmation duplication fixed
+
+Commit `60351a922963c7207fed61f3d5170a929dd80c16` uses the existing Notification primary key as a durable claim for each availability request, status and recipient. `INSERT ... ON CONFLICT DO NOTHING` chooses one caller across webhook/worker processes; only that caller attempts the existing transactional email. There is no schema migration. Existing notices are preserved.
+
+The new regression fails against the old source with four notices instead of two. It passes with two independent module instances racing, later cold-instance replay, distinct requests/statuses, an individual recipient's database failure and an email failure. The real deployed capture produced exactly one booking notice per synthetic party; the subsequent refund also produced one notice per party. Email remains best effort: a provider failure or termination after the durable claim can leave an in-app notice without a delivered email. This prevents duplicate attempts; it does not add an email outbox or delivery guarantee.
+
+### Actual lost reversal response and scheduled recovery
+
+Hosted Checkout authorised a disposable 110p manual-capture payment, and the existing worker captured it and created the booking/payment. The actual administrator UI released 100p to the existing sandbox connected account, then submitted the full refund and recovery once. Only this fixture's transporter confirmation/CAPTURING state and delivery/customer-confirmation/review-window setup were simulated in the database. No authentication session, verification permission, stored file or original booking changed. This is a payment/recovery test, not a pass of the end-user booking or delivery flow.
+
+Temporary commit `7453deaca33d8a5a623db3e3e1abc38758ee983f` restricted native HTTPS interruption to this exact payment, transfer, 100p reversal endpoint/body, branch, environment, existing enabled flag and instruction idempotency key, with a 22 October expiry. Normal TLS validation and existing restricted credentials remained in use. The customer-refund request was unaffected.
+
+| Observed boundary | Deployed result on 21 October, UTC |
+| --- | --- |
+| Customer refund ledger | 110p applied once at **01:49:00.197**, refund `re_3USoVxLAzgkvCvrI0dOk5SHa` |
+| First reversal response | **01:49:09.085**, HTTP 200, request `req_FTis0ZIxozwbRW`, replay false; incomplete body, 0 buffered bytes, response/request destroyed |
+| SDK connection retry | **01:49:09.705**, HTTP 200, request `req_kVksYlBs6Osufp`, `Idempotent-Replayed: true`, same key digest; body again unread and both destroyed |
+| Deferred recovery | **01:49:11.873**, RETRY_PENDING; customer REFUNDED, payout HELD, recovery RETRY, reversal ID not yet persisted |
+| Automatic worker | **01:51:00–01:51:19** run succeeded; one 100p recovery audit at **01:51:16.556**, recovery RECOVERED, reservation/lease cleared, payout CANCELLED |
+| Later reads | Exactly one refund and reversal, one refund audit and one recovery audit; attempt count 2 and original refund-ledger timestamp unchanged |
+
+PaymentIntent `pi_3USoVxLAzgkvCvrI0OqmKEAI`, charge `ch_3USoVxLAzgkvCvrI0kh12bNa`, transfer `tr_3USoVxLAzgkvCvrI0lyP8SlS`, reversal `trr_1USoeOLAzgkvCvrIxUQZKCBv`, refund instruction `317e5a8c-a8e4-4a5f-85fe-9256553e8286`. The administrator saw **Customer refund confirmed · £1.10** and **Transporter funds recovered · £1.00**. No manual recovery button was used.
+
+**Refunds are OFF and the temporary hook is removed.** Removal commit `568922ede70231c37b6a22a5c6eb9feb8b7c1c61` restores the exact validated notification-fix tree `e08c70c4c503e7cc31ca39f195eee2a7f243cf27`. Ordinary preview `dpl_F3RPyzKUqd141LEeurZmLozT1ur6`, `drivedrop-gk2jjn6fc-future-9f39.vercel.app`, is READY with only the feature alias. Health returned 200 / `568922ede702` at 01:53 UTC, and authenticated administrator GET returned false on all 20 original disputes. A later documentation-only preview may supersede this equivalent disabled build.
+
+A guarded transaction removed the 17 exact settled fixture rows, including four notices and five finance events. It first required exact canonical settlement and original-data fingerprints, restored only the two Connect read-check timestamps advanced by this test's payout preparation, and checked all 31 complete fingerprints after deletion. An independent post-commit read also matched every original count/hash with no exclusions. The existing administrator session, original failed-refund case and all 136 storage rows remain unchanged. All 29 environment entries match except the scoped flag's update timestamp. Production's original deployment and three aliases are unchanged during this pass. No live payment, key permission, bank payout, schedule, reserve or liability setting changed; no secret was displayed.
+
+The notification/recovery/refund/Connect regression suites, TypeScript and complete 82-route build passed. The temporary client also passed a real local socket test showing two closed responses and one provider object. The restored tree was already validated.
+
+**Remaining gate:** genuine insufficient-balance reversal failure/retry is still unverified. Canonical account retrieval shows `controller.losses.payments=application` and an Express dashboard. [Stripe's dispute guidance](https://docs.stripe.com/connect/disputes) describes possible insufficient-balance reversal failures when Stripe bears connected negative-balance responsibility. That distinction is consistent with the earlier successful zero-balance reversal; it does not prove every reversal must succeed. No supported failure reproduction was established under the existing configuration. Keep this gate open without changing liability/reserves or adding permissions merely to force it. The original failed £110 refund remains unchanged and held, with no replacement refund authorized.
+
+## Historical: actual refund connection loss verified; refunds off
 
 The user approved a fresh **£1.10 sandbox payment and full refund**, interruption of the refund response, recovery verification, shutdown and disposable-data cleanup. The test completed for **QA21 NET / DD-CAKZ0WUQ** in `acct_1US4BzLAzgkvCvrI`, `livemode=false`, on Preview / `feature/ui-polish`. Stripe confirms exactly one successful 110p refund. DriveDrop recovered automatically, applied the refund ledger once, resolved the dispute and cancelled the 100p transporter proceeds. [Actual administrator result](evidence/stripe-network-refund-recovered.jpg).
 
@@ -313,12 +348,12 @@ Example: £110 paid = £10 recorded platform fee + £100 transporter gross. A £
 
 ## Remaining activation and verification
 
-1. The late-failure accounting repair and regression/constraint checks are complete, including the retained real case with refunds off. Keep the failed case, its original ledger timestamp, correction audit and payout hold until the customer refund is separately settled.
-2. Bank-payout success/failure and the approved `QA20 REC` refund/recovery are complete; that old fixture is settled and removed. Stripe accepted its reversal despite a zero connected available balance. Genuine insufficient-balance reversal failure/retry remains unverified; do not relabel the successful reversal or mock tests as that outcome. Do not alter liability/reserve settings or add Payouts Write merely to force a failure.
-3. Actual created/updated/closed card-dispute delivery, off-flag hold handling, stale-created replay and the explicitly approved dispute-driven full-refund UI are complete. Real deployed recovery of missing refund/reversal persistence passed using reconstructed fixtures. The new `QA21 NET` pass also verified actual refund-response socket destruction, a repeated Stripe POST with `Idempotent-Replayed: true`, and automatic recovery without duplicate refund accounting or refund notifications. The hook and settled fixture are removed. A lost transfer-reversal POST response remains untested; do not extend the refund result to that separate operation.
-4. Re-enable only the feature-branch preview for a bounded synthetic QA pass when its fixtures and authenticated admin UI are ready, then disable it again. Use an ordinary preview deployment: when calling Vercel's create-deployment API, omit `target`; `target=staging` assigns a convenience alias and must not be used here.
-5. Reconcile any separately settled failed case in Stripe and the application before removing only its fixtures. The disposable connected balance is currently £0; recheck before eventually closing the account. Preserve all original records and live/production settings.
-6. Fix and verify duplicate booking-confirmation notifications under capture webhook/worker concurrency. The network-test setup observed two notices per party, while refund notifications remained correctly deduplicated.
+1. Establish a Stripe-supported genuine insufficient-balance reversal failure/retry reproduction under the approved configuration. The connected account assigns negative-balance responsibility to the application, and the earlier zero-balance reversal succeeded. Keep this gate unverified; do not substitute successful reversals or mocks, alter liability/reserves or add Payouts Write to force a failure.
+2. Keep the original failed £110 case, its ledger timestamp, correction audit and payout hold until the customer refund is separately authorized and settled. Reconcile Stripe and the application before removing only that case's fixtures. No replacement refund was authorized in this pass.
+3. Keep refunds off between bounded approved feature-preview tests. When using Vercel's create-deployment API, omit `target`; `target=staging` assigns a convenience alias and must not be used here. Preserve all original data and live/production settings.
+4. Recheck connected balance and outstanding bank payouts before eventually closing the disposable account. This pass fully reversed its new 100p transfer and made no bank payout or extra funding.
+
+Completed gates now include the booking-notification concurrency fix, actual lost refund and reversal responses with idempotent POST retries, scheduled reversal recovery, bank-payout success/failure, late-refund-failure accounting, real card-dispute events and the approved dispute-driven refund UI. See the current checkpoint above and historical evidence below for each test's limits.
 
 ## Historical bank-payout blocker (resolved)
 
