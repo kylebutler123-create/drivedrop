@@ -1,8 +1,14 @@
 # Stripe Connect sandbox implementation
 
-## Latest: recovery investigation and payment-readiness review
+## Latest: Stripe Support contacted about the remaining recovery gate
 
-The 21 October review found no documented supported way to force a genuine insufficient-balance transfer-reversal failure under the unchanged Express / application-liability setup. The account configuration was read again, and official Stripe guidance is consistent with the earlier successful zero-balance reversal. **This gate remains unverified; do not repeat that successful experiment or substitute a payout/top-up failure as proof.** A precise Stripe Support question is prepared, not sent.
+On 21 October, the approved technical question was sent through Stripe's official support widget with **drivedrop sandbox** selected. The AI assistant replied; a human Connect specialist was requested and chat escalation entered the support queue. The genuine insufficient-balance failure/retry gate remains **UNVERIFIED**. See [the sent question and contact status](stripe-support-recovery-question.md) before repeating a test or assuming Stripe has confirmed the limitation.
+
+This support-only step made no payment, database, application, environment, permission or account-setting change. Refunds remain off as last verified; no new runtime/data check is claimed. Production and live payments were not accessed or changed.
+
+## Previous: recovery investigation and payment-readiness review
+
+The 21 October review found no documented supported way to force a genuine insufficient-balance transfer-reversal failure under the unchanged Express / application-liability setup. The account configuration was read again, and official Stripe guidance is consistent with the earlier successful zero-balance reversal. **This gate remains unverified; do not repeat that successful experiment or substitute a payout/top-up failure as proof.** A precise Stripe Support question was prepared in this review and sent in the later support step above.
 
 The local refund test now uses the actual Stripe SDK error class and verifies repeated failure, held review, no scheduled money retry for REVIEW, one recovery after a simulated success, unchanged customer refund/notices and safe-window expiry. Refund/Connect/policy tests pass. No application source, Stripe object, database row, setting, key permission or production deployment was changed. Refunds remain off. Thirty original business/storage fingerprints match; the single active administrator session changed between checkpoints and is explicitly disclosed rather than counted as unchanged.
 

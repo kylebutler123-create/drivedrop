@@ -55,7 +55,9 @@ Thirty original business/storage table fingerprints match the prior QA21 ALT che
 4. Run the final browser journey through customer, transporter and administrator controls with collection/delivery/dispute/payout rules, without database shortcuts for the behavior being certified. Check email delivery separately; existing in-app notifications and best-effort email attempts are not an email delivery guarantee.
 5. Obtain explicit approval for the exact production release and any bounded live payment verification. Preserve the retained £110 failed fixture and immutable QA21 ALT audit; neither is production seed data or authorized for deletion/settlement.
 
-## Question prepared for Stripe Support — not sent
+## Stripe Support question — subsequently sent
+
+The wording below was prepared during the readiness review. It was sent on 21 October through the official Stripe support widget with drivedrop sandbox selected; a human Connect specialist was requested after the AI reply. See [the exact sent messages and current contact status](stripe-support-recovery-question.md). This contact does not close the unverified provider gate. The JSON evidence linked above remains the original read-only review checkpoint, before the support message was sent.
 
 Our UK GBP marketplace uses separate charges and transfers in a Stripe sandbox. Its connected account has an Express dashboard and `controller.losses.payments=application`. A £1 reversal succeeded with £0 available balance and temporarily made the connected balance -£1. We want to verify the customer-refund-success / transfer-recovery-failure path without changing liability, reserves or payout permissions.
 
