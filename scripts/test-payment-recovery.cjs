@@ -18,6 +18,7 @@ function load(file, mocks, clock = Date) {
   class Clock extends Date {static now() {return now;}}
   const worker = load('src/lib/booking-authorisation-recovery.ts', {
     './stripe-payouts': {recoverStripePayouts: async () => ({checked:0,failed:0})},
+    './stripe-refunds': {recoverStripeRefunds: async () => ({checked:0,failed:0})},
     './prisma': {prisma: {availabilityRequest: {
       findMany: async args => {selected = args; return rows;},
       updateMany: async args => {rotated.push(args);},
