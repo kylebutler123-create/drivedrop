@@ -1,0 +1,485 @@
+{
+  "reviewedAt": "2026-10-21T02:10:15.330157+00:00",
+  "scope": {
+    "repository": "kylebutler123-create/drivedrop",
+    "branch": "feature/ui-polish",
+    "reviewedCommit": "138446b610329dd793cbceccef6e6b6c593eaf6c",
+    "stripeAccount": "acct_1US4BzLAzgkvCvrI",
+    "livemode": false,
+    "project": "yozbuuvebzxitoqrvyer",
+    "activity": "read-only review; no money operation, settings change, application mutation or fixture cleanup"
+  },
+  "application": {
+    "events": [
+      {
+        "id": "cmvh5nz9f0004l507ktcb3ghs",
+        "note": "Authorised payment captured on transporter confirmation",
+        "type": "PAYMENT_CAPTURED",
+        "actorId": "dd_bank_20261020a_transporter",
+        "createdAt": "2026-10-20T20:48:24.387+00:00",
+        "paymentId": "cmvh5nyop0002l507vqfjq5fl",
+        "amountPence": 11000
+      },
+      {
+        "id": "cmvh5s0lw000ljs08kzm5caww",
+        "note": "STRIPE_REFUND_CONFIRMED:983a6c2d-474b-47bf-b564-8f10559cd308:re_3USjwcLAzgkvCvrI1EI8LdZI",
+        "type": "REFUND_CREATED",
+        "actorId": "dd_refund_20261020b_admin",
+        "createdAt": "2026-10-20T20:51:32.756+00:00",
+        "paymentId": "cmvh5nyop0002l507vqfjq5fl",
+        "amountPence": 11000
+      },
+      {
+        "id": "cmvh8ihdo0001jq07g7b13ciq",
+        "note": "STRIPE_REFUND_FAILURE_CONFIRMED:983a6c2d-474b-47bf-b564-8f10559cd308:re_3USjwcLAzgkvCvrI1EI8LdZI",
+        "type": "REFUND_CREATED",
+        "actorId": "dd_refund_20261020b_admin",
+        "createdAt": "2026-10-20T22:08:06.781+00:00",
+        "paymentId": "cmvh5nyop0002l507vqfjq5fl",
+        "amountPence": -11000
+      }
+    ],
+    "booking": {
+      "id": "cmvh5nyop0001l507711bxm28",
+      "status": "CONFIRMED",
+      "customerId": "dd_refund_20261020b_customer",
+      "transporterId": "dd_bank_20261020a_transporter"
+    },
+    "payment": {
+      "id": "cmvh5nyop0002l507vqfjq5fl",
+      "status": "PAID",
+      "currency": "GBP",
+      "provider": "STRIPE",
+      "bookingId": "cmvh5nyop0001l507711bxm28",
+      "createdAt": "2026-10-20T20:48:23.641+00:00",
+      "paidPence": 11000,
+      "updatedAt": "2026-10-20T22:08:06.59+00:00",
+      "depositPence": 11000,
+      "payoutStatus": "HELD",
+      "refundedPence": 0,
+      "platformFeePence": 1000,
+      "providerReference": "pi_3USjwcLAzgkvCvrI15yEcbMR",
+      "transportValuePence": 11000,
+      "remainingBalancePence": 0,
+      "transporterProceedsPence": 10000,
+      "cancellationDeductionPence": 0
+    },
+    "payouts": [],
+    "refunds": [
+      {
+        "id": "983a6c2d-474b-47bf-b564-8f10559cd308",
+        "status": "FAILED",
+        "actorId": "dd_refund_20261020b_admin",
+        "payoutId": null,
+        "createdAt": "2026-10-20T20:51:24.58",
+        "disputeId": null,
+        "paidPence": 11000,
+        "paymentId": "cmvh5nyop0002l507vqfjq5fl",
+        "updatedAt": "2026-10-20T22:08:06.396",
+        "leaseUntil": null,
+        "resolution": null,
+        "retryAfter": null,
+        "amountPence": 11000,
+        "environment": "preview",
+        "failureCode": "STRIPE_REFUND_FAILED_AFTER_SUCCESS",
+        "attemptCount": 1,
+        "firstAttemptAt": "2026-10-20T20:51:28.705",
+        "recoveryStatus": "NOT_REQUIRED",
+        "resolutionNote": null,
+        "sourceChargeId": "ch_3USjwcLAzgkvCvrI1oqvK6Qk",
+        "stripeRefundId": "re_3USjwcLAzgkvCvrI1EI8LdZI",
+        "activePaymentId": "cmvh5nyop0002l507vqfjq5fl",
+        "ledgerAppliedAt": "2026-10-20T20:51:33.321",
+        "paymentIntentId": "pi_3USjwcLAzgkvCvrI15yEcbMR",
+        "fineRestorePence": 0,
+        "platformFeePence": 0,
+        "stripeReversalId": null,
+        "stripeTransferId": null,
+        "priorPayoutStatus": "NOT_READY",
+        "priorProceedsPence": 10000,
+        "priorRefundedPence": 0,
+        "priorDeductionPence": 0,
+        "recoveryAmountPence": 0,
+        "recoveryFailureCode": null,
+        "baselineReversedPence": 0,
+        "priorPlatformFeePence": 1000,
+        "requiredReversedPence": 0,
+        "recoveryFirstAttemptAt": null,
+        "transporterProceedsPence": 0,
+        "cancellationDeductionPence": 0
+      }
+    ],
+    "request": {
+      "id": "dd_refund_20261020b_failed_request",
+      "jobId": "dd_refund_20261020b_failed_job",
+      "quoteId": "dd_refund_20261020b_failed_quote",
+      "paymentState": "CAPTURED",
+      "paymentIntentId": "pi_3USjwcLAzgkvCvrI15yEcbMR",
+      "paymentProvider": "STRIPE",
+      "paymentEnvironment": "preview",
+      "authorisedAmountPence": 11000
+    },
+    "observedAt": "2026-10-21T02:10:15.330157+00:00",
+    "correctionNotifications": [
+      {
+        "id": "refund-failed-983a6c2d-474b-47bf-b564-8f10559cd308-corrected-dd_refund_20261020b_customer",
+        "body": "The earlier £110.00 refund confirmation no longer applies: Stripe reported that the refund failed. This amount has been removed from the refunded total. Please contact support. The transporter payout remains on hold.",
+        "type": "PAYMENT",
+        "title": "Customer refund failed",
+        "userId": "dd_refund_20261020b_customer",
+        "createdAt": "2026-10-20T22:08:04.246584+00:00"
+      },
+      {
+        "id": "refund-failed-983a6c2d-474b-47bf-b564-8f10559cd308-corrected-dd_bank_20261020a_transporter",
+        "body": "The earlier £110.00 refund confirmation no longer applies: Stripe reported that the refund failed. This amount has been removed from the refunded total. Please contact support. The transporter payout remains on hold.",
+        "type": "PAYMENT",
+        "title": "Customer refund failed",
+        "userId": "dd_bank_20261020a_transporter",
+        "createdAt": "2026-10-20T22:08:04.246584+00:00"
+      }
+    ]
+  },
+  "stripe": {
+    "paymentIntent": {
+      "id": "pi_3USjwcLAzgkvCvrI15yEcbMR",
+      "amount": 11000,
+      "amount_received": 11000,
+      "currency": "gbp",
+      "status": "succeeded",
+      "livemode": false,
+      "metadata": {
+        "availabilityRequestId": "dd_refund_20261020b_failed_request",
+        "environment": "preview"
+      },
+      "latest_charge": {
+        "id": "ch_3USjwcLAzgkvCvrI1oqvK6Qk",
+        "amount": 11000,
+        "amount_captured": 11000,
+        "amount_refunded": 0,
+        "currency": "gbp",
+        "captured": true,
+        "paid": true,
+        "refunded": false,
+        "disputed": false,
+        "livemode": false,
+        "status": "succeeded",
+        "payment_intent": "pi_3USjwcLAzgkvCvrI15yEcbMR",
+        "balance_transaction": "txn_3USjwcLAzgkvCvrI1Ei7xxK0",
+        "transfer_data": null,
+        "transfer_group": null,
+        "card": {
+          "brand": "visa",
+          "last4": "5126"
+        }
+      }
+    },
+    "refund": {
+      "id": "re_3USjwcLAzgkvCvrI1EI8LdZI",
+      "object": "refund",
+      "amount": 11000,
+      "balance_transaction": "txn_3USjwcLAzgkvCvrI13OdUjEW",
+      "charge": "ch_3USjwcLAzgkvCvrI1oqvK6Qk",
+      "created": 1792529490,
+      "currency": "gbp",
+      "customer": null,
+      "customer_account": null,
+      "destination_details": {
+        "card": {
+          "reference_status": "unavailable",
+          "reference_type": "acquirer_reference_number",
+          "type": "refund"
+        },
+        "type": "card"
+      },
+      "failure_balance_transaction": "txn_1USk2PLAzgkvCvrI3KryU8p4",
+      "failure_reason": "expired_or_canceled_card",
+      "metadata": {
+        "driveDropRefundId": "983a6c2d-474b-47bf-b564-8f10559cd308",
+        "environment": "preview",
+        "paymentId": "cmvh5nyop0002l507vqfjq5fl"
+      },
+      "payment_intent": "pi_3USjwcLAzgkvCvrI15yEcbMR",
+      "payment_method": "pm_1USjwcLAzgkvCvrI0wrrqdhM",
+      "reason": null,
+      "receipt_number": null,
+      "source_transfer_reversal": null,
+      "status": "failed",
+      "transfer_reversal": null
+    },
+    "refundList": {
+      "has_more": false,
+      "data": [
+        {
+          "id": "re_3USjwcLAzgkvCvrI1EI8LdZI",
+          "object": "refund",
+          "amount": 11000,
+          "balance_transaction": "txn_3USjwcLAzgkvCvrI13OdUjEW",
+          "charge": "ch_3USjwcLAzgkvCvrI1oqvK6Qk",
+          "created": 1792529490,
+          "currency": "gbp",
+          "customer": null,
+          "customer_account": null,
+          "destination_details": {
+            "card": {
+              "reference_status": "unavailable",
+              "reference_type": "acquirer_reference_number",
+              "type": "refund"
+            },
+            "type": "card"
+          },
+          "failure_balance_transaction": "txn_1USk2PLAzgkvCvrI3KryU8p4",
+          "failure_reason": "expired_or_canceled_card",
+          "metadata": {
+            "driveDropRefundId": "983a6c2d-474b-47bf-b564-8f10559cd308",
+            "environment": "preview",
+            "paymentId": "cmvh5nyop0002l507vqfjq5fl"
+          },
+          "payment_intent": "pi_3USjwcLAzgkvCvrI15yEcbMR",
+          "payment_method": "pm_1USjwcLAzgkvCvrI0wrrqdhM",
+          "reason": null,
+          "receipt_number": null,
+          "source_transfer_reversal": null,
+          "status": "failed",
+          "transfer_reversal": null
+        }
+      ]
+    },
+    "refundDebit": {
+      "id": "txn_3USjwcLAzgkvCvrI13OdUjEW",
+      "amount": -11000,
+      "currency": "gbp",
+      "net": -11000,
+      "fee": 0,
+      "reporting_category": "refund",
+      "type": "refund",
+      "status": "pending",
+      "source": "re_3USjwcLAzgkvCvrI1EI8LdZI",
+      "created": 1792529490,
+      "available_on": 1793059200
+    },
+    "failureCredit": {
+      "id": "txn_1USk2PLAzgkvCvrI3KryU8p4",
+      "amount": 11000,
+      "currency": "gbp",
+      "net": 11000,
+      "fee": 0,
+      "reporting_category": "refund_failure",
+      "type": "refund_failure",
+      "status": "pending",
+      "source": "re_3USjwcLAzgkvCvrI1EI8LdZI",
+      "created": 1792529617,
+      "available_on": 1793059200
+    },
+    "transferCheck": {
+      "allSandboxTransfersRead": 7,
+      "has_more": false,
+      "matchCriteria": "source_transaction equals retained charge OR metadata contains retained payment/booking ID",
+      "matches": []
+    }
+  },
+  "preview": {
+    "flag": {
+      "id": "QYdbRtH8dcpgvyOv",
+      "key": "STRIPE_REFUNDS_ENABLED",
+      "value": "false",
+      "type": "plain",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "feature/ui-polish",
+      "updatedAt": 1792547509076
+    },
+    "deployment": {
+      "id": "dpl_DXQ6mTvrtVH7FA4aZvGa9eXWQQyi",
+      "url": "drivedrop-cfd0r1quk-future-9f39.vercel.app",
+      "readyState": "READY",
+      "alias": [
+        "drivedrop-git-feature-ui-polish-future-9f39.vercel.app"
+      ],
+      "target": null,
+      "gitRef": "feature/ui-polish",
+      "commit": "138446b610329dd793cbceccef6e6b6c593eaf6c"
+    }
+  },
+  "preservation": {
+    "all31OriginalCountsAndFingerprintsMatch": true,
+    "countsAndFingerprints": [
+      {
+        "table_name": "AvailabilityRequest",
+        "rows": 11,
+        "fingerprint": "deb316efa28e2a280b16bd107028f684"
+      },
+      {
+        "table_name": "Booking",
+        "rows": 53,
+        "fingerprint": "ac052436e169e638a2e46d1d4e129602"
+      },
+      {
+        "table_name": "BookingPayment",
+        "rows": 53,
+        "fingerprint": "eca61d5fd380e7a3fe7fc05ad2a75751"
+      },
+      {
+        "table_name": "ConversationInboxState",
+        "rows": 2,
+        "fingerprint": "d7b5330da85491b53ad52489f4e4a595"
+      },
+      {
+        "table_name": "Dispute",
+        "rows": 20,
+        "fingerprint": "0ff368d1cae8a3deb1fa1ea1161398ff"
+      },
+      {
+        "table_name": "DisputeReviewNote",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "EmailChangeToken",
+        "rows": 2,
+        "fingerprint": "fd6b965260e3bf298d619a115500dac6"
+      },
+      {
+        "table_name": "Evidence",
+        "rows": 98,
+        "fingerprint": "c0730557265680c92412c8dc5190f883"
+      },
+      {
+        "table_name": "FinanceEvent",
+        "rows": 138,
+        "fingerprint": "a04711c23ace45cb779af248cda79338"
+      },
+      {
+        "table_name": "JobDigestRun",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "Message",
+        "rows": 32,
+        "fingerprint": "95396d4e224c163fae4a659dd779edd1"
+      },
+      {
+        "table_name": "MessageAttachment",
+        "rows": 5,
+        "fingerprint": "6a5c68e5cac005908299320ea96ab2c3"
+      },
+      {
+        "table_name": "Notification",
+        "rows": 405,
+        "fingerprint": "c281cef8290e2cd8dce21695129f43f7"
+      },
+      {
+        "table_name": "PasswordResetToken",
+        "rows": 1,
+        "fingerprint": "dd28ab764c541d4970fe82ab370a6ac7"
+      },
+      {
+        "table_name": "Quote",
+        "rows": 67,
+        "fingerprint": "b5d06acd6d4252a04eca77e8d3222113"
+      },
+      {
+        "table_name": "Review",
+        "rows": 8,
+        "fingerprint": "bf3868f7b6cab1c199c1d4cbdb73bcf4"
+      },
+      {
+        "table_name": "Session",
+        "rows": 1,
+        "fingerprint": "9bac1b51790dd1ffdae9130d3a3f5219"
+      },
+      {
+        "table_name": "storage.objects",
+        "rows": 136,
+        "fingerprint": "ebbe346597d33536e580807e5b9ccf1a"
+      },
+      {
+        "table_name": "StripeConnectAccount",
+        "rows": 1,
+        "fingerprint": "78c5aad61ade8d9d18dfca8065a11ffc"
+      },
+      {
+        "table_name": "StripePayout",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "StripeRefund",
+        "rows": 1,
+        "fingerprint": "2ddc047f1bd30054dbbc637bf6fd3608"
+      },
+      {
+        "table_name": "SupportConversation",
+        "rows": 4,
+        "fingerprint": "d5e6c030a2cde120711fa69b35705483"
+      },
+      {
+        "table_name": "SupportMessage",
+        "rows": 4,
+        "fingerprint": "665e0a27aa3b05db729fc587a5a21ab6"
+      },
+      {
+        "table_name": "TrackingEvent",
+        "rows": 128,
+        "fingerprint": "f257d3effd6b092b2769eab6e5ecd47f"
+      },
+      {
+        "table_name": "TransporterCancellationDeduction",
+        "rows": 4,
+        "fingerprint": "f6cde087373395027c29a1ecfe9caa74"
+      },
+      {
+        "table_name": "TransporterCancellationFee",
+        "rows": 8,
+        "fingerprint": "113901cc29d01cf4953ce85120c5d67d"
+      },
+      {
+        "table_name": "TransporterPayoutDetails",
+        "rows": 1,
+        "fingerprint": "0a82c147ab5f6401b88469e6a62a527e"
+      },
+      {
+        "table_name": "TransporterVerification",
+        "rows": 9,
+        "fingerprint": "b2b4e2c715313da99f2be2f0e2984e2c"
+      },
+      {
+        "table_name": "TransportJob",
+        "rows": 77,
+        "fingerprint": "b9b91ae74680f806c8dacc9818b4d59d"
+      },
+      {
+        "table_name": "User",
+        "rows": 19,
+        "fingerprint": "34a586e358ea1e5b3df5ddd83f619dd5"
+      },
+      {
+        "table_name": "VerificationDocument",
+        "rows": 23,
+        "fingerprint": "1eb8b4a04b2a2bd88a4a7f0da31ed90e"
+      }
+    ]
+  },
+  "findings": {
+    "documentedTestCardLast4": "5126",
+    "testPurpose": "refund initially succeeds then fails",
+    "stripeRefundedPence": 0,
+    "applicationRefundedPence": 0,
+    "payoutStatus": "HELD",
+    "originalRefundLedgerAndCorrectionPreserved": true,
+    "alternativeRefundRecordingWorkflowExists": false,
+    "replacementRefundPrepared": false,
+    "reason": "No supported successful retry or different-card refund method established for the existing failure-test charge. Existing admin retry returns the terminal failed instruction."
+  },
+  "proposedNextStep": "Retain this failure fixture and evidence. Review a separate administrator workflow for recording independently confirmed alternative repayments; no external repayment, simulated settlement, ledger override or UI change authorized/performed in this review.",
+  "sources": [
+    "https://docs.stripe.com/testing#refunds",
+    "https://docs.stripe.com/refunds#refund-destinations",
+    "https://docs.stripe.com/refunds#failed-refunds"
+  ],
+  "remaining": [
+    "Actual alternative settlement of the retained case remains unperformed; synthetic failure fixture is not settled or cleaned up.",
+    "Genuine insufficient-balance reversal failure/retry reproduction remains unverified under the existing approved configuration."
+  ]
+}

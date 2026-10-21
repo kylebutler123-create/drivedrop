@@ -1,5 +1,13 @@
 # Stripe refund preparation — 21 October 2026
 
+## Current review: retained £110 case uses the deliberate refund-failure card
+
+At 02:10 UTC on 21 October, a read-only review confirmed the retained charge uses Stripe's documented asynchronous refund-failure card ending **5126**. Canonical history contains exactly one failed £110 refund; Stripe and DriveDrop both show £0 successfully refunded. The original ledger timestamp, +£110 success audit, -£110 correction, one corrective notice per party and payout hold are unchanged. Both Stripe refund/failure balance entries are pending and net to zero. All seven sandbox transfers were inspected with no source-charge or payment/booking-metadata match for this case. All 31 full original-data fingerprints still match.
+
+The late-failure accounting check is verified, but this simulated customer repayment remains unsettled. No supported successful retry/different-card refund was established; the app intentionally returns the terminal failed instruction and does not implement alternative-settlement recording. **Keep this fixture, its reservation and hold.** No replacement refund, settlement or cleanup was performed. Refunds remain off.
+
+The prepared next step is review of an administrator **Record alternative refund** workflow, with independent settlement evidence, separate Stripe/external totals and preserved failed-refund history. It is a design proposal, not an implemented action or authorization to pay. See [recovery decision and proposed flow](stripe-failed-refund-recovery-plan.md) and [fresh reconciliation evidence](evidence/stripe-failed-refund-review.json). Genuine insufficient-balance reversal failure/retry is still a separate open gate.
+
 ## Current: booking notices fixed and actual reversal connection loss verified; refunds off
 
 The approved **QA21 REV / DD-XSMTG5ZY** pass completed in sandbox `acct_1US4BzLAzgkvCvrI`, `livemode=false`, on Preview / `feature/ui-polish`. Stripe confirms one successful **110p customer refund** and one **100p reversal** of the original booking transfer. The deployed recovery worker reconciled the genuinely interrupted reversal response without repeating the refund ledger or notifications. [Recovered administrator view](evidence/stripe-reversal-network-recovered.jpg) · [Temporary recovery hold](evidence/stripe-reversal-network-pending.jpg) · [Exact verification evidence](evidence/stripe-reversal-network-verification.json).

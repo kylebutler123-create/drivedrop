@@ -1,5 +1,11 @@
 # Stripe Connect sandbox implementation
 
+## Latest read-only review: failed £110 fixture
+
+On 21 October at 02:10 UTC, canonical Stripe and preview records confirmed the retained £110 payment uses the deliberate asynchronous refund-failure card ending **5126**. Exactly one refund is failed, successful refunded total is £0 in both systems, and the original instruction, ledger/correction audit, notices and payout hold are preserved. All 31 full original-data fingerprints match. Refunds remain off; no financial, settings or database mutation was performed.
+
+No supported successful retry or different-card refund was established for this charge. The current app has no completion path for recording independently confirmed alternative repayment. The next product step is to review the proposed administrator flow; the fixture remains unsettled and must stay retained. See [failed-refund recovery plan](stripe-failed-refund-recovery-plan.md) and [fresh evidence](evidence/stripe-failed-refund-review.json). Genuine insufficient-balance reversal failure/retry remains separately unverified.
+
 ## Status
 
 **21 October 2026, current checkpoint:** Booking-confirmation duplication is fixed in `60351a922963c7207fed61f3d5170a929dd80c16`. A database claim per request/status/recipient admits one notice and one best-effort email attempt across webhook/worker races. The regression fails with four notices against the old source and passes with two after the fix. The real **QA21 REV / DD-XSMTG5ZY** capture produced one booking notice per synthetic party.
