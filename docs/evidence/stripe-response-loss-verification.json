@@ -1,0 +1,946 @@
+{
+  "date": "2026-10-21",
+  "scope": {
+    "repository": "kylebutler123-create/drivedrop",
+    "branch": "feature/ui-polish",
+    "runtimeCommit": "3ff98ccfb0851de0675089949a2f2c4ff715d4a3",
+    "stripeAccount": "acct_1US4BzLAzgkvCvrI",
+    "livemode": false,
+    "databaseProject": "yozbuuvebzxitoqrvyer"
+  },
+  "method": "Controlled reconstruction of interrupted persistence state for two previously settled disposable sandbox fixtures, using original Stripe IDs and metadata. The normal deployed minute worker recovered canonical results. No actual network connection was interrupted and no Stripe POST/idempotency-header retry was induced.",
+  "outcome": {
+    "refundRecoveredExactlyOnce": true,
+    "reversalRecoveredExactlyOnce": true,
+    "laterScansStableExcludingUpdatedAt": true,
+    "canonicalObjectsUnchanged": {
+      "refund": true,
+      "recoveryRefund": true,
+      "transferAndReversal": true
+    },
+    "newStripeCharges": 0,
+    "newStripeRefunds": 0,
+    "newStripeTransfers": 0,
+    "newStripeReversals": 0,
+    "applicationCodeChanges": false,
+    "schemaChanges": false,
+    "refundsEnabled": false
+  },
+  "staged": [
+    {
+      "id": "7bae732e-a3d1-43e3-9bba-a2aaecd22342",
+      "status": "SUCCEEDED",
+      "recoveryStatus": "RETRY",
+      "stripeRefundId": "re_3USlqULAzgkvCvrI0bncXale",
+      "stripeReversalId": null,
+      "ledgerAppliedAt": "2026-10-20 23:13:21.353",
+      "attemptCount": 1,
+      "leaseUntil": "2026-10-21 00:33:58.231",
+      "leaseToken": "dd_loss_20261021a_reversal_expired",
+      "activePaymentId": "cmvha0bbc0002js08wyecnbtb",
+      "firstAttemptAt": "2026-10-20 23:13:18",
+      "recoveryFirstAttemptAt": "2026-10-20 23:13:29",
+      "failureCode": null,
+      "recoveryFailureCode": "RETRY_PENDING",
+      "paidPence": 110,
+      "refundedPence": 110,
+      "platformFeePence": 0,
+      "transporterProceedsPence": 0,
+      "payment_status": "REFUNDED",
+      "payoutStatus": "HELD",
+      "events": 1
+    },
+    {
+      "id": "e691f330-a6c6-4b4a-9cab-0493775d687d",
+      "status": "RETRY",
+      "recoveryStatus": "NOT_REQUIRED",
+      "stripeRefundId": null,
+      "stripeReversalId": null,
+      "ledgerAppliedAt": null,
+      "attemptCount": 1,
+      "leaseUntil": "2026-10-21 00:31:36.664",
+      "leaseToken": "dd_loss_20261021a_expired_lease",
+      "activePaymentId": "cmvhc9msk0002jv075xki7tmw",
+      "firstAttemptAt": "2026-10-21 00:11:53",
+      "recoveryFirstAttemptAt": null,
+      "failureCode": "RETRY_PENDING",
+      "recoveryFailureCode": null,
+      "paidPence": 110,
+      "refundedPence": 0,
+      "platformFeePence": 10,
+      "transporterProceedsPence": 100,
+      "payment_status": "PAID",
+      "payoutStatus": "HELD",
+      "events": 0
+    }
+  ],
+  "recovered": [
+    {
+      "id": "7bae732e-a3d1-43e3-9bba-a2aaecd22342",
+      "status": "SUCCEEDED",
+      "recoveryStatus": "RECOVERED",
+      "stripeRefundId": "re_3USlqULAzgkvCvrI0bncXale",
+      "stripeReversalId": "trr_1USmDlLAzgkvCvrINuEKPfGC",
+      "ledgerAppliedAt": "2026-10-20 23:13:21.353",
+      "attemptCount": 2,
+      "leaseUntil": null,
+      "leaseToken": null,
+      "activePaymentId": null,
+      "failureCode": null,
+      "recoveryFailureCode": null,
+      "updatedAt": "2026-10-21 00:38:18.049",
+      "refundedPence": 110,
+      "platformFeePence": 0,
+      "transporterProceedsPence": 0,
+      "payment_status": "REFUNDED",
+      "payoutStatus": "CANCELLED",
+      "events": 2
+    },
+    {
+      "id": "e691f330-a6c6-4b4a-9cab-0493775d687d",
+      "status": "SUCCEEDED",
+      "recoveryStatus": "NOT_REQUIRED",
+      "stripeRefundId": "re_3USmp6LAzgkvCvrI0e2nIGZu",
+      "stripeReversalId": null,
+      "ledgerAppliedAt": "2026-10-21 00:37:14.61",
+      "attemptCount": 2,
+      "leaseUntil": null,
+      "leaseToken": null,
+      "activePaymentId": null,
+      "failureCode": null,
+      "recoveryFailureCode": null,
+      "updatedAt": "2026-10-21 00:37:15.933",
+      "refundedPence": 110,
+      "platformFeePence": 0,
+      "transporterProceedsPence": 0,
+      "payment_status": "REFUNDED",
+      "payoutStatus": "CANCELLED",
+      "events": 1
+    }
+  ],
+  "laterStableRead": [
+    {
+      "id": "7bae732e-a3d1-43e3-9bba-a2aaecd22342",
+      "status": "SUCCEEDED",
+      "recoveryStatus": "RECOVERED",
+      "stripeRefundId": "re_3USlqULAzgkvCvrI0bncXale",
+      "stripeReversalId": "trr_1USmDlLAzgkvCvrINuEKPfGC",
+      "ledgerAppliedAt": "2026-10-20 23:13:21.353",
+      "attemptCount": 2,
+      "leaseUntil": null,
+      "leaseToken": null,
+      "activePaymentId": null,
+      "failureCode": null,
+      "recoveryFailureCode": null,
+      "updatedAt": "2026-10-21 00:42:05.885",
+      "refundedPence": 110,
+      "platformFeePence": 0,
+      "transporterProceedsPence": 0,
+      "payment_status": "REFUNDED",
+      "payoutStatus": "CANCELLED",
+      "events": 2
+    },
+    {
+      "id": "e691f330-a6c6-4b4a-9cab-0493775d687d",
+      "status": "SUCCEEDED",
+      "recoveryStatus": "NOT_REQUIRED",
+      "stripeRefundId": "re_3USmp6LAzgkvCvrI0e2nIGZu",
+      "stripeReversalId": null,
+      "ledgerAppliedAt": "2026-10-21 00:37:14.61",
+      "attemptCount": 2,
+      "leaseUntil": null,
+      "leaseToken": null,
+      "activePaymentId": null,
+      "failureCode": null,
+      "recoveryFailureCode": null,
+      "updatedAt": "2026-10-21 00:41:06.081",
+      "refundedPence": 110,
+      "platformFeePence": 0,
+      "transporterProceedsPence": 0,
+      "payment_status": "REFUNDED",
+      "payoutStatus": "CANCELLED",
+      "events": 1
+    }
+  ],
+  "canonical": {
+    "refundCase": {
+      "paymentBefore": {
+        "id": "pi_3USmp6LAzgkvCvrI0hoV8sUk",
+        "status": "succeeded",
+        "capture_method": "manual",
+        "amount": 110,
+        "amount_received": 110,
+        "currency": "gbp",
+        "livemode": false,
+        "metadata": {
+          "availabilityRequestId": "dd_dispute_20261021a_ui_request",
+          "environment": "preview"
+        },
+        "charge": {
+          "id": "ch_3USmp6LAzgkvCvrI0gnMaAF5",
+          "amount": 110,
+          "amount_refunded": 110,
+          "livemode": false,
+          "disputed": false
+        }
+      },
+      "refundsBefore": {
+        "has_more": false,
+        "refunds": [
+          {
+            "id": "re_3USmp6LAzgkvCvrI0e2nIGZu",
+            "status": "succeeded",
+            "amount": 110,
+            "currency": "gbp",
+            "charge": "ch_3USmp6LAzgkvCvrI0gnMaAF5",
+            "payment_intent": "pi_3USmp6LAzgkvCvrI0hoV8sUk",
+            "metadata": {
+              "driveDropRefundId": "e691f330-a6c6-4b4a-9cab-0493775d687d",
+              "environment": "preview",
+              "paymentId": "cmvhc9msk0002jv075xki7tmw"
+            },
+            "created": 1792541513
+          }
+        ]
+      },
+      "refundsAfter": {
+        "has_more": false,
+        "refunds": [
+          {
+            "id": "re_3USmp6LAzgkvCvrI0e2nIGZu",
+            "status": "succeeded",
+            "amount": 110,
+            "currency": "gbp",
+            "charge": "ch_3USmp6LAzgkvCvrI0gnMaAF5",
+            "payment_intent": "pi_3USmp6LAzgkvCvrI0hoV8sUk",
+            "metadata": {
+              "driveDropRefundId": "e691f330-a6c6-4b4a-9cab-0493775d687d",
+              "environment": "preview",
+              "paymentId": "cmvhc9msk0002jv075xki7tmw"
+            },
+            "created": 1792541513
+          }
+        ]
+      }
+    },
+    "reversalCase": {
+      "paymentBefore": {
+        "id": "pi_3USlqULAzgkvCvrI0gzSXCJJ",
+        "status": "succeeded",
+        "capture_method": "manual",
+        "amount": 110,
+        "amount_received": 110,
+        "currency": "gbp",
+        "livemode": false,
+        "metadata": {
+          "availabilityRequestId": "dd_verify_20261020d_recovery_request",
+          "environment": "preview"
+        },
+        "charge": {
+          "id": "ch_3USlqULAzgkvCvrI0N8E5pgI",
+          "amount": 110,
+          "amount_refunded": 110,
+          "disputed": false,
+          "livemode": false
+        }
+      },
+      "refundsBefore": {
+        "has_more": false,
+        "refunds": [
+          {
+            "id": "re_3USlqULAzgkvCvrI0bncXale",
+            "status": "succeeded",
+            "amount": 110,
+            "currency": "gbp",
+            "charge": "ch_3USlqULAzgkvCvrI0N8E5pgI",
+            "payment_intent": "pi_3USlqULAzgkvCvrI0gzSXCJJ",
+            "metadata": {
+              "driveDropRefundId": "7bae732e-a3d1-43e3-9bba-a2aaecd22342",
+              "environment": "preview",
+              "paymentId": "cmvha0bbc0002js08wyecnbtb"
+            },
+            "created": 1792537998
+          }
+        ]
+      },
+      "refundsAfter": {
+        "has_more": false,
+        "refunds": [
+          {
+            "id": "re_3USlqULAzgkvCvrI0bncXale",
+            "status": "succeeded",
+            "amount": 110,
+            "currency": "gbp",
+            "charge": "ch_3USlqULAzgkvCvrI0N8E5pgI",
+            "payment_intent": "pi_3USlqULAzgkvCvrI0gzSXCJJ",
+            "metadata": {
+              "driveDropRefundId": "7bae732e-a3d1-43e3-9bba-a2aaecd22342",
+              "environment": "preview",
+              "paymentId": "cmvha0bbc0002js08wyecnbtb"
+            },
+            "created": 1792537998
+          }
+        ]
+      },
+      "transfersBefore": {
+        "has_more": false,
+        "transfers": [
+          {
+            "id": "tr_3USlqULAzgkvCvrI0SipQwTl",
+            "livemode": false,
+            "amount": 100,
+            "currency": "gbp",
+            "amount_reversed": 100,
+            "destination": "acct_1USi72LAzgvhqEGk",
+            "source_transaction": "ch_3USlqULAzgkvCvrI0N8E5pgI",
+            "transfer_group": "dd_payout_ca1f67ee-0666-4585-8402-4e0b0a30aeb7",
+            "metadata": {
+              "driveDropPayoutId": "ca1f67ee-0666-4585-8402-4e0b0a30aeb7",
+              "environment": "preview",
+              "paymentId": "cmvha0bbc0002js08wyecnbtb"
+            },
+            "reversals": [
+              {
+                "id": "trr_1USmDlLAzgkvCvrINuEKPfGC",
+                "amount": 100,
+                "transfer": "tr_3USlqULAzgkvCvrI0SipQwTl",
+                "currency": "gbp",
+                "metadata": {
+                  "driveDropRefundId": "7bae732e-a3d1-43e3-9bba-a2aaecd22342",
+                  "environment": "preview",
+                  "paymentId": "cmvha0bbc0002js08wyecnbtb"
+                },
+                "created": 1792538009
+              }
+            ]
+          }
+        ]
+      },
+      "transfersAfter": {
+        "has_more": false,
+        "transfers": [
+          {
+            "id": "tr_3USlqULAzgkvCvrI0SipQwTl",
+            "livemode": false,
+            "amount": 100,
+            "currency": "gbp",
+            "amount_reversed": 100,
+            "destination": "acct_1USi72LAzgvhqEGk",
+            "source_transaction": "ch_3USlqULAzgkvCvrI0N8E5pgI",
+            "transfer_group": "dd_payout_ca1f67ee-0666-4585-8402-4e0b0a30aeb7",
+            "metadata": {
+              "driveDropPayoutId": "ca1f67ee-0666-4585-8402-4e0b0a30aeb7",
+              "environment": "preview",
+              "paymentId": "cmvha0bbc0002js08wyecnbtb"
+            },
+            "reversals": [
+              {
+                "id": "trr_1USmDlLAzgkvCvrINuEKPfGC",
+                "amount": 100,
+                "transfer": "tr_3USlqULAzgkvCvrI0SipQwTl",
+                "currency": "gbp",
+                "metadata": {
+                  "driveDropRefundId": "7bae732e-a3d1-43e3-9bba-a2aaecd22342",
+                  "environment": "preview",
+                  "paymentId": "cmvha0bbc0002js08wyecnbtb"
+                },
+                "created": 1792538009
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "audit": {
+    "events": [
+      {
+        "id": "cmvhaudfz0001l108fdbmh8ib",
+        "note": "STRIPE_REFUND_CONFIRMED:7bae732e-a3d1-43e3-9bba-a2aaecd22342:re_3USlqULAzgkvCvrI0bncXale",
+        "type": "REFUND_CREATED",
+        "actorId": "cmtauc6mx0000js04aevqjyzk",
+        "createdAt": "2026-10-20T23:13:20.783+00:00",
+        "paymentId": "cmvha0bbc0002js08wyecnbtb",
+        "amountPence": 110
+      },
+      {
+        "id": "cmvhdu8zg0001ju08ybjh0pax",
+        "note": "STRIPE_REFUND_CONFIRMED:e691f330-a6c6-4b4a-9cab-0493775d687d:re_3USmp6LAzgkvCvrI0e2nIGZu",
+        "type": "REFUND_CREATED",
+        "actorId": "cmtauc6mx0000js04aevqjyzk",
+        "createdAt": "2026-10-21T00:37:13.853+00:00",
+        "paymentId": "cmvhc9msk0002jv075xki7tmw",
+        "amountPence": 110
+      },
+      {
+        "id": "cmvhdvl4u0003ju08uap6kefi",
+        "note": "STRIPE_REFUND_RECOVERED:7bae732e-a3d1-43e3-9bba-a2aaecd22342:trr_1USmDlLAzgkvCvrINuEKPfGC",
+        "type": "PAYMENT_CREATED",
+        "actorId": "cmtauc6mx0000js04aevqjyzk",
+        "createdAt": "2026-10-21T00:38:16.254+00:00",
+        "paymentId": "cmvha0bbc0002js08wyecnbtb",
+        "amountPence": 100
+      }
+    ],
+    "payout": {
+      "id": "ca1f67ee-0666-4585-8402-4e0b0a30aeb7",
+      "status": "REVERSED",
+      "actorId": "cmtauc6mx0000js04aevqjyzk",
+      "createdAt": "2026-10-21T00:34:58.231",
+      "finePence": 0,
+      "paidPence": 110,
+      "paymentId": "cmvha0bbc0002js08wyecnbtb",
+      "updatedAt": "2026-10-21T00:38:15.873",
+      "grossPence": 100,
+      "leaseUntil": null,
+      "retryAfter": null,
+      "amountPence": 100,
+      "environment": "preview",
+      "failureCode": "REVERSED",
+      "attemptCount": 1,
+      "refundedPence": 0,
+      "reversedPence": 100,
+      "transferredAt": "2026-10-20T22:51:17",
+      "firstAttemptAt": null,
+      "sourceChargeId": "ch_3USlqULAzgkvCvrI0N8E5pgI",
+      "paymentIntentId": "pi_3USlqULAzgkvCvrI0gzSXCJJ",
+      "connectAccountId": "2793ede9-0abe-4c29-bc2a-4befbf27ace9",
+      "stripeTransferId": "tr_3USlqULAzgkvCvrI0SipQwTl",
+      "destinationAccountId": "acct_1USi72LAzgvhqEGk"
+    },
+    "dispute": {
+      "id": "cmvhca6c50006jv076lfci3nk",
+      "status": "RESOLVED",
+      "resolution": "REFUND_CUSTOMER"
+    },
+    "workerRuns": [
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 1,
+        "started_at": "2026-10-21T00:44:00.397185+00:00",
+        "finished_at": "2026-10-21T00:44:06.047731+00:00"
+      },
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 1,
+        "started_at": "2026-10-21T00:43:00.780878+00:00",
+        "finished_at": "2026-10-21T00:43:06.433261+00:00"
+      },
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 1,
+        "started_at": "2026-10-21T00:42:00.576918+00:00",
+        "finished_at": "2026-10-21T00:42:06.216537+00:00"
+      },
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 1,
+        "started_at": "2026-10-21T00:41:00.766409+00:00",
+        "finished_at": "2026-10-21T00:41:06.412472+00:00"
+      },
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 1,
+        "started_at": "2026-10-21T00:40:01.648884+00:00",
+        "finished_at": "2026-10-21T00:40:07.395826+00:00"
+      },
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 1,
+        "started_at": "2026-10-21T00:39:00.561555+00:00",
+        "finished_at": "2026-10-21T00:39:06.682063+00:00"
+      },
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 2,
+        "started_at": "2026-10-21T00:38:00.55678+00:00",
+        "finished_at": "2026-10-21T00:38:19.13306+00:00"
+      },
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 2,
+        "started_at": "2026-10-21T00:37:01.531125+00:00",
+        "finished_at": "2026-10-21T00:37:17.015569+00:00"
+      }
+    ],
+    "notifications": [
+      {
+        "id": "1ae5d856-623f-4b3b-98c5-7890b216d78f",
+        "body": "Stripe confirmed a customer refund of £1.10. The dispute is resolved. Sandbox interrupted-response recovery verified against the existing approved 110p refund. No new refund or transporter transfer is requested.",
+        "href": "/customer?view=bookings",
+        "type": "PAYMENT",
+        "title": "Customer refund confirmed",
+        "readAt": null,
+        "userId": "dd_refund_20261020b_customer",
+        "createdAt": "2026-10-21T00:37:12.205078+00:00"
+      },
+      {
+        "id": "a61332d5-cc45-44d8-a490-ce3a80682256",
+        "body": "Stripe confirmed a customer refund of £1.10. The dispute is resolved. Sandbox interrupted-response recovery verified against the existing approved 110p refund. No new refund or transporter transfer is requested.",
+        "href": "/transporter/proceeds",
+        "type": "PAYMENT",
+        "title": "Customer refund confirmed",
+        "readAt": null,
+        "userId": "dd_bank_20261020a_transporter",
+        "createdAt": "2026-10-21T00:37:12.205078+00:00"
+      }
+    ]
+  },
+  "deployment": {
+    "enabled": {
+      "id": "dpl_HLpBYjJ7U4KyjQT8eRp2ToSHKcwY",
+      "url": "drivedrop-l0knvkmnt-future-9f39.vercel.app",
+      "readyState": "READY",
+      "target": null,
+      "aliases": [
+        "drivedrop-git-feature-ui-polish-future-9f39.vercel.app"
+      ],
+      "sha": "3ff98ccfb0851de0675089949a2f2c4ff715d4a3"
+    },
+    "disabled": {
+      "id": "dpl_5jLWgHXj4biXMh7MKyynfjWUqmX8",
+      "url": "drivedrop-e5hdw75r2-future-9f39.vercel.app",
+      "readyState": "READY",
+      "target": null,
+      "aliases": [
+        "drivedrop-git-feature-ui-polish-future-9f39.vercel.app"
+      ],
+      "sha": "3ff98ccfb0851de0675089949a2f2c4ff715d4a3"
+    },
+    "disabledHealth": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "timestamp": "2026-10-21T00:44:59.335Z",
+        "version": "3ff98ccfb085"
+      }
+    },
+    "authenticatedFlagRead": {
+      "beforeCleanup": {
+        "records": 21,
+        "flags": [
+          false
+        ],
+        "fixturePresent": true
+      },
+      "afterCleanup": {
+        "records": 20,
+        "flags": [
+          false
+        ],
+        "fixturePresent": false
+      }
+    }
+  },
+  "cleanup": {
+    "completed": true,
+    "guard": "Exact succeeded/recovered refund IDs, attempt counts, cleared leases and reservations, refunded payments, resolved dispute, reversed payout and fixture mappings. All 31 original fingerprints checked before deletion with exact fixture-ID exclusions; all 31 full fingerprints checked after deletion in the same transaction. Independent post-commit full-table read matched.",
+    "removedByTable": {
+      "AvailabilityRequest": [
+        "dd_dispute_20261021a_ui_request",
+        "dd_verify_20261020d_recovery_request"
+      ],
+      "Booking": [
+        "cmvhc9msk0001jv078pqplsui",
+        "cmvha0bbc0001js08k7xulhtv"
+      ],
+      "BookingPayment": [
+        "cmvhc9msk0002jv075xki7tmw",
+        "cmvha0bbc0002js08wyecnbtb"
+      ],
+      "Dispute": [
+        "cmvhca6c50006jv076lfci3nk"
+      ],
+      "FinanceEvent": [
+        "cmvhaudfz0001l108fdbmh8ib",
+        "cmvhdu8zg0001ju08ybjh0pax",
+        "cmvhdvl4u0003ju08uap6kefi"
+      ],
+      "Notification": [
+        "1ae5d856-623f-4b3b-98c5-7890b216d78f",
+        "a61332d5-cc45-44d8-a490-ce3a80682256"
+      ],
+      "Quote": [
+        "dd_dispute_20261021a_ui_quote",
+        "dd_verify_20261020d_recovery_quote"
+      ],
+      "StripePayout": [
+        "ca1f67ee-0666-4585-8402-4e0b0a30aeb7"
+      ],
+      "StripeRefund": [
+        "e691f330-a6c6-4b4a-9cab-0493775d687d",
+        "7bae732e-a3d1-43e3-9bba-a2aaecd22342"
+      ],
+      "TransportJob": [
+        "dd_dispute_20261021a_ui_job",
+        "dd_verify_20261020d_recovery_job"
+      ]
+    },
+    "temporarySessionsCreated": 0,
+    "storageObjectsCreated": 0,
+    "stripeAuditRetained": true
+  },
+  "preservation": {
+    "all31Matched": true,
+    "before": [
+      {
+        "table_name": "AvailabilityRequest",
+        "rows": 11,
+        "fingerprint": "deb316efa28e2a280b16bd107028f684"
+      },
+      {
+        "table_name": "Booking",
+        "rows": 53,
+        "fingerprint": "ac052436e169e638a2e46d1d4e129602"
+      },
+      {
+        "table_name": "BookingPayment",
+        "rows": 53,
+        "fingerprint": "eca61d5fd380e7a3fe7fc05ad2a75751"
+      },
+      {
+        "table_name": "ConversationInboxState",
+        "rows": 2,
+        "fingerprint": "d7b5330da85491b53ad52489f4e4a595"
+      },
+      {
+        "table_name": "Dispute",
+        "rows": 20,
+        "fingerprint": "0ff368d1cae8a3deb1fa1ea1161398ff"
+      },
+      {
+        "table_name": "DisputeReviewNote",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "EmailChangeToken",
+        "rows": 2,
+        "fingerprint": "fd6b965260e3bf298d619a115500dac6"
+      },
+      {
+        "table_name": "Evidence",
+        "rows": 98,
+        "fingerprint": "c0730557265680c92412c8dc5190f883"
+      },
+      {
+        "table_name": "FinanceEvent",
+        "rows": 138,
+        "fingerprint": "a04711c23ace45cb779af248cda79338"
+      },
+      {
+        "table_name": "JobDigestRun",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "Message",
+        "rows": 32,
+        "fingerprint": "95396d4e224c163fae4a659dd779edd1"
+      },
+      {
+        "table_name": "MessageAttachment",
+        "rows": 5,
+        "fingerprint": "6a5c68e5cac005908299320ea96ab2c3"
+      },
+      {
+        "table_name": "Notification",
+        "rows": 405,
+        "fingerprint": "c281cef8290e2cd8dce21695129f43f7"
+      },
+      {
+        "table_name": "PasswordResetToken",
+        "rows": 1,
+        "fingerprint": "dd28ab764c541d4970fe82ab370a6ac7"
+      },
+      {
+        "table_name": "Quote",
+        "rows": 67,
+        "fingerprint": "b5d06acd6d4252a04eca77e8d3222113"
+      },
+      {
+        "table_name": "Review",
+        "rows": 8,
+        "fingerprint": "bf3868f7b6cab1c199c1d4cbdb73bcf4"
+      },
+      {
+        "table_name": "Session",
+        "rows": 1,
+        "fingerprint": "9bac1b51790dd1ffdae9130d3a3f5219"
+      },
+      {
+        "table_name": "StripeConnectAccount",
+        "rows": 1,
+        "fingerprint": "78c5aad61ade8d9d18dfca8065a11ffc"
+      },
+      {
+        "table_name": "StripePayout",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "StripeRefund",
+        "rows": 1,
+        "fingerprint": "2ddc047f1bd30054dbbc637bf6fd3608"
+      },
+      {
+        "table_name": "SupportConversation",
+        "rows": 4,
+        "fingerprint": "d5e6c030a2cde120711fa69b35705483"
+      },
+      {
+        "table_name": "SupportMessage",
+        "rows": 4,
+        "fingerprint": "665e0a27aa3b05db729fc587a5a21ab6"
+      },
+      {
+        "table_name": "TrackingEvent",
+        "rows": 128,
+        "fingerprint": "f257d3effd6b092b2769eab6e5ecd47f"
+      },
+      {
+        "table_name": "TransportJob",
+        "rows": 77,
+        "fingerprint": "b9b91ae74680f806c8dacc9818b4d59d"
+      },
+      {
+        "table_name": "TransporterCancellationDeduction",
+        "rows": 4,
+        "fingerprint": "f6cde087373395027c29a1ecfe9caa74"
+      },
+      {
+        "table_name": "TransporterCancellationFee",
+        "rows": 8,
+        "fingerprint": "113901cc29d01cf4953ce85120c5d67d"
+      },
+      {
+        "table_name": "TransporterPayoutDetails",
+        "rows": 1,
+        "fingerprint": "0a82c147ab5f6401b88469e6a62a527e"
+      },
+      {
+        "table_name": "TransporterVerification",
+        "rows": 9,
+        "fingerprint": "b2b4e2c715313da99f2be2f0e2984e2c"
+      },
+      {
+        "table_name": "User",
+        "rows": 19,
+        "fingerprint": "34a586e358ea1e5b3df5ddd83f619dd5"
+      },
+      {
+        "table_name": "VerificationDocument",
+        "rows": 23,
+        "fingerprint": "1eb8b4a04b2a2bd88a4a7f0da31ed90e"
+      },
+      {
+        "table_name": "storage.objects",
+        "rows": 136,
+        "fingerprint": "ebbe346597d33536e580807e5b9ccf1a"
+      }
+    ],
+    "after": [
+      {
+        "table_name": "AvailabilityRequest",
+        "rows": 11,
+        "fingerprint": "deb316efa28e2a280b16bd107028f684"
+      },
+      {
+        "table_name": "Booking",
+        "rows": 53,
+        "fingerprint": "ac052436e169e638a2e46d1d4e129602"
+      },
+      {
+        "table_name": "BookingPayment",
+        "rows": 53,
+        "fingerprint": "eca61d5fd380e7a3fe7fc05ad2a75751"
+      },
+      {
+        "table_name": "ConversationInboxState",
+        "rows": 2,
+        "fingerprint": "d7b5330da85491b53ad52489f4e4a595"
+      },
+      {
+        "table_name": "Dispute",
+        "rows": 20,
+        "fingerprint": "0ff368d1cae8a3deb1fa1ea1161398ff"
+      },
+      {
+        "table_name": "DisputeReviewNote",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "EmailChangeToken",
+        "rows": 2,
+        "fingerprint": "fd6b965260e3bf298d619a115500dac6"
+      },
+      {
+        "table_name": "Evidence",
+        "rows": 98,
+        "fingerprint": "c0730557265680c92412c8dc5190f883"
+      },
+      {
+        "table_name": "FinanceEvent",
+        "rows": 138,
+        "fingerprint": "a04711c23ace45cb779af248cda79338"
+      },
+      {
+        "table_name": "JobDigestRun",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "Message",
+        "rows": 32,
+        "fingerprint": "95396d4e224c163fae4a659dd779edd1"
+      },
+      {
+        "table_name": "MessageAttachment",
+        "rows": 5,
+        "fingerprint": "6a5c68e5cac005908299320ea96ab2c3"
+      },
+      {
+        "table_name": "Notification",
+        "rows": 405,
+        "fingerprint": "c281cef8290e2cd8dce21695129f43f7"
+      },
+      {
+        "table_name": "PasswordResetToken",
+        "rows": 1,
+        "fingerprint": "dd28ab764c541d4970fe82ab370a6ac7"
+      },
+      {
+        "table_name": "Quote",
+        "rows": 67,
+        "fingerprint": "b5d06acd6d4252a04eca77e8d3222113"
+      },
+      {
+        "table_name": "Review",
+        "rows": 8,
+        "fingerprint": "bf3868f7b6cab1c199c1d4cbdb73bcf4"
+      },
+      {
+        "table_name": "Session",
+        "rows": 1,
+        "fingerprint": "9bac1b51790dd1ffdae9130d3a3f5219"
+      },
+      {
+        "table_name": "storage.objects",
+        "rows": 136,
+        "fingerprint": "ebbe346597d33536e580807e5b9ccf1a"
+      },
+      {
+        "table_name": "StripeConnectAccount",
+        "rows": 1,
+        "fingerprint": "78c5aad61ade8d9d18dfca8065a11ffc"
+      },
+      {
+        "table_name": "StripePayout",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "StripeRefund",
+        "rows": 1,
+        "fingerprint": "2ddc047f1bd30054dbbc637bf6fd3608"
+      },
+      {
+        "table_name": "SupportConversation",
+        "rows": 4,
+        "fingerprint": "d5e6c030a2cde120711fa69b35705483"
+      },
+      {
+        "table_name": "SupportMessage",
+        "rows": 4,
+        "fingerprint": "665e0a27aa3b05db729fc587a5a21ab6"
+      },
+      {
+        "table_name": "TrackingEvent",
+        "rows": 128,
+        "fingerprint": "f257d3effd6b092b2769eab6e5ecd47f"
+      },
+      {
+        "table_name": "TransporterCancellationDeduction",
+        "rows": 4,
+        "fingerprint": "f6cde087373395027c29a1ecfe9caa74"
+      },
+      {
+        "table_name": "TransporterCancellationFee",
+        "rows": 8,
+        "fingerprint": "113901cc29d01cf4953ce85120c5d67d"
+      },
+      {
+        "table_name": "TransporterPayoutDetails",
+        "rows": 1,
+        "fingerprint": "0a82c147ab5f6401b88469e6a62a527e"
+      },
+      {
+        "table_name": "TransporterVerification",
+        "rows": 9,
+        "fingerprint": "b2b4e2c715313da99f2be2f0e2984e2c"
+      },
+      {
+        "table_name": "TransportJob",
+        "rows": 77,
+        "fingerprint": "b9b91ae74680f806c8dacc9818b4d59d"
+      },
+      {
+        "table_name": "User",
+        "rows": 19,
+        "fingerprint": "34a586e358ea1e5b3df5ddd83f619dd5"
+      },
+      {
+        "table_name": "VerificationDocument",
+        "rows": 23,
+        "fingerprint": "1eb8b4a04b2a2bd88a4a7f0da31ed90e"
+      }
+    ],
+    "environmentCount": 29,
+    "environmentMetadataChanges": [
+      {
+        "id": "QYdbRtH8dcpgvyOv",
+        "key": "STRIPE_REFUNDS_ENABLED",
+        "field": "updatedAt",
+        "before": 1792541557142,
+        "after": 1792543154689
+      }
+    ],
+    "finalFlag": {
+      "id": "QYdbRtH8dcpgvyOv",
+      "key": "STRIPE_REFUNDS_ENABLED",
+      "value": "false",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "feature/ui-polish"
+    },
+    "productionDeployment": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+    "productionAliases": [
+      "drivedrop-future-9f39.vercel.app",
+      "drivedrop-git-main-future-9f39.vercel.app",
+      "drivedrop-pink.vercel.app"
+    ],
+    "originalFailedRefundUnchanged": true,
+    "restrictedKeyPermissionsUnchanged": true,
+    "secretsDisplayed": false
+  },
+  "evidence": [
+    "stripe-response-loss-staged.jpg",
+    "stripe-response-loss-recovered.jpg",
+    "stripe-response-loss-reversal-recovered.jpg"
+  ],
+  "remaining": [
+    "Genuine insufficient-balance reversal failure and subsequent successful retry remain unverified; the earlier zero-balance reversal succeeded. Do not change liability/reserves or add Payouts Write just to force a failure. A Stripe-supported reproduction path is still needed.",
+    "These deployed recovery replays do not prove an actual network interruption or Stripe POST idempotency-header replay; existing local fault-injection tests remain mock evidence for those boundaries.",
+    "The original 11000p failed-refund fixture remains unpaid and held; no replacement refund was authorized or created."
+  ]
+}
