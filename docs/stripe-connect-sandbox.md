@@ -6,11 +6,13 @@ The approved **Record alternative refund** workflow now has a preview-only imple
 
 **No alternative repayment has been recorded.** The retained £110 failed case, its reservation and payout hold remain unchanged; `STRIPE_REFUNDS_ENABLED=false`, live payments and production remain untouched. A separately bounded disposable scenario is still needed to verify a committed end-to-end simulated repayment. Genuine insufficient-balance reversal failure/retry also remains open.
 
-## Latest read-only review: failed £110 fixture
+Verified ordinary preview `dpl_6QX2RG7W88UKSNVuGyWW4RQsgwbF` is READY on application commit `2a670bf58ccb5eddc10a4a3a369612ebe6f1bcea`, with only the feature alias. The real administrator form passed canonical Stripe preflight: failed refund, £0 refunded and no transporter transfer. Reference/evidence remain empty, confirmation unchecked and submission disabled. All 31 fingerprints were checked again afterward. Production remains `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz` with its original three aliases; the false refund flag and its timestamp are unchanged. [Form proof](evidence/stripe-alternative-refund-form.jpg) · [Exact verification](evidence/stripe-alternative-refund-verification.json). Later documentation-only commits may supersede this equivalent application build.
+
+## Historical read-only review: failed £110 fixture
 
 On 21 October at 02:10 UTC, canonical Stripe and preview records confirmed the retained £110 payment uses the deliberate asynchronous refund-failure card ending **5126**. Exactly one refund is failed, successful refunded total is £0 in both systems, and the original instruction, ledger/correction audit, notices and payout hold are preserved. All 31 full original-data fingerprints match. Refunds remain off; no financial, settings or database mutation was performed.
 
-No supported successful retry or different-card refund was established for this charge. The current app has no completion path for recording independently confirmed alternative repayment. The next product step is to review the proposed administrator flow; the fixture remains unsettled and must stay retained. See [failed-refund recovery plan](stripe-failed-refund-recovery-plan.md) and [fresh evidence](evidence/stripe-failed-refund-review.json). Genuine insufficient-balance reversal failure/retry remains separately unverified.
+No supported successful retry or different-card refund was established for this charge. At that review, the app had no completion path for recording independently confirmed alternative repayment. The next product step was to review the proposed administrator flow; the fixture remains unsettled and must stay retained. See [failed-refund recovery plan](stripe-failed-refund-recovery-plan.md) and [fresh evidence](evidence/stripe-failed-refund-review.json). Genuine insufficient-balance reversal failure/retry remains separately unverified.
 
 ## Status
 
