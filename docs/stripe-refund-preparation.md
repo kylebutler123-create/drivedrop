@@ -1,6 +1,27 @@
 # Stripe refund preparation — 21 October 2026
 
-## Latest: approved alternative-refund recording implementation
+## Latest: committed alternative-refund recording passed in sandbox
+
+The approved separate **QA21 ALT / DD-AFDVANK7** test passed on 21 October at **16:26 UTC** through the actual deployed administrator form. Its **£1.10 alternative repayment is explicitly simulated**; no real bank transfer or receipt of funds is represented. The two-step form accepted the labelled PDF, completed its canonical checks and committed once. The result shows **Stripe refunded £0.00 / alternative repayment £1.10**, payment REFUNDED, payout CANCELLED and zero fee/proceeds. [Completed result](evidence/stripe-alternative-refund-e2e-completed.jpg) · [Review step](evidence/stripe-alternative-refund-e2e-review.jpg) · [Detailed evidence](evidence/stripe-alternative-refund-e2e-verification.json).
+
+| Verified boundary | Result |
+| --- | --- |
+| Actual sandbox payment | Hosted Checkout manual authorisation and worker capture of 110p; PI `pi_3UT2C5LAzgkvCvrI0p5SMs1I`, charge `ch_3UT2C5LAzgkvCvrI0TqXZnfs`, `livemode=false` |
+| Actual Stripe failure | Exactly one refund `re_3UT2C5LAzgkvCvrI0RqwMRET`, terminal FAILED / `expired_or_canceled_card`; charge still has 0p refunded after alternative recording |
+| App recording | Alternative audit `5f82847b-20a0-4a3e-91ab-7e2c0994c0bb`, 110p, method OTHER, reference `SIMULATED-DD-ALT-20261021-A`; one final UI submission |
+| Preserved failed history | App instruction `44deb701-fbe6-4064-9da9-6edffe1020ab` remains FAILED / `STRIPE_REFUND_FAILED`, attempt count 1, original null ledger timestamp; only its resolved reservation is released |
+| Once-only result | One alternative accounting event and one alternative notice per synthetic party; the two original capture notices and capture event also remain |
+| Private evidence | 44,415-byte PDF downloaded through the actual administrator link; uploaded/downloaded SHA-256 `69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e` |
+
+Only the new scenario's transporter confirmation/CAPTURING setup and failed app instruction were seeded. The Stripe payment/refund failure and administrator UI → API → canonical checks → committed accounting/evidence → rendered result were real sandbox operations. This is not a complete end-user booking/onboarding test, proof of real repayment, or a deployed concurrent/lost-reply submission test; the latter protections retain their earlier unit/transaction coverage.
+
+**All original data is preserved:** all 31 complete original table/storage counts and fingerprints match after excluding only the new test rows. The retained original £110 fixture remains PAID / £0 refunded / HELD and reserved. `STRIPE_REFUNDS_ENABLED=false` and its timestamp did not change, production remains `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz` with the same three aliases, and live payments/permissions were untouched. No application source or settings were changed for this pass.
+
+**Retain QA21 ALT and its 13 new rows**, including the immutable alternative record and PDF. Do not disable triggers or delete audit evidence to clean up. Its payment is `cmvibep670002jn088ghnin68` and booking is `cmvibep670001jn08afdvank7`. The original £110 fixture is unrelated and must not be settled or removed. Genuine insufficient-balance reversal failure/retry is still open; no supported reproduction was established under the current account configuration, and this pass does not alter reserves, liability or permissions to force one.
+
+Verified ordinary preview: application `2a670bf58ccb5eddc10a4a3a369612ebe6f1bcea`, deployment `dpl_6QX2RG7W88UKSNVuGyWW4RQsgwbF`, feature alias only. Later documentation-only commits may supersede the equivalent application build. [Implementation and boundaries](stripe-alternative-refund-recording.md).
+
+## Previous: approved alternative-refund recording implementation
 
 The approved two-step **Record alternative refund** form and preview-only audit/accounting path are implemented. Opening the form performs a read-only canonical preflight; final recording requires completed-repayment evidence and repeats the checks under the booking lock. Stripe and external repayment totals remain separately identifiable, with immutable evidence, duplicate protection and once-only accounting. [Implementation, checks and limitations](stripe-alternative-refund-recording.md).
 

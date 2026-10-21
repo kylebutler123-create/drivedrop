@@ -1,6 +1,16 @@
 # Stripe Connect sandbox implementation
 
-## Latest: approved alternative-refund recording implementation
+## Latest: committed alternative-refund sandbox test passed
+
+On **21 October 2026 at 16:26 UTC**, the actual administrator form recorded the separate **QA21 ALT / DD-AFDVANK7** scenario once. This was a clearly labelled **£1.10 simulated alternative repayment**, not a real bank payment or evidence of real funds received. The result shows **Stripe refunded £0.00 / alternative repayment £1.10**, payment REFUNDED, payout CANCELLED and zero fee/proceeds. One immutable repayment audit, one accounting event and one in-app notice per synthetic party were committed. The private PDF downloaded successfully and its SHA-256 matched the uploaded file. [Completed browser result](evidence/stripe-alternative-refund-e2e-completed.jpg) · [Review step](evidence/stripe-alternative-refund-e2e-review.jpg) · [Exact verification](evidence/stripe-alternative-refund-e2e-verification.json).
+
+Hosted Stripe sandbox Checkout and the existing worker actually authorised/captured 110p. A real sandbox refund then failed asynchronously with `expired_or_canceled_card`; the final independent Stripe read still shows exactly one failed refund and zero successfully refunded. Transporter confirmation and the app's failed-instruction prerequisite were seeded, so this verifies the new recording flow rather than the complete customer/transporter booking flow. No application code, credential, permission or setting changed during this pass.
+
+**Refunds stayed OFF throughout.** All 31 original table/storage counts and fingerprints still match after excluding only this new scenario's rows. The original **£110 case remains PAID / £0 refunded / HELD and reserved**. Production deployment/aliases, the preview flag's timestamp and live payments are unchanged. The 13 new QA21 ALT rows are deliberately retained because the successful alternative-refund audit is immutable; do not disable guards or delete its supporting evidence for cleanup. Genuine insufficient-balance reversal failure/retry remains a separate open gate under the existing account configuration.
+
+The verified application is still `2a670bf58ccb5eddc10a4a3a369612ebe6f1bcea`, ordinary preview `dpl_6QX2RG7W88UKSNVuGyWW4RQsgwbF`, feature alias only. Later documentation-only commits may supersede this equivalent application build. See [implementation and test boundaries](stripe-alternative-refund-recording.md).
+
+## Previous: approved alternative-refund recording implementation
 
 The approved **Record alternative refund** workflow now has a preview-only implementation: read-only canonical preflight, two-step evidence/confirmation form, immutable private audit and evidence, duplicate checks, separate Stripe/external totals and atomic full-settlement accounting. The additive schema is applied only to preview. Eleven actual PostgreSQL rollback checks and 19 lifecycle cases pass; all 31 original-data fingerprints still match. See [implementation and boundaries](stripe-alternative-refund-recording.md).
 

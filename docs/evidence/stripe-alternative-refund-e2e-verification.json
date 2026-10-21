@@ -1,0 +1,491 @@
+{
+  "title": "QA21 ALT committed alternative-refund recording verification",
+  "date": "2026-10-21",
+  "repository": "kylebutler123-create/drivedrop",
+  "branch": "feature/ui-polish",
+  "scenario": "Separate £1.10 Stripe sandbox case; alternative repayment and evidence are explicitly simulated, with no real-world receipt of funds represented.",
+  "outcome": "PASS for the deployed administrator alternative-refund flow",
+  "applicationCommit": "2a670bf58ccb5eddc10a4a3a369612ebe6f1bcea",
+  "preview": {
+    "id": "dpl_6QX2RG7W88UKSNVuGyWW4RQsgwbF",
+    "url": "drivedrop-1mikexzve-future-9f39.vercel.app",
+    "sha": "2a670bf58ccb5eddc10a4a3a369612ebe6f1bcea",
+    "readyState": "READY",
+    "target": null,
+    "aliases": [
+      "drivedrop-git-feature-ui-polish-future-9f39.vercel.app"
+    ]
+  },
+  "browser": {
+    "url": "https://drivedrop-git-feature-ui-polish-future-9f39.vercel.app/admin/payouts",
+    "registration": "QA21 ALT",
+    "bookingReference": "DD-AFDVANK7",
+    "reviewScreenshot": "stripe-alternative-refund-e2e-review.jpg",
+    "completedScreenshot": "stripe-alternative-refund-e2e-completed.jpg",
+    "finalAction": "Record completed repayment £1.10",
+    "submissions": 1,
+    "observedResult": "Repaid by alternative method · £1.10; Stripe refunded £0.00; alternative repayment £1.10; transporter payout cancelled; original Stripe failure retained"
+  },
+  "setup": {
+    "jobId": "dd_alt_20261021_e2e_job",
+    "quoteId": "dd_alt_20261021_e2e_quote",
+    "availabilityRequestId": "dd_alt_20261021_e2e_request",
+    "bookingId": "cmvibep670001jn08afdvank7",
+    "paymentId": "cmvibep670002jn088ghnin68",
+    "actual": "Hosted sandbox Checkout with manual capture; existing webhook/worker captured 110p and created the booking/payment, capture event and one booking notice per synthetic party. A sandbox Refund subsequently failed asynchronously.",
+    "simulated": "Transporter confirmation/CAPTURING prerequisite was seeded. With app refunds off, a new FAILED app instruction was seeded from the canonical failed Stripe refund. The alternative settlement and uploaded PDF were explicitly simulated.",
+    "scripts": [
+      "../../scripts/sql/seed-alternative-refund-e2e.sql",
+      "../../scripts/sql/link-alternative-refund-e2e-failure.sql"
+    ],
+    "noNewAuthenticationSession": true,
+    "noOriginalUserMutation": true
+  },
+  "stripe": {
+    "account": "acct_1US4BzLAzgkvCvrI",
+    "name": "drivedrop sandbox",
+    "livemode": false,
+    "finalReadAfterAlternativeRecord": true,
+    "paymentIntent": {
+      "id": "pi_3UT2C5LAzgkvCvrI0p5SMs1I",
+      "status": "succeeded",
+      "capture_method": "manual",
+      "amount": 110,
+      "amount_received": 110,
+      "currency": "gbp",
+      "metadata": {
+        "availabilityRequestId": "dd_alt_20261021_e2e_request",
+        "environment": "preview",
+        "qaCase": "dd_alt_20261021_e2e"
+      }
+    },
+    "charge": {
+      "id": "ch_3UT2C5LAzgkvCvrI0TqXZnfs",
+      "captured": true,
+      "paid": true,
+      "amount": 110,
+      "amount_refunded": 0,
+      "disputed": false,
+      "testCardLast4": "5126"
+    },
+    "refundHistory": {
+      "count": 1,
+      "has_more": false,
+      "refunds": [
+        {
+          "id": "re_3UT2C5LAzgkvCvrI0RqwMRET",
+          "status": "failed",
+          "amount": 110,
+          "currency": "gbp",
+          "created": 1792599496,
+          "failure_reason": "expired_or_canceled_card",
+          "charge": "ch_3UT2C5LAzgkvCvrI0TqXZnfs",
+          "payment_intent": "pi_3UT2C5LAzgkvCvrI0p5SMs1I",
+          "metadata": {
+            "driveDropRefundId": "44deb701-fbe6-4064-9da9-6edffe1020ab",
+            "environment": "preview",
+            "paymentId": "cmvibep670002jn088ghnin68",
+            "purpose": "controlled asynchronous failure for alternative repayment test",
+            "qaCase": "dd_alt_20261021_e2e"
+          },
+          "transfer_reversal": null,
+          "source_transfer_reversal": null
+        }
+      ]
+    },
+    "alternativeRecordingCreatesNoStripePaymentRefundTransferOrReversal": true
+  },
+  "database": {
+    "project": "yozbuuvebzxitoqrvyer",
+    "result": {
+      "events": [
+        {
+          "id": "cmvibepr90004jn08b05hawtd",
+          "note": "Authorised payment captured on transporter confirmation",
+          "type": "PAYMENT_CAPTURED",
+          "actorId": "dd_bank_20261020a_transporter",
+          "createdAt": "2026-10-21T16:16:56.038+00:00",
+          "paymentId": "cmvibep670002jn088ghnin68",
+          "amountPence": 110
+        },
+        {
+          "id": "alternative-refund-5f82847b-20a0-4a3e-91ab-7e2c0994c0bb",
+          "note": "ALTERNATIVE_REFUND_RECORDED:5f82847b-20a0-4a3e-91ab-7e2c0994c0bb:44deb701-fbe6-4064-9da9-6edffe1020ab",
+          "type": "REFUND_CREATED",
+          "actorId": "cmtauc6mx0000js04aevqjyzk",
+          "createdAt": "2026-10-21T16:26:37.436+00:00",
+          "paymentId": "cmvibep670002jn088ghnin68",
+          "amountPence": 110
+        }
+      ],
+      "refund": {
+        "id": "44deb701-fbe6-4064-9da9-6edffe1020ab",
+        "status": "FAILED",
+        "actorId": "dd_refund_20261020b_admin",
+        "payoutId": null,
+        "createdAt": "2026-10-21T16:18:16",
+        "disputeId": null,
+        "paidPence": 110,
+        "paymentId": "cmvibep670002jn088ghnin68",
+        "updatedAt": "2026-10-21T16:26:37.245",
+        "leaseToken": null,
+        "leaseUntil": null,
+        "resolution": null,
+        "retryAfter": null,
+        "amountPence": 110,
+        "environment": "preview",
+        "failureCode": "STRIPE_REFUND_FAILED",
+        "attemptCount": 1,
+        "firstAttemptAt": "2026-10-21T16:18:16",
+        "recoveryStatus": "NOT_REQUIRED",
+        "resolutionNote": "QA21 ALT test prerequisite seeded from canonical failed sandbox refund; no real repayment.",
+        "sourceChargeId": "ch_3UT2C5LAzgkvCvrI0TqXZnfs",
+        "stripeRefundId": "re_3UT2C5LAzgkvCvrI0RqwMRET",
+        "activePaymentId": null,
+        "ledgerAppliedAt": null,
+        "paymentIntentId": "pi_3UT2C5LAzgkvCvrI0p5SMs1I",
+        "fineRestorePence": 0,
+        "platformFeePence": 0,
+        "stripeReversalId": null,
+        "stripeTransferId": null,
+        "priorPayoutStatus": "NOT_READY",
+        "priorProceedsPence": 100,
+        "priorRefundedPence": 0,
+        "priorDeductionPence": 0,
+        "recoveryAmountPence": 0,
+        "recoveryFailureCode": null,
+        "baselineReversedPence": 0,
+        "priorPlatformFeePence": 10,
+        "requiredReversedPence": 0,
+        "recoveryFirstAttemptAt": null,
+        "transporterProceedsPence": 0,
+        "cancellationDeductionPence": 0
+      },
+      "notices": [
+        {
+          "id": "alternative-refund-5f82847b-20a0-4a3e-91ab-7e2c0994c0bb-dd_bank_20261020a_transporter",
+          "body": "An administrator recorded a completed alternative repayment of £1.10. The customer balance is fully repaid and this booking's transporter payout is cancelled. The original Stripe refund remains failed in the history.",
+          "href": "/transporter/proceeds",
+          "type": "PAYMENT",
+          "title": "Repaid by alternative method",
+          "readAt": null,
+          "userId": "dd_bank_20261020a_transporter",
+          "createdAt": "2026-10-21T16:26:33.48631+00:00"
+        },
+        {
+          "id": "alternative-refund-5f82847b-20a0-4a3e-91ab-7e2c0994c0bb-dd_refund_20261020b_customer",
+          "body": "An administrator recorded a completed alternative repayment of £1.10. The customer balance is fully repaid and this booking's transporter payout is cancelled. The original Stripe refund remains failed in the history.",
+          "href": "/payments",
+          "type": "PAYMENT",
+          "title": "Repaid by alternative method",
+          "readAt": null,
+          "userId": "dd_refund_20261020b_customer",
+          "createdAt": "2026-10-21T16:26:33.48631+00:00"
+        },
+        {
+          "id": "availability:dd_alt_20261021_e2e_request:BOOKED:dd_bank_20261020a_transporter",
+          "body": "The authorised customer payment was captured when you confirmed. Contact the customer to arrange collection within the agreed window.",
+          "href": "/transporter?view=deliveries",
+          "type": "PAYMENT",
+          "title": "Customer payment secured",
+          "readAt": null,
+          "userId": "dd_bank_20261020a_transporter",
+          "createdAt": "2026-10-21T16:16:59.789625+00:00"
+        },
+        {
+          "id": "availability:dd_alt_20261021_e2e_request:BOOKED:dd_refund_20261020b_customer",
+          "body": "Sandbox QA Alternative repayment TEST ONLY: Sandbox collection, London → Sandbox delivery, Birmingham.\nCollection: 23 Oct 2026, 09:00–11:00 UK time.\nTransporter confirmation and payment capture are complete.",
+          "href": "/customer?view=bookings",
+          "type": "BOOKING",
+          "title": "Payment secured — booking confirmed",
+          "readAt": null,
+          "userId": "dd_refund_20261020b_customer",
+          "createdAt": "2026-10-21T16:16:59.225627+00:00"
+        }
+      ],
+      "payment": {
+        "id": "cmvibep670002jn088ghnin68",
+        "status": "REFUNDED",
+        "currency": "GBP",
+        "provider": "STRIPE",
+        "bookingId": "cmvibep670001jn08afdvank7",
+        "createdAt": "2026-10-21T16:16:55.279+00:00",
+        "paidPence": 110,
+        "updatedAt": "2026-10-21T16:26:37.057+00:00",
+        "depositPence": 110,
+        "payoutStatus": "CANCELLED",
+        "refundedPence": 110,
+        "platformFeePence": 0,
+        "providerReference": "pi_3UT2C5LAzgkvCvrI0p5SMs1I",
+        "transportValuePence": 110,
+        "remainingBalancePence": 0,
+        "transporterProceedsPence": 0,
+        "cancellationDeductionPence": 0
+      },
+      "alternative": {
+        "id": "5f82847b-20a0-4a3e-91ab-7e2c0994c0bb",
+        "note": "SANDBOX SIMULATION ONLY. QA21 ALT tests recording a simulated £1.10 repayment. No real bank transfer or real-world receipt of funds is represented. Original £110 fixture is unrelated and remains held.",
+        "method": "OTHER",
+        "actorId": "cmtauc6mx0000js04aevqjyzk",
+        "createdAt": "2026-10-21T16:26:36.678",
+        "paymentId": "cmvibep670002jn088ghnin68",
+        "reference": "SIMULATED-DD-ALT-20261021-A",
+        "settledOn": "2026-10-21",
+        "amountPence": 110,
+        "environment": "preview",
+        "evidenceName": "qa21-alt-simulated-repayment.pdf",
+        "evidenceType": "application/pdf",
+        "evidenceSha256": "69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e",
+        "failedRefundId": "44deb701-fbe6-4064-9da9-6edffe1020ab",
+        "evidenceByteCount": 44415,
+        "canonicalCheckedAt": "2026-10-21T16:26:36.676",
+        "stripeRefundedPence": 0
+      }
+    },
+    "alternativeRecordCount": 1,
+    "alternativeFinanceEventCount": 1,
+    "alternativeNoticesPerParty": 1
+  },
+  "privateEvidence": {
+    "file": "qa21-alt-simulated-repayment.pdf",
+    "type": "application/pdf",
+    "bytes": 44415,
+    "sha256": "69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e",
+    "administratorDownload": "Succeeded through the actual private evidence link; downloaded bytes match the exact uploaded file hash.",
+    "downloadedSha256": "69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e",
+    "explicitlySimulated": true,
+    "noStorageObjectAdded": true
+  },
+  "preservation": {
+    "baselineSource": "stripe-failed-refund-review.json",
+    "originalTableCount": 31,
+    "allOriginalCountsAndFingerprintsMatch": true,
+    "changedOriginalTables": [],
+    "exclusions": {
+      "AvailabilityRequest": "t.id <> 'dd_alt_20261021_e2e_request'",
+      "TransportJob": "t.id <> 'dd_alt_20261021_e2e_job'",
+      "Quote": "t.id <> 'dd_alt_20261021_e2e_quote'",
+      "Booking": "t.id <> 'cmvibep670001jn08afdvank7'",
+      "BookingPayment": "t.id <> 'cmvibep670002jn088ghnin68'",
+      "FinanceEvent": "t.\"paymentId\" <> 'cmvibep670002jn088ghnin68'",
+      "Notification": "t.id NOT IN ('alternative-refund-5f82847b-20a0-4a3e-91ab-7e2c0994c0bb-dd_bank_20261020a_transporter','alternative-refund-5f82847b-20a0-4a3e-91ab-7e2c0994c0bb-dd_refund_20261020b_customer','availability:dd_alt_20261021_e2e_request:BOOKED:dd_bank_20261020a_transporter','availability:dd_alt_20261021_e2e_request:BOOKED:dd_refund_20261020b_customer')",
+      "StripeRefund": "t.id <> '44deb701-fbe6-4064-9da9-6edffe1020ab'"
+    },
+    "originalFingerprintsAfterRecord": [
+      {
+        "table_name": "AvailabilityRequest",
+        "rows": 11,
+        "fingerprint": "deb316efa28e2a280b16bd107028f684"
+      },
+      {
+        "table_name": "Booking",
+        "rows": 53,
+        "fingerprint": "ac052436e169e638a2e46d1d4e129602"
+      },
+      {
+        "table_name": "BookingPayment",
+        "rows": 53,
+        "fingerprint": "eca61d5fd380e7a3fe7fc05ad2a75751"
+      },
+      {
+        "table_name": "ConversationInboxState",
+        "rows": 2,
+        "fingerprint": "d7b5330da85491b53ad52489f4e4a595"
+      },
+      {
+        "table_name": "Dispute",
+        "rows": 20,
+        "fingerprint": "0ff368d1cae8a3deb1fa1ea1161398ff"
+      },
+      {
+        "table_name": "DisputeReviewNote",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "EmailChangeToken",
+        "rows": 2,
+        "fingerprint": "fd6b965260e3bf298d619a115500dac6"
+      },
+      {
+        "table_name": "Evidence",
+        "rows": 98,
+        "fingerprint": "c0730557265680c92412c8dc5190f883"
+      },
+      {
+        "table_name": "FinanceEvent",
+        "rows": 138,
+        "fingerprint": "a04711c23ace45cb779af248cda79338"
+      },
+      {
+        "table_name": "JobDigestRun",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "Message",
+        "rows": 32,
+        "fingerprint": "95396d4e224c163fae4a659dd779edd1"
+      },
+      {
+        "table_name": "MessageAttachment",
+        "rows": 5,
+        "fingerprint": "6a5c68e5cac005908299320ea96ab2c3"
+      },
+      {
+        "table_name": "Notification",
+        "rows": 405,
+        "fingerprint": "c281cef8290e2cd8dce21695129f43f7"
+      },
+      {
+        "table_name": "PasswordResetToken",
+        "rows": 1,
+        "fingerprint": "dd28ab764c541d4970fe82ab370a6ac7"
+      },
+      {
+        "table_name": "Quote",
+        "rows": 67,
+        "fingerprint": "b5d06acd6d4252a04eca77e8d3222113"
+      },
+      {
+        "table_name": "Review",
+        "rows": 8,
+        "fingerprint": "bf3868f7b6cab1c199c1d4cbdb73bcf4"
+      },
+      {
+        "table_name": "Session",
+        "rows": 1,
+        "fingerprint": "9bac1b51790dd1ffdae9130d3a3f5219"
+      },
+      {
+        "table_name": "storage.objects",
+        "rows": 136,
+        "fingerprint": "ebbe346597d33536e580807e5b9ccf1a"
+      },
+      {
+        "table_name": "StripeConnectAccount",
+        "rows": 1,
+        "fingerprint": "78c5aad61ade8d9d18dfca8065a11ffc"
+      },
+      {
+        "table_name": "StripePayout",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "StripeRefund",
+        "rows": 1,
+        "fingerprint": "2ddc047f1bd30054dbbc637bf6fd3608"
+      },
+      {
+        "table_name": "SupportConversation",
+        "rows": 4,
+        "fingerprint": "d5e6c030a2cde120711fa69b35705483"
+      },
+      {
+        "table_name": "SupportMessage",
+        "rows": 4,
+        "fingerprint": "665e0a27aa3b05db729fc587a5a21ab6"
+      },
+      {
+        "table_name": "TrackingEvent",
+        "rows": 128,
+        "fingerprint": "f257d3effd6b092b2769eab6e5ecd47f"
+      },
+      {
+        "table_name": "TransporterCancellationDeduction",
+        "rows": 4,
+        "fingerprint": "f6cde087373395027c29a1ecfe9caa74"
+      },
+      {
+        "table_name": "TransporterCancellationFee",
+        "rows": 8,
+        "fingerprint": "113901cc29d01cf4953ce85120c5d67d"
+      },
+      {
+        "table_name": "TransporterPayoutDetails",
+        "rows": 1,
+        "fingerprint": "0a82c147ab5f6401b88469e6a62a527e"
+      },
+      {
+        "table_name": "TransporterVerification",
+        "rows": 9,
+        "fingerprint": "b2b4e2c715313da99f2be2f0e2984e2c"
+      },
+      {
+        "table_name": "TransportJob",
+        "rows": 77,
+        "fingerprint": "b9b91ae74680f806c8dacc9818b4d59d"
+      },
+      {
+        "table_name": "User",
+        "rows": 19,
+        "fingerprint": "34a586e358ea1e5b3df5ddd83f619dd5"
+      },
+      {
+        "table_name": "VerificationDocument",
+        "rows": 23,
+        "fingerprint": "1eb8b4a04b2a2bd88a4a7f0da31ed90e"
+      }
+    ],
+    "retainedNewRows": {
+      "TransportJob": 1,
+      "Quote": 1,
+      "AvailabilityRequest": 1,
+      "Booking": 1,
+      "BookingPayment": 1,
+      "StripeRefund": 1,
+      "AlternativeRefund": 1,
+      "FinanceEvent": 2,
+      "Notification": 4,
+      "total": 13
+    },
+    "retentionReason": "Successful AlternativeRefund audit is intentionally immutable. Keep QA21 ALT and its supporting rows; do not disable guards or delete audit evidence to clean up.",
+    "originalFailed110Case": {
+      "bookingId": "cmvh5nyop0001l507711bxm28",
+      "paymentId": "cmvh5nyop0002l507vqfjq5fl",
+      "refundId": "983a6c2d-474b-47bf-b564-8f10559cd308",
+      "status": "PAID",
+      "paidPence": 11000,
+      "refundedPence": 0,
+      "payoutStatus": "HELD",
+      "reserved": true,
+      "unchanged": true
+    },
+    "refundFlag": {
+      "id": "QYdbRtH8dcpgvyOv",
+      "key": "STRIPE_REFUNDS_ENABLED",
+      "value": "false",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "feature/ui-polish",
+      "updatedAt": 1792547509076,
+      "unchanged": true
+    },
+    "production": {
+      "id": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+      "url": "drivedrop-7v5a2urbf-future-9f39.vercel.app",
+      "sha": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c",
+      "readyState": "READY",
+      "target": "production",
+      "aliases": [
+        "drivedrop-pink.vercel.app",
+        "drivedrop-future-9f39.vercel.app",
+        "drivedrop-git-main-future-9f39.vercel.app"
+      ],
+      "unchanged": true
+    },
+    "livePaymentsUntouched": true,
+    "credentialsNotDisplayed": true,
+    "permissionsUnchanged": true
+  },
+  "boundaries": [
+    "This tests the administrator UI through the deployed API, canonical Stripe reads, committed database accounting/private evidence, and rendered result.",
+    "This does not claim that real alternative money moved or was received.",
+    "The transporter confirmation and app failed-refund prerequisite were seeded; this is not a full end-user booking/onboarding flow test.",
+    "Exactly one normal final submission was made. Actual concurrent submissions and interrupted-response replay are covered by prior unit/transaction tests, not this committed browser pass.",
+    "The original £110 failed-refund fixture remains unsettled and held.",
+    "Genuine insufficient-balance reversal failure/retry remains unverified under the existing account configuration; do not expand permissions or alter reserves/liability merely to force it."
+  ]
+}
