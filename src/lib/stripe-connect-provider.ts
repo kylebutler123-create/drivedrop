@@ -1,4 +1,5 @@
 import Stripe from 'stripe';
+import {createNetworkQaClient} from './stripe-reversal-network-qa';
 import {checkoutOrigin, paymentEnvironment} from './booking-authorisation-provider';
 
 export const CONNECT_SANDBOX_ACCOUNT = 'acct_1US4BzLAzgkvCvrI';
@@ -22,7 +23,7 @@ export function connectClient() {
   }
   // The SDK's pinned API version applies only to this new Connect integration.
   // Existing, verified Checkout authorisations keep their current API version.
-  return new Stripe(key, {timeout: 12_000, maxNetworkRetries: 0});
+  return new Stripe(key, {timeout: 12_000, maxNetworkRetries: 0, httpClient: createNetworkQaClient()});
 }
 
 export async function verifiedConnectClient() {
