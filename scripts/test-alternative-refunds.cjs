@@ -70,6 +70,12 @@ function context(options = {}) {
 }
 (async()=>{
   let c=context(), originalRefund=clone(c.state().refund);
+  const beforePreflight=clone(c.state());
+  assert.equal((await c.engine.reviewAlternativeRefund(c.input,'admin')).eligible,true);
+  assert.deepEqual(c.state(),beforePreflight,'preflight must not write any state');
+  c.intent.latest_charge.disputed=true;
+  await assert.rejects(()=>c.engine.reviewAlternativeRefund(c.input,'admin'));
+  assert.deepEqual(c.state(),beforePreflight);c.intent.latest_charge.disputed=false;
   const outcomes=await Promise.all([c.engine.recordAlternativeRefund(c.input,validFile(),'admin'),c.engine.recordAlternativeRefund(c.input,validFile(),'admin')]);
   assert.deepEqual(outcomes.map(x=>x.replayed).sort(),[false,true]);
   assert.equal(c.state().alternatives.length,1);assert.equal(c.state().events.length,1);assert.equal(c.state().notifications.length,2);
@@ -109,20 +115,28 @@ function context(options = {}) {
   // Restrict the related-payment mock to its actual relation for this reference test.
   c.db.bookingPayment.findUniqueOrThrow=async()=>({...clone(c.state().payment),stripeRefunds:[clone(c.state().refund)],alternativeRefund:null});
   await assert.rejects(()=>c.engine.recordAlternativeRefund(c.input,validFile(),'admin'));assert.equal(c.state().events.length,0);
+  c=context();c.state().alternatives.push({id:'other',paymentId:'other-payment',environment:'preview',referenceHash:'different',evidenceSha256:require('node:crypto').createHash('sha256').update(new Uint8Array(await validFile().arrayBuffer())).digest('hex')});
+  c.db.bookingPayment.findUniqueOrThrow=async()=>({...clone(c.state().payment),stripeRefunds:[clone(c.state().refund)],alternativeRefund:null});
+  await assert.rejects(()=>c.engine.recordAlternativeRefund(c.input,validFile(),'admin'));assert.equal(c.state().events.length,0);
   process.env.VERCEL_ENV='production';c=context();await assert.rejects(()=>c.engine.recordAlternativeRefund(c.input,validFile(),'admin'));assert.equal(c.reads.length,0);process.env.VERCEL_ENV='preview';
   console.log('PASS: alternative repayment atomic ledger/evidence, immutable failed audit, duplicate/concurrent submissions, lost replies/rollback, full-only restrictions, private summaries, file/date/reference validation and production/canonical/race guards');
 
   let user={id:'admin',role:'ADMIN',accountStatus:'ACTIVE'}, calls=0;
   const load=loader({[path.join(root,'src/lib/auth.ts')]:{currentUser:async()=>user},
-    [path.join(root,'src/lib/alternative-refunds.ts')]:{alternativeRefundsEnabled:()=>process.env.VERCEL_ENV==='preview',recordAlternativeRefund:async()=>{calls++;return {record:{id:requestId},replayed:false}}},
+    [path.join(root,'src/lib/alternative-refunds.ts')]:{alternativeRefundsEnabled:()=>process.env.VERCEL_ENV==='preview',recordAlternativeRefund:async()=>{calls++;return {record:{id:requestId},replayed:false}},reviewAlternativeRefund:async()=>({eligible:true})},
     [path.join(root,'src/lib/prisma.ts')]:{prisma:{alternativeRefund:{findUnique:async()=>({environment:'preview',evidenceName:'synthetic.pdf',evidenceType:'application/pdf',evidenceBytes:new Uint8Array([37,80,68,70])})}}},
   });
   const route=load('src/app/api/admin/payments/alternative-refund/route.ts'), download=load('src/app/api/admin/payments/alternative-refund/[id]/evidence/route.ts');
+  const preflight=load('src/app/api/admin/payments/alternative-refund/review/route.ts');
   function request(origin='https://preview.example.test') {const form=new FormData();form.set('details',JSON.stringify(context().input));form.set('evidence',validFile());return new Request('https://preview.example.test/api/admin/payments/alternative-refund',{method:'POST',headers:origin?{origin}:{},body:form})}
   for(const actor of [null,{id:'customer',role:'CUSTOMER',accountStatus:'ACTIVE'},{id:'admin',role:'ADMIN',accountStatus:'SUSPENDED'}]){
     user=actor;assert.equal((await route.POST(request())).status,403);assert.equal((await download.GET(new Request('https://preview.example.test'),{params:Promise.resolve({id:requestId})})).status,403);
+    assert.equal((await preflight.GET(new Request('https://preview.example.test'))).status,403);
   }
   assert.equal(calls,0);user={id:'admin',role:'ADMIN',accountStatus:'ACTIVE'};
+  assert.equal((await preflight.GET(new Request('https://preview.example.test',{headers:{'sec-fetch-site':'cross-site'}}))).status,403);
+  const preflightResult=await preflight.GET(new Request('https://preview.example.test'));
+  assert.equal(preflightResult.status,200);assert.equal(preflightResult.headers.get('cache-control'),'private, no-store');assert.equal(calls,0);
   for(const origin of ['', 'https://evil.example.test'])assert.equal((await route.POST(request(origin))).status,403);
   assert.equal(calls,0);assert.equal((await route.POST(request())).status,201);assert.equal(calls,1);
   const evidence=await download.GET(new Request('https://preview.example.test'),{params:Promise.resolve({id:requestId})});

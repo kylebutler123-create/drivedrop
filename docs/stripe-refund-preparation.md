@@ -1,6 +1,12 @@
 # Stripe refund preparation — 21 October 2026
 
-## Current review: retained £110 case uses the deliberate refund-failure card
+## Latest: approved alternative-refund recording implementation
+
+The approved two-step **Record alternative refund** form and preview-only audit/accounting path are implemented. Opening the form performs a read-only canonical preflight; final recording requires completed-repayment evidence and repeats the checks under the booking lock. Stripe and external repayment totals remain separately identifiable, with immutable evidence, duplicate protection and once-only accounting. [Implementation, checks and limitations](stripe-alternative-refund-recording.md).
+
+The additive preview migration and 11 rolled-back database checks passed; the 19 lifecycle cases and relevant local suites/build passed. **The original £110 case remains PAID / £0 refunded / HELD, with its failed instruction, reservation and complete history unchanged.** All 31 full original-data fingerprints match. No repayment was recorded, no money was sent, refunds remain off, and production is untouched. A committed isolated sandbox repayment simulation remains a separately bounded next test; it has not been counted as verified.
+
+## Earlier read-only review: retained £110 case uses the deliberate refund-failure card
 
 At 02:10 UTC on 21 October, a read-only review confirmed the retained charge uses Stripe's documented asynchronous refund-failure card ending **5126**. Canonical history contains exactly one failed £110 refund; Stripe and DriveDrop both show £0 successfully refunded. The original ledger timestamp, +£110 success audit, -£110 correction, one corrective notice per party and payout hold are unchanged. Both Stripe refund/failure balance entries are pending and net to zero. All seven sandbox transfers were inspected with no source-charge or payment/booking-metadata match for this case. All 31 full original-data fingerprints still match.
 

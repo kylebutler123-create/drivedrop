@@ -68,6 +68,26 @@ async function checkCanonical(tx: Prisma.TransactionClient, stripe: Stripe, paym
   if (!assertStripeRefundMatches(freshRefund, row).failed) alternativeReview('The Stripe refund changed during review.');
 }
 
+// Read-only preflight for opening the form. Recording repeats every check inside
+// its own locked transaction, so this response is never an authorization token.
+export async function reviewAlternativeRefund(raw: unknown, actorId: string) {
+  requireEnabled();
+  const parsed = details.pick({paymentId: true, failedRefundId: true, amountPence: true, expectedRefundedPence: true}).safeParse(raw);
+  if (!parsed.success) return alternativeReview('Refresh this payment before checking its repayment status.');
+  const input = parsed.data, stripe = await verifiedConnectClient();
+  return prisma.$transaction(async tx => {
+    const ref = await tx.bookingPayment.findUnique({where: {id: input.paymentId}, select: {bookingId: true}});
+    if (!ref) return alternativeReview('Payment not found.');
+    await tx.$queryRaw`SELECT id FROM "Booking" WHERE id=${ref.bookingId} FOR UPDATE`;
+    const actor = await tx.user.findUnique({where: {id: actorId}, select: {role: true, accountStatus: true}});
+    if (actor?.role !== 'ADMIN' || actor.accountStatus !== 'ACTIVE') return alternativeReview('Active administrator access is required.');
+    const payment = await tx.bookingPayment.findUniqueOrThrow({where: {id: input.paymentId}, include});
+    const row = assertAlternativeEligible(payment, input.failedRefundId, input.amountPence, paymentEnvironment());
+    await checkCanonical(tx, stripe, payment, row);
+    return {eligible: true, amountPence: payment.paidPence, stripeRefundedPence: 0, checkedAt: new Date().toISOString()};
+  }, {timeout: 60_000, maxWait: 5_000});
+}
+
 export async function recordAlternativeRefund(raw: unknown, file: File, actorId: string) {
   requireEnabled();
   const parsed = details.safeParse(raw);

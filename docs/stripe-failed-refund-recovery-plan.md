@@ -1,5 +1,7 @@
 # Failed £110 sandbox refund — recovery review
 
+**Update, 21 October 2026:** the user subsequently approved the displayed form and implementation. The preview-only implementation and additive schema are described in [alternative-refund recording](stripe-alternative-refund-recording.md). This supersedes the design-only status below, not the preservation requirement: no repayment has been recorded on this fixture, and its original reservation/hold/history remain unchanged. A committed isolated simulation is still a separate bounded test.
+
 Reviewed 21 October 2026, 02:10 UTC, on `feature/ui-polish` at `138446b610329dd793cbceccef6e6b6c593eaf6c`. This was a read-only review of sandbox `acct_1US4BzLAzgkvCvrI`, `livemode=false`, and preview database `yozbuuvebzxitoqrvyer`. [Exact projected evidence](evidence/stripe-failed-refund-review.json).
 
 ## Finding

@@ -1,5 +1,5 @@
 'use client';
-import {useId, useRef, useState, type FormEvent} from 'react';
+import {useEffect, useId, useRef, useState, type FormEvent} from 'react';
 import {useRouter} from 'next/navigation';
 import StripeRefundNotice from '@/components/StripeRefundNotice';
 import styles from './AlternativeRefundControl.module.css';
@@ -11,17 +11,28 @@ type Payment = {id: string; paidPence: number; refundedPence: number; alternativ
   alternativeRefund?: RecordSummary | null; stripeRefunds?: {id: string}[]};
 
 export default function AlternativeRefundControl({payment}: {payment: Payment}) {
-  const router = useRouter(), prefix = useId(), busyRef = useRef(false);
+  const router = useRouter(), prefix = useId(), busyRef = useRef(false), headingRef = useRef<HTMLHeadingElement>(null);
+  const [checking, setChecking] = useState(false), [preflightOK, setPreflightOK] = useState(false);
   const [open, setOpen] = useState(false), [review, setReview] = useState(false), [busy, setBusy] = useState(false);
   const [requestId, setRequestId] = useState(''), [method, setMethod] = useState('BANK_TRANSFER');
   const [settledOn, setSettledOn] = useState(''), [reference, setReference] = useState(''), [note, setNote] = useState('');
   const [file, setFile] = useState<File | null>(null), [confirmed, setConfirmed] = useState(false), [error, setError] = useState('');
   const [saved, setSaved] = useState<RecordSummary | null>(null);
   const amount = payment.paidPence - payment.refundedPence, record = saved || payment.alternativeRefund;
-  const valid = Boolean(amount > 0 && reference.trim().length >= 3 && /^[A-Za-z0-9 ._/-]+$/.test(reference.trim()) && settledOn && file && confirmed);
-  function start() {
+  const valid = Boolean(preflightOK && amount > 0 && reference.trim().length >= 3 && /^[A-Za-z0-9 ._/-]+$/.test(reference.trim()) && settledOn && file && confirmed);
+  useEffect(() => {if (open) headingRef.current?.focus();}, [open, review]);
+  async function start() {
     setRequestId(crypto.randomUUID()); setSettledOn(new Date().toISOString().slice(0,10));
     setMethod('BANK_TRANSFER'); setReference(''); setNote(''); setFile(null); setConfirmed(false); setError(''); setReview(false); setOpen(true);
+    setChecking(true); setPreflightOK(false);
+    try {
+      const params = new URLSearchParams({paymentId: payment.id, failedRefundId: payment.stripeRefunds?.[0]?.id || '', amountPence: String(amount), expectedRefundedPence: String(payment.refundedPence)});
+      const response = await fetch(`/api/admin/payments/alternative-refund/review?${params}`, {cache: 'no-store'});
+      const result = await response.json();
+      if (!response.ok || result.eligible !== true) throw new Error(result.error || 'The repayment status could not be checked.');
+      setPreflightOK(true);
+    } catch (failure) {setError(failure instanceof Error ? failure.message : 'The repayment status could not be checked. Cancel and try again.');}
+    finally {setChecking(false);}
   }
   function prepare(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); if (!valid || busyRef.current) return;
@@ -48,8 +59,9 @@ export default function AlternativeRefundControl({payment}: {payment: Payment}) 
     {record ? <a className={styles.evidenceLink} href={`/api/admin/payments/alternative-refund/${record.id}/evidence`}>Download private repayment evidence</a> :
       payment.alternativeRefundAvailable && !open && <button type="button" className={styles.primary} onClick={start}>Record alternative refund</button>}
     {open && !record && <section className={styles.panel} aria-labelledby={`${prefix}-title`}>
-      <header><div><h3 id={`${prefix}-title`}>{review ? 'Review completed repayment' : 'Record alternative refund'}</h3><p>1. Repayment details <span aria-hidden="true">→</span> 2. Review & record</p></div><span className={styles.badge}>Sandbox</span></header>
+      <header><div><h3 id={`${prefix}-title`} ref={headingRef} tabIndex={-1}>{review ? 'Review completed repayment' : 'Record alternative refund'}</h3><p>1. Repayment details <span aria-hidden="true">→</span> 2. Review & record</p></div><span className={styles.badge}>Sandbox</span></header>
       <p className={styles.info}>Only record this after the customer has received the money by another method. This form does not send money or retry Stripe. The failed Stripe refund stays in the history.</p>
+      <p className={styles.check} role="status">{checking ? 'Checking the latest Stripe refund and transfer history…' : preflightOK ? 'Stripe checked: refund failed, £0 refunded, no transporter transfer. Checked again before saving.' : 'Repayment recording is unavailable until the Stripe check succeeds. Cancel and reopen to retry.'}</p>
       <form onSubmit={prepare}>
         <div hidden={review}>
           <div className={styles.grid}>

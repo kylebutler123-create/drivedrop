@@ -1,5 +1,11 @@
 # Stripe Connect sandbox implementation
 
+## Latest: approved alternative-refund recording implementation
+
+The approved **Record alternative refund** workflow now has a preview-only implementation: read-only canonical preflight, two-step evidence/confirmation form, immutable private audit and evidence, duplicate checks, separate Stripe/external totals and atomic full-settlement accounting. The additive schema is applied only to preview. Eleven actual PostgreSQL rollback checks and 19 lifecycle cases pass; all 31 original-data fingerprints still match. See [implementation and boundaries](stripe-alternative-refund-recording.md).
+
+**No alternative repayment has been recorded.** The retained £110 failed case, its reservation and payout hold remain unchanged; `STRIPE_REFUNDS_ENABLED=false`, live payments and production remain untouched. A separately bounded disposable scenario is still needed to verify a committed end-to-end simulated repayment. Genuine insufficient-balance reversal failure/retry also remains open.
+
 ## Latest read-only review: failed £110 fixture
 
 On 21 October at 02:10 UTC, canonical Stripe and preview records confirmed the retained £110 payment uses the deliberate asynchronous refund-failure card ending **5126**. Exactly one refund is failed, successful refunded total is £0 in both systems, and the original instruction, ledger/correction audit, notices and payout hold are preserved. All 31 full original-data fingerprints match. Refunds remain off; no financial, settings or database mutation was performed.
