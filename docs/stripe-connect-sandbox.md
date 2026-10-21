@@ -2,6 +2,16 @@
 
 ## Status
 
+**21 October 2026, current checkpoint:** Real `charge.dispute.created`, `charge.dispute.updated` and `charge.dispute.closed` deliveries are verified. A real sandbox event exposed a missing payout hold when refunds were disabled. Fix `2e714f307aceb8f958368c1cbd93180163644cd3` keeps canonical safety checks active while creation remains off. Replaying the event changed only the disposable payment's payout status to HELD; update, closure and stale-created replay preserved the hold without creating a refund, transfer or ledger adjustment. [Held payment](evidence/stripe-dispute-held.jpg).
+
+**Refunds are OFF.** Ordinary preview `dpl_6A4aD6zFVeQoJ9CBWhxmisd2neCR`, runtime `2e714f307aceb8f958368c1cbd93180163644cd3`, is READY with only the feature alias. Authenticated admin GET confirms the false flag. All 29 environment entries are preserved; only the existing scoped flag's update timestamp changed. Production remains on its original deployment and three aliases.
+
+The disposable card dispute was won using Stripe's documented test evidence, then its £1.10 charge was fully refunded once through the sandbox Dashboard. Its settled app fixture and five notifications were removed. The separate **QA21 DUI** app-dispute test remains OPEN / payout HELD with £1.10 captured, £0 refunded and no refund/payout instruction. Automatic approval review rejected accepting its full-refund confirmation because the available authorization did not explicitly cover that exact financial resolution. The confirmation was dismissed; do not retry through another API. [Retained case](evidence/stripe-dispute-refund-paused.jpg).
+
+To finish that UI test, obtain explicit approval to temporarily enable only feature-preview refunds, return **£1.10** to the synthetic customer for **QA21 DUI / DD-8PQPLSUI**, cancel its **£1.00** transporter proceeds, then switch refunds off and remove only the settled fixture. No real money is involved. Both temporary API sessions and temporary verification metadata are removed. All **31 table/storage fingerprints match** the baseline after excluding this retained fixture and its 11 notifications. The original failed-refund case is unchanged and still held. Actual insufficient-balance reversal failure/retry remains unverified; the earlier successful reversal cannot establish that gate. Exact IDs, evidence and remaining checks are in [stripe-refund-preparation.md](stripe-refund-preparation.md).
+
+### Previous completed recovery checkpoint (historical; superseded)
+
 **21 October 2026, current checkpoint:** The explicitly approved £1.10 sandbox refund and £1 recovery completed through the actual administrator UI. Stripe confirms exactly one successful 110p refund and one 100p reversal of the original booking transfer. The app finished SUCCEEDED / RECOVERED, cleared its reservation, and shows the payment fully refunded with payout cancelled and zero fee/proceeds. [Admin result](evidence/stripe-recovery-completed.jpg).
 
 **Refunds are OFF.** READY ordinary preview `dpl_6JeNBhqCp4a25pB2Fsvze8HaR78A`, runtime `441fa2d3eeace91b9f6f2f8dd4618e4c04d3c8f9`, has only the feature alias. Authenticated admin GET confirms the false flag. Only the existing Preview / `feature/ui-polish` flag was toggled; all other environment metadata and the production deployment/aliases are unchanged.
