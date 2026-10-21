@@ -1,6 +1,30 @@
 # Stripe refund preparation — 21 October 2026
 
-## Charge-dispute protection verified; app-dispute refund awaiting exact approval
+## Approved app-dispute refund completed; refunds off
+
+The user explicitly approved temporarily enabling feature-preview refunds, returning **£1.10 for QA21 DUI / DD-8PQPLSUI**, cancelling its **£1.00 transporter proceeds**, switching refunds off and cleaning up the settled test. This resolves the earlier automatic-review block recorded below. No new Checkout payment was created. Work remained in Stripe sandbox `acct_1US4BzLAzgkvCvrI` (`livemode=false`) and Preview / `feature/ui-polish`; production, live payments and restricted-key permissions were untouched.
+
+The existing administrator browser submitted **Full customer refund…** and accepted its exact confirmation once on ordinary preview `dpl_6VrHxKv5itxZx1ZZGYJJMtjJgbkp`, runtime `78262db7dd9533aa490b73c6e1a49da8e8effb00`. The UI first reported pending confirmation. Stripe then returned exactly one succeeded 110p refund, and the app applied its ledger at **00:11:56.287 UTC on 21 October** (01:11:56 BST). The actual UI displayed **Customer refund confirmed · £1.10**, **Resolved** and **Payout cancelled**, with £0 remaining customer balance, fee and transporter proceeds. [Completed dispute refund](evidence/stripe-dispute-refund-completed.jpg).
+
+| Verified object | Identifier / result |
+| --- | --- |
+| PaymentIntent / charge | `pi_3USmp6LAzgkvCvrI0hoV8sUk` / `ch_3USmp6LAzgkvCvrI0gnMaAF5`; 110p captured and fully refunded |
+| Customer refund | `re_3USmp6LAzgkvCvrI0e2nIGZu`, 110p, succeeded; canonical list contains exactly one refund |
+| Refund instruction | `e691f330-a6c6-4b4a-9cab-0493775d687d`, SUCCEEDED / NOT_REQUIRED, one attempt, reservation cleared |
+| App dispute | `cmvhca6c50006jv076lfci3nk`, RESOLVED / REFUND_CUSTOMER |
+| Payment ledger | REFUNDED / payout CANCELLED, 110p refunded, 0p fee / proceeds / deduction |
+| Refund audit event | `cmvhcxpg00001jw0899xcnh8a`, exactly one 110p REFUND_CREATED event |
+| Notifications / recovery | One refund notification per synthetic party; no transfer, reversal or payout instruction was required |
+
+`STRIPE_REFUNDS_ENABLED=false` is restored on READY ordinary preview **`dpl_AN1M1K3LFhTVgYnh3DQ7e21FWq1A`**, `drivedrop-487jmsg9u-future-9f39.vercel.app`, same runtime commit, with only the feature-branch alias. `/api/health` returned 200 / expected runtime at 00:14:51 UTC. Authenticated `/api/admin/disputes` returned false for every record, including the resolved case; after cleanup it returned the original 20 records, all false, with no test case. A later documentation-only deployment may supersede this equivalent disabled preview.
+
+After canonical settlement and screenshot capture, a guarded transaction removed only this test's job, quote, availability request, booking, payment, dispute, refund instruction, two finance events and 13 identified notifications (11 from setup plus two refund notifications). It required the exact succeeded refund, resolved dispute, cancelled payout, expected amounts and absence of unexpected child records. The first cleanup tool response was a non-JSON service error; read-only checks showed the fixture intact and no running cleanup, then the same guarded transaction completed. Stripe audit history is retained. No temporary session or stored file was created in this pass.
+
+All **31 complete table/storage fingerprints match the saved original baseline exactly, with no fixture exclusions now required**. This includes the administrator session, the original failed-refund case and all 136 storage rows. All **29 environment metadata entries** are unchanged except the scoped flag's update timestamp. Production's three aliases remain on `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz`. Sandbox platform balance is 177p available, 7834p pending and 0p Connect reserve. No additional funding or transfer was made, and no API-key secret or PaymentIntent client secret was displayed.
+
+The real charge-dispute hold/event tests and dispute-driven refund UI are now complete. **Genuine insufficient-balance reversal failure/retry and remaining real lost-response scenarios remain unverified.** The original £110 failed-refund fixture is unchanged, still unpaid and held; this approval did not cover a replacement refund for it. Keep refunds off between bounded tests. Current secret-free evidence is in [dispute refund completion](evidence/stripe-dispute-refund-completion.json); historical checkpoints below remain for audit context.
+
+## Historical: charge-dispute protection verified; app-dispute refund awaiting exact approval
 
 The user approved continuing the sandbox dispute/recovery checks. Work remains restricted to `feature/ui-polish`, the existing preview database and Stripe sandbox `acct_1US4BzLAzgkvCvrI` (`livemode=false`). No production deployment, live payment or key-permission change was made in this continuation.
 
@@ -246,7 +270,7 @@ Example: £110 paid = £10 recorded platform fee + £100 transporter gross. A £
 
 1. The late-failure accounting repair and regression/constraint checks are complete, including the retained real case with refunds off. Keep the failed case, its original ledger timestamp, correction audit and payout hold until the customer refund is separately settled.
 2. Bank-payout success/failure and the approved `QA20 REC` refund/recovery are complete; that old fixture is settled and removed. Stripe accepted its reversal despite a zero connected available balance. Genuine insufficient-balance reversal failure/retry remains unverified; do not relabel the successful reversal or mock tests as that outcome. Do not alter liability/reserve settings or add Payouts Write merely to force a failure.
-3. Actual created/updated/closed card-dispute delivery, off-flag hold handling and stale-created replay are complete. The separate `QA21 DUI` dispute-driven full-refund UI is paused at the automatic-review boundary above, with zero refund submitted. Obtain exact approval before resuming. Remaining real lost-response scenarios must still be distinguished from local fault-injection tests.
+3. Actual created/updated/closed card-dispute delivery, off-flag hold handling, stale-created replay and the explicitly approved `QA21 DUI` dispute-driven full-refund UI are complete. That test is fully refunded, its proceeds cancelled and its settled app fixture removed. Remaining real lost-response scenarios must still be distinguished from local fault-injection tests.
 4. Re-enable only the feature-branch preview for a bounded synthetic QA pass when its fixtures and authenticated admin UI are ready, then disable it again. Use an ordinary preview deployment: when calling Vercel's create-deployment API, omit `target`; `target=staging` assigns a convenience alias and must not be used here.
 5. Reconcile any separately settled failed case in Stripe and the application before removing only its fixtures. The disposable connected balance is currently £0; recheck before eventually closing the account. Preserve all original records and live/production settings.
 

@@ -2,6 +2,16 @@
 
 ## Status
 
+**21 October 2026, current checkpoint:** The explicitly approved **QA21 DUI / DD-8PQPLSUI** dispute refund completed through the actual administrator UI. Stripe confirms exactly one successful **£1.10** refund, `re_3USmp6LAzgkvCvrI0e2nIGZu`. DriveDrop resolved the dispute, cancelled the **£1.00 transporter proceeds**, cleared its refund reservation and recorded one refund event plus one notification per synthetic party. The UI shows the customer fully refunded and £0 fee/proceeds. [Completed dispute refund](evidence/stripe-dispute-refund-completed.jpg).
+
+**Refunds are OFF.** READY ordinary preview `dpl_AN1M1K3LFhTVgYnh3DQ7e21FWq1A`, runtime `78262db7dd9533aa490b73c6e1a49da8e8effb00`, has only the feature alias. Authenticated admin GET verifies false on all original 20 disputes after cleanup. All 29 environment entries are preserved; only the existing flag's update timestamp changed. A later documentation-only deployment may serve the same disabled application code.
+
+The settled test and its 13 identified notifications were removed with transaction guards after canonical settlement. All **31 complete table/storage fingerprints exactly match** the saved original baseline, including the signed-in administrator session and 136 stored-file rows; no fixture exclusion is now needed. Production's original deployment and three aliases, live payments and key permissions are untouched. No secret was displayed. The original £110 failed-refund fixture remains unpaid and held.
+
+Real charge-dispute events/holds and the dispute-driven refund UI have now passed. Genuine insufficient-balance reversal failure/retry and remaining real lost-response scenarios remain unverified; refunds stay off. Exact results and remaining checks are in [stripe-refund-preparation.md](stripe-refund-preparation.md) and [completion evidence](evidence/stripe-dispute-refund-completion.json).
+
+### Previous charge-dispute checkpoint (historical; superseded)
+
 **21 October 2026, current checkpoint:** Real `charge.dispute.created`, `charge.dispute.updated` and `charge.dispute.closed` deliveries are verified. A real sandbox event exposed a missing payout hold when refunds were disabled. Fix `2e714f307aceb8f958368c1cbd93180163644cd3` keeps canonical safety checks active while creation remains off. Replaying the event changed only the disposable payment's payout status to HELD; update, closure and stale-created replay preserved the hold without creating a refund, transfer or ledger adjustment. [Held payment](evidence/stripe-dispute-held.jpg).
 
 **Refunds are OFF.** Ordinary preview `dpl_6A4aD6zFVeQoJ9CBWhxmisd2neCR`, runtime `2e714f307aceb8f958368c1cbd93180163644cd3`, is READY with only the feature alias. Authenticated admin GET confirms the false flag. All 29 environment entries are preserved; only the existing scoped flag's update timestamp changed. Production remains on its original deployment and three aliases.
