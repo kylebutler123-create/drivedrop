@@ -1,0 +1,630 @@
+{
+  "date": "2026-10-21",
+  "scope": {
+    "stripeAccount": "acct_1US4BzLAzgkvCvrI",
+    "livemode": false,
+    "environment": "preview",
+    "branch": "feature/ui-polish",
+    "approvedAmountPence": 110,
+    "currency": "gbp"
+  },
+  "method": {
+    "fixture": "Seeded disposable job/quote/request and OPEN app dispute; simulated only this fixture's transporter confirmation/CAPTURING state. No authenticated user session or verification permission was created or changed. This pass does not establish transporter-onboarding or end-user booking UI behavior.",
+    "payment": "Stripe hosted Checkout authorised a documented sandbox card with manual capture; existing minute worker performed real 110p capture and created booking/payment and capture audit.",
+    "refund": "Actual authenticated administrator UI submitted full refund and confirmed 110p refund / cancellation of 100p transporter proceeds once.",
+    "interruption": "Native HTTPS response callback destroyed incoming response and request after HTTP 200 headers, before a body listener or SDK response object existed. SDK's special connection-closed retry was interrupted too. Existing TLS validation and credentials were retained; no proxy, endpoint, secret export, new environment entry or API permission.",
+    "guards": [
+      "preview only",
+      "feature/ui-polish only",
+      "existing refunds flag true",
+      "one exact payment ID",
+      "110p only",
+      "api.stripe.com:443 HTTPS POST /v1/refunds only",
+      "exact metadata/body keys and instruction idempotency key",
+      "expires 2026-10-22T00:00:00Z"
+    ],
+    "limits": "Automatic recovery finished before the next minute run, consistent with webhook reconciliation; no request-specific success log proves which webhook won the race. The earlier missing-transfer-reversal persistence test remains reconstruction evidence, not an actual interrupted reversal POST."
+  },
+  "commits": {
+    "injection": "43f369fe72b8a840f12e1f0e4525d317b55581b3",
+    "removed": "126381c9d1f1d36cbaaf3d02d16c324861441d48",
+    "restoredTree": "79f2e26c3ddd5263bcf32958f009978fe3762542",
+    "originalBase": "ba83a430fd82649a9252bc0216241bbfda4bb0b8"
+  },
+  "deployment": {
+    "enabled": "dpl_61ux26fhUSB4Bak6TspwP8BRWRCM",
+    "disabled": "dpl_7SqgmLqVncaTgv6ThFSUTrtbZsrg",
+    "disabledReady": true,
+    "disabledTarget": null,
+    "alias": [
+      "drivedrop-git-feature-ui-polish-future-9f39.vercel.app"
+    ],
+    "enabledHealth": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "timestamp": "2026-10-21T01:15:59.146Z",
+        "version": "43f369fe72b8"
+      }
+    },
+    "disabledHealth": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "timestamp": "2026-10-21T01:20:00.319Z",
+        "version": "126381c9d1f1"
+      }
+    },
+    "authenticatedAdminBeforeCleanup": {
+      "count": 21,
+      "flags": [
+        false
+      ]
+    },
+    "authenticatedAdminAfterCleanup": {
+      "count": 20,
+      "flags": [
+        false
+      ],
+      "testPresent": false
+    }
+  },
+  "checkoutId": "cs_test_a1DUXDFFRmLBirypCLYN5oAwRpP3vsioMJz5o7bXDwOblavLN3w8hjZKDI",
+  "captured": {
+    "id": "pi_3USo3iLAzgkvCvrI0KnrIBpP",
+    "livemode": false,
+    "status": "succeeded",
+    "currency": "gbp",
+    "amount": 110,
+    "amount_received": 110,
+    "capture_method": "manual",
+    "metadata": {
+      "availabilityRequestId": "dd_network_20261021a_request",
+      "environment": "preview"
+    },
+    "latest_charge": {
+      "id": "ch_3USo3iLAzgkvCvrI0UllXyB0",
+      "paid": true,
+      "captured": true,
+      "disputed": false,
+      "amount": 110,
+      "amount_refunded": 0
+    }
+  },
+  "canonicalRefunds": {
+    "has_more": false,
+    "data": [
+      {
+        "id": "re_3USo3iLAzgkvCvrI01F165VV",
+        "amount": 110,
+        "currency": "gbp",
+        "status": "succeeded",
+        "charge": "ch_3USo3iLAzgkvCvrI0UllXyB0",
+        "payment_intent": "pi_3USo3iLAzgkvCvrI0KnrIBpP",
+        "metadata": {
+          "driveDropRefundId": "1105df09-5ea7-469b-b61b-d9c98126c234",
+          "environment": "preview",
+          "paymentId": "cmvhf4cxb0002jv072fmc7oij"
+        },
+        "created": 1792545406
+      }
+    ]
+  },
+  "connectionProof": "## Runtime Logs\n\n**Project:** prj_8BO4s7P2sffGKR4czg6nHOZqg4Ze\n**Deployment:** dpl_61ux26fhUSB4Bak6TspwP8BRWRCM\n**Time range:** 2026-10-21T01:07:03.309Z → 2026-10-21T01:17:03.309Z\n\n### 2026-10-21T01:16:47.976Z PATCH /api/admin/disputes [info/function]\ndep=dpl_61ux26fhUSB4Bak6TspwP8BRWRCM branch=feature/ui-polish request=nqggm-1792545393088-58d1c353b10e domain=drivedrop-git-feature-ui-polish-future-9f39.vercel.app environment=preview region=cle1 runtime=nodejs24.x stream=stdout\n    STRIPE_NETWORK_QA_CONNECTION_CLOSED {\n      paymentId: 'cmvhf4cxb0002jv072fmc7oij',\n      status: 200,\n      requestId: 'req_AnBIcCqC4kmJy2',\n      idempotentReplayed: true,\n      idempotencyDigest: 'cbd8b863e088f50809e72f3a2857d22990e3162cfa4ab0f3683bbd19e6d24393',\n      bodyCompleteBeforeClose: false,\n      bufferedBodyBytes: 0,\n      responseDestroyed: true,\n      requestDestroyed: true\n    }\n\n### 2026-10-21T01:16:47.365Z PATCH /api/admin/disputes [info/function]\ndep=dpl_61ux26fhUSB4Bak6TspwP8BRWRCM branch=feature/ui-polish request=nqggm-1792545393088-58d1c353b10e domain=drivedrop-git-feature-ui-polish-future-9f39.vercel.app environment=preview region=cle1 runtime=nodejs24.x stream=stdout\n    STRIPE_NETWORK_QA_CONNECTION_CLOSED {\n      paymentId: 'cmvhf4cxb0002jv072fmc7oij',\n      status: 200,\n      requestId: 'req_ys49kBlrSzmLRl',\n      idempotentReplayed: false,\n      idempotencyDigest: 'cbd8b863e088f50809e72f3a2857d22990e3162cfa4ab0f3683bbd19e6d24393',\n      bodyCompleteBeforeClose: false,\n      bufferedBodyBytes: 0,\n      responseDestroyed: true,\n      requestDestroyed: true\n    }\n",
+  "deferredProof": "## Runtime Logs\n\n**Project:** prj_8BO4s7P2sffGKR4czg6nHOZqg4Ze\n**Deployment:** dpl_61ux26fhUSB4Bak6TspwP8BRWRCM\n**Time range:** 2026-10-21T01:07:25.270Z → 2026-10-21T01:17:25.270Z\n\n### 2026-10-21T01:16:49.277Z PATCH /api/admin/disputes [error/function]\ndep=dpl_61ux26fhUSB4Bak6TspwP8BRWRCM branch=feature/ui-polish request=nqggm-1792545393088-58d1c353b10e domain=drivedrop-git-feature-ui-polish-future-9f39.vercel.app environment=preview region=cle1 runtime=nodejs24.x stream=stderr\n    Stripe refund reconciliation deferred {\n      refundId: '1105df09-5ea7-469b-b61b-d9c98126c234',\n      code: 'RETRY_PENDING'\n    }\n",
+  "recovered": {
+    "refund": {
+      "id": "1105df09-5ea7-469b-b61b-d9c98126c234",
+      "paymentId": "cmvhf4cxb0002jv072fmc7oij",
+      "activePaymentId": null,
+      "environment": "preview",
+      "paymentIntentId": "pi_3USo3iLAzgkvCvrI0KnrIBpP",
+      "sourceChargeId": "ch_3USo3iLAzgkvCvrI0UllXyB0",
+      "paidPence": 110,
+      "amountPence": 110,
+      "priorRefundedPence": 0,
+      "priorPlatformFeePence": 10,
+      "priorProceedsPence": 100,
+      "priorDeductionPence": 0,
+      "priorPayoutStatus": "HELD",
+      "platformFeePence": 0,
+      "transporterProceedsPence": 0,
+      "cancellationDeductionPence": 0,
+      "fineRestorePence": 0,
+      "payoutId": null,
+      "stripeTransferId": null,
+      "requiredReversedPence": 0,
+      "baselineReversedPence": 0,
+      "recoveryAmountPence": 0,
+      "status": "SUCCEEDED",
+      "recoveryStatus": "NOT_REQUIRED",
+      "stripeRefundId": "re_3USo3iLAzgkvCvrI01F165VV",
+      "stripeReversalId": null,
+      "ledgerAppliedAt": "2026-10-21T01:16:56.193",
+      "firstAttemptAt": "2026-10-21T01:16:44.636",
+      "recoveryFirstAttemptAt": null,
+      "attemptCount": 2,
+      "leaseUntil": null,
+      "leaseToken": null,
+      "retryAfter": null,
+      "failureCode": null,
+      "recoveryFailureCode": null,
+      "actorId": "cmtauc6mx0000js04aevqjyzk",
+      "disputeId": "dd_network_20261021a_dispute",
+      "resolution": "REFUND_CUSTOMER",
+      "resolutionNote": "Approved £1.10 sandbox connection-loss test for QA21 NET. Return the full customer amount and cancel £1.00 transporter proceeds.",
+      "createdAt": "2026-10-21T01:16:39.854",
+      "updatedAt": "2026-10-21T01:16:57.514"
+    },
+    "payment": {
+      "id": "cmvhf4cxb0002jv072fmc7oij",
+      "bookingId": "cmvhf4cxb0001jv07cakz0wuq",
+      "currency": "GBP",
+      "transportValuePence": 110,
+      "depositPence": 110,
+      "platformFeePence": 0,
+      "transporterProceedsPence": 0,
+      "remainingBalancePence": 0,
+      "paidPence": 110,
+      "refundedPence": 110,
+      "status": "REFUNDED",
+      "payoutStatus": "CANCELLED",
+      "provider": "STRIPE",
+      "providerReference": "pi_3USo3iLAzgkvCvrI0KnrIBpP",
+      "createdAt": "2026-10-21T01:13:05.135+00:00",
+      "updatedAt": "2026-10-21T01:16:56.572+00:00",
+      "cancellationDeductionPence": 0
+    }
+  },
+  "laterSettledRead": {
+    "refund": {
+      "id": "1105df09-5ea7-469b-b61b-d9c98126c234",
+      "paymentId": "cmvhf4cxb0002jv072fmc7oij",
+      "activePaymentId": null,
+      "environment": "preview",
+      "paymentIntentId": "pi_3USo3iLAzgkvCvrI0KnrIBpP",
+      "sourceChargeId": "ch_3USo3iLAzgkvCvrI0UllXyB0",
+      "paidPence": 110,
+      "amountPence": 110,
+      "priorRefundedPence": 0,
+      "priorPlatformFeePence": 10,
+      "priorProceedsPence": 100,
+      "priorDeductionPence": 0,
+      "priorPayoutStatus": "HELD",
+      "platformFeePence": 0,
+      "transporterProceedsPence": 0,
+      "cancellationDeductionPence": 0,
+      "fineRestorePence": 0,
+      "payoutId": null,
+      "stripeTransferId": null,
+      "requiredReversedPence": 0,
+      "baselineReversedPence": 0,
+      "recoveryAmountPence": 0,
+      "status": "SUCCEEDED",
+      "recoveryStatus": "NOT_REQUIRED",
+      "stripeRefundId": "re_3USo3iLAzgkvCvrI01F165VV",
+      "stripeReversalId": null,
+      "ledgerAppliedAt": "2026-10-21T01:16:56.193",
+      "firstAttemptAt": "2026-10-21T01:16:44.636",
+      "recoveryFirstAttemptAt": null,
+      "attemptCount": 2,
+      "leaseUntil": null,
+      "leaseToken": null,
+      "retryAfter": null,
+      "failureCode": null,
+      "recoveryFailureCode": null,
+      "actorId": "cmtauc6mx0000js04aevqjyzk",
+      "disputeId": "dd_network_20261021a_dispute",
+      "resolution": "REFUND_CUSTOMER",
+      "resolutionNote": "Approved £1.10 sandbox connection-loss test for QA21 NET. Return the full customer amount and cancel £1.00 transporter proceeds.",
+      "createdAt": "2026-10-21T01:16:39.854",
+      "updatedAt": "2026-10-21T01:19:07.107"
+    },
+    "payment": {
+      "id": "cmvhf4cxb0002jv072fmc7oij",
+      "bookingId": "cmvhf4cxb0001jv07cakz0wuq",
+      "currency": "GBP",
+      "transportValuePence": 110,
+      "depositPence": 110,
+      "platformFeePence": 0,
+      "transporterProceedsPence": 0,
+      "remainingBalancePence": 0,
+      "paidPence": 110,
+      "refundedPence": 110,
+      "status": "REFUNDED",
+      "payoutStatus": "CANCELLED",
+      "provider": "STRIPE",
+      "providerReference": "pi_3USo3iLAzgkvCvrI0KnrIBpP",
+      "createdAt": "2026-10-21T01:13:05.135+00:00",
+      "updatedAt": "2026-10-21T01:16:56.572+00:00",
+      "cancellationDeductionPence": 0
+    }
+  },
+  "appEvidence": {
+    "runs": [
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 0,
+        "started_at": "2026-10-21T01:12:00.381649+00:00",
+        "finished_at": "2026-10-21T01:12:03.019406+00:00"
+      },
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 1,
+        "started_at": "2026-10-21T01:13:00.398038+00:00",
+        "finished_at": "2026-10-21T01:13:11.621322+00:00"
+      },
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 0,
+        "started_at": "2026-10-21T01:14:00.375933+00:00",
+        "finished_at": "2026-10-21T01:14:03.002422+00:00"
+      },
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 0,
+        "started_at": "2026-10-21T01:15:01.685408+00:00",
+        "finished_at": "2026-10-21T01:15:04.818993+00:00"
+      },
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 0,
+        "started_at": "2026-10-21T01:16:00.659824+00:00",
+        "finished_at": "2026-10-21T01:16:03.85633+00:00"
+      },
+      {
+        "failed": 0,
+        "status": "succeeded",
+        "checked": 1,
+        "started_at": "2026-10-21T01:17:00.31944+00:00",
+        "finished_at": "2026-10-21T01:17:06.535469+00:00"
+      }
+    ],
+    "events": [
+      {
+        "id": "cmvhf4dif0004jv078gahjfk2",
+        "note": "Authorised payment captured on transporter confirmation",
+        "type": "PAYMENT_CAPTURED",
+        "actorId": "dd_bank_20261020a_transporter",
+        "createdAt": "2026-10-21T01:13:05.896+00:00",
+        "paymentId": "cmvhf4cxb0002jv072fmc7oij",
+        "amountPence": 110
+      },
+      {
+        "id": "cmvhf9amp0001jk07rzz90ixe",
+        "note": "STRIPE_REFUND_CONFIRMED:1105df09-5ea7-469b-b61b-d9c98126c234:re_3USo3iLAzgkvCvrI01F165VV",
+        "type": "REFUND_CREATED",
+        "actorId": "cmtauc6mx0000js04aevqjyzk",
+        "createdAt": "2026-10-21T01:16:55.441+00:00",
+        "paymentId": "cmvhf4cxb0002jv072fmc7oij",
+        "amountPence": 110
+      }
+    ],
+    "dispute": {
+      "id": "dd_network_20261021a_dispute",
+      "reason": "Approved sandbox connection-loss QA",
+      "status": "RESOLVED",
+      "details": "Disposable 110p refund test for QA21 NET; no transporter release.",
+      "bookingId": "cmvhf4cxb0001jv07cakz0wuq",
+      "createdAt": "2026-10-21T01:13:33.51",
+      "updatedAt": "2026-10-21T01:16:55.63",
+      "raisedById": "dd_refund_20261020b_customer",
+      "resolution": "REFUND_CUSTOMER",
+      "reviewedAt": "2026-10-21T01:16:55.629",
+      "reviewerId": "cmtauc6mx0000js04aevqjyzk",
+      "evidenceUrl": null,
+      "resolutionNote": "Approved £1.10 sandbox connection-loss test for QA21 NET. Return the full customer amount and cancel £1.00 transporter proceeds."
+    },
+    "notifications": [
+      {
+        "id": "d2ef15e6-89f3-4885-9cc3-6d6be351cefd",
+        "body": "Sandbox QA Connection-loss test: Sandbox collection, London → Sandbox delivery, Birmingham.\nCollection: 22 Oct 2026.\nTransporter confirmation and payment capture are complete.",
+        "href": "/customer?view=bookings",
+        "type": "BOOKING",
+        "title": "Payment secured — booking confirmed",
+        "readAt": null,
+        "userId": "dd_refund_20261020b_customer",
+        "createdAt": "2026-10-21T01:13:09.06759+00:00"
+      },
+      {
+        "id": "b5ba1a5d-e7c1-4197-848a-2f9bff66e351",
+        "body": "Sandbox QA Connection-loss test: Sandbox collection, London → Sandbox delivery, Birmingham.\nCollection: 22 Oct 2026.\nTransporter confirmation and payment capture are complete.",
+        "href": "/customer?view=bookings",
+        "type": "BOOKING",
+        "title": "Payment secured — booking confirmed",
+        "readAt": null,
+        "userId": "dd_refund_20261020b_customer",
+        "createdAt": "2026-10-21T01:13:09.33568+00:00"
+      },
+      {
+        "id": "01a0b9fc-d89e-49e8-832e-ba5c68a5de30",
+        "body": "The authorised customer payment was captured when you confirmed. Contact the customer to arrange collection within the agreed window.",
+        "href": "/transporter?view=deliveries",
+        "type": "PAYMENT",
+        "title": "Customer payment secured",
+        "readAt": null,
+        "userId": "dd_bank_20261020a_transporter",
+        "createdAt": "2026-10-21T01:13:09.676646+00:00"
+      },
+      {
+        "id": "6ae3dbab-f6fd-488b-88d3-3464f811965b",
+        "body": "The authorised customer payment was captured when you confirmed. Contact the customer to arrange collection within the agreed window.",
+        "href": "/transporter?view=deliveries",
+        "type": "PAYMENT",
+        "title": "Customer payment secured",
+        "readAt": null,
+        "userId": "dd_bank_20261020a_transporter",
+        "createdAt": "2026-10-21T01:13:09.89687+00:00"
+      },
+      {
+        "id": "f6946666-1bd2-4197-88e8-c29d1ee949d3",
+        "body": "Stripe confirmed a customer refund of £1.10. The dispute is resolved. Approved £1.10 sandbox connection-loss test for QA21 NET. Return the full customer amount and cancel £1.00 transporter proceeds.",
+        "href": "/transporter/proceeds",
+        "type": "PAYMENT",
+        "title": "Customer refund confirmed",
+        "readAt": null,
+        "userId": "dd_bank_20261020a_transporter",
+        "createdAt": "2026-10-21T01:16:53.797456+00:00"
+      },
+      {
+        "id": "6ccb9f27-4e47-4d79-9f2d-30cc4c1474b8",
+        "body": "Stripe confirmed a customer refund of £1.10. The dispute is resolved. Approved £1.10 sandbox connection-loss test for QA21 NET. Return the full customer amount and cancel £1.00 transporter proceeds.",
+        "href": "/customer?view=bookings",
+        "type": "PAYMENT",
+        "title": "Customer refund confirmed",
+        "readAt": null,
+        "userId": "dd_refund_20261020b_customer",
+        "createdAt": "2026-10-21T01:16:53.797456+00:00"
+      }
+    ]
+  },
+  "assertions": {
+    "stripeRefunds": 1,
+    "refundLedgerEntries": 1,
+    "refundNotificationsPerSyntheticParty": 1,
+    "attemptCountAfterRecovery": 2,
+    "ledgerAppliedAtUnchangedThroughLaterRead": true,
+    "originalsUnchanged": true,
+    "setupBookingNotifications": 4,
+    "setupNotificationIssue": "Booking-capture webhook/worker race produced two confirmation notices per synthetic party. Distinct from refund notifications; not fixed in this bounded refund test."
+  },
+  "cleanup": {
+    "deletedExactIds": {
+      "AvailabilityRequest": [
+        "dd_network_20261021a_request"
+      ],
+      "Booking": [
+        "cmvhf4cxb0001jv07cakz0wuq"
+      ],
+      "BookingPayment": [
+        "cmvhf4cxb0002jv072fmc7oij"
+      ],
+      "Dispute": [
+        "dd_network_20261021a_dispute"
+      ],
+      "FinanceEvent": [
+        "cmvhf4dif0004jv078gahjfk2",
+        "cmvhf9amp0001jk07rzz90ixe"
+      ],
+      "Notification": [
+        "d2ef15e6-89f3-4885-9cc3-6d6be351cefd",
+        "b5ba1a5d-e7c1-4197-848a-2f9bff66e351",
+        "01a0b9fc-d89e-49e8-832e-ba5c68a5de30",
+        "6ae3dbab-f6fd-488b-88d3-3464f811965b",
+        "f6946666-1bd2-4197-88e8-c29d1ee949d3",
+        "6ccb9f27-4e47-4d79-9f2d-30cc4c1474b8"
+      ],
+      "Quote": [
+        "dd_network_20261021a_quote"
+      ],
+      "StripeRefund": [
+        "1105df09-5ea7-469b-b61b-d9c98126c234"
+      ],
+      "TransportJob": [
+        "dd_network_20261021a_job"
+      ]
+    },
+    "guardedTransaction": true,
+    "finalCountsAndFingerprints": [
+      {
+        "table_name": "AvailabilityRequest",
+        "rows": 11,
+        "fingerprint": "deb316efa28e2a280b16bd107028f684"
+      },
+      {
+        "table_name": "Booking",
+        "rows": 53,
+        "fingerprint": "ac052436e169e638a2e46d1d4e129602"
+      },
+      {
+        "table_name": "BookingPayment",
+        "rows": 53,
+        "fingerprint": "eca61d5fd380e7a3fe7fc05ad2a75751"
+      },
+      {
+        "table_name": "ConversationInboxState",
+        "rows": 2,
+        "fingerprint": "d7b5330da85491b53ad52489f4e4a595"
+      },
+      {
+        "table_name": "Dispute",
+        "rows": 20,
+        "fingerprint": "0ff368d1cae8a3deb1fa1ea1161398ff"
+      },
+      {
+        "table_name": "DisputeReviewNote",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "EmailChangeToken",
+        "rows": 2,
+        "fingerprint": "fd6b965260e3bf298d619a115500dac6"
+      },
+      {
+        "table_name": "Evidence",
+        "rows": 98,
+        "fingerprint": "c0730557265680c92412c8dc5190f883"
+      },
+      {
+        "table_name": "FinanceEvent",
+        "rows": 138,
+        "fingerprint": "a04711c23ace45cb779af248cda79338"
+      },
+      {
+        "table_name": "JobDigestRun",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "Message",
+        "rows": 32,
+        "fingerprint": "95396d4e224c163fae4a659dd779edd1"
+      },
+      {
+        "table_name": "MessageAttachment",
+        "rows": 5,
+        "fingerprint": "6a5c68e5cac005908299320ea96ab2c3"
+      },
+      {
+        "table_name": "Notification",
+        "rows": 405,
+        "fingerprint": "c281cef8290e2cd8dce21695129f43f7"
+      },
+      {
+        "table_name": "PasswordResetToken",
+        "rows": 1,
+        "fingerprint": "dd28ab764c541d4970fe82ab370a6ac7"
+      },
+      {
+        "table_name": "Quote",
+        "rows": 67,
+        "fingerprint": "b5d06acd6d4252a04eca77e8d3222113"
+      },
+      {
+        "table_name": "Review",
+        "rows": 8,
+        "fingerprint": "bf3868f7b6cab1c199c1d4cbdb73bcf4"
+      },
+      {
+        "table_name": "Session",
+        "rows": 1,
+        "fingerprint": "9bac1b51790dd1ffdae9130d3a3f5219"
+      },
+      {
+        "table_name": "storage.objects",
+        "rows": 136,
+        "fingerprint": "ebbe346597d33536e580807e5b9ccf1a"
+      },
+      {
+        "table_name": "StripeConnectAccount",
+        "rows": 1,
+        "fingerprint": "78c5aad61ade8d9d18dfca8065a11ffc"
+      },
+      {
+        "table_name": "StripePayout",
+        "rows": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table_name": "StripeRefund",
+        "rows": 1,
+        "fingerprint": "2ddc047f1bd30054dbbc637bf6fd3608"
+      },
+      {
+        "table_name": "SupportConversation",
+        "rows": 4,
+        "fingerprint": "d5e6c030a2cde120711fa69b35705483"
+      },
+      {
+        "table_name": "SupportMessage",
+        "rows": 4,
+        "fingerprint": "665e0a27aa3b05db729fc587a5a21ab6"
+      },
+      {
+        "table_name": "TrackingEvent",
+        "rows": 128,
+        "fingerprint": "f257d3effd6b092b2769eab6e5ecd47f"
+      },
+      {
+        "table_name": "TransporterCancellationDeduction",
+        "rows": 4,
+        "fingerprint": "f6cde087373395027c29a1ecfe9caa74"
+      },
+      {
+        "table_name": "TransporterCancellationFee",
+        "rows": 8,
+        "fingerprint": "113901cc29d01cf4953ce85120c5d67d"
+      },
+      {
+        "table_name": "TransporterPayoutDetails",
+        "rows": 1,
+        "fingerprint": "0a82c147ab5f6401b88469e6a62a527e"
+      },
+      {
+        "table_name": "TransporterVerification",
+        "rows": 9,
+        "fingerprint": "b2b4e2c715313da99f2be2f0e2984e2c"
+      },
+      {
+        "table_name": "TransportJob",
+        "rows": 77,
+        "fingerprint": "b9b91ae74680f806c8dacc9818b4d59d"
+      },
+      {
+        "table_name": "User",
+        "rows": 19,
+        "fingerprint": "34a586e358ea1e5b3df5ddd83f619dd5"
+      },
+      {
+        "table_name": "VerificationDocument",
+        "rows": 23,
+        "fingerprint": "1eb8b4a04b2a2bd88a4a7f0da31ed90e"
+      }
+    ],
+    "independentPostCommitMatch": true,
+    "noExclusionsNeeded": true,
+    "stripeAuditHistoryRetained": true
+  },
+  "environment": {
+    "entryCount": 29,
+    "refundsFlag": "false",
+    "changes": [
+      {
+        "id": "QYdbRtH8dcpgvyOv",
+        "key": "STRIPE_REFUNDS_ENABLED",
+        "field": "updatedAt"
+      }
+    ],
+    "newEntries": 0,
+    "secretDisplayed": false
+  },
+  "production": {
+    "id": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+    "alias": [
+      "drivedrop-pink.vercel.app",
+      "drivedrop-future-9f39.vercel.app",
+      "drivedrop-git-main-future-9f39.vercel.app"
+    ],
+    "readyState": "READY",
+    "target": "production",
+    "sha": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c"
+  },
+  "remaining": [
+    "Genuine insufficient-balance transfer-reversal failure/retry needs a supported reproduction path; prior zero-balance reversal succeeded.",
+    "Actual lost reversal-POST response remains untested; canonical reversal recovery from reconstructed persistence passed earlier.",
+    "Deduplicate booking-confirmation notices under webhook/worker concurrency.",
+    "Original failed £110 refund remains held and unchanged; no replacement authorised."
+  ],
+  "validation": [
+    "Real local socket test: two HTTP sockets destroyed, SDK StripeConnectionError, identical request key/body, one fake-provider object, replay false then true.",
+    "TypeScript, refund suite, Connect suite and complete Next 82-route build passed before publishing injection.",
+    "Injection and removal Vercel builds READY; removal tree exactly equals original pre-test tree.",
+    "Actual deployed admin UI and canonical Stripe/database proof above."
+  ]
+}
