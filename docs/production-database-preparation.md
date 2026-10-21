@@ -1,5 +1,13 @@
 # Production database preparation — 19 October 2026
 
+## Latest comparison — 21 October 2026
+
+The read-only comparison against `feature/ui-polish` at `e8c568280a2685259497edc9989fd470f693a465` is complete. Prepared production remains empty and healthy; it needs four later payment/audit tables, two payout statuses and associated constraints/indexes/triggers. All five storage bucket configurations match. Preserve production's approved £50 fee default and tighter table permissions rather than copying preview indiscriminately.
+
+The [comparison and exact gaps](production-readiness-comparison.md), [production payment rollout plan](production-payment-rollout-plan.md) and [secret-free evidence](evidence/production-readiness-comparison.json) cover the remaining production-mode guards, isolated recovery scheduling, credentials, email and final role-based checks. All 32 preview and 28 prepared-production table/storage fingerprints match before/after this review; the 29 environment metadata entries and existing production deployment/aliases are unchanged. Refunds are still off. No migration, account bootstrap, website cutover, live payment or settings change was performed. The original preparation below remains historical evidence, not a current launch approval.
+
+## Original preparation baseline
+
 Production project: srqhjgrhgyyfdaxckjum (DriveDrop Production), eu-central-1.
 Existing preview/shared project: yozbuuvebzxitoqrvyer. No existing data was modified.
 Source code baseline: 09d23db7debdaf7e8661ea6b46baaaa891c451a8 on feature/ui-polish.

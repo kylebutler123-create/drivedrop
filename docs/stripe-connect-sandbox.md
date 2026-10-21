@@ -1,6 +1,12 @@
 # Stripe Connect sandbox implementation
 
-## Latest: Stripe Support contacted about the remaining recovery gate
+## Latest: production comparison and rollout plan prepared
+
+The approved 21 October read-only comparison is complete. Prepared production lacks the four later payment/audit tables and two payout statuses; storage configuration already matches. The [comparison](production-readiness-comparison.md) and [rollout plan](production-payment-rollout-plan.md) identify the production payment guards, isolated recovery worker/scheduler, scoped credentials, email behavior and final browser/role checks still needed. Nothing was migrated or activated.
+
+All 32 preview and 28 prepared-production table/storage fingerprints match within this review, as do the 29 environment metadata entries and original production deployment/aliases. `STRIPE_REFUNDS_ENABLED=false` is freshly verified. The £110 failed-refund case and immutable simulated QA21 ALT audit remain preserved. Genuine insufficient-balance reversal failure/retry is still UNVERIFIED; Stripe Support was not rechecked in this database review. [Exact comparison evidence](evidence/production-readiness-comparison.json).
+
+## Previous: Stripe Support contacted about the remaining recovery gate
 
 On 21 October, the approved technical question was sent through Stripe's official support widget with **drivedrop sandbox** selected. The AI assistant replied; a human Connect specialist was requested and chat escalation entered the support queue. The genuine insufficient-balance failure/retry gate remains **UNVERIFIED**. See [the sent question and contact status](stripe-support-recovery-question.md) before repeating a test or assuming Stripe has confirmed the limitation.
 

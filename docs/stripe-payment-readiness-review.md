@@ -1,5 +1,7 @@
 # Stripe payment readiness review — 21 October 2026
 
+**Later checkpoint:** the [read-only production database comparison](production-readiness-comparison.md) and [production payment rollout plan](production-payment-rollout-plan.md) are now prepared. They complete the comparison/planning portions of the before-live list below, not the implementation or launch gates. Production remains unchanged, preview refunds remain off and the genuine insufficient-balance provider gate remains unverified. The findings and test evidence in this earlier review remain scoped to their original checkpoint.
+
 **Decision: continue controlled preview testing; do not activate live payments.** The exercised sandbox flows have substantial provider and browser evidence, but genuine insufficient-balance reversal failure/retry remains unverified. The current implementation deliberately rejects production payment use. This review does not change that boundary or authorize a production merge.
 
 This pass made no Stripe money request, database mutation, configuration/permission change or production deployment. It changed only the refund test and documentation. The current feature preview was READY at `5450385275d5c1880899213864c2b22361e9f5cc`, deployment `dpl_3D5EXTikEHZ1WQZfCgkJE2MA1Cso`, feature alias only. The application code is equivalent to the previously verified `2a670bf58ccb5eddc10a4a3a369612ebe6f1bcea` build.

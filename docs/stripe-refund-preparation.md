@@ -1,6 +1,12 @@
 # Stripe refund preparation — 21 October 2026
 
-## Latest: Stripe Support contacted; provider gate still open
+## Latest: production comparison and rollout plan prepared; refunds off
+
+The approved 21 October read-only comparison is complete. Prepared production needs the four later payment/audit tables, two payout statuses and production-specific implementation/configuration work. The [comparison](production-readiness-comparison.md) and [rollout plan](production-payment-rollout-plan.md) retain immutable refund evidence, require production recovery/email/role checks and preserve the existing £50 fee default and server-only permissions. No migration, live integration or production cutover was executed.
+
+Before/after fingerprints match for all 32 preview and 28 prepared-production application/storage tables. All 29 environment metadata entries and the original production deployment/aliases match; the known plain flag is freshly verified as `STRIPE_REFUNDS_ENABLED=false`. The original £110 case and simulated QA21 ALT audit remain untouched. Genuine insufficient-balance failure/retry remains UNVERIFIED, and support was not rechecked during this review. [Exact comparison evidence](evidence/production-readiness-comparison.json).
+
+## Previous: Stripe Support contacted; provider gate still open
 
 The approved question was sent on 21 October through the official Stripe Support widget under **drivedrop sandbox**. After the AI assistant's reply, a human Connect technical specialist was requested and chat escalation entered the queue. See [exact messages and contact status](stripe-support-recovery-question.md). No human confirmation or genuine insufficient-balance failure/retry is established by the AI response.
 
