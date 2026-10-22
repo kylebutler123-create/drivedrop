@@ -1,6 +1,8 @@
 # Bounded preview booking journey — QA22 E2E
 
-Prepared 22 October 2026 from feature branch `0882893354071ec56afac5c095c8cb7b6a6b4aa4` and fresh read-only service checks. **Preparation complete; the financial run and its new email scope await approval.** No new customer, transporter, job, payment, upload or email was created by this preparation.
+Prepared 22 October 2026 from feature branch `0882893354071ec56afac5c095c8cb7b6a6b4aa4` and fresh read-only service checks. **Kye approved this exact sandbox scope on 22 October 2026. Account setup is awaiting secure manual signup; the financial run has not started.** No new customer, transporter, job, payment, upload or email was created by the preparation.
+
+Approval/execution checkpoint: [QA22 run record](evidence/preview-payment-qa22-execution.json). On refreshed build `4d45e2e`, the browser's `browserAuth` guidance explicitly requires manual handoff for new account creation. The transporter form is prepared with its approved name/email and Transporter role; the password is blank and Create my account has not been submitted. The existing transporter was signed out normally, so session-row changes from that logout are expected. No existing credential or account profile was edited. At 22:05 UK time on 22 October the same-day job-creation window had closed. The next permitted job-creation start is **23 October 2026 at 08:05 UTC / 09:05 UK**, subject to the remaining same-day conditions below. This approval persists; do not ask again for the same financial/email scope after signup or the time window opens.
 
 ## Exact scope for approval
 

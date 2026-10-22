@@ -1,0 +1,59 @@
+{
+  "run": "QA22 E2E",
+  "status": "APPROVED_AWAITING_SECURE_SIGNUP",
+  "approval": {
+    "date": "2026-10-22",
+    "source": "Kye answered Yes to the exact bounded sandbox run presented after commit 4d45e2e",
+    "customerAuthoriseAndCapturePence": 1100,
+    "transporterQuoteAndTransferPence": 1000,
+    "currency": "GBP",
+    "naturalHoldHours": 24,
+    "freshCustomerAndTransporter": true,
+    "freshSandboxConnectAccount": true,
+    "syntheticVerificationAndDeliveryUploads": true,
+    "expectedAppEmails": 5,
+    "recipients": ["delivered+drivedrop-qa22-e2e-customer@resend.dev", "delivered+drivedrop-qa22-e2e-transporter@resend.dev"],
+    "automaticReleaseScheduled": false,
+    "productionOrLiveApproval": false
+  },
+  "baseline": {
+    "checkedAt": "2026-10-22T21:05:24.852299Z",
+    "sourceCommit": "4d45e2ecb9a753bd20c0dce84af372c5c7e8c871",
+    "previewDeployment": "dpl_2EqD15LtVLvbEsg57CVfoXrjwq5H",
+    "previewState": "READY",
+    "previewProject": "yozbuuvebzxitoqrvyer",
+    "stripePlatform": "acct_1US4BzLAzgkvCvrI",
+    "livemode": false,
+    "refundsEnabled": false,
+    "environmentMetadataEntries": 29,
+    "proposedUsersAlreadyExist": false,
+    "protected110": {"status":"PAID","paidPence":11000,"reimbursedPence":0,"payoutStatus":"HELD","updatedAt":"2026-10-20T22:08:06.590Z"},
+    "protectedQA21": {"status":"REFUNDED","combinedReimbursedPence":110,"alternativePence":110,"payoutStatus":"CANCELLED","updatedAt":"2026-10-21T16:26:37.057Z","evidenceSha256":"69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e"},
+    "fullDatabaseFingerprintOrCutoverBackup": false
+  },
+  "signup": {
+    "role": "TRANSPORTER",
+    "name": "DriveDrop QA22 E2E Transporter",
+    "email": "delivered+drivedrop-qa22-e2e-transporter@resend.dev",
+    "nonSecretFieldsPrepared": true,
+    "passwordEnteredByAgent": false,
+    "submittedByAgent": false,
+    "manualHandoffRequiredBy": "browserAuth documentation: do not use browserAuth to create accounts; offer manual handoff so the user completes signup",
+    "proof": "preview-payment-qa22-signup.jpg"
+  },
+  "timeGate": {
+    "jobCreationEligibleAtBaseline": false,
+    "reason": "Fewer than three hours remained before UK midnight; preserve the approved digest containment rule",
+    "nextEarliestJobCreationUTC": "2026-10-23T08:05:00Z",
+    "nextEarliestJobCreationUK": "23 October 2026, 09:05 BST",
+    "accountSetupAllowedBeforeThen": true
+  },
+  "actionsPerformed": ["Read-only branch, deployment, flags, sandbox identity and protected-case checks", "Normal logout of existing transporter session", "Prepared approved transporter name/email/role in signup form"],
+  "newHostedUsersCreatedByAgent": 0,
+  "newJobsCreated": 0,
+  "newStripeObjectsCreated": 0,
+  "newAppEmailsSent": 0,
+  "hostedUploads": 0,
+  "productionChanges": 0,
+  "providerInsufficientBalanceGate": "UNVERIFIED"
+}
