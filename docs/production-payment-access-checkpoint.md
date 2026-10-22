@@ -28,6 +28,20 @@ A small independent GitHub Actions workflow runs these two tests without hosted 
 
 No hosted schema, stored file, financial record, key, email flag or production setting was changed. No email or provider money operation occurred. The protected £110 case and immutable QA21 ALT audit were not used as fixtures. Application/storage fingerprints were not resampled in this step; prior preservation evidence retains its own date.
 
+## Later authenticated administrator check
+
+The secure email/password handoff succeeded later in the same session. Fresh page state showed the Administrator role and the real `/admin/payouts` page. This supersedes the earlier sign-in blocker only; a normal administrator session was created, so session preservation is not claimed for this follow-up.
+
+At preview deployment `dpl_n4R6cCEeSoTNnTa6jHcrSPnmM4Zz`, commit `cd7a44773c4e68a51960cca19baf32653674e7bb`, read-only category/search/expand interactions showed:
+
+- **QA20 RFD / DD-711BXM28:** £110 customer payment captured, the original refund failed, payout held, and no replacement payment sent. A focused database read confirmed `PAID`, 0p reimbursed, `HELD`, the original failed refund reservation still active, and no alternative repayment.
+- **QA21 ALT / DD-AFDVANK7:** visibly labelled **TEST ONLY**, £0 Stripe refund, £1.10 alternative repayment, cancelled payout and £0 transporter proceeds. The database still contains one alternative repayment and one corresponding financial audit event, with an explicit simulation note and the original simulated reference.
+- The administrator's private-evidence link produced a completed browser download event. Its returned file path was unavailable in both the shared workspace and browser file access, so a fresh downloaded-byte/hash check is **inconclusive**. This does not replace the successful 21 October download evidence. A separate read-only database check confirmed the stored PDF remains 44,415 bytes and its computed SHA-256 still equals the original `69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e`.
+
+Only the existing cards and evidence link were opened. No refund/status-reconciliation, alternative-recording, release, upload, notification-read or message action was submitted. These protected cases were inspected, not reused as mutation fixtures. No new money or email operation was performed.
+
+Fresh Vercel reads confirmed `STRIPE_REFUNDS_ENABLED=false`, all 29 environment metadata entries unchanged from the native checkpoint (id/key/type/target/branch/update time), and the same production deployment `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz`, commit `8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c` and three aliases. This is not a fresh all-table/storage fingerprint comparison or a consistent cutover backup.
+
 ## Resume requirements
 
-Use the preview's real sign-in flow to restore authorized administrator access, then complete the approved role/private-file browser checks with dedicated fixtures and bounded actions. A secure sign-in handoff must collect credentials without exposing them in chat or logs. Confirm a named recipient before sending any delivery-test email. Keep production changes and live operations behind the later exact cutover approval.
+Continue the remaining customer/transporter role and private-file browser checks with dedicated fixtures and bounded actions. Secure sign-in handoffs must collect credentials without exposing them in chat or logs. Confirm a named recipient before sending any delivery-test email. Hosted scheduling/pending-work acceptance and the genuine Stripe insufficient-balance reversal/retry gate remain open. Keep production changes and live operations behind the later exact cutover approval.

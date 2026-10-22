@@ -49,5 +49,82 @@
     "runId": 39837732141,
     "url": "https://github.com/kylebutler123-create/drivedrop/actions/runs/39837732141",
     "conclusion": "success"
+  },
+  "authenticatedAdminFollowUp": {
+    "checkedAt": "2026-10-22T19:23:29.198885+00:00",
+    "sourceCommit": "cd7a44773c4e68a51960cca19baf32653674e7bb",
+    "previewDeployment": "dpl_n4R6cCEeSoTNnTa6jHcrSPnmM4Zz",
+    "authentication": "Secure browserAuth email/password handoff followed by fresh Administrator page state. Normal administrator session created; no credentials exposed.",
+    "route": "/admin/payouts",
+    "actions": [
+      "Search and expand QA20 RFD in Held",
+      "Search and expand QA21 ALT in Refunded / cancelled",
+      "Click existing private repayment evidence download"
+    ],
+    "originalCase": {
+      "registration": "QA20 RFD",
+      "reference": "DD-711BXM28",
+      "paymentId": "cmvh5nyop0002l507vqfjq5fl",
+      "status": "PAID",
+      "paidPence": 11000,
+      "refundedPence": 0,
+      "payoutStatus": "HELD",
+      "alternativeCount": 0,
+      "refundStatus": "FAILED",
+      "activeReservation": true,
+      "paymentUpdatedAt": "2026-10-20T22:08:06.590Z"
+    },
+    "alternativeCase": {
+      "registration": "QA21 ALT",
+      "reference": "DD-AFDVANK7",
+      "paymentId": "cmvibep670002jn088ghnin68",
+      "status": "REFUNDED",
+      "paidPence": 110,
+      "totalReimbursedPence": 110,
+      "stripeRefundedPence": 0,
+      "alternativePence": 110,
+      "payoutStatus": "CANCELLED",
+      "transporterProceedsPence": 0,
+      "alternativeCount": 1,
+      "immutableFinanceEventCount": 1,
+      "explicitSimulationNote": true,
+      "simulatedReference": "SIMULATED-DD-ALT-20261021-A",
+      "paymentUpdatedAt": "2026-10-21T16:26:37.057Z"
+    },
+    "evidenceDownload": {
+      "browserDownloadEvent": "completed",
+      "downloadedBytesHash": "INCONCLUSIVE: returned path unavailable after the documented synchronization check and browser-side file lookup; no fresh downloaded bytes verified.",
+      "historicalSuccessfulDownload": "docs/evidence/stripe-alternative-refund-e2e-verification.json",
+      "storedEvidenceBytes": 44415,
+      "storedEvidenceSha256": "69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e",
+      "computedStoredEvidenceSha256": "69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e"
+    },
+    "hosting": {
+      "previewRefundsOff": true,
+      "environmentMetadataEntries": 29,
+      "environmentMetadataUnchangedFromNativeCheckpoint": true,
+      "metadataFieldsCompared": [
+        "id",
+        "key",
+        "type",
+        "target",
+        "gitBranch",
+        "updatedAt"
+      ],
+      "productionDeployment": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+      "productionCommit": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c",
+      "productionAliases": [
+        "drivedrop-pink.vercel.app",
+        "drivedrop-future-9f39.vercel.app",
+        "drivedrop-git-main-future-9f39.vercel.app"
+      ]
+    },
+    "limitations": [
+      "Customer/transporter authenticated journeys are not certified by this administrator inspection.",
+      "No hosted mutation/financial operation/upload/email was performed, apart from routine authentication session creation.",
+      "No fresh all-table/storage fingerprints or consistent cutover backup were captured.",
+      "Stored-byte hash verification is not a new authenticated HTTP download hash verification.",
+      "True Stripe insufficient-balance reversal failure and retry remain UNVERIFIED."
+    ]
   }
 }
