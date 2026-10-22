@@ -126,5 +126,16 @@
       "Stored-byte hash verification is not a new authenticated HTTP download hash verification.",
       "True Stripe insufficient-balance reversal failure and retry remain UNVERIFIED."
     ]
+  },
+  "customerAuthenticationFollowUp": {
+    "checkedAt": "2026-10-22T19:29:00.290340+00:00",
+    "priorEvidenceCommit": "deb304518019d3eb191cf0cfaf687762d7b940da",
+    "administratorSignedOutNormally": true,
+    "secureRequestStatus": "submitted",
+    "visibleFormResult": "Customer login remains visible; no non-secret error shown.",
+    "freshSameOriginVerification": "Guest navigation still shows Log in; authenticated customer session not confirmed.",
+    "result": "UNCONFIRMED",
+    "secondCredentialSubmissionAttempted": false,
+    "next": "Authentication handoff on the existing customer login page. No credentials inspected and no session fabricated."
   }
 }

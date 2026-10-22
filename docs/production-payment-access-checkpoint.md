@@ -44,4 +44,6 @@ Fresh Vercel reads confirmed `STRIPE_REFUNDS_ENABLED=false`, all 29 environment 
 
 ## Resume requirements
 
+After saving the administrator results at `deb304518019d3eb191cf0cfaf687762d7b940da`, the administrator was signed out normally and the visible Customer Login link opened. The customer secure sign-in request returned `submitted`, but the login form remained visible without an error and a fresh same-origin page still showed Log in. Customer authentication is therefore **unconfirmed**, not a passed journey or a demonstrated credential failure. No second credential submission was attempted. Continue through the browser's authentication handoff; do not inspect credentials or fabricate a session.
+
 Continue the remaining customer/transporter role and private-file browser checks with dedicated fixtures and bounded actions. Secure sign-in handoffs must collect credentials without exposing them in chat or logs. Confirm a named recipient before sending any delivery-test email. Hosted scheduling/pending-work acceptance and the genuine Stripe insufficient-balance reversal/retry gate remain open. Keep production changes and live operations behind the later exact cutover approval.
