@@ -1,0 +1,221 @@
+{
+  "status": "PREPARED_NOT_EXECUTED",
+  "preparedOn": "2026-10-22",
+  "sourceHeadBeforeChanges": "0882893354071ec56afac5c095c8cb7b6a6b4aa4",
+  "scope": "Read-only hosted inspection; local test preparation and customer booking-email CTA correction",
+  "approval": {
+    "status": "AWAITING_EXACT_SANDBOX_APPROVAL",
+    "reason": "Production rollout plan requires separate disposable fixtures and pre-agreed amounts; earlier single owner email authorization is consumed",
+    "quotePence": 1000,
+    "customerAuthoriseAndCapturePence": 1100,
+    "platformTransferPence": 1000,
+    "currency": "GBP",
+    "naturalHoldHours": 24
+  },
+  "preview": {
+    "project": "yozbuuvebzxitoqrvyer",
+    "alias": "https://drivedrop-git-feature-ui-polish-future-9f39.vercel.app",
+    "inspectedDeployment": "dpl_BqVmBiRw9Mr9RCBrJK4G92ULNTB7",
+    "inspectedCommit": "0882893354071ec56afac5c095c8cb7b6a6b4aa4",
+    "stripeAccount": "acct_1US4BzLAzgkvCvrI",
+    "stripeLivemode": false,
+    "refundsEnabled": false,
+    "connectEnabled": true,
+    "environmentMetadataEntries": 29,
+    "commissionOverridePresent": false,
+    "depositOverridePresent": false
+  },
+  "production": {
+    "deployment": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+    "commit": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c",
+    "aliases": [
+      "drivedrop-pink.vercel.app",
+      "drivedrop-future-9f39.vercel.app",
+      "drivedrop-git-main-future-9f39.vercel.app"
+    ],
+    "hostedChangesPerformed": false
+  },
+  "accounts": {
+    "checkedAt": "2026-10-22T20:46:22.11485+00:00",
+    "total": 19,
+    "existingTestTransporterMeetsBothVerificationAndConnect": false,
+    "ownerMailboxRole": "ADMIN",
+    "proposedRecipientAddressesUnused": true,
+    "plannedFreshUsers": 2,
+    "plannedFreshSandboxExpressAccounts": 1,
+    "existingUserReassignment": false
+  },
+  "email": {
+    "priorProbeStatus": "RECIPIENT_CONFIRMED_JUNK_LINK_WORKS",
+    "priorProbeExercisedAppSendPath": false,
+    "newSendsPerformed": 0,
+    "expectedHappyPathCustomerEmails": 3,
+    "expectedHappyPathTransporterEmails": 2,
+    "recipients": [
+      "delivered+drivedrop-qa22-e2e-customer@resend.dev",
+      "delivered+drivedrop-qa22-e2e-transporter@resend.dev"
+    ],
+    "providerDeliverySimulationOnly": true,
+    "inboxPlacementResolved": false
+  },
+  "digest": {
+    "existingEligibleRecipientCount": 4,
+    "dailyRunRows": 0,
+    "recentOpenJobCount": 0,
+    "databaseJobs": [
+      {
+        "name": "drivedrop-preview-booking-authorisations",
+        "schedule": "* * * * *",
+        "active": true
+      }
+    ],
+    "containment": "Create after 08:05 UTC with same UK-day collection window ending before midnight; no future proposed date; cancel only this unbooked request on abort",
+    "existingRecipientPreferencesChanged": false
+  },
+  "recovery": {
+    "pendingAuthorisations": 0,
+    "pendingPayouts": 0,
+    "failedOrReviewRefunds": 2,
+    "recentWorkerRuns": "Three succeeded; checked=0 and failed=0; 2026-10-22T20:47 through 20:49 UTC",
+    "dispatcherFunction": {
+      "name": "poll_booking_authorisations",
+      "schema": "drivedrop_preview_ops",
+      "usesVault": true,
+      "definitionHash": "5c7da6d73e5a13ad34be413912509048",
+      "usesDispatcher": true,
+      "usesRecoveryRoute": true
+    },
+    "idleRunsProvePendingCompletion": false,
+    "newPendingHostedRecoveryTest": "NOT_RUN"
+  },
+  "protected": {
+    "narrowSnapshotOnly": true,
+    "records": [
+      {
+        "bookingId": "cmvh5nyop0001l507711bxm28",
+        "paidPence": 11000,
+        "updatedAt": "2026-10-20T22:08:06.59+00:00",
+        "alternatives": null,
+        "payoutStatus": "HELD",
+        "paymentStatus": "PAID",
+        "proceedsPence": 10000,
+        "refundedPence": 0
+      },
+      {
+        "bookingId": "cmvibep670001jn08afdvank7",
+        "paidPence": 110,
+        "updatedAt": "2026-10-21T16:26:37.057+00:00",
+        "alternatives": [
+          {
+            "id": "5f82847b-20a0-4a3e-91ab-7e2c0994c0bb",
+            "bytes": 44415,
+            "sha256": "69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e",
+            "amountPence": 110
+          }
+        ],
+        "payoutStatus": "CANCELLED",
+        "paymentStatus": "REFUNDED",
+        "proceedsPence": 0,
+        "refundedPence": 110
+      }
+    ],
+    "alternativeAccountingEventType": "REFUND_CREATED",
+    "alternativeAccountingEventCount": 1,
+    "qa21StripeRefundedPenceDerivedFromAppAccounting": 0,
+    "canonicalStripeFinancialObjectsQueried": false,
+    "originalFailedReservationStillActive": true,
+    "fullDatabaseFingerprintOrBackupPerformed": false
+  },
+  "changes": {
+    "customerBookingEmail": {
+      "before": "/customer?view=quotes",
+      "after": "/customer?view=bookings",
+      "label": "View booking"
+    },
+    "productionConfigChanged": false,
+    "refundFlagChanged": false,
+    "hostedDatabaseWrites": 0,
+    "hostedFileUploads": 0
+  },
+  "validation": {
+    "availabilityNotificationConcurrencyReplayRecipientIsolationAndFailure": "PASS including customer booking, transporter delivery and uncaptured request CTA assertions",
+    "uploadFixtures": "5 PNGs passed actual source validators",
+    "digestDateFilterChecks": "4 passed using source functions, including UK DST change dates",
+    "fixtureVisualInspection": "Insurance placeholder rendered with explicit TEST ONLY and no real identity/insurance claims",
+    "build": "PASS: Next.js 16.3.8 / Prisma 6.19.2, telemetry disabled, process-scoped offline PostgreSQL placeholder at 127.0.0.1:1; no hosted credential used",
+    "initialBuildAttempt": "Compiled and typechecked, then stopped because POSTGRES_PRISMA_URL was absent. Repeated once with an offline placeholder and passed.",
+    "generatedFiles": [
+      {
+        "filename": "vehicle.png",
+        "bytes": 52679,
+        "sha256": "c89147aa4bdd0a054cd713ce094a4c38627a32dd3f2369bbb28d934a77ac544e"
+      },
+      {
+        "filename": "collection.png",
+        "bytes": 54542,
+        "sha256": "435f6321931f489b9ea29c9b40aedad91c46077981aa53154fecaac077a8b2d5"
+      },
+      {
+        "filename": "delivery.png",
+        "bytes": 54232,
+        "sha256": "7a7cfca4f61c3e00aea891c40e5f23304be79b8af631ff5f073061111b0509de"
+      },
+      {
+        "filename": "insurance.png",
+        "bytes": 52708,
+        "sha256": "fa24ba4b2fa67e3aff610fc36eae3a81cdec24d2f4c6a81cf7637bbb40afa191"
+      },
+      {
+        "filename": "driving-licence.png",
+        "bytes": 52357,
+        "sha256": "f4bd1cb3a5ea6253886a89c814a2384dc9e44fa2ce17f736b1ca6474222f0b99"
+      }
+    ],
+    "dateFilterCases": [
+      {
+        "createdAt": "2026-10-22T15:00:00.000Z",
+        "nextCutoff": "2026-10-23T08:00:00.000Z",
+        "excludedBeforeCutoffByCreationWindow": true,
+        "excludedAtNextCutoffByCollectionDate": true
+      },
+      {
+        "createdAt": "2026-10-24T15:00:00.000Z",
+        "nextCutoff": "2026-10-25T08:00:00.000Z",
+        "excludedBeforeCutoffByCreationWindow": true,
+        "excludedAtNextCutoffByCollectionDate": true
+      },
+      {
+        "createdAt": "2026-10-25T15:00:00.000Z",
+        "nextCutoff": "2026-10-26T08:00:00.000Z",
+        "excludedBeforeCutoffByCreationWindow": true,
+        "excludedAtNextCutoffByCollectionDate": true
+      },
+      {
+        "createdAt": "2026-10-26T15:00:00.000Z",
+        "nextCutoff": "2026-10-27T08:00:00.000Z",
+        "excludedBeforeCutoffByCreationWindow": true,
+        "excludedAtNextCutoffByCollectionDate": true
+      }
+    ]
+  },
+  "unresolved": [
+    "Genuine Stripe balance_insufficient reversal failure and retry",
+    "Hosted financial browser run and actual app-email sends",
+    "Natural 24-hour hold and administrator transfer",
+    "Production scheduler/operator/alert decisions",
+    "Fresh consistent pre-cutover recovery evidence and compatible fallback",
+    "Final production email origin and actual inbox placement",
+    "Separately approved exact production cutover"
+  ],
+  "sourceSha256": {
+    "src/lib/availability-notifications.ts": "c63a734c3a9ef4dac176ea0624a80dbf3ab9ac76fa644fc55d0bf5d02ba26fdc",
+    "scripts/test-availability-notifications.cjs": "2cc40eb0175c3641c4d903266033103da770b50b63f7deeb1d8e9fc169330799",
+    "scripts/generate-preview-payment-fixtures.cjs": "e686b0bdcf39729089142f87215d36b8b8ccda0fb190a2b1c7556b143d060aa8",
+    "docs/fixtures/preview-payment-qa22/fixtures.json": "9faf5442dcb870aae7080bb649ce21878cc6388d316b6244e319818f21279bf2",
+    "src/lib/job-digest.ts": "f54524b96b2543c6239e098b37a2fa63bd52446ea9469ac1fe65c72b434e1259",
+    "src/lib/job-expiry.ts": "19405074dd46cc750db218943813889c04ef41c4b6a466c55fcc26b4dcc26287",
+    "src/lib/email.ts": "f8cf14d24d087aa99dd3a2fcc9d0dbb7bed7ceb3cb4cc93bbff900f6729f4c31",
+    "src/lib/finance.ts": "e2354a74267c0b969f77db51d0a320caa687a59922f50ecc7dd01883007b8851",
+    "src/lib/supabase-storage.ts": "863d5d83fa3052fcb87d5d9d4c357433b81aceb4b4c02287a2fdd06fd85432ef"
+  }
+}

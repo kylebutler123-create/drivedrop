@@ -1,0 +1,20 @@
+{
+  "run": "QA22 E2E",
+  "environment": "preview",
+  "status": "PREPARED_NOT_EXECUTED",
+  "participants": {
+    "customer": {"name": "DriveDrop QA22 E2E Customer", "email": "delivered+drivedrop-qa22-e2e-customer@resend.dev"},
+    "transporter": {"name": "DriveDrop QA22 E2E Transporter", "email": "delivered+drivedrop-qa22-e2e-transporter@resend.dev"}
+  },
+  "amounts": {"currency": "GBP", "quotePence": 1000, "feePence": 100, "authoriseAndCapturePence": 1100, "transferPence": 1000},
+  "expectedHappyPathEmails": {"customer": 3, "transporter": 2},
+  "collectionRule": "After 08:05 UTC; same UK calendar date; at least 90 minutes ahead; window ends before UK midnight; no future-date quote proposal.",
+  "assets": [
+    {"filename": "vehicle.png", "title": "Vehicle upload placeholder", "detail": "QA22 E2E - no real vehicle is offered for transport."},
+    {"filename": "collection.png", "title": "Collection evidence placeholder", "detail": "QA22 E2E - no real collection or vehicle movement occurred."},
+    {"filename": "delivery.png", "title": "Delivery evidence placeholder", "detail": "QA22 E2E - no real delivery or vehicle movement occurred."},
+    {"filename": "insurance.png", "title": "Insurance upload TEST FIXTURE", "detail": "Not insurance. No policy, insurer, cover or legal effect."},
+    {"filename": "driving-licence.png", "title": "Licence upload TEST FIXTURE", "detail": "Not an identity document. No licence or driving entitlement."}
+  ],
+  "disclaimer": "All uploads and review actions apply only to clearly labelled synthetic preview participants. Never use these placeholders for real verification. Credentials, private addresses and real identity documents must not be added to this manifest."
+}

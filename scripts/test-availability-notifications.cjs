@@ -50,6 +50,8 @@ function load(file, mocks) {
   assert.equal(rows.size, 2, 'one booking notice per recipient under concurrency');
   assert.equal(emails.length, 2, 'one email attempt per recipient under concurrency');
   assert.deepEqual(emails.map(e => e.to).sort(), ['customer@example.test', 'transporter@example.test']);
+  assert.equal(emails.find(e => e.to === 'customer@example.test').ctaPath, '/customer?view=bookings', 'captured booking email opens customer bookings');
+  assert.equal(emails.find(e => e.to === 'transporter@example.test').ctaPath, '/transporter?view=deliveries', 'transporter confirmation keeps its delivery link');
   assert.ok(inserts.every(i => i.sql.includes('ON CONFLICT ("id") DO NOTHING')));
   const originalRows = [...rows];
   // A later cold instance cannot resend or rewrite the first notification.
@@ -61,6 +63,7 @@ function load(file, mocks) {
   await Promise.all([processInstance()(request.id), processInstance()(request.id)]);
   assert.equal(rows.size, 3, 'a distinct status has its own recipient claim');
   assert.equal(emails.length, 3);
+  assert.equal(emails[2].ctaPath, '/transporter?view=quotes', 'uncaptured authorization still opens the confirmation request');
   request.status = 'CAPTURING';
   await processInstance()(request.id);
   assert.equal(rows.size, 3, 'transient capture state sends nothing');
