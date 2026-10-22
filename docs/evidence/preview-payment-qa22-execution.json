@@ -1,6 +1,6 @@
 {
   "run": "QA22 E2E",
-  "status": "APPROVED_AWAITING_SECURE_SIGNUP",
+  "status": "TRANSPORTER_SUBMITTED_AWAITING_STRIPE_ONBOARDING_HANDOFF",
   "approval": {
     "date": "2026-10-22",
     "source": "Kye answered Yes to the exact bounded sandbox run presented after commit 4d45e2e",
@@ -41,6 +41,57 @@
     "manualHandoffRequiredBy": "browserAuth documentation: do not use browserAuth to create accounts; offer manual handoff so the user completes signup",
     "proof": "preview-payment-qa22-signup.jpg"
   },
+  "transporterSetup": {
+    "checkedAt": "2026-10-22T21:32:12.000239Z",
+    "userSignupConfirmedAfterManualHandoff": true,
+    "userId": "cmvk1r4020000l207e3d2dt2q",
+    "userCreatedAt": "2026-10-22T21:22:10.561Z",
+    "dailyJobEmails": false,
+    "dailyJobEmailPreferenceChangedThroughUI": true,
+    "businessName": "DriveDrop QA22 E2E TEST ONLY",
+    "allBusinessContactDetailsSynthetic": true,
+    "verificationId": "cmvk1xssd0001jz08f28tflus",
+    "verificationStatus": "PENDING",
+    "verificationSubmittedAt": "2026-10-22T21:30:11.912Z",
+    "adminReviewCompleted": false,
+    "documents": [
+      {"id":"3080bcb0-fd8f-46ea-85b4-493970639aa3","type":"DRIVING_LICENCE","fixture":"driving-licence.png","status":"PENDING","ownerMatches":true,"storageExists":true},
+      {"id":"a2e7b311-3bc9-41f5-96af-f3671ff8dcd4","type":"INSURANCE","fixture":"insurance.png","status":"PENDING","expiresAt":"2027-10-23T00:00:00Z","ownerMatches":true,"storageExists":true}
+    ],
+    "verificationProof": "preview-payment-qa22-verification-submitted.jpg",
+    "connect": {
+      "id": "76d84d22-dd5c-45c7-9b4b-d7667d23451e",
+      "stripeAccountId": "acct_1UTTZQLAzgzcUlfr",
+      "createdThroughExistingAppSetupPayoutsFlow": true,
+      "environment": "preview",
+      "status": "PENDING",
+      "transfersEnabled": false,
+      "payoutsEnabled": false,
+      "requirementsDue": true,
+      "lastCheckedAt": "2026-10-22T21:30:51.663Z",
+      "stripePageExplicitlyShowsTestAccountWithTestData": true,
+      "onboardingCompleted": false,
+      "handoffReason": "Stripe onboarding displays agreement to terms on continuing. Browser confirmation policy and browserAuth guidance require the user's action for signup/terms; no real phone, identity or bank data is needed or authorised.",
+      "currentStep": "Let's get started; Use test phone number is available; no phone submitted by agent",
+      "handoffProof": "preview-payment-qa22-stripe-onboarding-handoff.jpg"
+    },
+    "customerCreated": false
+  },
+  "postSetupPreservationCheck": {
+    "checkedAt": "2026-10-22T21:32:12.000239Z",
+    "previewDeployment": "dpl_44VtLEMPMtNofrLgZmMT1kAgvHU6",
+    "previewCommit": "0b722c55cae12e6e242806c3c957e350f02f9933",
+    "previewState": "READY",
+    "refundsEnabled": false,
+    "environmentMetadataEntries": 29,
+    "protectedPaymentStatusAmountsAndUpdatedAtMatchBaseline": true,
+    "protectedQA21EvidenceBytes": 44415,
+    "protectedQA21EvidenceSha256": "69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e",
+    "productionDeploymentUnchanged": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+    "productionCommitUnchanged": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c",
+    "productionAliasesUnchanged": true,
+    "fullDatabaseFingerprintOrCutoverBackup": false
+  },
   "timeGate": {
     "jobCreationEligibleAtBaseline": false,
     "reason": "Fewer than three hours remained before UK midnight; preserve the approved digest containment rule",
@@ -48,12 +99,13 @@
     "nextEarliestJobCreationUK": "23 October 2026, 09:05 BST",
     "accountSetupAllowedBeforeThen": true
   },
-  "actionsPerformed": ["Read-only branch, deployment, flags, sandbox identity and protected-case checks", "Normal logout of existing transporter session", "Prepared approved transporter name/email/role in signup form"],
+  "actionsPerformed": ["Read-only branch, deployment, flags, sandbox identity and protected-case checks", "Normal logout of existing transporter session", "Prepared approved transporter name/email/role in signup form", "Confirmed transporter signup after the user completed the secure handoff", "Disabled daily job emails only for the new transporter through Account preferences", "Saved clearly labelled synthetic business details", "Uploaded both synthetic verification fixtures through the normal UI and submitted for review", "Created one new sandbox Connect account through the normal Set up payouts flow", "Stopped at Stripe onboarding signup/terms for manual handoff", "Rechecked protected payment amounts/status/timestamps, QA21 evidence hash, refunds-off flag and production aliases"],
   "newHostedUsersCreatedByAgent": 0,
   "newJobsCreated": 0,
-  "newStripeObjectsCreated": 0,
+  "newStripeAccountsCreated": 1,
+  "newFinancialStripeObjectsCreated": 0,
   "newAppEmailsSent": 0,
-  "hostedUploads": 0,
+  "hostedUploads": 2,
   "productionChanges": 0,
   "providerInsufficientBalanceGate": "UNVERIFIED"
 }
