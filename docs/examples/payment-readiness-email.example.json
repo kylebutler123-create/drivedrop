@@ -1,0 +1,25 @@
+{
+  "status": "DRAFT_UNSENT",
+  "scope": "One preview-only delivery probe; not a booking or money operation and not production email acceptance.",
+  "recipient": null,
+  "recipientRule": "Use only the named recipient explicitly authorized by Kye. Do not store their address in the public repository.",
+  "sender": "DriveDrop <account@contact.drive-drop.com>",
+  "expectedAppOrigin": "https://drivedrop-git-feature-ui-polish-future-9f39.vercel.app",
+  "message": {
+    "subject": "DriveDrop preview — email delivery check",
+    "heading": "DriveDrop test notification",
+    "body": "This is the agreed DriveDrop preview email delivery check.\n\nPlease confirm in ChatGPT whether it reached your inbox or spam folder.",
+    "ctaLabel": "Open DriveDrop preview",
+    "ctaPath": "/",
+    "preheader": "One test notification for the payment-readiness review."
+  },
+  "beforeSending": [
+    "Confirm the named recipient, sender verification, existing preview sending access and exact rendered preview link.",
+    "Keep production credentials and email flags unchanged; use the existing application template without introducing a public test-send endpoint."
+  ],
+  "evidenceRequired": [
+    "Record provider acceptance separately from actual recipient delivery.",
+    "Obtain recipient inbox/spam confirmation and check the rendered link.",
+    "Keep credentials, recipient address and private message content out of public evidence."
+  ]
+}

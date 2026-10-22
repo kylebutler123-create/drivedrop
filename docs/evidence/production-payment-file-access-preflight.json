@@ -193,5 +193,109 @@
       "No new all-table/storage fingerprint comparison or consistent pre-cutover backup.",
       "Transporter, hosted uploads, bounded financial lifecycle, scheduler/email and production-mode acceptance remain separate gates."
     ]
+  },
+  "transporterReadOnlyFollowUp": {
+    "checkedAt": "2026-10-22T19:56:59.759416+00:00",
+    "sourceCommit": "b9a0cc58c09ea83405987cfc5e94bb59989bb98a",
+    "previewDeployment": "dpl_9RCSY4FNow5u4ts42K5J5Hg4WiXo",
+    "authentication": "Customer signed out normally; secure transporter request submitted; fresh /transporter page confirmed Transporter role.",
+    "sameBookingComparison": {
+      "reference": "DD-ETUGTSLY",
+      "customerPaidPence": 33000,
+      "transporterProceedsPence": 30000,
+      "finePence": 0,
+      "refundAdjustmentPence": 0,
+      "transporterPayoutLabel": "In progress",
+      "commissionExposedInSelectedBreakdown": false,
+      "databaseAmountsMatch": true
+    },
+    "statement": {
+      "bookingId": "cmuhn1tf00001js04xz6t2sge",
+      "reference": "DD-XZ6T2SGE",
+      "provider": "TEST",
+      "proceedsPence": 30000,
+      "payoutStatus": "READY",
+      "paidOn": "Not recorded",
+      "netPaidPence": 0,
+      "downloadSucceeded": true,
+      "pdfMagic": true,
+      "bytes": 213388,
+      "sha256": "b2023d14cf5268e902c564654b65efadc99ea7af98dbf117576be926eb8f6aac",
+      "pages": 1,
+      "referenceAndAmountMatched": true,
+      "commissionLabelPresent": false,
+      "explicitBookedVersusReceivedWarning": true
+    },
+    "accessDenials": [
+      {
+        "target": "Another transporter completed/paid TEST statement",
+        "bookingId": "cmtauo8lm0005i204o27k6u5r",
+        "databaseDifferentOwnerConfirmed": true,
+        "body": "Statement not found."
+      },
+      {
+        "target": "Existing QA21 administrator-only alternative-repayment evidence",
+        "body": "Administrator access required"
+      },
+      {
+        "target": "Customer receipt for own transported delivery",
+        "body": "Customer access required."
+      }
+    ],
+    "payoutSetup": {
+      "visibleMode": "Sandbox",
+      "visibleStatus": "Connect your payout account",
+      "sandboxWarningPresent": true,
+      "previewConnectRecordCount": 0,
+      "onboardingOrRefreshActionSubmitted": false
+    },
+    "sourceHashes": {
+      "src/app/api/customer/payments/download/route.ts": "e42d316711630d5e19ef268c3a6cbd085f0c35f020366a4f6fc0351814aef97c",
+      "src/app/api/transporter/proceeds/export/route.ts": "c924090f0735b664edddd3baf0dd3db87aa3cb60f39a238819282816aa0b0d0b",
+      "src/app/account/StripePayoutSetup.tsx": "63b6d8a93ed1f57613bbf05ac4e64e785bb383f5a21126696561b496aa192fce",
+      "src/app/api/account/stripe-connect/route.ts": "e1b07fde335c893b372efd6388997be213bd6bb79782cb950eaa937509fc11f9",
+      "src/lib/stripe-connect-accounts.ts": "5c33a16eaa27ede4836585f55f626db42f99bcb699158303b3799040aa30c8e1",
+      "src/app/api/admin/payments/alternative-refund/[id]/evidence/route.ts": "333e2f51b397775a69e48fc7ad5f719ed5f950340006c779d1a79556f59eb8f7"
+    },
+    "limitations": [
+      "Read-only browser checks using existing TEST records; not a full hosted financial lifecycle or production-mode certification.",
+      "Denial response bodies observed; HTTP codes not independently instrumented.",
+      "This transporter has not completed Stripe onboarding.",
+      "No new money operation, upload, email, schema/configuration change or main merge. Normal authentication creates/removes sessions.",
+      "Actual lifecycle emails, hosted upload ownership and pending-work scheduling remain open."
+    ]
+  },
+  "roleChecksFinalPreservation": {
+    "checkedAt": "2026-10-22T19:56:59.759678+00:00",
+    "environmentMetadataEntries": 29,
+    "environmentMetadataUnchangedFromNativeCheckpoint": true,
+    "previewRefundsOff": true,
+    "productionDeployment": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+    "productionCommit": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c",
+    "productionAliases": [
+      "drivedrop-pink.vercel.app",
+      "drivedrop-future-9f39.vercel.app",
+      "drivedrop-git-main-future-9f39.vercel.app"
+    ],
+    "original110Case": {
+      "status": "PAID",
+      "payoutStatus": "HELD",
+      "paidPence": 11000,
+      "refundedPence": 0,
+      "transporterProceedsPence": 10000,
+      "alternativeCount": 0,
+      "activeFailedRefundReservations": 1,
+      "updatedAt": "2026-10-20T22:08:06.590Z"
+    },
+    "qa21Case": {
+      "status": "REFUNDED",
+      "payoutStatus": "CANCELLED",
+      "paidPence": 110,
+      "totalReimbursedPence": 110,
+      "transporterProceedsPence": 0,
+      "alternativeCount": 1,
+      "updatedAt": "2026-10-21T16:26:37.057Z"
+    },
+    "scope": "Focused financial record and hosting metadata reads. No all-table/storage fingerprint comparison or consistent pre-cutover backup. Authentication session changes are expected."
   }
 }

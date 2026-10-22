@@ -18,7 +18,7 @@ The existing dispute-fine regression test was blocked by missing test doubles fo
 
 A small independent GitHub Actions workflow runs these two tests without hosted credentials, databases, browsers, artifacts or deployment commands. The [saved local evidence](evidence/production-payment-file-access-preflight.json) records source hashes and the scope of the results. These checks supplement existing verification-document, vehicle-photo and alternative-refund suites; they do not certify hosted Supabase permissions or real uploads.
 
-## Actual hosted observations and limits
+## Initial hosted observations and limits (before secure sign-in)
 
 - The signed-in Stripe Support widget again showed a fresh assistant greeting for **drivedrop sandbox**. The earlier escalation, human reply and case number could not be recovered. No duplicate message was sent. The genuine insufficient-balance reversal/retry gate remains **UNVERIFIED**.
 - The preview `/admin/payouts` page requires administrator sign-in. No administrator session was created in this preflight. Signed-in customer/transporter/administrator journeys remain incomplete.
@@ -54,8 +54,23 @@ Using the same authenticated customer session, the existing administrator-only Q
 
 No booking/quote/payment/refund, delivery confirmation, file upload, message or email was submitted. The downloaded receipt is internal verification material and is not copied into the public repository. These checks establish the exercised read-only customer screens and file boundaries; hosted checkout/3DS, financial submissions, delivery uploads, other role permissions and production-mode behavior remain separate gates.
 
+## Transporter read-only follow-up
+
+The customer was signed out normally. The transporter secure sign-in returned `submitted`, followed by fresh `/transporter` page state confirming the **Transporter** role. The checked preview was `dpl_9RCSY4FNow5u4ts42K5J5Hg4WiXo`, commit `b9a0cc58c09ea83405987cfc5e94bb59989bb98a`. Only documentation changed between the customer and transporter checkpoints.
+
+- For **DD-ETUGTSLY**, this transporter sees £300 proceeds before fine, £0 fine, £300 net proceeds, £0 refund adjustment and **In progress**. The customer view/receipt above shows £330. No commission or customer total was exposed in this selected transporter breakdown. Both amounts match the stored test payment.
+- The existing **DD-XZ6T2SGE** statement downloaded as a one-page, 213,388-byte PDF, SHA-256 `b2023d14cf5268e902c564654b65efadc99ea7af98dbf117576be926eb8f6aac`. It matches £300 proceeds, `READY`, no paid date and £0 net paid proceeds, and explicitly distinguishes booked proceeds from money received. No commission label was present. The payment is an existing `TEST` record; downloading its statement did not release it.
+- A database-selected, completed/paid `TEST` booking owned by a different transporter (`cmtauo8lm0005i204o27k6u5r`) returned **Statement not found** from the same statement route. The administrator's QA21 evidence URL returned **Administrator access required**. The customer receipt for the transporter's own delivery returned **Customer access required**, preserving the separate customer financial view. These are observed denial bodies, not independently captured HTTP codes.
+- The account's Stripe section is explicitly **Sandbox**, with **Connect your payout account** and the sandbox/no-real-money warning. A focused database read confirmed zero preview Connect records for this transporter. No setup, refresh, dashboard-opening or bank-detail action was submitted. This account is not a completed Stripe onboarding fixture.
+
+Fresh hosted reads after these checks again found all 29 environment metadata entries unchanged, preview refunds off and the original production deployment/commit/three aliases unchanged. The protected £110 payment remains `PAID`, 0p reimbursed, `HELD`, with one active failed-refund reservation and no alternative repayment. QA21 still has one alternative record, 110p total reimbursement, £0 transporter proceeds and a cancelled payout. Both payment update times are unchanged from their original settlement/failure dates. Authentication session changes are expected; no all-table/storage preservation claim is made.
+
+The observed administrator/customer/transporter read-only screens and exercised receipt/evidence boundaries now have hosted evidence. This does **not** close the full financial lifecycle, hosted uploads or production-target acceptance gates. No new money operation, onboarding, upload, email, hosted schema/configuration change or main merge occurred.
+
 ## Authentication history and resume requirements
 
 After saving the administrator results at `deb304518019d3eb191cf0cfaf687762d7b940da`, the administrator was signed out normally and the visible Customer Login link opened. The customer secure sign-in request returned `submitted`, but the login form remained visible without an error and a fresh same-origin page still showed Log in. Customer authentication is therefore **unconfirmed**, not a passed journey or a demonstrated credential failure. No second credential submission was attempted. Continue through the browser's authentication handoff; do not inspect credentials or fabricate a session.
 
-The later customer follow-up above supersedes this historical sign-in blocker. Continue transporter and remaining role/private-file browser checks with dedicated fixtures and bounded actions. Secure sign-in handoffs must collect credentials without exposing them in chat or logs. Confirm a named recipient before sending any delivery-test email. Hosted scheduling/pending-work acceptance and the genuine Stripe insufficient-balance reversal/retry gate remain open. Keep production changes and live operations behind the later exact cutover approval.
+The later customer and transporter follow-ups above supersede this historical sign-in blocker. Remaining financial submissions and hosted file upload checks need dedicated fixtures and separately bounded actions; do not reuse the protected cases. The [single-email draft](examples/payment-readiness-email.example.json) is prepared but unsent, with no recipient selected. A named authorized recipient and the correct preview sender/origin must be confirmed before delivery is tested. A generic delivery probe will not certify every lifecycle email or production sending.
+
+Hosted scheduling/pending-work acceptance, verified production account/domain/key scopes, current recovery evidence, a compatible fallback and the genuine Stripe insufficient-balance reversal/retry gate remain open. Keep production changes and live operations behind the later exact cutover approval.
