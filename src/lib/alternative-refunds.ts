@@ -4,7 +4,8 @@ import type {Prisma} from '@prisma/client';
 import {z} from 'zod';
 import {prisma} from './prisma';
 import {paymentEnvironment} from './booking-authorisation-provider';
-import {connectEnabled, verifiedConnectClient} from './stripe-connect-provider';
+import {connectEnabled, connectReconciliationEnabled, verifiedConnectClient} from './stripe-connect-provider';
+import {stripeLivemode} from './payment-runtime';
 import {assertCapturedSource} from './stripe-payout-policy';
 import {assertStripeRefundMatches} from './stripe-refund-policy';
 import {ALTERNATIVE_METHODS, alternativeReview, assertAlternativeEligible} from './alternative-refund-policy';
@@ -23,7 +24,8 @@ const details = z.object({
   settledOn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), note: z.string().trim().max(1000), confirmed: z.literal(true),
 });
 const sha = (value: string | Uint8Array) => createHash('sha256').update(value).digest('hex');
-export function alternativeRefundsEnabled() {return connectEnabled() && ['preview', 'development'].includes(paymentEnvironment());}
+export function alternativeRefundsEnabled() {return paymentEnvironment() === 'production' ? connectReconciliationEnabled() && process.env.STRIPE_ALTERNATIVE_REFUNDS_ENABLED === 'true' : connectEnabled();}
+export function alternativeRefundEvidenceEnabled() {return paymentEnvironment() === 'production' ? connectReconciliationEnabled() : alternativeRefundsEnabled();}
 function requireEnabled() {if (!alternativeRefundsEnabled()) alternativeReview('Alternative refund recording is not enabled in this environment.');}
 
 async function allPages<T extends {id: string}>(fetchPage: (cursor?: string) => Promise<{data: T[]; has_more: boolean}>) {
@@ -43,7 +45,7 @@ async function allPages<T extends {id: string}>(fetchPage: (cursor?: string) => 
 async function checkCanonical(tx: Prisma.TransactionClient, stripe: Stripe, payment: Prisma.BookingPaymentGetPayload<{include: typeof include}>, row: ReturnType<typeof assertAlternativeEligible>) {
   const request = await tx.availabilityRequest.findFirst({where: {bookingId: payment.bookingId,
     paymentIntentId: row.paymentIntentId, paymentProvider: 'STRIPE', paymentEnvironment: row.environment}});
-  if (!request) return alternativeReview('The captured sandbox payment could not be matched.');
+  if (!request) return alternativeReview('The captured Stripe payment could not be matched.');
   const checkIntent = async () => {
     const intent = await stripe.paymentIntents.retrieve(row.paymentIntentId, {expand: ['latest_charge']});
     const chargeId = assertCapturedSource(intent, {...payment, environment: row.environment}, request);
@@ -55,9 +57,9 @@ async function checkCanonical(tx: Prisma.TransactionClient, stripe: Stripe, paym
     alternativeReview('Stripe has a new or unsettled refund. Reconcile it before recording another repayment.');
   }
   // No app payout row alone is insufficient: a dashboard-created transfer can
-  // exist. Scan bounded, complete sandbox history and reject any matching source.
+  // exist. Scan bounded, complete account history and reject any matching source.
   const transfers = await allPages(cursor => stripe.transfers.list({limit: 100, ...(cursor ? {starting_after: cursor} : {})}));
-  if (transfers.some(t => t.livemode || (typeof t.source_transaction === 'string' ? t.source_transaction : t.source_transaction?.id) === row.sourceChargeId ||
+  if (transfers.some(t => t.livemode !== stripeLivemode(row.environment) || (typeof t.source_transaction === 'string' ? t.source_transaction : t.source_transaction?.id) === row.sourceChargeId ||
       t.metadata?.paymentId === payment.id || t.metadata?.bookingId === payment.bookingId)) {
     alternativeReview('A transporter transfer needs separate recovery review.');
   }

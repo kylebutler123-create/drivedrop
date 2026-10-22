@@ -2,7 +2,7 @@ import {AvailabilityError} from './availability-error';
 import {Prisma} from '@prisma/client';
 import {prisma} from './prisma';
 import {calculateCustomerPrice} from './finance';
-import {authorisationProvider,paymentEnvironment} from './booking-authorisation-provider';
+import {authorisationProvider,assertNewCheckoutAllowed,paymentEnvironment} from './booking-authorisation-provider';
 import {insuranceStatusForVerification} from './insurance-expiry-notifications';
 import {confirmationDeadline,isOfferLive,validateCollectionWindow,calendarDate} from './availability-time';
 
@@ -46,6 +46,7 @@ export async function selectQuote(actor:BookingActor,quoteId:string,window?:{col
   const agreedWindow=q.dateNegotiationStatus==='ACCEPTED'&&q.proposedCollectionFrom&&q.proposedCollectionUntil;
   const from=window?.collectionFrom||(agreedWindow?q.proposedCollectionFrom:windowChanged?null:q.job.collectionFrom),until=window?.collectionUntil||(agreedWindow?q.proposedCollectionUntil:windowChanged?null:q.job.collectionUntil);
   validateCollectionWindow(date,from,until,now);
+  assertNewCheckoutAllowed();
   const provider=authorisationProvider();
   const request=await tx.availabilityRequest.create({data:{status:'AWAITING_AUTHORISATION',paymentProvider:provider,paymentEnvironment:paymentEnvironment(),paymentState:'PENDING',authorisedAmountPence:calculateCustomerPrice(q.pricePence).customerTotalPence,jobId:q.jobId,quoteId:q.id,customerId:actor.id,transporterId:q.transporterId,activeJobId:q.jobId,pricePence:q.pricePence,collectionDate:date,collectionFrom:from,collectionUntil:until,respondBy:confirmationDeadline(date,until,now,q.expiresAt)}});
   return {request,created:true};

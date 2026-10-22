@@ -1,6 +1,7 @@
 import type {BookingPayment, StripeRefund} from '@prisma/client';
 import {ConnectError} from './stripe-connect-provider';
 import {LATE_REFUND_FAILED} from './stripe-refund-failure-policy';
+import {supportedPaymentEnvironment} from './payment-runtime';
 
 export const ALTERNATIVE_METHODS = ['BANK_TRANSFER', 'CHEQUE', 'OTHER'] as const;
 export function alternativeReview(message: string): never {throw new ConnectError(message, 'ALTERNATIVE_REFUND_REVIEW');}
@@ -13,7 +14,7 @@ type Payment = BookingPayment & {
 // deduction or dispute. Other cases require an independently reviewed recovery.
 export function assertAlternativeEligible(payment: Payment, failedRefundId: string, amountPence: number, environment: string) {
   const row = payment.stripeRefunds.find(r => r.id === failedRefundId);
-  if (!['preview', 'development'].includes(environment)) alternativeReview('Alternative refund recording is disabled in production.');
+  if (!supportedPaymentEnvironment(environment)) alternativeReview('Unsupported alternative refund environment.');
   if (payment.alternativeRefund) alternativeReview('An alternative repayment is already recorded. Refresh this payment.');
   if (!row || payment.stripeRefunds.length !== 1 || row.environment !== environment || row.paymentId !== payment.id ||
       row.status !== 'FAILED' || !['STRIPE_REFUND_FAILED', LATE_REFUND_FAILED].includes(row.failureCode || '') ||

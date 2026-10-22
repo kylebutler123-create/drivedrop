@@ -1,0 +1,653 @@
+{
+  "checkedAt": "2026-10-21T19:56:38.669Z",
+  "baselineCommit": "da94f63799455ec1ff54cab46d12ff276ec18e21",
+  "branch": "feature/ui-polish",
+  "scope": "Approved local implementation and feature preview; read-only hosted checks only",
+  "schemaFingerprint": "dbafd834d5aaa168c554d9a62c382b84",
+  "preview": [
+    {
+      "table_name": "AlternativeRefund",
+      "rows": 1,
+      "fingerprint": "a70568092e9836567f3f7f2d7629a08b"
+    },
+    {
+      "table_name": "AvailabilityRequest",
+      "rows": 12,
+      "fingerprint": "a189132cff4355979cfd44862cade569"
+    },
+    {
+      "table_name": "Booking",
+      "rows": 54,
+      "fingerprint": "94651835e6c397e15b894d8886751079"
+    },
+    {
+      "table_name": "BookingPayment",
+      "rows": 54,
+      "fingerprint": "82e86e647f99a276d93860ddf1e9aa6f"
+    },
+    {
+      "table_name": "ConversationInboxState",
+      "rows": 2,
+      "fingerprint": "22da471f34a962ae83a203edb5e22cd2"
+    },
+    {
+      "table_name": "Dispute",
+      "rows": 20,
+      "fingerprint": "3eb81a2cacba42d9c588812a5277b5c8"
+    },
+    {
+      "table_name": "DisputeReviewNote",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "EmailChangeToken",
+      "rows": 2,
+      "fingerprint": "f2bda5270d618da80f028ba648bd6bab"
+    },
+    {
+      "table_name": "Evidence",
+      "rows": 98,
+      "fingerprint": "547b5c1234b22ca438289fa5b4c697a2"
+    },
+    {
+      "table_name": "FinanceEvent",
+      "rows": 140,
+      "fingerprint": "cad48b6fcfa10ac49ac6c6ae63996d22"
+    },
+    {
+      "table_name": "JobDigestRun",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "Message",
+      "rows": 32,
+      "fingerprint": "f753746af568bc1674aa17cc9572a0e0"
+    },
+    {
+      "table_name": "MessageAttachment",
+      "rows": 5,
+      "fingerprint": "1ef44e9c0c51715b38d3e801349e2862"
+    },
+    {
+      "table_name": "Notification",
+      "rows": 409,
+      "fingerprint": "500611678f444e9c54e22f7de56bb943"
+    },
+    {
+      "table_name": "PasswordResetToken",
+      "rows": 1,
+      "fingerprint": "5b76b2104345ea09d7dc460f65abd2df"
+    },
+    {
+      "table_name": "Quote",
+      "rows": 68,
+      "fingerprint": "f4f58b86e4600976791cc2f6411bb5d3"
+    },
+    {
+      "table_name": "Review",
+      "rows": 8,
+      "fingerprint": "b527de3ab057fc5a9aaf7357ce26637a"
+    },
+    {
+      "table_name": "Session",
+      "rows": 1,
+      "fingerprint": "2e589043dfdf62d1dc8900385d2494d8"
+    },
+    {
+      "table_name": "storage.objects",
+      "rows": 136,
+      "fingerprint": "aad34d69d058bf8ec79a0e2ab222e8f9"
+    },
+    {
+      "table_name": "StripeConnectAccount",
+      "rows": 1,
+      "fingerprint": "51af1bbb7570a281c38c2a7a828e4190"
+    },
+    {
+      "table_name": "StripePayout",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "StripeRefund",
+      "rows": 2,
+      "fingerprint": "64e1aa97f6c96b0d137977dbb4b3b7cc"
+    },
+    {
+      "table_name": "SupportConversation",
+      "rows": 4,
+      "fingerprint": "51861a7eacdd09e4244d6cddaf88c04f"
+    },
+    {
+      "table_name": "SupportMessage",
+      "rows": 4,
+      "fingerprint": "0b35fc2dcef7931422bc5469421365a2"
+    },
+    {
+      "table_name": "TrackingEvent",
+      "rows": 128,
+      "fingerprint": "baaa7e2e7ad2f168d2695686b8770109"
+    },
+    {
+      "table_name": "TransporterCancellationDeduction",
+      "rows": 4,
+      "fingerprint": "021e1a4e662743bfb2794168c35a8c6f"
+    },
+    {
+      "table_name": "TransporterCancellationFee",
+      "rows": 8,
+      "fingerprint": "d130e2c3378feab18928898757d18590"
+    },
+    {
+      "table_name": "TransporterPayoutDetails",
+      "rows": 1,
+      "fingerprint": "b4fd0669c9dc85ab47cbca8667390aee"
+    },
+    {
+      "table_name": "TransporterVerification",
+      "rows": 9,
+      "fingerprint": "90cd6833cc8ca019546e65ac52884c7c"
+    },
+    {
+      "table_name": "TransportJob",
+      "rows": 78,
+      "fingerprint": "9ad8d804c8c6714fb2c7f6013fa09f16"
+    },
+    {
+      "table_name": "User",
+      "rows": 19,
+      "fingerprint": "f29c56c756498238efb288378d4bc947"
+    },
+    {
+      "table_name": "VerificationDocument",
+      "rows": 23,
+      "fingerprint": "5a18e703ba7adebd102f24c1acda7729"
+    }
+  ],
+  "preparedProduction": [
+    {
+      "table_name": "AvailabilityRequest",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "Booking",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "BookingPayment",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "ConversationInboxState",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "Dispute",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "DisputeReviewNote",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "EmailChangeToken",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "Evidence",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "FinanceEvent",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "JobDigestRun",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "Message",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "MessageAttachment",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "Notification",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "PasswordResetToken",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "Quote",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "Review",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "Session",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "storage.objects",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "SupportConversation",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "SupportMessage",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "TrackingEvent",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "TransporterCancellationDeduction",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "TransporterCancellationFee",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "TransporterPayoutDetails",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "TransporterVerification",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "TransportJob",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "User",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table_name": "VerificationDocument",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+  ],
+  "allFingerprintsMatchPreviousReview": true,
+  "environmentMetadata": [
+    {
+      "key": "STRIPE_REFUNDS_ENABLED",
+      "id": "QYdbRtH8dcpgvyOv",
+      "type": "plain",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "feature/ui-polish",
+      "updatedAt": 1792547509076,
+      "createdAt": 1792527627371
+    },
+    {
+      "key": "STRIPE_CONNECT_ENABLED",
+      "id": "wOw5B6lV6ZtB8p9O",
+      "type": "plain",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "feature/ui-polish",
+      "updatedAt": 1792447875225,
+      "createdAt": 1792446797406
+    },
+    {
+      "key": "STRIPE_CONNECT_WEBHOOK_SECRET",
+      "id": "6ifimE26wX22l2vC",
+      "type": "sensitive",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "feature/ui-polish",
+      "updatedAt": 1792446787461,
+      "createdAt": 1792446787461
+    },
+    {
+      "key": "STRIPE_CONNECT_EVENTS_SECRET",
+      "id": "YLEJ9AO2hVfTFJRP",
+      "type": "sensitive",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "feature/ui-polish",
+      "updatedAt": 1792446787461,
+      "createdAt": 1792446787461
+    },
+    {
+      "key": "STRIPE_CONNECT_SECRET_KEY",
+      "id": "00JZkSQsYU4Vf8rL",
+      "type": "sensitive",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "feature/ui-polish",
+      "updatedAt": 1792533356696,
+      "createdAt": 1792446469559
+    },
+    {
+      "key": "STRIPE_SECRET_KEY",
+      "id": "fRoVmE7665VsrkXm",
+      "type": "sensitive",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "feature/ui-polish",
+      "updatedAt": 1792533499162,
+      "createdAt": 1792442142780
+    },
+    {
+      "key": "STRIPE_WEBHOOK_SECRET",
+      "id": "qQnEBJypJrVm6MuG",
+      "type": "sensitive",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "feature/ui-polish",
+      "updatedAt": 1792440022157,
+      "createdAt": 1792440022157
+    },
+    {
+      "key": "CRON_SECRET",
+      "id": "7h3mZZCrAinG0fil",
+      "type": "sensitive",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "feature/ui-polish",
+      "updatedAt": 1792439997693,
+      "createdAt": 1792439997693
+    },
+    {
+      "key": "STRIPE_CHECKOUT_ORIGIN",
+      "id": "o9n9YXofH31UUVtu",
+      "type": "plain",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "feature/ui-polish",
+      "updatedAt": 1792439997693,
+      "createdAt": 1792439997693
+    },
+    {
+      "key": "STRIPE_SANDBOX_PENDING_KEY",
+      "id": "pgbIaBxiNeugfafx",
+      "type": "sensitive",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "feature/ui-polish",
+      "updatedAt": 1792439842474,
+      "createdAt": 1792439842474
+    },
+    {
+      "key": "RESEND_API_KEY",
+      "id": "CUoXwVBFuAZ7ApiK",
+      "type": "sensitive",
+      "target": [
+        "preview"
+      ],
+      "updatedAt": 1787884939454,
+      "createdAt": 1787884939454
+    },
+    {
+      "key": "IDEAL_POSTCODES_API_KEY",
+      "id": "VST8XEWUD4sQraoL",
+      "type": "sensitive",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787760384500,
+      "createdAt": 1787760384500
+    },
+    {
+      "key": "IDEAL_POSTCODES_API_KEY",
+      "id": "UAReJ94NfLIjMl4L",
+      "type": "sensitive",
+      "target": [
+        "preview"
+      ],
+      "updatedAt": 1787760384500,
+      "createdAt": 1787760384500
+    },
+    {
+      "key": "POSTGRES_URL",
+      "id": "trQ4D8vpdltSBXom",
+      "type": "sensitive",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787740424607,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "POSTGRES_PRISMA_URL",
+      "id": "A5iJHjrvpJgCjkxT",
+      "type": "sensitive",
+      "target": [
+        "production",
+        "preview"
+      ],
+      "updatedAt": 1787748068747,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "POSTGRES_URL_NON_POOLING",
+      "id": "1fQ5QNlIau90hujh",
+      "type": "sensitive",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787740424607,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "POSTGRES_USER",
+      "id": "Pf9gABvGmhEjNypO",
+      "type": "encrypted",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787663535936,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "POSTGRES_HOST",
+      "id": "zOcjjdNHbdKokw54",
+      "type": "encrypted",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787663535936,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "POSTGRES_PASSWORD",
+      "id": "Nw9YAfOxWV1mRffc",
+      "type": "sensitive",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787740424607,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "POSTGRES_DATABASE",
+      "id": "HcDzb6B3f2D13noR",
+      "type": "encrypted",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787663535936,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "SUPABASE_URL",
+      "id": "ViTVNSGKAd6vPEPf",
+      "type": "encrypted",
+      "target": [
+        "production",
+        "preview",
+        "development"
+      ],
+      "updatedAt": 1787796911631,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "SUPABASE_JWT_SECRET",
+      "id": "1S0HTWPgajHFYpyb",
+      "type": "sensitive",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787740424607,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "SUPABASE_ANON_KEY",
+      "id": "ayNm1zIVKWo14kDH",
+      "type": "encrypted",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787740424607,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "SUPABASE_SERVICE_ROLE_KEY",
+      "id": "uqTKSLbAdMkN4CTZ",
+      "type": "sensitive",
+      "target": [
+        "production",
+        "preview",
+        "development"
+      ],
+      "updatedAt": 1787741569639,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "SUPABASE_PUBLISHABLE_KEY",
+      "id": "C1MfhTbkDInJnd4Z",
+      "type": "encrypted",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787740424607,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "SUPABASE_SECRET_KEY",
+      "id": "IpHD11YnMeWcQVVp",
+      "type": "sensitive",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787740424607,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "NEXT_PUBLIC_SUPABASE_URL",
+      "id": "87L9HMtkwbi9POif",
+      "type": "encrypted",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787663535936,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+      "id": "odinS9OIJ0EORnfR",
+      "type": "encrypted",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787740424607,
+      "createdAt": 1787663535936
+    },
+    {
+      "key": "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+      "id": "CD3rdDPOxZ4Q4D2k",
+      "type": "encrypted",
+      "target": [
+        "production"
+      ],
+      "updatedAt": 1787740424607,
+      "createdAt": 1787663535936
+    }
+  ],
+  "refundFlag": {
+    "type": "plain",
+    "value": "false",
+    "target": [
+      "preview"
+    ],
+    "configurationId": null,
+    "gitBranch": "feature/ui-polish",
+    "comment": "Off after controlled sandbox QA: late refund.failed leaves a succeeded ledger; bank-payout and insufficient-balance checks remain blocked.",
+    "id": "QYdbRtH8dcpgvyOv",
+    "key": "STRIPE_REFUNDS_ENABLED",
+    "createdAt": 1792527627371,
+    "updatedAt": 1792547509076,
+    "createdBy": "jIzMEALgBB7UdepKNWFYraKq",
+    "updatedBy": "jIzMEALgBB7UdepKNWFYraKq"
+  },
+  "productionDeployment": {
+    "id": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+    "commit": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c",
+    "aliases": [
+      "drivedrop-future-9f39.vercel.app",
+      "drivedrop-git-main-future-9f39.vercel.app",
+      "drivedrop-pink.vercel.app"
+    ]
+  },
+  "noHostedMutations": true,
+  "noFinancialOperations": true,
+  "noSecretDisplayed": true,
+  "limitations": [
+    "Source/data fingerprints exclude ongoing private operational run-log churn.",
+    "Preview READY is a build/deployment result, not a completed browser/payment/email journey.",
+    "Native PostgreSQL 17.11 and real multiconnection rehearsal remain blocked in this workspace.",
+    "Genuine provider insufficient-balance reversal failure/retry remains unverified."
+  ]
+}

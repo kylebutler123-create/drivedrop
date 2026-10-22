@@ -1,6 +1,12 @@
 # Production database preparation — 19 October 2026
 
-## Latest comparison — 21 October 2026
+## Latest: production-safe code and proposed schema prepared
+
+The approved implementation is prepared on `feature/ui-polish`. [Implementation and exact test limits](production-payment-implementation.md) · [Configuration and pause controls](production-payment-configuration.md) · [Proposed migration](../scripts/production-database/README.md). Local financial regression, production guard and build checks passed. The SQL rehearsal passed in PostgreSQL 17.5 WASM; native 17.11/concurrency and the Prisma-backed booking suite remain outstanding because this workspace cannot start a non-root PostgreSQL server.
+
+No hosted migration, production setting/deployment, live operation or new sandbox payment was performed. Preview refunds remain off; all original preview data, the £110 failed case and simulated QA21 ALT audit remain preserved. The genuine provider insufficient-balance gate is still UNVERIFIED. Continue with the remaining isolated rehearsal and acceptance gates, then present an exact hosted cutover for approval.
+
+## Previous comparison — 21 October 2026
 
 The read-only comparison against `feature/ui-polish` at `e8c568280a2685259497edc9989fd470f693a465` is complete. Prepared production remains empty and healthy; it needs four later payment/audit tables, two payout statuses and associated constraints/indexes/triggers. All five storage bucket configurations match. Preserve production's approved £50 fee default and tighter table permissions rather than copying preview indiscriminately.
 

@@ -1,6 +1,12 @@
 # Stripe Connect sandbox implementation
 
-## Latest: production comparison and rollout plan prepared
+## Latest: production-safe code and proposed schema prepared
+
+The approved implementation is prepared on `feature/ui-polish`. [Implementation and exact test limits](production-payment-implementation.md) · [Configuration and pause controls](production-payment-configuration.md) · [Proposed migration](../scripts/production-database/README.md). Local financial regression, production guard and build checks passed. The SQL rehearsal passed in PostgreSQL 17.5 WASM; native 17.11/concurrency and the Prisma-backed booking suite remain outstanding because this workspace cannot start a non-root PostgreSQL server.
+
+No hosted migration, production setting/deployment, live operation or new sandbox payment was performed. Preview refunds remain off; all original preview data, the £110 failed case and simulated QA21 ALT audit remain preserved. The genuine provider insufficient-balance gate is still UNVERIFIED. Continue with the remaining isolated rehearsal and acceptance gates, then present an exact hosted cutover for approval.
+
+## Previous: production comparison and rollout plan prepared
 
 The approved 21 October read-only comparison is complete. Prepared production lacks the four later payment/audit tables and two payout statuses; storage configuration already matches. The [comparison](production-readiness-comparison.md) and [rollout plan](production-payment-rollout-plan.md) identify the production payment guards, isolated recovery worker/scheduler, scoped credentials, email behavior and final browser/role checks still needed. Nothing was migrated or activated.
 

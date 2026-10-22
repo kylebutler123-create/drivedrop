@@ -1,5 +1,7 @@
 # Production payment rollout plan — 21 October 2026
 
+**Later implementation checkpoint:** [Production-safe code and proposed schema](production-payment-implementation.md) are prepared on `feature/ui-polish`. Mocked/runtime/build checks and a PostgreSQL 17.5 WASM schema rehearsal passed; native 17.11, real concurrency and hosted acceptance/cutover gates remain open. No hosted migration or production activation has occurred. This document's original review remains historical evidence.
+
 **Status: prepared for implementation review; no production change or launch is authorized by this document.** The approved read-only [comparison](production-readiness-comparison.md) is complete. The next work is to prepare and test the production-safe schema and application changes on `feature/ui-polish`, keeping hosted production unchanged and preview refunds off between separately bounded tests.
 
 This plan uses the approved UK/GBP separate-charges-and-transfers design, Express connected accounts and application negative-balance liability. It retains manual administrator release after delivery/customer-confirmation/dispute-window checks. It does not propose changing liability, payout permissions or the charge pattern to force a sandbox failure.

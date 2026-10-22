@@ -17,6 +17,7 @@ function load(file, mocks, clock = Date) {
   const rows = [1, 2, 3].map(id => ({id: String(id), status: 'CAPTURING', updatedAt: new Date(0)}));
   class Clock extends Date {static now() {return now;}}
   const worker = load('src/lib/booking-authorisation-recovery.ts', {
+    './payment-runtime': {assertProductionPaymentConfiguration: () => {}},
     './stripe-payouts': {recoverStripePayouts: async () => ({checked:0,failed:0})},
     './stripe-refunds': {recoverStripeRefunds: async () => ({checked:0,failed:0})},
     './prisma': {prisma: {availabilityRequest: {
@@ -43,8 +44,8 @@ function load(file, mocks, clock = Date) {
     'next/server': {NextResponse: {json: (body, options) => Response.json(body, options)}, after: fn => callbacks.push(fn)},
     '@/lib/booking-authorisation-provider': {paymentEnvironment: () => environment},
     '@/lib/booking-authorisation-recovery': {
-      claimPreviewRecoveryRun: async () => {claims++; return {id: 'run-one', created};},
-      completePreviewRecoveryRun: async id => completed.push(id),
+      claimPaymentRecoveryRun: async () => {if(environment==='production')throw Error('disabled');claims++; return {id: 'run-one', created};},
+      completePaymentRecoveryRun: async id => completed.push(id),
       reconcileBookingAuthorisations: async () => ({checked: 1, failed: 1}),
     },
   });
@@ -55,7 +56,7 @@ function load(file, mocks, clock = Date) {
   assert.equal((await route.GET(request(false))).status, 403);
   assert.equal(claims, 0);
   environment = 'production';
-  assert.equal((await route.GET(request())).status, 403);
+  assert.equal((await route.GET(request())).status, 503);
   environment = 'preview';
   const accepted = await route.GET(request());
   assert.equal(accepted.status, 202);

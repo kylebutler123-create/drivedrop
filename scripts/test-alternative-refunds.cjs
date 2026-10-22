@@ -123,7 +123,7 @@ function context(options = {}) {
 
   let user={id:'admin',role:'ADMIN',accountStatus:'ACTIVE'}, calls=0;
   const load=loader({[path.join(root,'src/lib/auth.ts')]:{currentUser:async()=>user},
-    [path.join(root,'src/lib/alternative-refunds.ts')]:{alternativeRefundsEnabled:()=>process.env.VERCEL_ENV==='preview',recordAlternativeRefund:async()=>{calls++;return {record:{id:requestId},replayed:false}},reviewAlternativeRefund:async()=>({eligible:true})},
+    [path.join(root,'src/lib/alternative-refunds.ts')]:{alternativeRefundsEnabled:()=>process.env.VERCEL_ENV==='preview',alternativeRefundEvidenceEnabled:()=>process.env.VERCEL_ENV==='preview',recordAlternativeRefund:async()=>{calls++;return {record:{id:requestId},replayed:false}},reviewAlternativeRefund:async()=>({eligible:true})},
     [path.join(root,'src/lib/prisma.ts')]:{prisma:{alternativeRefund:{findUnique:async()=>({environment:'preview',evidenceName:'synthetic.pdf',evidenceType:'application/pdf',evidenceBytes:new Uint8Array([37,80,68,70])})}}},
   });
   const route=load('src/app/api/admin/payments/alternative-refund/route.ts'), download=load('src/app/api/admin/payments/alternative-refund/[id]/evidence/route.ts');

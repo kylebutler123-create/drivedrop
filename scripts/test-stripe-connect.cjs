@@ -3,8 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const swc = require('next/dist/build/swc');
 const root = path.resolve(__dirname, '..');
-process.env.VERCEL_ENV = 'preview';
-process.env.STRIPE_CONNECT_ENABLED = 'true';
+if (require.main === module) {process.env.VERCEL_ENV = 'preview';process.env.STRIPE_CONNECT_ENABLED = 'true';}
 const clone = value => structuredClone(value);
 function loader(mocks = {}) {
   const cache = {};
@@ -38,13 +37,14 @@ function fixture() {
       disputes: [], trackingEvents: [{createdAt: at}]}};
 }
 function context(options = {}) {
+ const environment = options.environment || 'preview';
   let state = {payment: fixture(), payout: null, events: [], reservations: 0, activeRefund: null};
   const external = [], keys = [], attempts = [];
   let transactionTail = Promise.resolve(), loseCommit = !!options.loseCommit, timeoutOnce = !!options.timeoutOnce, failOnce = !!options.failOnce;
-  const request = {id: 'request_test', bookingId: 'book_test', paymentIntentId: 'pi_test', paymentProvider: 'STRIPE', paymentEnvironment: 'preview', authorisedAmountPence:11000, status: 'BOOKED'};
-  const intent = {id: 'pi_test', livemode: false, capture_method:'manual', status: 'succeeded', currency: 'gbp', amount: 11000, amount_received: 11000,
-    metadata: {availabilityRequestId: 'request_test', environment: 'preview'}, latest_charge: {id: 'ch_test', payment_intent: 'pi_test', livemode: false, paid: true, captured: true, disputed: false, amount: 11000, amount_refunded: 0, currency: 'gbp'}};
-  const account = {id: 'connect_test', stripeAccountId: 'acct_test', environment: 'preview', transfersEnabled: true, payoutsEnabled: true};
+  const request = {id: 'request_test', bookingId: 'book_test', paymentIntentId: 'pi_test', paymentProvider: 'STRIPE', paymentEnvironment: environment, authorisedAmountPence:11000, status: 'BOOKED'};
+  const intent = {id: 'pi_test', livemode: environment === 'production', capture_method:'manual', status: 'succeeded', currency: 'gbp', amount: 11000, amount_received: 11000,
+    metadata: {availabilityRequestId: 'request_test', environment}, latest_charge: {id: 'ch_test', payment_intent: 'pi_test', livemode: environment === 'production', paid: true, captured: true, disputed: false, amount: 11000, amount_refunded: 0, currency: 'gbp'}};
+  const account = {id: 'connect_test', stripeAccountId: 'acct_test', environment, transfersEnabled: true, payoutsEnabled: true};
   const update = (row, data) => {
     for (const [key, value] of Object.entries(data)) row[key] = value && typeof value === 'object' && 'increment' in value ? row[key] + value.increment : value;
     row.updatedAt = new Date(); return clone(row);
@@ -82,7 +82,7 @@ function context(options = {}) {
       attempts.push(clone(params)); keys.push(opts.idempotencyKey);
       if (failOnce) {failOnce = false; throw new Error('Network unavailable');}
       let transfer = external.find(t => t._key === opts.idempotencyKey);
-      if (!transfer) {transfer = {id: 'tr_test', livemode: false, amount_reversed: 0, ...clone(params), _key: opts.idempotencyKey}; external.push(transfer);}
+      if (!transfer) {transfer = {id: 'tr_test', livemode: environment === 'production', amount_reversed: 0, ...clone(params), _key: opts.idempotencyKey}; external.push(transfer);}
       if (timeoutOnce) {timeoutOnce = false; throw new Error('Response lost after Stripe commit');}
       return clone(transfer);
     },
@@ -98,7 +98,8 @@ function context(options = {}) {
   };
   return {engine: loader(mocks)('src/lib/stripe-payouts.ts'), state: () => state, external, keys, attempts, intent, request, account, db};
 }
-(async () => {
+module.exports = {context, loader};
+if (require.main === module) (async () => {
   const p = fixture();
   policy.assertPayoutEligible(p);
   for (const mutate of [p => p.booking.customerConfirmedAt = new Date(), p => p.booking.status = 'IN_TRANSIT', p => p.booking.disputes.push({id: 'd', status: 'OPEN'}), p => p.transporterProceedsPence++, p => p.status = 'PENDING', p => p.currency = 'USD']) {
@@ -165,10 +166,10 @@ function context(options = {}) {
   actor={role:'TRANSPORTER',id:'user'};assert.equal((await payoutRoute.POST(releaseRequest())).status,403);assert.equal(prepared,0);
   actor={role:'ADMIN',id:'admin',accountStatus:'ACTIVE'};const accepted=await payoutRoute.POST(releaseRequest());assert.equal(accepted.status,202);assert.equal((await accepted.json()).payoutStatus,'PROCESSING');assert.equal(callbacks.length,1);
   process.env.VERCEL_ENV='production';assert.equal((await payoutRoute.POST(releaseRequest())).status,403);process.env.VERCEL_ENV='preview';
-  const hook=loader({'next/server':{NextResponse:{json:Response.json}},[path.join(root,'src/lib/stripe-connect-provider.ts')]:{connectEnabled:()=>true,connectClient:()=>({webhooks:{constructEvent:()=>{throw Error('unsigned')}}})},[path.join(root,'src/lib/stripe-connect-events.ts')]:{handleConnectSnapshot:()=>{throw Error('must not process')}}})('src/app/api/stripe/connect/webhook/route.ts');
+  const hook=loader({'next/server':{NextResponse:{json:Response.json}},[path.join(root,'src/lib/stripe-connect-provider.ts')]:{connectReconciliationEnabled:()=>true,connectClient:()=>({webhooks:{constructEvent:()=>{throw Error('unsigned')}}})},[path.join(root,'src/lib/stripe-connect-events.ts')]:{handleConnectSnapshot:()=>{throw Error('must not process')}}})('src/app/api/stripe/connect/webhook/route.ts');
   assert.equal((await hook.POST(new Request('https://preview.example/webhook',{method:'POST',body:'{}'}))).status,400);
   let bankWrite, syncs=0;
-  const bankEvents=loader({[path.join(root,'src/lib/prisma.ts')]:{prisma:{stripeConnectAccount:{findFirst:async()=>({id:'connect',stripeAccountId:'acct_test'}),updateMany:async args=>{bankWrite=args;return{count:1}}}}},[path.join(root,'src/lib/stripe-connect-provider.ts')]:{...provider,connectClient:()=>({payouts:{retrieve:async()=>({id:'po_test',livemode:false,status:'failed',created:100})}})},[path.join(root,'src/lib/stripe-connect-accounts.ts')]:{syncConnectAccount:async()=>{syncs++}},[path.join(root,'src/lib/stripe-payouts.ts')]:{reconcileStripePayout:async()=>{throw Error('bank failure must not send a second booking transfer')}}})('src/lib/stripe-connect-events.ts');
+  const bankEvents=loader({[path.join(root,'src/lib/prisma.ts')]:{prisma:{stripeConnectAccount:{findFirst:async()=>({id:'connect',stripeAccountId:'acct_test'}),updateMany:async args=>{bankWrite=args;return{count:1}}}}},[path.join(root,'src/lib/stripe-connect-provider.ts')]:{...provider,verifiedConnectClient:async()=>({payouts:{retrieve:async()=>({id:'po_test',livemode:false,status:'failed',created:100})}})},[path.join(root,'src/lib/stripe-connect-accounts.ts')]:{syncConnectAccount:async()=>{syncs++}},[path.join(root,'src/lib/stripe-payouts.ts')]:{reconcileStripePayout:async()=>{throw Error('bank failure must not send a second booking transfer')}}})('src/lib/stripe-connect-events.ts');
   await bankEvents.handleConnectSnapshot({livemode:false,type:'payout.paid',account:'acct_test',data:{object:{id:'po_test',status:'paid'}}});
   assert.equal(bankWrite.data.lastBankPayoutStatus,'failed');assert.equal(syncs,1); // canonical status wins over stale webhook
   await assert.rejects(()=>bankEvents.handleConnectSnapshot({livemode:true,type:'payout.failed'}));

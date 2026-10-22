@@ -3,7 +3,7 @@ import {prisma} from './prisma';
 import {paymentEnvironment} from './booking-authorisation-provider';
 import {applyCancellationFeesToPayout} from './cancellation-fees';
 import {syncConnectAccount} from './stripe-connect-accounts';
-import {ConnectError, connectEnabled, connectFailureCode, verifiedConnectClient} from './stripe-connect-provider';
+import {ConnectError, connectEnabled, connectReconciliationEnabled, connectFailureCode, verifiedConnectClient} from './stripe-connect-provider';
 import {assertCapturedSource, assertPayoutEligible, assertTransferMatches, payoutRetrySafe} from './stripe-payout-policy';
 
 const paymentInclude = {events: {where: {type: 'PAYOUT_READY' as const}}, booking: {include: {
@@ -17,13 +17,13 @@ async function capturedSource(stripe: Stripe, payment: any) {
     bookingId: payment.bookingId, paymentIntentId: payment.providerReference,
     paymentEnvironment: paymentEnvironment(), paymentProvider: 'STRIPE',
   }});
-  if (!request?.paymentIntentId) throw new ConnectError('This booking has no matching sandbox payment authorisation.', 'PAYMENT_MISMATCH');
+  if (!request?.paymentIntentId) throw new ConnectError('This booking has no matching Stripe payment authorisation.', 'PAYMENT_MISMATCH');
   const intent = await stripe.paymentIntents.retrieve(request.paymentIntentId, {expand: ['latest_charge']});
   return {chargeId: assertCapturedSource(intent, {...payment, environment: paymentEnvironment()}, request), intentId: intent.id};
 }
 
 export async function prepareStripePayout(paymentId: string, actorId: string) {
-  if (!connectEnabled()) throw new ConnectError('Stripe sandbox payouts are not enabled yet.');
+  if (!connectEnabled()) throw new ConnectError('New Stripe payouts are temporarily paused.');
   const existing = await prisma.stripePayout.findUnique({where: {paymentId}});
   if (existing) {
     if (existing.environment !== paymentEnvironment()) throw new ConnectError('Payout environment mismatch.');
@@ -96,13 +96,13 @@ async function finishPayout(tx: any, payout: any, transfer: Stripe.Transfer | nu
     await tx.bookingPayment.update({where: {id: payout.paymentId}, data: {payoutStatus: reversed ? 'HELD' : 'PAID'}});
   if (!completedBefore) await tx.financeEvent.create({data: {paymentId: payout.paymentId, type: 'PAYOUT_PAID',
     amountPence: payout.amountPence, actorId: payout.actorId,
-    note: transfer ? `Stripe sandbox transfer ${transfer.id}; credited to transporter Stripe balance, bank payout separate` : 'Stripe sandbox payout fully offset by reserved fines; no bank transfer',
+    note: transfer ? `Stripe ${payout.environment} transfer ${transfer.id}; credited to transporter Stripe balance, bank payout separate` : `Stripe ${payout.environment} payout fully offset by reserved fines; no bank transfer`,
   }});
   return payment;
 }
 
 export async function reconcileStripePayout(id: string) {
-  if (!connectEnabled()) throw new ConnectError('Stripe sandbox payouts are not enabled yet.');
+  if (!connectReconciliationEnabled()) throw new ConnectError('Stripe payout processing is not enabled yet.');
   const original = await prisma.stripePayout.findUniqueOrThrow({where: {id}, include: {payment: {select: {bookingId: true}}}});
   if (original.environment !== paymentEnvironment()) throw new ConnectError('Payout environment mismatch.');
   if (original.status === 'DEDUCTED') return original;
@@ -168,7 +168,7 @@ export async function reconcileStripePayout(id: string) {
 }
 
 export async function recoverStripePayouts() {
-  if (!connectEnabled()) return {checked: 0, failed: 0};
+  if (!connectReconciliationEnabled()) return {checked: 0, failed: 0};
   const rows = await prisma.stripePayout.findMany({where: {environment: paymentEnvironment(), status: {in: ['PENDING', 'RETRY']},
     AND: [{OR: [{retryAfter: null}, {retryAfter: {lte: new Date()}}]}, {OR: [{leaseUntil: null}, {leaseUntil: {lt: new Date()}}]}]},
     orderBy: {updatedAt: 'asc'}, take: 1});

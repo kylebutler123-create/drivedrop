@@ -1,22 +1,26 @@
 import Stripe from 'stripe';
 import {checkoutOrigin, paymentEnvironment} from './booking-authorisation-provider';
+import {assertProductionPaymentConfiguration, expectedStripePlatform, productionPaymentsEnabled, STRIPE_SANDBOX_ACCOUNT} from './payment-runtime';
 
-export const CONNECT_SANDBOX_ACCOUNT = 'acct_1US4BzLAzgkvCvrI';
+export const CONNECT_SANDBOX_ACCOUNT = STRIPE_SANDBOX_ACCOUNT;
 export const CONNECT_RETRY_WINDOW_MS = 23 * 60 * 60 * 1000;
 export class ConnectError extends Error {
   constructor(message: string, public code = 'CONNECT_UNAVAILABLE') { super(message); }
 }
 
 export function connectEnabled() {
-  return process.env.STRIPE_CONNECT_ENABLED === 'true' &&
-    paymentEnvironment() !== 'production' &&
-    !(!process.env.VERCEL_ENV && process.env.NODE_ENV === 'production');
+  return process.env.STRIPE_CONNECT_ENABLED === 'true' && connectReconciliationEnabled();
+}
+
+export function connectReconciliationEnabled() {
+  return paymentEnvironment() === 'production' ? productionPaymentsEnabled() : process.env.STRIPE_CONNECT_ENABLED === 'true';
 }
 
 export function connectClient() {
-  if (!connectEnabled()) throw new ConnectError('Stripe sandbox payout setup is not enabled yet.');
+  if (!connectReconciliationEnabled()) throw new ConnectError('Stripe payout processing is not enabled yet.');
+  try {assertProductionPaymentConfiguration();} catch (error) {throw new ConnectError(error instanceof Error ? error.message : 'Invalid payment configuration.', 'CONFIGURATION');}
   const key = process.env.STRIPE_CONNECT_SECRET_KEY || '';
-  if (!key.startsWith('rk_test_')) throw new ConnectError('A restricted Stripe sandbox key is required.');
+  if (!key.startsWith(paymentEnvironment() === 'production' ? 'rk_live_' : 'rk_test_')) throw new ConnectError('A restricted Stripe key matching this environment is required.', 'CONFIGURATION');
   if (!process.env.STRIPE_CONNECT_WEBHOOK_SECRET || !process.env.STRIPE_CONNECT_EVENTS_SECRET || !process.env.CRON_SECRET) {
     throw new ConnectError('Stripe payout webhooks and recovery must be configured first.');
   }
@@ -28,7 +32,7 @@ export function connectClient() {
 export async function verifiedConnectClient() {
   const stripe = connectClient();
   const account = await stripe.accounts.retrieveCurrent();
-  if (account.id !== CONNECT_SANDBOX_ACCOUNT) throw new ConnectError('Stripe sandbox account does not match this preview.');
+  if (account.id !== expectedStripePlatform()) throw new ConnectError('Stripe platform account does not match this environment.', 'CONFIGURATION');
   return stripe;
 }
 

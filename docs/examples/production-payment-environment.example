@@ -1,0 +1,28 @@
+# REVIEW TEMPLATE ONLY. Do not upload this file as a ready configuration.
+# Scope every value to Production in the existing Vercel project. Preserve Preview.
+# Empty values must be provisioned through secure provider input, never Git/chat.
+POSTGRES_PRISMA_URL=
+SUPABASE_URL=https://srqhjgrhgyyfdaxckjum.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_APP_URL=
+STRIPE_CHECKOUT_ORIGIN=
+STRIPE_PLATFORM_ACCOUNT_ID=
+STRIPE_SECRET_KEY=
+STRIPE_CONNECT_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+STRIPE_CONNECT_WEBHOOK_SECRET=
+STRIPE_CONNECT_EVENTS_SECRET=
+CRON_SECRET=
+
+# Master canonical reconciliation control. Initially false; once live instructions
+# exist, keep true during a creation pause so recovery/webhooks continue.
+STRIPE_PAYMENTS_ENABLED=false
+STRIPE_CHECKOUT_ENABLED=false
+STRIPE_CONNECT_ENABLED=false
+STRIPE_REFUNDS_ENABLED=false
+STRIPE_ALTERNATIVE_REFUNDS_ENABLED=false
+DISPUTES_ENABLED=false
+
+RESEND_API_KEY=
+TRANSACTIONAL_EMAILS_ENABLED=false
+TRANSACTIONAL_EMAILS_SENDER_VERIFIED=false

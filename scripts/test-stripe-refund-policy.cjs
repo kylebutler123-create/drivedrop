@@ -45,7 +45,8 @@ for (const amount of [0, -1, 11001, 0.5, NaN, Infinity, Number.MAX_SAFE_INTEGER]
 for (const change of [{provider: 'TEST'}, {currency: 'USD'}, {providerReference: null}, {platformFeePence: 1001},
   {status: 'REFUNDED'}, {payoutStatus: 'PAID'}, {payoutStatus: 'PROCESSING'}, {payoutStatus: 'FAILED'}, {cancellationDeductionPence: 1}]) assert.throws(() => plan({...original, ...change}, request(1)));
 assert.throws(() => plan(original, {...request(1), expectedRefundedPence: 1}));
-assert.throws(() => plan(original, {...request(1), environment: 'production'}));
+assert.equal(plan(original, {...request(1), environment: 'production'}).amountPence, 1);
+assert.throws(() => plan(original, {...request(1), environment: 'staging'}));
 for (const change of [{paymentId:'other'}, {environment:'production'}, {paymentIntentId:'pi_other'}, {reversedPence:7501},
   {status:'PENDING'}, {status:'RETRY'}, {status:'BLOCKED'}, {stripeTransferId:null}, {finePence:0}]) assert.throws(() => plan(fined, request(1), {...release, ...change}));
 
@@ -70,6 +71,6 @@ assert.equal(match(refund,identity).confirmed,true);
 for(const status of ['pending','requires_action','failed','canceled'])assert.equal(match({...refund,status},identity).confirmed,false);
 for(const change of [{amount:5501},{currency:'usd'},{charge:'ch_other'},{payment_intent:'pi_other'},{status:'unknown'},{metadata:{...refund.metadata,environment:'production'}}])assert.throws(()=>match({...refund,...change},identity));
 assert.equal(match({...refund,charge:{id:'ch_test'},payment_intent:{id:'pi_test'}},identity).confirmed,true);
-assert.equal(key(identity),'dd-refund-preview-refund_test'); assert.throws(()=>key({...identity,environment:'production'}));
+assert.equal(key(identity),'dd-refund-preview-refund_test'); assert.equal(key({...identity,environment:'production'}),'dd-refund-production-refund_test'); assert.throws(()=>key({...identity,environment:'staging'}));
 const now=Date.now();assert(retry(null,now));assert(retry(new Date(now-22*3600000),now));assert(!retry(new Date(now-23*3600000),now));assert(!retry(new Date(now+1),now));assert(!retry(new Date('invalid'),now));
 console.log('Stripe refund policy: amount conservation, fines, sequential recovery, stale requests, canonical matches and retry limits passed.');

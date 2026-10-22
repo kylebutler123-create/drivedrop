@@ -1,16 +1,21 @@
 import type Stripe from 'stripe';
 import {prisma} from './prisma';
 import {paymentEnvironment} from './booking-authorisation-provider';
-import {ConnectError, CONNECT_RETRY_WINDOW_MS, connectEnabled, connectOrigin, safeStripeRedirect, verifiedConnectClient} from './stripe-connect-provider';
+import {stripeLivemode} from './payment-runtime';
+import {ConnectError, CONNECT_RETRY_WINDOW_MS, connectEnabled, connectReconciliationEnabled, connectOrigin, safeStripeRedirect, verifiedConnectClient} from './stripe-connect-provider';
 
 type Account = Stripe.V2.Core.Account;
 const include: Stripe.V2.Core.AccountRetrieveParams.Include[] = ['configuration.recipient', 'requirements', 'defaults'];
+function accountIncludes(): Stripe.V2.Core.AccountRetrieveParams.Include[] {
+  return stripeLivemode() ? [...include, 'identity'] : include;
+}
 
 export function accountReadiness(account: Account, userId: string) {
-  if (account.livemode !== false || account.closed || account.metadata?.driveDropUserId !== userId ||
+  if (account.livemode !== stripeLivemode() || account.closed || account.metadata?.driveDropUserId !== userId ||
       account.metadata?.environment !== paymentEnvironment() || account.dashboard !== 'express' ||
       account.defaults?.responsibilities?.fees_collector !== 'application' ||
-      account.defaults?.responsibilities?.losses_collector !== 'application') {
+      account.defaults?.responsibilities?.losses_collector !== 'application' ||
+      (stripeLivemode() && (account.identity?.country?.toLowerCase() !== 'gb' || account.defaults?.currency !== 'gbp'))) {
     throw new ConnectError('The Stripe account needs an administrator review.', 'ACCOUNT_MISMATCH');
   }
   const balance = account.configuration?.recipient?.capabilities?.stripe_balance;
@@ -26,7 +31,7 @@ export async function syncConnectAccount(id: string, client?: Stripe) {
   const row = await prisma.stripeConnectAccount.findUniqueOrThrow({where: {id}});
   if (row.environment !== paymentEnvironment() || !row.stripeAccountId) throw new ConnectError('Payout account setup is incomplete.');
   const stripe = client || await verifiedConnectClient();
-  const account = await stripe.v2.core.accounts.retrieve(row.stripeAccountId, {include});
+  const account = await stripe.v2.core.accounts.retrieve(row.stripeAccountId, {include: accountIncludes()});
   let readiness;
   try { readiness = accountReadiness(account, row.userId); }
   catch (error) {
@@ -37,6 +42,7 @@ export async function syncConnectAccount(id: string, client?: Stripe) {
 }
 
 export async function createOrGetConnectAccount(user: {id: string; email: string; name: string}) {
+  if (!connectEnabled()) throw new ConnectError('New Stripe payout setup is temporarily paused.');
   const stripe = await verifiedConnectClient();
   const environment = paymentEnvironment();
   // Commit the stable creation id before any Stripe request. A lost response can
@@ -57,7 +63,7 @@ export async function createOrGetConnectAccount(user: {id: string; email: string
     dashboard: 'express', identity: {country: 'gb'},
     defaults: {currency: 'gbp', responsibilities: {fees_collector: 'application', losses_collector: 'application'}},
     configuration: {recipient: {capabilities: {stripe_balance: {stripe_transfers: {requested: true}}}}},
-    metadata: {driveDropUserId: user.id, environment, driveDropAccountId: row.id}, include,
+    metadata: {driveDropUserId: user.id, environment, driveDropAccountId: row.id}, include: accountIncludes(),
   }, {idempotencyKey: `dd-connect-account-${row.id}`});
   const readiness = accountReadiness(account, user.id);
   return prisma.stripeConnectAccount.update({where: {id: row.id}, data: {stripeAccountId: account.id, ...readiness}});
@@ -86,11 +92,11 @@ export async function connectDashboardLink(userId: string) {
 }
 
 export async function connectAccountStatus(userId: string) {
-  if (!connectEnabled()) return {enabled: false};
+  if (!connectReconciliationEnabled()) return {enabled: false};
   const row = await prisma.stripeConnectAccount.findUnique({where: {userId_environment: {userId, environment: paymentEnvironment()}}});
-  if (!row) return {enabled: true, status: 'NOT_STARTED', ready: false};
+  if (!row) return {enabled: true, creationEnabled: connectEnabled(), status: 'NOT_STARTED', ready: false};
   const fresh = row.stripeAccountId ? await syncConnectAccount(row.id) : row;
-  return {enabled: true, status: fresh.status, ready: fresh.transfersEnabled && fresh.payoutsEnabled,
+  return {enabled: true, creationEnabled: connectEnabled(), status: fresh.status, ready: fresh.transfersEnabled && fresh.payoutsEnabled,
     requirementsDue: fresh.requirementsDue, connected: !!fresh.stripeAccountId,
     lastCheckedAt: fresh.lastCheckedAt, bankPayoutStatus: fresh.lastBankPayoutStatus};
 }

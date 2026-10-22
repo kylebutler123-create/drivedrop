@@ -39,7 +39,9 @@ async function main(){
  assert.equal((await route.PUT(request({dailyJobEmails:false}))).status,200);assert.equal(updateWrites.at(-1).where.id,'owner');assert.equal(updateWrites.at(-1).data.dailyJobEmails,false);
  let called=0;const cron=load('src/app/api/cron/daily-job-summary/route.ts',{'@/lib/job-digest':{sendDailyJobDigest:async()=>{called++;return{state:'complete',sent:0}}}});process.env.CRON_SECRET='test-secret';
  assert.equal((await cron.GET(new Request('https://example.test/cron'))).status,401);assert.equal(called,0);assert.equal((await cron.GET(new Request('https://example.test/cron',{headers:{Authorization:'Bearer test-secret'}}))).status,200);assert.equal(called,1);
- const mail=load('src/lib/email.ts');assert.equal(mail.transactionalNotificationsEnabled(),true);process.env.VERCEL_ENV='production';assert.equal(mail.transactionalNotificationsEnabled(),false);
+ const runtime=load('src/lib/payment-runtime.ts',{'./availability-error':load('src/lib/availability-error.ts')});
+ const mail=load('src/lib/email.ts',{'./payment-runtime':runtime});assert.equal(mail.transactionalNotificationsEnabled(),true);process.env.VERCEL_ENV='production';assert.equal(mail.transactionalNotificationsEnabled(),false);
+ process.env.NEXT_PUBLIC_APP_URL='https://production.example';
  const rendered=mail.resendMessage({to:'test@example.test',subject:'Test',heading:'Test',body:'<script>bad()</script>',preferencesPath:'/account#email-preferences'});assert.ok(rendered.html.includes('&lt;script&gt;'));assert.ok(rendered.html.includes('Manage job email preferences'));
  assert.ok(!fs.readFileSync('src/app/api/jobs/route.ts','utf8').includes('sendTransactionalEmail'));
  global.Date=RealDate;global.setTimeout=originalTimeout;

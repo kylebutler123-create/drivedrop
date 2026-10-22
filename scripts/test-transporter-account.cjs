@@ -17,7 +17,9 @@ async function main(){
  let role='TRANSPORTER',verification=null;
  const captured={};
  const mocks={'next/link':link,'next/navigation':{redirect:()=>{throw Error('redirect')}},'@/lib/auth':{currentUser:async()=>({id:'owner'})},'@/lib/prisma':{prisma:{user:{findUnique:async()=>({name:'Actual account',email:'actual@example.com',phone:null,role,accountStatus:'ACTIVE',workRestricted:false,createdAt:new Date('2025-01-01'),transporterVerification:verification})},$queryRaw:async()=>[]}},'@/lib/supabase-storage':{profileImageUrl:()=>null},'@/app/components/TransporterAccountIcon':icon};
- for(const name of ['AccountEditor','CustomerAccountDesktop','PasswordEditor','EmailEditor','CloseAccount','ProfileImageEditor','PayoutDetailsEditor'])mocks['./'+name]=p=>{captured[name]=p;return React.createElement('div',{'data-component':name})};
+ mocks['@/lib/payment-runtime']={paymentEnvironment:()=> 'preview'};
+ mocks['@/lib/stripe-connect-provider']={connectReconciliationEnabled:()=>false};
+ for(const name of ['AccountEditor','CustomerAccountDesktop','AdminAccountDesktop','StripePayoutSetup','JobEmailPreferences','PasswordEditor','EmailEditor','CloseAccount','ProfileImageEditor','PayoutDetailsEditor'])mocks['./'+name]=p=>{captured[name]=p;return React.createElement('div',{'data-component':name})};
  const Page=load('src/app/account/page.tsx',mocks);
  let html=renderToStaticMarkup(await Page());assert(html.includes('transporterAccountPolish'));assert(html.includes('Actual account'));assert(html.includes('transporterSecurityHost'));assert(html.includes('Set up transporter verification'));assert(!html.includes('kye@example.com'));assert.equal(captured.EmailEditor.transporterDesktop,true);
  verification={id:'v',businessName:'Actual company',companyNumber:'123',businessAddress:'Actual address',phone:'01234567890',yearsOperating:3,website:'',status:'PENDING',documents:[]};

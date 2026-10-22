@@ -2,7 +2,8 @@ import {prisma} from './prisma';
 import {AvailabilityError} from './availability-error';
 import {lockJob,closeExpired,eligibleQuote,createCapturedBooking,type BookingActor} from './availability';
 import {confirmationDeadline,requestExpired,collectionLimit,validateCollectionWindow} from './availability-time';
-import {authorisationProvider,paymentEnvironment,checkoutOrigin,stripeRequest} from './booking-authorisation-provider';
+import {authorisationProvider,assertNewCheckoutAllowed,paymentEnvironment,checkoutOrigin,stripeRequest} from './booking-authorisation-provider';
+import {assertTestFinanceAllowed,stripeLivemode} from './payment-runtime';
 
 type Row=Awaited<ReturnType<typeof getRequest>>;
 const getRequest=(id:string)=>prisma.availabilityRequest.findUniqueOrThrow({where:{id}});
@@ -23,6 +24,7 @@ export async function authoriseRequest(actor:BookingActor,id:string){
  });
  if(r.status!=='AWAITING_AUTHORISATION')return {request:r};
  if(r.paymentProvider==='TEST'){
+  assertTestFinanceAllowed();
   authorisationProvider();
   r=await locked(id,async(tx,r)=>{
    if(['AWAITING_TRANSPORTER','CAPTURING','BOOKED'].includes(r.status))return r;
@@ -34,6 +36,7 @@ export async function authoriseRequest(actor:BookingActor,id:string){
  let session:any;
  if(r.checkoutSessionId)session=await stripeRequest(`checkout/sessions/${encodeURIComponent(r.checkoutSessionId)}`);
  else {
+  assertNewCheckoutAllowed();
   const origin=checkoutOrigin();
   session=await stripeRequest('checkout/sessions',{
    mode:'payment','payment_method_types[0]':'card',
@@ -62,13 +65,14 @@ async function intentFor(r:Row){
  return stripeRequest(`payment_intents/${encodeURIComponent(id)}?expand[]=latest_charge`);
 }
 function assertIntent(r:Row,pi:any){
- if(pi.livemode!==false||pi.currency!=='gbp'||pi.amount!==r.authorisedAmountPence||pi.capture_method!=='manual'||pi.metadata?.availabilityRequestId!==r.id||pi.metadata?.environment!==r.paymentEnvironment||(r.paymentIntentId&&r.paymentIntentId!==pi.id))throw new Error('Stripe authorisation does not match request');
+ if(pi.livemode!==stripeLivemode(r.paymentEnvironment!)||pi.currency!=='gbp'||pi.amount!==r.authorisedAmountPence||pi.capture_method!=='manual'||pi.metadata?.availabilityRequestId!==r.id||pi.metadata?.environment!==r.paymentEnvironment||(r.paymentIntentId&&r.paymentIntentId!==pi.id))throw new Error('Stripe authorisation does not match request');
 }
 // Safe to retry from webhook, account refresh and scheduled recovery; never trusts event ordering.
 export async function reconcileRequest(id:string){
  let r=await getRequest(id);checkEnvironment(r);
  if(!r.paymentProvider||r.status==='BOOKED'||r.paymentState==='RELEASED')return r;
  if(r.paymentProvider==='TEST'){
+  assertTestFinanceAllowed();
   authorisationProvider();
   return locked(id,async(tx,r)=>{
    if(r.status==='CAPTURING')return (await createCapturedBooking(tx,r,r.paymentIntentId!,r.transporterId)).request;
@@ -131,6 +135,8 @@ export async function respondToRequest(actor:BookingActor,id:string,action:'CONF
   await closeExpired(tx,r.jobId,new Date());r=await tx.availabilityRequest.findUniqueOrThrow({where:{id}});
   if(terminal(r.status))return {request:r,changed:true};
   if(action==='CONFIRM'){
+   assertNewCheckoutAllowed();
+   if(r.paymentProvider==='TEST')assertTestFinanceAllowed();
    if(r.status!=='AWAITING_TRANSPORTER'||r.paymentState!=='AUTHORISED'||!r.paymentIntentId)throw new AvailabilityError('Customer payment must be authorised before you can confirm. Earlier requests must be withdrawn and selected again.');
    const now=new Date(),q=await eligibleQuote(tx,r.quoteId,now);
    if(q.pricePence!==r.pricePence)throw new AvailabilityError('The quote changed. Ask the customer to select it again.');

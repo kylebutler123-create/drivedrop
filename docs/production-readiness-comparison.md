@@ -1,5 +1,7 @@
 # Preview and prepared production comparison — 21 October 2026
 
+**Later implementation checkpoint:** [Production-safe code and proposed schema](production-payment-implementation.md) are prepared on `feature/ui-polish`. Mocked/runtime/build checks and a PostgreSQL 17.5 WASM schema rehearsal passed; native 17.11, real concurrency and hosted acceptance/cutover gates remain open. No hosted migration or production activation has occurred. This document's original review remains historical evidence.
+
 **The read-only comparison is complete. Prepared production needs the later Connect, refund and alternative-repayment schema, plus production-specific application work before cutover. Nothing was migrated or activated.** The next implementation is described in the [production payment rollout plan](production-payment-rollout-plan.md).
 
 Source: `feature/ui-polish` at `e8c568280a2685259497edc9989fd470f693a465`. Catalog reads began at **19:57 BST / 18:57 UTC**. Preservation checks finished at **20:09 BST / 19:09 UTC**. [Machine-readable evidence](evidence/production-readiness-comparison.json) contains catalog snapshots, migration histories, exact differences, metadata and aggregate fingerprints; it contains no credentials, application rows, session tokens or file contents.

@@ -1,12 +1,12 @@
 import {currentUser} from '@/lib/auth';
 import {prisma} from '@/lib/prisma';
-import {alternativeRefundsEnabled} from '@/lib/alternative-refunds';
+import {alternativeRefundEvidenceEnabled} from '@/lib/alternative-refunds';
 import {paymentEnvironment} from '@/lib/booking-authorisation-provider';
 
 export const runtime = 'nodejs';
 export async function GET(_request: Request, context: {params: Promise<{id: string}>}) {
   const user = await currentUser();
-  if (!alternativeRefundsEnabled() || !user || user.role !== 'ADMIN' || user.accountStatus !== 'ACTIVE') return new Response('Administrator access required', {status: 403});
+  if (!alternativeRefundEvidenceEnabled() || !user || user.role !== 'ADMIN' || user.accountStatus !== 'ACTIVE') return new Response('Administrator access required', {status: 403});
   const {id} = await context.params;
   const record = await prisma.alternativeRefund.findUnique({where: {id}, select: {
     environment: true, evidenceName: true, evidenceType: true, evidenceBytes: true,

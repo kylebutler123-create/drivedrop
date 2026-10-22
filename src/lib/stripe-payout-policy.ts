@@ -1,5 +1,6 @@
 import {adminPayoutApproved, capturedPayment, payoutWindowOpen} from './payout-policy';
 import {ConnectError, CONNECT_RETRY_WINDOW_MS} from './stripe-connect-provider';
+import {stripeLivemode} from './payment-runtime';
 
 export function assertPayoutEligible(payment: any, reserved = false) {
   const booking = payment.booking;
@@ -19,10 +20,10 @@ export function assertCapturedSource(intent: any, payment: any, request: any, op
   const charge = intent.latest_charge;
   if (request.paymentProvider !== 'STRIPE' || request.paymentEnvironment !== payment.environment ||
       request.status !== 'BOOKED' || request.authorisedAmountPence !== payment.paidPence || request.bookingId !== payment.bookingId || request.paymentIntentId !== intent.id ||
-      intent.livemode !== false || intent.capture_method !== 'manual' || intent.status !== 'succeeded' || intent.currency !== 'gbp' ||
+      intent.livemode !== stripeLivemode(payment.environment) || intent.capture_method !== 'manual' || intent.status !== 'succeeded' || intent.currency !== 'gbp' ||
       intent.amount_received !== payment.paidPence || intent.amount !== payment.paidPence ||
       intent.metadata?.availabilityRequestId !== request.id || intent.metadata?.environment !== payment.environment ||
-      !charge || typeof charge === 'string' || charge.livemode !== false || !charge.paid || !charge.captured ||
+      !charge || typeof charge === 'string' || charge.livemode !== stripeLivemode(payment.environment) || !charge.paid || !charge.captured ||
       (!options.allowDisputed && charge.disputed) || charge.amount_refunded !== payment.refundedPence || charge.currency !== 'gbp' ||
       charge.amount !== payment.paidPence || charge.payment_intent !== intent.id) {
     throw new ConnectError('The captured Stripe payment needs review before release.', 'PAYMENT_MISMATCH');
@@ -33,7 +34,7 @@ export function assertCapturedSource(intent: any, payment: any, request: any, op
 export function assertTransferMatches(transfer: any, payout: any) {
   const destination = typeof transfer.destination === 'string' ? transfer.destination : transfer.destination?.id;
   const source = typeof transfer.source_transaction === 'string' ? transfer.source_transaction : transfer.source_transaction?.id;
-  if (transfer.livemode !== false || transfer.amount !== payout.amountPence || transfer.currency !== 'gbp' ||
+  if (transfer.livemode !== stripeLivemode(payout.environment) || transfer.amount !== payout.amountPence || transfer.currency !== 'gbp' ||
       destination !== payout.destinationAccountId || source !== payout.sourceChargeId ||
       transfer.transfer_group !== `dd_payout_${payout.id}` ||
       transfer.metadata?.driveDropPayoutId !== payout.id || transfer.metadata?.environment !== payout.environment) {

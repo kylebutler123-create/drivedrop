@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {"path": "/api/cron/daily-job-summary", "schedule": "0 8 * * *"},
+    {"path": "/api/cron/expire-quote-requests", "schedule": "0 3 * * *"},
+    {"path": "/api/cron/insurance-expiry-notifications", "schedule": "0 4 * * *"},
+    {"path": "/api/cron/booking-authorisations", "schedule": "* * * * *"}
+  ]
+}

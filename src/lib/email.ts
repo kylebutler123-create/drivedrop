@@ -1,9 +1,11 @@
+import {paymentEnvironment,productionAppOrigin} from './payment-runtime';
 export type SendEmailInput={to:string;subject:string;heading:string;body:string;ctaLabel?:string;ctaPath?:string;preheader?:string;preferencesPath?:string};
 
 const EMAIL_FROM='DriveDrop <account@contact.drive-drop.com>';
 const RESEND_BATCH_SIZE=100;
 
 function appOrigin(){
+  if(paymentEnvironment()==='production')return productionAppOrigin();
   if(process.env.NEXT_PUBLIC_APP_URL)return process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/,'');
   if(process.env.VERCEL_BRANCH_URL)return `https://${process.env.VERCEL_BRANCH_URL}`;
   if(process.env.VERCEL_URL)return `https://${process.env.VERCEL_URL}`;
@@ -11,7 +13,10 @@ function appOrigin(){
 }
 
 export function transactionalNotificationsEnabled(){
-  if(process.env.VERCEL_ENV==='production')return false;
+  if(paymentEnvironment()==='production'){
+    if(process.env.TRANSACTIONAL_EMAILS_ENABLED!=='true'||process.env.TRANSACTIONAL_EMAILS_SENDER_VERIFIED!=='true'||!process.env.RESEND_API_KEY)return false;
+    try{productionAppOrigin();return true;}catch{return false;}
+  }
   if(process.env.VERCEL_ENV==='preview')return true;
   return process.env.TRANSACTIONAL_EMAILS_ENABLED==='true';
 }
@@ -29,11 +34,11 @@ export async function sendTransactionalEmail(input:SendEmailInput){
   const key=process.env.RESEND_API_KEY;
   if(!key||!transactionalNotificationsEnabled())return {sent:false,reason:'disabled'} as const;
   const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},body:JSON.stringify(resendMessage(input))});
-  if(!response.ok){const text=await response.text().catch(()=>String(response.status));throw new Error(`TRANSACTIONAL_EMAIL_${response.status}:${text.slice(0,200)}`)}
+  if(!response.ok)throw new Error(`TRANSACTIONAL_EMAIL_${response.status}`);
   return {sent:true} as const;
 }
 
-export async function sendTransactionalEmailSafely(input:SendEmailInput){try{return await sendTransactionalEmail(input)}catch(error){console.error('DriveDrop transactional email failed',{to:input.to,subject:input.subject,error});return {sent:false,reason:'error'} as const}}
+export async function sendTransactionalEmailSafely(input:SendEmailInput){try{return await sendTransactionalEmail(input)}catch{console.error('DriveDrop transactional email failed');return {sent:false,reason:'error'} as const}}
 
 export async function sendTransactionalEmailBatch(inputs:SendEmailInput[],idempotencyKey?:string){
   const key=process.env.RESEND_API_KEY;
@@ -45,10 +50,10 @@ export async function sendTransactionalEmailBatch(inputs:SendEmailInput[],idempo
     const headers:Record<string,string>={Authorization:`Bearer ${key}`,'Content-Type':'application/json'};
     if(idempotencyKey)headers['Idempotency-Key']=`${idempotencyKey}-${Math.floor(index/RESEND_BATCH_SIZE)}`;
     const response=await fetch('https://api.resend.com/emails/batch',{method:'POST',headers,body:JSON.stringify(chunk.map(resendMessage))});
-    if(!response.ok){const text=await response.text().catch(()=>String(response.status));throw new Error(`TRANSACTIONAL_EMAIL_BATCH_${response.status}:${text.slice(0,200)}`)}
+    if(!response.ok)throw new Error(`TRANSACTIONAL_EMAIL_BATCH_${response.status}`);
     count+=chunk.length;
   }
   return {sent:true,count} as const;
 }
 
-export async function sendTransactionalEmailBatchSafely(inputs:SendEmailInput[],idempotencyKey?:string){try{return await sendTransactionalEmailBatch(inputs,idempotencyKey)}catch(error){console.error('DriveDrop transactional email batch failed',{recipients:inputs.length,error});return {sent:false,count:0,reason:'error'} as const}}
+export async function sendTransactionalEmailBatchSafely(inputs:SendEmailInput[],idempotencyKey?:string){try{return await sendTransactionalEmailBatch(inputs,idempotencyKey)}catch{console.error('DriveDrop transactional email batch failed',{recipients:inputs.length});return {sent:false,count:0,reason:'error'} as const}}

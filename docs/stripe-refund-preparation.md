@@ -1,6 +1,12 @@
 # Stripe refund preparation — 21 October 2026
 
-## Latest: production comparison and rollout plan prepared; refunds off
+## Latest: production-safe code and proposed schema prepared
+
+The approved implementation is prepared on `feature/ui-polish`. [Implementation and exact test limits](production-payment-implementation.md) · [Configuration and pause controls](production-payment-configuration.md) · [Proposed migration](../scripts/production-database/README.md). Local financial regression, production guard and build checks passed. The SQL rehearsal passed in PostgreSQL 17.5 WASM; native 17.11/concurrency and the Prisma-backed booking suite remain outstanding because this workspace cannot start a non-root PostgreSQL server.
+
+No hosted migration, production setting/deployment, live operation or new sandbox payment was performed. Preview refunds remain off; all original preview data, the £110 failed case and simulated QA21 ALT audit remain preserved. The genuine provider insufficient-balance gate is still UNVERIFIED. Continue with the remaining isolated rehearsal and acceptance gates, then present an exact hosted cutover for approval.
+
+## Previous: production comparison and rollout plan prepared; refunds off
 
 The approved 21 October read-only comparison is complete. Prepared production needs the four later payment/audit tables, two payout statuses and production-specific implementation/configuration work. The [comparison](production-readiness-comparison.md) and [rollout plan](production-payment-rollout-plan.md) retain immutable refund evidence, require production recovery/email/role checks and preserve the existing £50 fee default and server-only permissions. No migration, live integration or production cutover was executed.
 

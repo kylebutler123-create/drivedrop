@@ -1,5 +1,7 @@
 # Stripe payment readiness review — 21 October 2026
 
+**Later implementation checkpoint:** [Production-safe code and proposed schema](production-payment-implementation.md) are prepared on `feature/ui-polish`. Mocked/runtime/build checks and a PostgreSQL 17.5 WASM schema rehearsal passed; native 17.11, real concurrency and hosted acceptance/cutover gates remain open. No hosted migration or production activation has occurred. This document's original review remains historical evidence.
+
 **Later checkpoint:** the [read-only production database comparison](production-readiness-comparison.md) and [production payment rollout plan](production-payment-rollout-plan.md) are now prepared. They complete the comparison/planning portions of the before-live list below, not the implementation or launch gates. Production remains unchanged, preview refunds remain off and the genuine insufficient-balance provider gate remains unverified. The findings and test evidence in this earlier review remain scoped to their original checkpoint.
 
 **Decision: continue controlled preview testing; do not activate live payments.** The exercised sandbox flows have substantial provider and browser evidence, but genuine insufficient-balance reversal failure/retry remains unverified. The current implementation deliberately rejects production payment use. This review does not change that boundary or authorize a production merge.

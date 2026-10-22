@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const Stripe = require('stripe');
 const fs = require('node:fs'), path = require('node:path'), swc = require('next/dist/build/swc');
 const root = path.resolve(__dirname, '..'), clone = v => structuredClone(v);
-process.env.VERCEL_ENV = 'preview'; process.env.STRIPE_CONNECT_ENABLED = 'true'; process.env.STRIPE_REFUNDS_ENABLED = 'true';
+if (require.main === module) {process.env.VERCEL_ENV = 'preview'; process.env.STRIPE_CONNECT_ENABLED = 'true'; process.env.STRIPE_REFUNDS_ENABLED = 'true';}
 function loader(mocks = {}) {
  const cache = {};
  function load(file) {
@@ -25,19 +25,20 @@ function matches(row, where = {}) {
  });
 }
 function context(options = {}) {
+ const environment = options.environment || 'preview';
  const transferred=options.transferred!==false, fine=transferred?(options.fine??2500):0;
  let state={
   payment:{id:'pay',bookingId:'booking',provider:'STRIPE',providerReference:'pi_test',currency:'GBP',status:'PAID',payoutStatus:transferred?'PAID':'READY',paidPence:11000,refundedPence:0,platformFeePence:1000,transporterProceedsPence:10000-fine,cancellationDeductionPence:fine,events:[],booking:{id:'booking',transporterId:'transporter',customerId:'customer',status:'DELIVERED',customerConfirmedAt:new Date(Date.now()-25*3600000),disputes:[]}},
-  payout:transferred?{id:'release',paymentId:'pay',environment:'preview',paymentIntentId:'pi_test',sourceChargeId:'ch_test',destinationAccountId:'acct_test',status:fine===10000?'DEDUCTED':'TRANSFERRED',stripeTransferId:fine===10000?null:'tr_test',amountPence:10000-fine,finePence:fine,reversedPence:0,refundedPence:0,transferredAt:new Date()}:null,
+  payout:transferred?{id:'release',paymentId:'pay',environment,paymentIntentId:'pi_test',sourceChargeId:'ch_test',destinationAccountId:'acct_test',status:fine===10000?'DEDUCTED':'TRANSFERRED',stripeTransferId:fine===10000?null:'tr_test',amountPence:10000-fine,finePence:fine,reversedPence:0,refundedPence:0,transferredAt:new Date()}:null,
   refunds:[], events:fine&&!options.cancellation?[{paymentId:'pay',note:'ADMIN_DISPUTE_FINE_APPLIED:dispute_fine',amountPence:fine}]:[], notifications:[],
   deductions:fine&&options.cancellation?[{id:'deduction',paymentId:'pay',feeId:'fee',amountPence:fine}]:[],
   fees:fine&&options.cancellation?[{id:'fee',transporterId:'transporter',amountPence:5000,appliedPence:fine,status:'PARTIALLY_APPLIED'}]:[],
  };
  const external=[], reversals=[], refundCalls=[], reversalCalls=[];
  let lostRefund=!!options.lostRefund, lostCommit=!!options.lostCommit, lostReversal=!!options.lostReversal, lostRecoveryCommit=!!options.lostRecoveryCommit, lostFailureCommit=!!options.lostFailureCommit;
- const request={id:'request',bookingId:'booking',paymentProvider:'STRIPE',paymentEnvironment:'preview',status:'BOOKED',authorisedAmountPence:11000,paymentIntentId:'pi_test'};
- const intent={id:'pi_test',livemode:false,capture_method:'manual',status:'succeeded',currency:'gbp',amount:11000,amount_received:11000,metadata:{availabilityRequestId:'request',environment:'preview'},latest_charge:{id:'ch_test',payment_intent:'pi_test',livemode:false,paid:true,captured:true,disputed:false,currency:'gbp',amount:11000,amount_refunded:0}};
- const transfer={id:'tr_test',livemode:false,currency:'gbp',amount:10000-fine,amount_reversed:0,destination:'acct_test',source_transaction:'ch_test',transfer_group:'dd_payout_release',metadata:{driveDropPayoutId:'release',environment:'preview'}};
+ const request={id:'request',bookingId:'booking',paymentProvider:'STRIPE',paymentEnvironment:environment,status:'BOOKED',authorisedAmountPence:11000,paymentIntentId:'pi_test'};
+ const intent={id:'pi_test',livemode:environment==='production',capture_method:'manual',status:'succeeded',currency:'gbp',amount:11000,amount_received:11000,metadata:{availabilityRequestId:'request',environment},latest_charge:{id:'ch_test',payment_intent:'pi_test',livemode:environment==='production',paid:true,captured:true,disputed:false,currency:'gbp',amount:11000,amount_refunded:0}};
+ const transfer={id:'tr_test',livemode:environment==='production',currency:'gbp',amount:10000-fine,amount_reversed:0,destination:'acct_test',source_transaction:'ch_test',transfer_group:'dd_payout_release',metadata:{driveDropPayoutId:'release',environment}};
  const update=(row,data)=>{for(const[k,v]of Object.entries(data))row[k]=v&&typeof v==='object'&&'increment'in v?(row[k]||0)+v.increment:v&&typeof v==='object'&&'decrement'in v?row[k]-v.decrement:v; row.updatedAt=new Date();return clone(row)};
  const rowGet=where=>state.refunds.find(r=>matches(r,where));
  const db={
@@ -72,7 +73,8 @@ function context(options = {}) {
  const input=(amount=11000,prior=0)=>({paymentId:'pay',amountPence:amount,expectedRefundedPence:prior,actorId:'admin'});
  return{engine,input,state:()=>state,db,stripe,intent,transfer,external,reversals,refundCalls,reversalCalls,options};
 }
-(async()=>{
+module.exports = {context, loader};
+if (require.main === module) (async()=>{
  let c=context({transferred:false});let rows=await Promise.all([c.engine.prepareStripeRefund(c.input()),c.engine.prepareStripeRefund(c.input())]);assert.equal(rows[0].id,rows[1].id);assert.equal(c.state().payment.payoutStatus,'HELD');
  await Promise.all([c.engine.reconcileStripeRefund(rows[0].id),c.engine.reconcileStripeRefund(rows[0].id)]);assert.equal(c.external.length,1);assert.equal(c.refundCalls.length,1);assert.equal(c.state().payment.refundedPence,11000);assert.equal(c.state().payment.payoutStatus,'CANCELLED');assert.equal(c.state().notifications.length,2);assert.equal(c.reversalCalls.length,0);
  await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(rows[0].id);assert.equal(c.refundCalls.length,1);assert.equal(c.state().notifications.length,2);

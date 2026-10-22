@@ -13,8 +13,8 @@ export default function StripePayoutNotice({payment, onResult}: {payment: any; o
     payout?.status === 'DEDUCTED' ? 'The proceeds were fully offset by fines. No transfer was required.' :
     payment.payoutStatus === 'PAID' ? 'Released to the transporter’s Stripe balance. Bank arrival is separate and is shown in their Stripe dashboard.' :
     'Stripe bank payouts start after DriveDrop releases the eligible funds.';
-  return <div className={`formNotice ${failed || reversed ? 'errorNotice' : ''}`} role="status"><strong>{processing ? 'Payout processing' : failed || reversed ? 'Payout needs attention' : 'Stripe sandbox payout'}</strong><p>{message}</p>
+  return <div className={`formNotice ${failed || reversed ? 'errorNotice' : ''}`} role="status"><strong>{processing ? 'Payout processing' : failed || reversed ? 'Payout needs attention' : payment.stripeLivemode ? 'Stripe payout' : 'Stripe sandbox payout'}</strong><p>{message}</p>
     {!!payout?.finePence && payment.payoutStatus !== 'PAID' && !payment.stripeRefunds?.length && <p>The fine deduction is reserved on this payout and will not be deducted again on retry.</p>}
-    {failed && !reversed && !payment.stripeRefunds?.some((r:any)=>r.activePaymentId) && <PayoutButton paymentId={payment.id} amountPence={payment.transporterProceedsPence} retry onReleased={onResult}/>}
+    {failed && !reversed && (!payment.stripeLivemode || payment.stripePayoutRecoveryEnabled) && !payment.stripeRefunds?.some((r:any)=>r.activePaymentId) && <PayoutButton paymentId={payment.id} payoutId={payout?.id} live={payment.stripeLivemode} amountPence={payment.transporterProceedsPence} retry onReleased={onResult}/>}
   </div>;
 }

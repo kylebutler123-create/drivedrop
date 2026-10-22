@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-10-22T18:30:01.891Z",
+  "engine": "wasm-single-backend",
+  "version": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
+  "native1711Verified": false,
+  "migration": "scripts/production-database/supabase/migrations/20261021193022_production_payment_schema.sql",
+  "migrationSha256": "7d3864f328b3429e7b8c1cb736a8c05e98581796e31d2caaeb174252428eb8ff",
+  "baselineFingerprint": "dbafd834d5aaa168c554d9a62c382b84",
+  "counts": {
+    "tables": 31,
+    "columns": 377,
+    "constraints": 140,
+    "indexes": 121,
+    "triggers": 4
+  },
+  "passed": [
+    "Baseline catalog and five buckets exactly match the reviewed production fingerprint",
+    "Nonempty auth is rejected",
+    "Nonempty storage is rejected",
+    "Nonempty application data is rejected",
+    "Changed cancellation fee is rejected",
+    "Unreviewed schema drift is rejected",
+    "Changed private bucket is rejected",
+    "Effective anonymous privileges are rejected",
+    "PostgreSQL 17 MAINTAIN-only client privileges are rejected",
+    "Unexpected migration history is rejected",
+    "Every rejected migration rolls back without baseline changes",
+    "Additive migration and postflight commit in one transaction, including enum additions",
+    "Actual recovery backlog SQL runs against the migrated schema without exposing record details",
+    "Repeat application refuses safely",
+    "Anonymous evidence reads are denied despite broad default ACLs",
+    "Authenticated clients cannot access recovery leases",
+    "Only one active recovery lease can exist",
+    "Synthetic production audit: atomic ledger, immutable evidence/history, reservation, payout and duplicate guards",
+    "All four payment tables accept production only; historical preview migrations are unchanged",
+    "Synthetic financial fixtures roll back; application tables remain empty"
+  ],
+  "limitations": [
+    "WebAssembly PostgreSQL is a single backend. Native PostgreSQL 17.11 and cross-process locking remain unverified.",
+    "Local role/storage stubs do not certify Supabase Auth, Storage or hosted configuration."
+  ]
+}

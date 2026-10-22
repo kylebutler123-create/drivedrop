@@ -1,4 +1,5 @@
 import {ConnectError, CONNECT_RETRY_WINDOW_MS} from './stripe-connect-provider';
+import {supportedPaymentEnvironment} from './payment-runtime';
 
 // Planning only: callers must persist the instruction under the shared booking
 // lock before contacting Stripe. This module never sends money or edits a ledger.
@@ -17,12 +18,12 @@ export type RefundInstructionIdentity = {
 };
 const fail = (message: string, code = 'REFUND_REVIEW'): never => {throw new ConnectError(message, code);};
 const pence = (value: number) => Number.isInteger(value) && value >= 0 && value <= 2_147_483_647;
-const supportedEnvironment = (value: string) => ['preview', 'development'].includes(value);
+const supportedEnvironment = supportedPaymentEnvironment;
 
 export function planStripeRefund(payment: RefundPayment, input: {
   amountPence: number; expectedRefundedPence: number; environment: string;
 }, release: RefundRelease | null = null) {
-  if (!supportedEnvironment(input.environment)) fail('Live refunds are disabled.');
+  if (!supportedEnvironment(input.environment)) fail('Unsupported refund environment.');
   if (payment.provider !== 'STRIPE' || payment.currency.toUpperCase() !== 'GBP' ||
       !payment.providerReference?.startsWith('pi_')) fail('This is not a GBP Stripe booking.');
   if (![payment.paidPence, payment.refundedPence, payment.platformFeePence,
@@ -91,7 +92,7 @@ export function refundCreateRetrySafe(firstAttemptAt: Date | null, now = Date.no
 }
 
 // The caller must retrieve and verify the parent charge in the configured
-// sandbox. A v1 Refund does not itself expose a livemode property.
+// environment. A v1 Refund does not itself expose a livemode property.
 export function assertStripeRefundMatches(refund: {
   id: string; amount: number; currency: string; status?: string | null;
   charge: string | {id: string} | null; payment_intent: string | {id: string} | null;

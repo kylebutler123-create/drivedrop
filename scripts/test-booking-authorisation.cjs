@@ -8,7 +8,7 @@ function load(file){file=path.resolve(root,file);if(cache[file])return cache[fil
 
 let mode='TEST',failure=false,ambiguous=false;
 const intents=new Map(),sessions=new Map();let captures=0,cancels=0,refunds=0;
-const provider={paymentEnvironment:()=>process.env.VERCEL_ENV||'development',authorisationProvider:()=>{if(process.env.VERCEL_ENV==='production')throw Error('disabled in production');return mode},checkoutOrigin:()=> 'http://localhost:3000',stripeRequest:async(path,body,key)=>{
+const provider={assertNewCheckoutAllowed:()=>{if(process.env.VERCEL_ENV==='production')throw Error('disabled in production')},paymentEnvironment:()=>process.env.VERCEL_ENV||'development',authorisationProvider:()=>{if(process.env.VERCEL_ENV==='production')throw Error('disabled in production');return mode},checkoutOrigin:()=> 'http://localhost:3000',stripeRequest:async(path,body,key)=>{
  if(path==='checkout/sessions'){
   let s=[...sessions.values()].find(s=>s.key===key);if(s)return s;
   s={id:'cs_'+sessions.size,key,status:'open',url:'https://checkout.stripe.com/test',payment_intent:null,body};sessions.set(s.id,s);return s;

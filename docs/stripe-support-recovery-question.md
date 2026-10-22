@@ -8,6 +8,10 @@ The approved question below was sent through the official `https://support.strip
 
 This contact changes no Stripe setting, key permission, application source, environment variable, payment object or database row. No secret key, credential or customer information was sent. Refund activation remains off as last verified in the [readiness review](stripe-payment-readiness-review.md); this support-only step does not constitute another runtime or database check. Production and live payments were not accessed or changed.
 
+## Read-only follow-up — 22 October 2026
+
+The official Support page was reopened and showed the signed-in **drivedrop sandbox (drivedrop)** account. The Support widget displayed a fresh assistant greeting, without the previous escalation conversation, case number or human response. This does **not** establish that Stripe has not replied; the prior thread could not be recovered from the available view. No duplicate message was sent and no account, financial or permission setting was changed. The provider gate remains **UNVERIFIED** pending the actual specialist reply or a reviewed disposition.
+
 ## Exact initial message sent
 
 Please route this to Stripe Connect technical support for confirmation of a sandbox testing limitation.

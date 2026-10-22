@@ -1,6 +1,7 @@
 import {after,NextResponse} from 'next/server';
 import {prepareStripePayout,reconcileStripePayout} from '@/lib/stripe-payouts';
-import {connectErrorMessage,connectFailureCode} from '@/lib/stripe-connect-provider';
+import {connectErrorMessage,connectFailureCode,connectOrigin,connectReconciliationEnabled} from '@/lib/stripe-connect-provider';
+import {paymentEnvironment,productionPaymentsEnabled} from '@/lib/payment-runtime';
 export const maxDuration=180;
 import {prisma} from '@/lib/prisma';
 import {currentUser} from '@/lib/auth';
@@ -19,7 +20,7 @@ function testFinanceDisabled(){
 }
 
 export async function POST(r:Request){
- if(testFinanceDisabled())return NextResponse.json({error:'Test finance is permanently disabled in production'},{status:403});
+ if(testFinanceDisabled()&&!productionPaymentsEnabled())return NextResponse.json({error:'Production payments are disabled'},{status:403});
  const u=await currentUser();
  if(!u||u.role!=='ADMIN'||u.accountStatus!=='ACTIVE')return NextResponse.json({error:'Admin required'},{status:403});
  const parsed=S.safeParse(await r.json().catch(()=>null));
@@ -28,6 +29,7 @@ export async function POST(r:Request){
  const provider=await prisma.bookingPayment.findUnique({where:{id:paymentId},select:{provider:true}});
  if(provider?.provider==='STRIPE'){
   try{
+   if((paymentEnvironment()==='production'||r.headers.get('origin'))&&r.headers.get('origin')!==connectOrigin())return NextResponse.json({error:'Invalid request origin'},{status:403});
    const payout=await prepareStripePayout(paymentId,u.id);
    if(!['TRANSFERRED','DEDUCTED','REVERSED'].includes(payout.status))after(()=>reconcileStripePayout(payout.id));
    return NextResponse.json({accepted:true,payoutStatus:['TRANSFERRED','DEDUCTED'].includes(payout.status)?'PAID':payout.status==='REVERSED'?'HELD':'PROCESSING',payoutId:payout.id},{status:202});
@@ -36,6 +38,7 @@ export async function POST(r:Request){
    return NextResponse.json({error:connectErrorMessage(error)},{status:400});
   }
  }
+ if(testFinanceDisabled())return NextResponse.json({error:'Test finance is permanently disabled in production'},{status:403});
  try{
   const result=await prisma.$transaction(async(tx:any)=>{
    const ref=await tx.bookingPayment.findUniqueOrThrow({where:{id:paymentId},select:{bookingId:true}});await tx.$queryRaw`SELECT id FROM "Booking" WHERE id=${ref.bookingId} FOR UPDATE`;
@@ -93,5 +96,22 @@ export async function POST(r:Request){
  }catch(e:any){
   return NextResponse.json({error:e.message||'Unable to release payout'},{status:400});
  }
+}
+
+// Reconcile only an existing administrator-approved instruction while creation
+// is paused. This route cannot reserve or create a new payout instruction.
+export async function PATCH(request:Request){
+ const user=await currentUser();
+ if(!user||user.role!=='ADMIN'||user.accountStatus!=='ACTIVE')return NextResponse.json({error:'Admin required'},{status:403});
+ if(!connectReconciliationEnabled())return NextResponse.json({error:'Stripe recovery is disabled'},{status:403});
+ try{
+  if((paymentEnvironment()==='production'||request.headers.get('origin'))&&request.headers.get('origin')!==connectOrigin())return NextResponse.json({error:'Invalid request origin'},{status:403});
+  const parsed=z.object({payoutId:z.string().min(1)}).safeParse(await request.json().catch(()=>null));
+  if(!parsed.success)return NextResponse.json({error:'Invalid payout record'},{status:400});
+  const row=await prisma.stripePayout.findFirst({where:{id:parsed.data.payoutId,environment:paymentEnvironment()},select:{id:true}});
+  if(!row)return NextResponse.json({error:'Payout not found'},{status:404});
+  after(()=>reconcileStripePayout(row.id));
+  return NextResponse.json({accepted:true,payoutId:row.id},{status:202});
+ }catch(error){return NextResponse.json({error:connectErrorMessage(error)},{status:400});}
 }
 

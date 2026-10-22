@@ -3,7 +3,8 @@ import type Stripe from 'stripe';
 import type {Prisma, StripeRefund} from '@prisma/client';
 import {prisma} from './prisma';
 import {paymentEnvironment} from './booking-authorisation-provider';
-import {ConnectError, connectEnabled, connectFailureCode, verifiedConnectClient} from './stripe-connect-provider';
+import {ConnectError, connectEnabled, connectReconciliationEnabled, connectFailureCode, verifiedConnectClient} from './stripe-connect-provider';
+import {stripeLivemode} from './payment-runtime';
 import {assertCapturedSource, assertTransferMatches} from './stripe-payout-policy';
 import {planStripeRefund, assertStripeRefundMatches, refundCreateRetrySafe, refundIdempotencyKey} from './stripe-refund-policy';
 import {restoreRefundFines} from './stripe-refund-fines';
@@ -15,7 +16,9 @@ export const refundSummarySelect = {id: true, status: true, recoveryStatus: true
   recoveryAmountPence: true, failureCode: true, recoveryFailureCode: true, activePaymentId: true,
   ledgerAppliedAt: true, createdAt: true} satisfies Prisma.StripeRefundSelect;
 export function stripeRefundsEnabled() {return connectEnabled() && process.env.STRIPE_REFUNDS_ENABLED === 'true';}
-function requireEnabled() {if (!stripeRefundsEnabled()) throw new ConnectError('Stripe sandbox refunds are not enabled yet.', 'REFUNDS_DISABLED');}
+export function stripeRefundRecoveryEnabled() {return paymentEnvironment() === 'production' ? connectReconciliationEnabled() : stripeRefundsEnabled();}
+function requireEnabled() {if (!stripeRefundsEnabled()) throw new ConnectError('New Stripe refunds are temporarily paused.', 'REFUNDS_DISABLED');}
+function requireRecovery() {if (!stripeRefundRecoveryEnabled()) throw new ConnectError('Stripe refund recovery is not enabled.', 'REFUNDS_DISABLED');}
 const done = (r: StripeRefund) => r.status === 'SUCCEEDED' && ['NOT_REQUIRED', 'RECOVERED'].includes(r.recoveryStatus);
 const paymentInclude = {stripePayout: true, alternativeRefund: {select: {amountPence: true, stripeRefundedPence: true}}, booking: {include: {disputes: true}}, events: {where: {type: 'PAYOUT_READY' as const}}};
 type Payment = Prisma.BookingPaymentGetPayload<{include: typeof paymentInclude}>;
@@ -42,7 +45,7 @@ async function listAll<T extends {id: string}>(page: (cursor?: string) => Promis
 // The booking lock also fences in-flight refund/reversal workers. No replacement
 // refund, transfer or fine application is created by this path.
 export async function reconcileStripeRefundFailure(id: string) {
-  if (!connectEnabled()) return false;
+  if (!connectReconciliationEnabled()) return false;
   const original = await prisma.stripeRefund.findUniqueOrThrow({where: {id}, include: {payment: {select: {bookingId: true}}}});
   if (original.environment !== paymentEnvironment()) return review('Refund environment mismatch.');
   if (!original.ledgerAppliedAt || original.failureCode === LATE_REFUND_FAILED) return false;
@@ -54,7 +57,7 @@ export async function reconcileStripeRefundFailure(id: string) {
     const payment = await tx.bookingPayment.findUniqueOrThrow({where: {id: row.paymentId}, include: paymentInclude});
     const request = await tx.availabilityRequest.findFirst({where: {bookingId: payment.bookingId,
       paymentIntentId: row.paymentIntentId, paymentProvider: 'STRIPE', paymentEnvironment: paymentEnvironment()}});
-    if (!request) return review('The captured sandbox payment could not be matched.');
+    if (!request) return review('The captured Stripe payment could not be matched.');
     const intent = await stripe.paymentIntents.retrieve(row.paymentIntentId, {expand: ['latest_charge']});
     const charge = intent.latest_charge as Stripe.Charge | null;
     // A charge dispute forbids new money movement, but does not invalidate a
@@ -124,7 +127,7 @@ export async function reconcileStripeRefundFailure(id: string) {
 async function sourceState(stripe: Stripe, payment: Payment, row?: StripeRefund) {
   const request = await prisma.availabilityRequest.findFirst({where: {bookingId: payment.bookingId,
     paymentIntentId: payment.providerReference, paymentProvider: 'STRIPE', paymentEnvironment: paymentEnvironment()}});
-  if (!request?.paymentIntentId) return review('The captured sandbox payment could not be matched.');
+  if (!request?.paymentIntentId) return review('The captured Stripe payment could not be matched.');
   const intent = await stripe.paymentIntents.retrieve(request.paymentIntentId, {expand: ['latest_charge']});
   const charge = intent.latest_charge as Stripe.Charge | null;
   const chargeId = assertCapturedSource(intent, {...payment, environment: paymentEnvironment(), refundedPence: charge?.amount_refunded}, request);
@@ -306,12 +309,12 @@ async function recoverTransfer(stripe: Stripe, original: StripeRefund, token: st
 }
 
 export async function reconcileStripeRefund(id: string) {
-  if (!connectEnabled()) requireEnabled();
+  if (!connectReconciliationEnabled()) requireRecovery();
   await reconcileStripeRefundFailure(id);
   const original = await prisma.stripeRefund.findUniqueOrThrow({where: {id}, include: {payment: {select: {bookingId: true}}}});
   if (original.environment !== paymentEnvironment()) return review('Refund environment mismatch.');
   if (lateFailure(original) || done(original) || original.status === 'FAILED' || original.failureCode === 'PRIOR_REFUND_FAILED' || original.recoveryFailureCode === 'PRIOR_REFUND_FAILED') return original;
-  requireEnabled();
+  requireRecovery();
   const token = randomUUID();
   const claimed = await prisma.stripeRefund.updateMany({where: {id, OR: [{leaseUntil: null}, {leaseUntil: {lt: new Date()}}]},
     data: {leaseUntil: new Date(Date.now() + 180_000), leaseToken: token, attemptCount: {increment: 1}}});
@@ -355,7 +358,7 @@ export async function reconcileStripeRefund(id: string) {
 }
 
 export async function recoverStripeRefunds() {
-  if (!connectEnabled()) return {checked: 0, failed: 0};
+  if (!connectReconciliationEnabled()) return {checked: 0, failed: 0};
   const completed = await prisma.stripeRefund.findMany({where: {environment: paymentEnvironment(), ledgerAppliedAt: {not: null},
     OR: [{status: 'SUCCEEDED'}, {failureCode: LATE_REFUND_REVIEW}]}, orderBy: {updatedAt: 'asc'}, take: 1});
   let checked = completed.length, failed = 0;
@@ -368,7 +371,7 @@ export async function recoverStripeRefunds() {
       console.error('Stripe refund outcome check deferred', {refundId: row.id, code: connectFailureCode(error)});
     }
   }
-  if (!stripeRefundsEnabled()) return {checked, failed};
+  if (!stripeRefundRecoveryEnabled()) return {checked, failed};
   const rows = await prisma.stripeRefund.findMany({where: {environment: paymentEnvironment(), activePaymentId: {not: null},
     OR: [{status: {in: ['PENDING', 'RETRY', 'PENDING_STRIPE']}}, {status: 'SUCCEEDED', recoveryStatus: {in: ['PENDING', 'RETRY']}}],
     AND: [{OR: [{retryAfter: null}, {retryAfter: {lte: new Date()}}]}, {OR: [{leaseUntil: null}, {leaseUntil: {lt: new Date()}}]}]}, orderBy: {updatedAt: 'asc'}, take: 1});
@@ -378,7 +381,7 @@ export async function recoverStripeRefunds() {
 }
 
 export async function handleStripeRefundEvent(event: any) {
-  if (!connectEnabled() || event.account || event.livemode !== false) return;
+  if (!connectReconciliationEnabled() || event.account || event.livemode !== stripeLivemode()) return;
   const object = event.data?.object;
   const chargeId = event.type.startsWith('charge.dispute.') ? (typeof object?.charge === 'string' ? object.charge : object?.charge?.id) : event.type === 'charge.refunded' ? object?.id : object?.charge;
   if (typeof chargeId !== 'string') return;
@@ -387,7 +390,7 @@ export async function handleStripeRefundEvent(event: any) {
   const rows = await prisma.stripeRefund.findMany({where: {sourceChargeId: chargeId, environment: paymentEnvironment(), activePaymentId: {not: null}}});
   // The creation flag gates money movement, not canonical safety checks. Stripe
   // can dispute an existing charge while new refunds are switched off.
-  if (stripeRefundsEnabled()) for (const row of rows) await reconcileStripeRefund(row.id);
+  if (stripeRefundRecoveryEnabled()) for (const row of rows) await reconcileStripeRefund(row.id);
   // External refunds/disputes on a booking with no active instruction must also
   // hold future release. Never mirror event amounts into the accounting ledger.
   const intentId = typeof object?.payment_intent === 'string' ? object.payment_intent : object?.payment_intent?.id;

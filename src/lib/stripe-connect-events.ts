@@ -1,12 +1,13 @@
 import {prisma} from './prisma';
 import {paymentEnvironment} from './booking-authorisation-provider';
-import {connectClient, ConnectError} from './stripe-connect-provider';
+import {verifiedConnectClient, ConnectError} from './stripe-connect-provider';
+import {stripeLivemode} from './payment-runtime';
 import {syncConnectAccount} from './stripe-connect-accounts';
 import {reconcileStripePayout} from './stripe-payouts';
 
 export async function handleConnectSnapshot(event: any) {
-  if (event.livemode !== false) throw new ConnectError('Live events are disabled.');
-  const stripe = connectClient(), environment = paymentEnvironment();
+  if (event.livemode !== stripeLivemode()) throw new ConnectError('Stripe event mode does not match this environment.');
+  const stripe = await verifiedConnectClient(), environment = paymentEnvironment();
   if (['transfer.created', 'transfer.updated', 'transfer.reversed'].includes(event.type)) {
     if (event.account) return; // Transfers belong to the platform, never another account.
     const id = event.data?.object?.metadata?.driveDropPayoutId;
@@ -24,7 +25,7 @@ export async function handleConnectSnapshot(event: any) {
   // A bank payout may aggregate several transfers. Record it at account level,
   // never assume that an individual booking has reached the bank.
   const payout = await stripe.payouts.retrieve(payoutId, {}, {stripeAccount: event.account});
-  if (payout.livemode !== false) throw new ConnectError('Live bank payout rejected.');
+  if (payout.livemode !== stripeLivemode()) throw new ConnectError('Bank payout mode does not match this environment.');
   await prisma.stripeConnectAccount.updateMany({where: {id: account.id, OR: [
     {lastBankPayoutCreated: null}, {lastBankPayoutCreated: {lt: payout.created}}, {lastBankPayoutId: payout.id},
   ]}, data: {lastBankPayoutId: payout.id, lastBankPayoutStatus: payout.status, lastBankPayoutCreated: payout.created}});
