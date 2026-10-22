@@ -1,6 +1,6 @@
 {
   "run": "QA22 E2E",
-  "status": "CONNECT_READY_DOCUMENT_REVIEW_IN_PROGRESS",
+  "status": "TRANSPORTER_READY_AWAITING_CUSTOMER_SIGNUP",
   "approval": {
     "date": "2026-10-22",
     "source": "Kye answered Yes to the exact bounded sandbox run presented after commit 4d45e2e",
@@ -143,7 +143,13 @@
     "Rechecked protected payment amounts/status/timestamps, QA21 evidence hash, refunds-off flag and production aliases",
     "Confirmed canonical Stripe sandbox readiness after user onboarding",
     "Normal secure administrator sign-in; reviewed both private synthetic document images",
-    "Approved the insurance fixture; paused before final licence approval to retain an explicit sandbox-only admin note"
+    "Approved the insurance fixture; paused before final licence approval to retain an explicit sandbox-only admin note",
+    "Fixed and preview-deployed approval-note preservation and Cancel behavior at c7abee2",
+    "Hosted-tested Cancel with a database read confirming the document and verification remained pending",
+    "Approved the final synthetic licence with an explicit sandbox-only note saved on both the document and overall verification",
+    "Confirmed one final verification-approved in-app notice and signed the administrator out normally",
+    "Prepared the approved customer signup non-secret fields; password and submission remain for the user",
+    "Rechecked protected reservations/audit counts/evidence hash, refunds-off flag and production aliases after review"
   ],
   "newHostedUsersCreatedByAgent": 0,
   "newJobsCreated": 0,
@@ -181,7 +187,8 @@
     "appRequirementsDue": false,
     "appLastCheckedAt": "2026-10-22T21:45:15.594Z",
     "dailyJobEmails": false,
-    "appSdkOrApiVersionChanged": false
+    "appSdkOrApiVersionChanged": false,
+    "proof": "preview-payment-qa22-connect-ready.jpg"
   },
   "administratorReviewProgress": {
     "checkedAt": "2026-10-22T21:53:24.144377Z",
@@ -205,5 +212,86 @@
     "buildPassed": true,
     "buildEnvironment": "Telemetry disabled; process-scoped localhost offline placeholder database URL; no hosted database or credentials used.",
     "hostedFixVerified": false
+  },
+  "administratorReviewCompleted": {
+    "checkedAt": "2026-10-22T22:01:50.486706Z",
+    "sourceCommit": "c7abee2f2daa1a7d00d886966970084ffbcfafce",
+    "previewDeployment": "dpl_CbfpgsmCCeFbT3guPtw6PUjxr8by",
+    "previewState": "READY",
+    "hostedFixVerified": true,
+    "cancelCheck": {
+      "checkedAt": "2026-10-22T21:56:38.464734Z",
+      "licenceStatus": "PENDING",
+      "verificationStatus": "PENDING",
+      "reviewedAt": null,
+      "reviewNote": null,
+      "noReviewSubmitted": true
+    },
+    "verificationId": "cmvk1xssd0001jz08f28tflus",
+    "verificationStatus": "APPROVED",
+    "licenceStatus": "APPROVED",
+    "reviewedAt": "2026-10-22T21:56:50.663Z",
+    "reviewerRecorded": true,
+    "profileAndFinalLicenceNote": "QA22 E2E synthetic sandbox test only — not real verification. Both uploaded fixtures are NOT identity documents or insurance. Approved only for the explicitly authorised preview payment journey.",
+    "insuranceApprovedAt": "2026-10-22T21:50:30.031Z",
+    "insuranceReviewNote": null,
+    "finalVerificationApprovedInAppNoticeCount": 1,
+    "cancelGeneratedNotice": false,
+    "emailDeliveryProvenByNotice": false,
+    "normalAdministratorLogoutConfirmed": true,
+    "proof": "preview-payment-qa22-verification-approved.jpg",
+    "ci": [
+      {
+        "runId": 39860993417,
+        "name": "Payment, verification and file access regression checks",
+        "conclusion": "success"
+      },
+      {
+        "runId": 39860993493,
+        "name": "Desktop redesign browser checks",
+        "conclusion": "failure",
+        "limitation": "Previously documented public-page .homeQuoteExpand locator matches two controls; updated and baseline builds passed. No layout/style changed in this fix."
+      },
+      {
+        "runId": 39860993351,
+        "name": "Isolated desktop account checks",
+        "checkedAt": "2026-10-22T22:04:37.324Z",
+        "status": "completed",
+        "conclusion": "failure",
+        "findings": "preview-payment-qa22-ci-findings.json",
+        "limitation": "128 failure lines across selectors, local customer-photo API 503s, mobile comparisons, interactions and rejected synthetic booking setup. Build and dispute-fine checks passed. Full browser/booking validation remains open; no global pre-existing-failure assertion or mobile baseline waiver."
+      }
+    ]
+  },
+  "customerSignup": {
+    "checkedAt": "2026-10-22T22:01:50.486706Z",
+    "role": "CUSTOMER",
+    "name": "DriveDrop QA22 E2E Customer",
+    "email": "delivered+drivedrop-qa22-e2e-customer@resend.dev",
+    "phoneIsSynthetic": true,
+    "nonSecretFieldsPrepared": true,
+    "existingCustomerCount": 0,
+    "passwordEnteredByAgent": false,
+    "submittedByAgent": false,
+    "manualHandoffRequiredBy": "browserAuth documentation: do not use browserAuth to create accounts; offer manual handoff so the user completes signup",
+    "url": "https://drivedrop-git-feature-ui-polish-future-9f39.vercel.app/register?account=customer",
+    "proof": "preview-payment-qa22-customer-signup.jpg"
+  },
+  "postReviewPreservationCheck": {
+    "checkedAt": "2026-10-22T22:01:50.486706Z",
+    "refundsEnabled": false,
+    "flagsCheckedAt": "2026-10-22T22:01:28.725Z",
+    "environmentMetadataEntries": 29,
+    "protectedPaymentStatusAmountsAndUpdatedAtMatchBaseline": true,
+    "protected110FailedInstructionStillReserved": true,
+    "protectedQA21AuditCount": 1,
+    "protectedQA21RefundEventCount": 1,
+    "protectedQA21EvidenceBytes": 44415,
+    "protectedQA21EvidenceSha256": "69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e",
+    "productionDeploymentUnchanged": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+    "productionCommitUnchanged": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c",
+    "productionAliasesUnchanged": true,
+    "fullDatabaseFingerprintOrCutoverBackup": false,
+    "sessionChangesExpectedFromNormalSigninAndLogout": true
   }
 }
