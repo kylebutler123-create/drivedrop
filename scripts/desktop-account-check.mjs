@@ -7,6 +7,7 @@ import {mkdir,writeFile,stat,readFile} from 'node:fs/promises';
 import {createWriteStream,writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {checkWorkspaceInteractions} from './desktop-workspace-interactions.mjs';
+import {startCustomerPhotoStorageFixture} from './desktop-account-storage-fixture.mjs';
 
 const root=process.cwd(),baseline=process.argv[2],out=path.join(root,'account-browser-evidence');
 const database=new URL(process.env.POSTGRES_PRISMA_URL||'');
@@ -14,6 +15,7 @@ if(process.env.CI!=='true'||process.env.DRIVEDROP_ISOLATED_BROWSER_TEST!=='true'
 if(!baseline||!path.isAbsolute(baseline))throw new Error('Baseline checkout required');
 await stat(path.join(baseline,'.next','BUILD_ID'));await mkdir(out,{recursive:true});
 const results=[],servers=[],streams=[],states={},mobile=new Map(),mobileKnownError=new Set();
+let storageFixture;
 const record=(name,passed,detail='')=>{results.push({name,status:passed?'PASS':'FAIL',detail});console.log(`${passed?'PASS':'FAIL'} ${name}${detail?' — '+detail:''}`);writeFileSync(path.join(out,'progress.json'),JSON.stringify(results,null,2))};
 const known=(name,status,detail)=>{results.push({name,status,detail});console.log(`${status} ${name} — ${detail}`);writeFileSync(path.join(out,'progress.json'),JSON.stringify(results,null,2))};
 const hash=b=>createHash('sha256').update(b).digest('hex');
@@ -85,7 +87,7 @@ const pages={
 };
 async function server(name,cwd,port){
  const log=createWriteStream(path.join(out,`${name}-server.log`));streams.push(log);
- const child=spawn(process.execPath,[path.join(cwd,'node_modules/next/dist/bin/next'),'start','-H','127.0.0.1','-p',String(port)],{cwd,env:{...process.env,NODE_ENV:'production',VERCEL_ENV:'preview'},stdio:['ignore','pipe','pipe']});servers.push(child);child.stdout.pipe(log);child.stderr.pipe(log);
+ const child=spawn(process.execPath,[path.join(cwd,'node_modules/next/dist/bin/next'),'start','-H','127.0.0.1','-p',String(port)],{cwd,env:{...process.env,...storageFixture.env,NODE_ENV:'production',VERCEL_ENV:'preview'},stdio:['ignore','pipe','pipe']});servers.push(child);child.stdout.pipe(log);child.stderr.pipe(log);
  for(let i=0;i<90;i++){try{const r=await fetch(bases[name]+'/',{signal:AbortSignal.timeout(3000)});if(r.ok)return}catch{}if(child.exitCode!==null)throw new Error(`${name} server exited`);await new Promise(r=>setTimeout(r,700))}throw new Error(`${name} server not ready`);
 }
 async function login(base,role){
@@ -127,6 +129,7 @@ async function open(browser,version,role,scenario,width){
 }
 let browser;
 try{
+ storageFixture=await startCustomerPhotoStorageFixture(process.env);
  await server('baseline',baseline,3300);await server('updated',root,3301);browser=await chromium.launch({headless:true});
  for(const version of ['baseline','updated']){
   // Reset ONLY the guarded local test database between versions, so read-state changes cannot skew comparisons.
@@ -182,6 +185,7 @@ try{
 }catch(error){record('Authenticated suite execution',false,error.stack||error.message)}
 finally{
  if(browser)await browser.close();for(const child of servers)child.kill('SIGTERM');for(const stream of streams)stream.end();
+ if(storageFixture){record('Isolated storage only handled expected empty customer avatar reads',storageFixture.observations.missingAvatarReads>0&&storageFixture.observations.unexpectedRequests===0,JSON.stringify(storageFixture.observations));await storageFixture.close()}
  const report={preExistingFailures:results.filter(x=>x.status==='PRE_EXISTING_FAILURE').length,notComparable:results.filter(x=>x.status==='NOT_COMPARABLE').length,scope:'Authenticated UI using synthetic local PostgreSQL fixtures, mobile screenshot comparisons, and selected real local API workflows. No production data, external email, live payments or external evidence storage. Real-device/Safari and upload integrations NOT tested.',commit:process.env.GITHUB_SHA,baseline:process.env.BASELINE_REF,pass:results.filter(x=>x.status==='PASS').length,fail:results.filter(x=>x.status==='FAIL').length,results};
  await writeFile(path.join(out,'results.json'),JSON.stringify(report,null,2));const summary=`# Isolated account checks\n\n${report.pass} passed; ${report.fail} failed; ${report.preExistingFailures} pre-existing failure observations; ${report.notComparable} non-comparable screenshots.\n\n${report.scope}\n\n`+results.filter(x=>x.status!=='PASS').map(x=>`- ${x.name}: ${x.detail}`).join('\n');await writeFile(path.join(out,'summary.md'),summary);if(process.env.GITHUB_STEP_SUMMARY)await writeFile(process.env.GITHUB_STEP_SUMMARY,summary);if(report.fail)process.exitCode=1;
 }

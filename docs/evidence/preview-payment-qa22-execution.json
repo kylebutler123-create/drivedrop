@@ -1,6 +1,6 @@
 {
   "run": "QA22 E2E",
-  "status": "TRANSPORTER_READY_AWAITING_CUSTOMER_SIGNUP",
+  "status": "ACCOUNTS_READY_AWAITING_BOOKING_WINDOW",
   "approval": {
     "date": "2026-10-22",
     "source": "Kye answered Yes to the exact bounded sandbox run presented after commit 4d45e2e",
@@ -149,7 +149,11 @@
     "Approved the final synthetic licence with an explicit sandbox-only note saved on both the document and overall verification",
     "Confirmed one final verification-approved in-app notice and signed the administrator out normally",
     "Prepared the approved customer signup non-secret fields; password and submission remain for the user",
-    "Rechecked protected reservations/audit counts/evidence hash, refunds-off flag and production aliases after review"
+    "Rechecked protected reservations/audit counts/evidence hash, refunds-off flag and production aliases after review",
+    "Confirmed the user-created customer account and zero jobs/bookings",
+    "Recovered the browser session through normal secure customer sign-in",
+    "Confirmed customer denial of the new transporter private licence and a fully loaded fresh customer dashboard",
+    "Added and locally tested the isolated optional-avatar storage fixture without changing application behavior or mobile baselines"
   ],
   "newHostedUsersCreatedByAgent": 0,
   "newJobsCreated": 0,
@@ -293,5 +297,51 @@
     "productionAliasesUnchanged": true,
     "fullDatabaseFingerprintOrCutoverBackup": false,
     "sessionChangesExpectedFromNormalSigninAndLogout": true
+  },
+  "customerSignupCompletion": {
+    "checkedAt": "2026-10-22T22:09:16.104342Z",
+    "signupCompletedByUser": true,
+    "userId": "cmvk3dp1f0000jx0786ueo8e8",
+    "createdAt": "2026-10-22T22:07:43.874Z",
+    "role": "CUSTOMER",
+    "accountStatus": "ACTIVE",
+    "jobs": 0,
+    "bookings": 0,
+    "connectAccounts": 0,
+    "previewDeployment": "dpl_Ezqajq51eVdcfb3hCzhKppYgy1B6",
+    "previewCommit": "8f9f8d4d0022b8b11414a26d2a6e3f2d8a78c93c",
+    "normalSecureSigninSucceeded": true,
+    "freshDashboardLoadedWithCorrectIdentityAndZeroCounters": true,
+    "proof": "preview-payment-qa22-customer-ready.jpg",
+    "sessionObservation": {
+      "initialPostSignupFileResponse": "Authentication required",
+      "signupSessionCountAt2210UTC": 1,
+      "signupSessionExpiresAt": "2026-11-05T22:07:44.357Z",
+      "causeEstablished": false,
+      "recovery": "Normal browserAuth sign-in followed by fresh authenticated page and private-file denial; no session injection or credential inspection"
+    },
+    "privateFileCheck": {
+      "documentId": "3080bcb0-fd8f-46ea-85b4-493970639aa3",
+      "ownerId": "cmvk1r4020000l207e3d2dt2q",
+      "authenticatedCustomerResponse": "Access denied",
+      "routeContractStatus": 403,
+      "directNetworkStatusCaptured": false,
+      "imageOrSignedStorageUrlDisclosed": false,
+      "proof": "preview-payment-qa22-customer-file-denied.jpg"
+    }
+  },
+  "isolatedCiRepair": {
+    "basedOnRun": 39860993351,
+    "firstFailure": "503 /api/account/customer-photo with no isolated storage configuration",
+    "change": "Loopback-only fixture for the absent ci-customer preview avatar; real app route remains unchanged",
+    "hostedStorageCredentialsUsed": false,
+    "unexpectedRequestsFail": true,
+    "uploadsMocked": false,
+    "financialEndpointsMocked": false,
+    "applicationSourceChanged": false,
+    "mobileBaselinesChanged": false,
+    "localIntegrationTest": "PASS scripts/desktop-account-storage-fixture.test.mjs",
+    "broadRerun": "PENDING",
+    "remainingCiFindings": "preview-payment-qa22-ci-findings.json"
   }
 }
