@@ -12,6 +12,8 @@ This contact changes no Stripe setting, key permission, application source, envi
 
 The official Support page was reopened and showed the signed-in **drivedrop sandbox (drivedrop)** account. The Support widget displayed a fresh assistant greeting, without the previous escalation conversation, case number or human response. This does **not** establish that Stripe has not replied; the prior thread could not be recovered from the available view. No duplicate message was sent and no account, financial or permission setting was changed. The provider gate remains **UNVERIFIED** pending the actual specialist reply or a reviewed disposition.
 
+The later [file-access preflight](production-payment-access-checkpoint.md) rechecked the same signed-in Support view on 22 October: it still displayed a fresh assistant greeting, with no recoverable prior thread, case number or human reply. No message was sent. This is an unavailable-thread observation, not a claim that Stripe has not replied.
+
 ## Exact initial message sent
 
 Please route this to Stripe Connect technical support for confirmation of a sandbox testing limitation.

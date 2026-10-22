@@ -47,7 +47,8 @@ async function main(){
   $queryRawUnsafe:async()=>[]
  };
  const route=load('src/app/api/admin/disputes/route.ts',{
-  '@/lib/stripe-refunds':{stripeRefundsEnabled:()=>false,refundSummarySelect:{}},'@/lib/stripe-connect-provider':{},
+  '@/lib/alternative-refunds':{alternativeRefundSummarySelect:{}},
+  '@/lib/stripe-refunds':{stripeRefundsEnabled:()=>false,stripeRefundRecoveryEnabled:()=>false,refundSummarySelect:{}},'@/lib/stripe-connect-provider':{},
   '@/lib/prisma':{prisma},'@/lib/auth':{currentUser:async()=>user},'@/lib/features':{disputesEnabled:()=>enabled},
   '@/lib/email':{sendTransactionalEmailSafely:async()=>{throw Error('Fine must not send email')}},
   '@/lib/notifications':{createNotificationSafely:async n=>notifications.push(n)},'@/lib/payout-policy':{},

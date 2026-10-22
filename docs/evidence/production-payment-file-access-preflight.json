@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-10-22T19:04:19.452Z",
+  "passed": [
+    "delivery evidence: guest/other-user denial before storage, both booking parties/admin allowed, private bytes and failure handling",
+    "message attachment: guest/other-user denial before storage, both booking parties/admin allowed, private bytes and failure handling",
+    "Delivery, message and profile validators reject spoofed MIME, SVG, empty and oversized files and accept their exact size limits",
+    "Public transporter profile uploads/removal stay bound to the signed-in owner, ignoring a supplied other-user ID"
+  ],
+  "limitations": [
+    "Identity, database and storage adapters are mocked. No browser session, hosted upload, Supabase permission or email delivery is certified.",
+    "Verification, vehicle-photo and alternative-refund evidence checks remain in their existing dedicated suites."
+  ],
+  "baseCommit": "f80c958facc246db599b45b5eff4e1bd489aced9",
+  "scope": "Local route-handler checks with synthetic adapters; no hosted uploads, financial operations or email.",
+  "sourceHashes": {
+    "scripts/test-private-file-access.cjs": "06493788aac101222621388d739f7c27b182637823ea0ff1fb69574980db7d41",
+    "scripts/test-dispute-fines.cjs": "a8c75b93b82fdbc7da60680f6d0d2d778c52964c4c853c0a0ac83213f5ea69c2",
+    "src/app/api/evidence/[id]/route.ts": "e44c7e15cff04ba685d0f41126963d5ea625cd843a2b5efd673d7c04ae5925bc",
+    "src/app/api/messages/attachments/[id]/route.ts": "0e89201cdc0d20af90e8df7a4df1fa98d694644303cde0afda1e4fb6aeb34cc6",
+    "src/app/api/account/profile-image/route.ts": "8fe6082581820df946070435f2da754f4a8523d9026cb8478db5ce7948ea9db7",
+    "src/lib/supabase-storage.ts": "863d5d83fa3052fcb87d5d9d4c357433b81aceb4b4c02287a2fdd06fd85432ef"
+  },
+  "disputeFineRegression": "PASS after restoring test doubles for alternativeRefundSummarySelect and stripeRefundRecoveryEnabled; all existing assertions retained.",
+  "supportObservation": "Signed-in drivedrop sandbox Support widget still shows fresh assistant greeting. Prior thread, case number and human reply not recovered. No duplicate message sent.",
+  "browserObservation": "Preview /admin/payouts shows Administrator authentication is required to manage payouts. No session created.",
+  "hostedGuestObservation": {
+    "alternativeRefundEvidence": {
+      "status": 403,
+      "body": "Administrator access required"
+    },
+    "otherFourRoutes": "INCONCLUSIVE: Vercel fetch connector reports deployment_authentication_required on HTTP 401 and provides no application body. Not treated as successful route checks."
+  },
+  "historicalBrowserRuns": [
+    {
+      "id": 39832763179,
+      "commit": "f649bc515e2a224303caef5220c268297f4cfec4",
+      "result": "failure",
+      "cause": "Missing alternative-refund test double stopped dispute-fine precheck before browser/build steps. Test double now repaired locally; account browser job itself not rerun."
+    },
+    {
+      "id": 39832763145,
+      "commit": "f649bc515e2a224303caef5220c268297f4cfec4",
+      "result": "failure",
+      "cause": "Legacy .homeQuoteExpand selector matches two controls. Public visual baseline suite not completed; no appearance/source change made."
+    }
+  ]
+}
