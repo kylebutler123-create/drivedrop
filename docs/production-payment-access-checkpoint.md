@@ -2,6 +2,8 @@
 
 The branch was refreshed at `f80c958facc246db599b45b5eff4e1bd489aced9`, with no uncommitted work or newer remote changes. The native PostgreSQL rehearsal also passed at this head in [run 39835883593](https://github.com/kylebutler123-create/drivedrop/actions/runs/39835883593).
 
+**CI verified:** [run 39837732141](https://github.com/kylebutler123-create/drivedrop/actions/runs/39837732141) passed both suites at commit `5b5482392000905136c68bbceafeaf0280d9754a`. The saved evidence includes this run and the tested source hashes.
+
 ## Local checks completed
 
 `scripts/test-private-file-access.cjs` exercises the actual delivery-evidence, message-attachment and transporter-profile route handlers with synthetic identity/database/storage adapters. It passed:
