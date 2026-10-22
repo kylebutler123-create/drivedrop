@@ -1,0 +1,112 @@
+{
+  "sourceCommit": "b3a4c52d38c0098268d70fb282ff3ab9b4689553",
+  "sourceHashes": {
+    "scripts/production-database/supabase/migrations/20261021193022_production_payment_schema.sql": "7d3864f328b3429e7b8c1cb736a8c05e98581796e31d2caaeb174252428eb8ff",
+    "scripts/rehearse-production-database.cjs": "43d42dd1dff5fbae18c9949285eb0ead2284ff23719abd945ba92d2b83bc43f8",
+    "scripts/native-payment-rehearsal.cjs": "5c734dffe5829ff7190b81d56c23394ba3b1d11a3359250c43ba8245e631a918",
+    "scripts/test-native-payment-recovery.cjs": "78a8b053c846e7acdadd7fe2b70449962a23f55de22d8fdd0e2a27a3efcbba32",
+    "scripts/test-booking-authorisation.cjs": "8c77723d0648abc481d4eac4dcb5061b8f1175ddcd2f3e0cf463140e68d93081"
+  },
+  "reports": {
+    "REHEARSAL_REPORT": {
+      "checkedAt": "2026-10-22T18:53:59.132Z",
+      "engine": "native",
+      "version": "PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+      "native1711Verified": true,
+      "migration": "scripts/production-database/supabase/migrations/20261021193022_production_payment_schema.sql",
+      "migrationSha256": "7d3864f328b3429e7b8c1cb736a8c05e98581796e31d2caaeb174252428eb8ff",
+      "baselineFingerprint": "dbafd834d5aaa168c554d9a62c382b84",
+      "counts": {
+        "tables": 31,
+        "columns": 377,
+        "constraints": 140,
+        "indexes": 121,
+        "triggers": 4
+      },
+      "passed": [
+        "Baseline catalog and five buckets exactly match the reviewed production fingerprint",
+        "Nonempty auth is rejected",
+        "Nonempty storage is rejected",
+        "Nonempty application data is rejected",
+        "Changed cancellation fee is rejected",
+        "Unreviewed schema drift is rejected",
+        "Changed private bucket is rejected",
+        "Effective anonymous privileges are rejected",
+        "PostgreSQL 17 MAINTAIN-only client privileges are rejected",
+        "Unexpected migration history is rejected",
+        "Every rejected migration rolls back without baseline changes",
+        "Additive migration and postflight commit in one transaction, including enum additions",
+        "Actual recovery backlog SQL runs against the migrated schema without exposing record details",
+        "Repeat application refuses safely",
+        "Anonymous evidence reads are denied despite broad default ACLs",
+        "Authenticated clients cannot access recovery leases",
+        "Only one active recovery lease can exist",
+        "Synthetic production audit: atomic ledger, immutable evidence/history, reservation, payout and duplicate guards",
+        "All four payment tables accept production only; historical preview migrations are unchanged",
+        "Synthetic financial fixtures roll back; application tables remain empty"
+      ],
+      "limitations": [
+        "Local role/storage stubs do not certify Supabase Auth, Storage or hosted configuration."
+      ]
+    },
+    "NATIVE_RECOVERY_REPORT": {
+      "checkedAt": "2026-10-22T18:53:59.328Z",
+      "version": "PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+      "native1711Verified": true,
+      "passed": [
+        "Two independent native PostgreSQL 17.11 connections are in use",
+        "A competing connection cannot claim while the production advisory lock is held",
+        "Six competing claims produce one durable active run",
+        "An expired run is replaced and a late completion cannot overwrite either run record",
+        "A failed stage still reaches refund recovery and persists an unhealthy failed run",
+        "Invalid configuration cannot claim; paused creation still permits recovery in production-only run storage"
+      ],
+      "limitations": [
+        "Provider stages are offline fixtures; this does not verify Stripe responses, hosted scheduling or pending money instructions. The separate booking suite exercises a real pending capture instruction."
+      ]
+    },
+    "NATIVE_AUTHORISATION_REPORT": {
+      "checkedAt": "2026-10-22T18:53:59.985Z",
+      "native1711Verified": true,
+      "checks": 52,
+      "productionPendingCaptureRecovered": true,
+      "duplicateBookingAndLedgerRejected": true,
+      "creationPausedDuringRecovery": true,
+      "limitations": [
+        "Stripe and email are offline fixtures. This does not close the genuine Stripe insufficient-balance reversal gate."
+      ]
+    }
+  },
+  "limits": [
+    "Disposable localhost database only; no hosted migration or configuration changed.",
+    "Stripe and email use offline fixtures. Provider insufficient-balance, delivery and hosted scheduler gates remain open."
+  ],
+  "workflow": {
+    "id": 39835288707,
+    "url": "https://github.com/kylebutler123-create/drivedrop/actions/runs/39835288707",
+    "head_sha": "b3a4c52d38c0098268d70fb282ff3ab9b4689553",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-10-22T18:53:15Z",
+    "updated_at": "2026-10-22T18:54:05Z",
+    "run_attempt": 1
+  },
+  "jobId": 120021871921,
+  "hostedReadOnlyVerification": {
+    "checkedAt": "2026-10-22T18:54:39.142Z",
+    "production": {
+      "id": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+      "readyState": "READY",
+      "alias": [
+        "drivedrop-pink.vercel.app",
+        "drivedrop-future-9f39.vercel.app",
+        "drivedrop-git-main-future-9f39.vercel.app"
+      ],
+      "sha": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c"
+    },
+    "environmentMetadataEntries": 29,
+    "environmentMetadataUnchanged": true,
+    "previewRefundsOff": true,
+    "scope": "No hosted database writes or data tests were performed in this native rehearsal. Fingerprints were not resampled; prior preservation evidence remains separately dated."
+  }
+}

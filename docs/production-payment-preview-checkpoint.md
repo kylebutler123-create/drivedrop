@@ -1,5 +1,7 @@
 # Production preparation preview checkpoint — 22 October 2026
 
+**Later native follow-up:** the [PostgreSQL 17.11 CI rehearsal](production-payment-native-checkpoint.md) passed at `b3a4c52`, including real connection/lease contention and pending booking recovery through the production dispatcher. It closes those isolated test gates; this publication report and its hosted preservation checks remain scoped to their original sample.
+
 Implementation commit **`f649bc515e2a224303caef5220c268297f4cfec4`** is saved on `feature/ui-polish`. The GitHub tree exactly matches the reviewed local tree `d0c6de473dd09cb6b15a7d1af3197122649ced13`.
 
 Vercel preview **`dpl_48S1pzxg7pgC7JpHwmnkt8LGhD2Q`** is READY and assigned only to [the feature preview](https://drivedrop-git-feature-ui-polish-future-9f39.vercel.app/). Its health endpoint returned HTTP 200 with `ok=true` and version `f649bc515e2a`; the public homepage loaded in the browser. The recovery health endpoint rejected a request without its secret with HTTP 403. Five recent scheduled preview worker records succeeded with zero checked/failed items: these are idle scans, not proof of pending financial work completing.
@@ -8,6 +10,6 @@ After publication, all **32 preview** and **28 prepared-production** application
 
 The clean TypeScript/optimized build and the relevant financial/runtime regression suites passed. The isolated PostgreSQL 17.5 WASM schema rehearsal passed 20 checks. These results do not certify native PostgreSQL 17.11, concurrent transactions, a live Stripe account, authenticated browser journeys, private-file ownership flows, actual pending-work recovery or email delivery. The genuine Stripe insufficient-balance reversal failure/retry remains **UNVERIFIED**; the signed-in Support view did not recover the prior escalation thread or a specialist reply, and no duplicate request was sent.
 
-Next: obtain an isolated native PostgreSQL 17.11 environment for the supplied rehearsal and Prisma/concurrency checks, recover Stripe's actual specialist response, then complete the remaining acceptance work in the [rollout plan](production-payment-rollout-plan.md). No hosted migration, production configuration, main merge, production deployment or live payment activation has been authorized or performed. An exact cutover still requires separate approval after the outstanding gates are addressed.
+At this publication checkpoint the next step was the isolated native rehearsal; that step is now completed in the linked follow-up. Next: recover Stripe's actual specialist response and complete the remaining acceptance work in the [rollout plan](production-payment-rollout-plan.md). No hosted migration, production configuration, main merge, production deployment or live payment activation has been authorized or performed. An exact cutover still requires separate approval after the outstanding gates are addressed.
 
 See the [publication evidence](evidence/production-payment-preview-publication.json), [implementation](production-payment-implementation.md) and [configuration proposal](production-payment-configuration.md).

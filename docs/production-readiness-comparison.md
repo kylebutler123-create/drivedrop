@@ -1,6 +1,6 @@
 # Preview and prepared production comparison — 21 October 2026
 
-**Later implementation checkpoint:** [Production-safe code and proposed schema](production-payment-implementation.md) are prepared on `feature/ui-polish`. Mocked/runtime/build checks and a PostgreSQL 17.5 WASM schema rehearsal passed; native 17.11, real concurrency and hosted acceptance/cutover gates remain open. No hosted migration or production activation has occurred. This document's original review remains historical evidence.
+**Later implementation and native-test checkpoint:** [Production-safe code and proposed schema](production-payment-implementation.md) are prepared on `feature/ui-polish`. The [native PostgreSQL 17.11 rehearsal](production-payment-native-checkpoint.md) passed at `b3a4c52`, including schema/audit checks, real connection/lease contention and pending booking recovery through the production dispatcher. Genuine Stripe insufficient-balance, browser/ownership, hosted scheduling, delivery and cutover gates remain open. No hosted migration or production activation has occurred. This document's original review remains historical evidence.
 
 **The read-only comparison is complete. Prepared production needs the later Connect, refund and alternative-repayment schema, plus production-specific application work before cutover. Nothing was migrated or activated.** The next implementation is described in the [production payment rollout plan](production-payment-rollout-plan.md).
 
