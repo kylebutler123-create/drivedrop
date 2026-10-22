@@ -1,0 +1,83 @@
+{
+  "checkedAt": "2026-10-22T20:28:27.189417+00:00",
+  "sourceCommit": "792e87feff2338b086df8ef744bfc2b8e7366565",
+  "scope": "One explicitly authorized preview-branded provider delivery probe to one named recipient. No booking, money operation or production email activation.",
+  "status": "PROVIDER_DELIVERED_AWAITING_RECIPIENT_CONFIRMATION",
+  "recipient": {
+    "count": 1,
+    "authorization": "Exact recipient supplied by Kye in chat for the prepared single-email test.",
+    "addressStoredInRepository": false,
+    "inboxOrSpamConfirmation": "PENDING"
+  },
+  "sender": {
+    "from": "DriveDrop <account@contact.drive-drop.com>",
+    "domain": "contact.drive-drop.com",
+    "provider": "Resend",
+    "verification": "Authenticated Domains view showed verified and ready to send before submission.",
+    "domainId": "38955a73-e504-4a85-997d-1bded4a259af"
+  },
+  "render": {
+    "function": "src/lib/email.ts:resendMessage",
+    "sourceSha256": "f8cf14d24d087aa99dd3a2fcc9d0dbb7bed7ceb3cb4cc93bbff900f6729f4c31",
+    "inputTemplate": "docs/examples/payment-readiness-email.example.json",
+    "environment": "preview",
+    "origin": "https://drivedrop-git-feature-ui-polish-future-9f39.vercel.app",
+    "sourceHtmlSha256": "ffcfb8c0840eb47e647e0729089df0ce5f32f65bba5faa2a180b76184bd30815",
+    "sourceHtmlMeaning": "Hash of application-generated HTML before Resend editor import, not a hash of delivered MIME/HTML.",
+    "draftAndSentContentChecked": true,
+    "sentCtaUrl": "https://drivedrop-git-feature-ui-polish-future-9f39.vercel.app/",
+    "sentCtaCheckedFrom": "Rendered sent-email preview iframe link href.",
+    "providerTransformation": "HTML imported into Resend template editor; the provider converted its markup and prefixed the test subject. Delivered bytes are not claimed identical to the application render."
+  },
+  "send": {
+    "mechanism": "Authenticated Resend unpublished-template Test email action",
+    "draftTemplateId": "4cb77802-d69f-4622-a137-fc8c4e54dc43",
+    "draftTemplateName": "DriveDrop preview delivery probe — 22 October 2026",
+    "templatePublished": false,
+    "sendSubmissions": 1,
+    "retries": 0,
+    "requestedSubject": "DriveDrop preview — email delivery check",
+    "actualSubject": "[TEST] DriveDrop preview — email delivery check",
+    "providerEmailId": "01a16549-e7b1-756a-b559-682039617194",
+    "providerDetailUrl": "https://resend.com/emails/01a16549-e7b1-756a-b559-682039617194",
+    "eventsObserved": [
+      "Sent",
+      "Delivered"
+    ],
+    "eventTimeAsDisplayed": "Oct 22, 9:25 PM",
+    "eventTimePrecision": "Provider UI minute-resolution display; not an independently retrieved UTC event timestamp.",
+    "providerAcceptance": true,
+    "providerDeliveryStatus": "DELIVERED",
+    "recipientReceiptConfirmed": false,
+    "duplicateGuard": "One Send test submission was journaled before the action; no resend after the pending state. One matching new record was visible in the sent list. Dashboard does not expose an operator-supplied idempotency key."
+  },
+  "access": {
+    "resendConnectorSearch": "No matching connector was available.",
+    "existingPreviewCredential": "Vercel metadata confirms one preview-scoped sensitive RESEND_API_KEY. Its value is not readable; no value was obtained or changed.",
+    "authenticatedProviderFallback": "Secure GitHub sign-in succeeded and showed the existing Resend account. The provider-native test route was used without creating an API key.",
+    "deployedApplicationSendPathExercised": false
+  },
+  "preservation": {
+    "environmentMetadataEntries": 29,
+    "environmentMetadataUnchanged": true,
+    "previewRefundsOff": true,
+    "productionDeploymentId": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+    "productionCommit": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c",
+    "productionAliases": [
+      "drivedrop-pink.vercel.app",
+      "drivedrop-future-9f39.vercel.app",
+      "drivedrop-git-main-future-9f39.vercel.app"
+    ],
+    "productionChanged": false,
+    "newKeysCreated": false,
+    "databaseOrFinancialWrites": false,
+    "protectedCasesUsed": false,
+    "allTableOrStorageFingerprintsRefreshed": false
+  },
+  "limitations": [
+    "Await the named recipient’s inbox/spam and rendered-link confirmation; provider Delivered does not establish inbox placement or user receipt.",
+    "This proves the exercised sender/domain and provider-template delivery. It does not exercise the deployed application RESEND_API_KEY or sendTransactionalEmail path.",
+    "Lifecycle notification delivery, failure/retry handling and production-scoped email acceptance remain open.",
+    "The genuine Stripe balance_insufficient reversal failure/retry remains UNVERIFIED."
+  ]
+}

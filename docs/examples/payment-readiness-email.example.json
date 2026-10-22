@@ -1,5 +1,5 @@
 {
-  "status": "DRAFT_UNSENT",
+  "status": "USED_FOR_ONE_PROVIDER_TEST_SENT",
   "scope": "One preview-only delivery probe; not a booking or money operation and not production email acceptance.",
   "recipient": null,
   "recipientRule": "Use only the named recipient explicitly authorized by Kye. Do not store their address in the public repository.",
@@ -21,5 +21,7 @@
     "Record provider acceptance separately from actual recipient delivery.",
     "Obtain recipient inbox/spam confirmation and check the rendered link.",
     "Keep credentials, recipient address and private message content out of public evidence."
-  ]
+  ],
+  "deliveryEvidence": "../evidence/production-payment-email-delivery-probe.json",
+  "recipientConfirmation": "PENDING"
 }
