@@ -33,6 +33,7 @@ async function reject(sql,pattern,name){
 (async()=>{
   await open();
   const version=(await query('SELECT version() AS version'))[0].version;
+  if(process.env.REHEARSAL_REQUIRE_NATIVE_1711==='true')assert(engine==='native'&&version.startsWith('PostgreSQL 17.11 '),'This run requires native PostgreSQL 17.11');
   assert.equal((await query("SELECT count(*)::int AS n FROM pg_tables WHERE schemaname NOT IN ('pg_catalog','information_schema')"))[0].n,0,'Rehearsal database must be empty');
   await db.exec(`DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='anon') THEN CREATE ROLE anon NOLOGIN; END IF;
