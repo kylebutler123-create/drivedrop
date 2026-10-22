@@ -341,7 +341,33 @@
     "applicationSourceChanged": false,
     "mobileBaselinesChanged": false,
     "localIntegrationTest": "PASS scripts/desktop-account-storage-fixture.test.mjs",
-    "broadRerun": "PENDING",
-    "remainingCiFindings": "preview-payment-qa22-ci-findings.json"
+    "broadRerun": "IN_PROGRESS",
+    "remainingCiFindings": "preview-payment-qa22-ci-findings.json",
+    "commit": "826132226b32532b3ca414aadc4b775edc265620",
+    "runId": 39863797153,
+    "broadPassClaimed": false,
+    "sourceTriage": [
+      "The old job POST fixture omits required collectionFrom/collectionUntil",
+      "The old booking assertion expects immediate confirmed/captured booking; the current route returns a separate authorization/availability request",
+      "No production or application rule changed to satisfy those obsolete assertions"
+    ]
+  },
+  "postCustomerPreservationCheck": {
+    "checkedAt": "2026-10-22T22:18:03.223136Z",
+    "qa22Jobs": 0,
+    "qa22Bookings": 0,
+    "protectedPaymentStatusAmountsAndUpdatedAtMatchBaseline": true,
+    "protected110FailedInstructionStillReserved": true,
+    "protectedQA21AlternativePence": 110,
+    "protectedQA21StripeRefundedPence": 0,
+    "protectedQA21EvidenceBytes": 44415,
+    "protectedQA21EvidenceSha256": "69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e",
+    "flagsCheckedAt": "2026-10-22T22:18:30.564Z",
+    "refundsEnabled": false,
+    "environmentMetadataEntries": 29,
+    "productionDeploymentUnchanged": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+    "productionCommitUnchanged": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c",
+    "productionAliasesUnchanged": true,
+    "fullDatabaseFingerprintOrCutoverBackup": false
   }
 }
