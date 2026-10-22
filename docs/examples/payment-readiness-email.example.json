@@ -23,5 +23,5 @@
     "Keep credentials, recipient address and private message content out of public evidence."
   ],
   "deliveryEvidence": "../evidence/production-payment-email-delivery-probe.json",
-  "recipientConfirmation": "PENDING"
+  "recipientConfirmation": "RECEIVED_IN_JUNK_BUTTON_OPENS_DRIVEDROP_HOME"
 }

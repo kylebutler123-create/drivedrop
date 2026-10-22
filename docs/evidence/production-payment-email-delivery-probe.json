@@ -2,12 +2,23 @@
   "checkedAt": "2026-10-22T20:28:27.189417+00:00",
   "sourceCommit": "792e87feff2338b086df8ef744bfc2b8e7366565",
   "scope": "One explicitly authorized preview-branded provider delivery probe to one named recipient. No booking, money operation or production email activation.",
-  "status": "PROVIDER_DELIVERED_AWAITING_RECIPIENT_CONFIRMATION",
+  "status": "RECIPIENT_CONFIRMED_JUNK_LINK_WORKS",
   "recipient": {
     "count": 1,
     "authorization": "Exact recipient supplied by Kye in chat for the prepared single-email test.",
     "addressStoredInRepository": false,
-    "inboxOrSpamConfirmation": "PENDING"
+    "inboxOrSpamConfirmation": "JUNK",
+    "confirmation": {
+      "recordedAt": "2026-10-22T20:34:12.194931+00:00",
+      "source": "Kye confirmed in chat after the single test send.",
+      "receiptConfirmed": true,
+      "folder": "Junk",
+      "buttonNavigationConfirmed": true,
+      "reportedLandingPage": "DriveDrop home page",
+      "exactDestinationUrlReported": false,
+      "inboxPlacementPassed": false,
+      "junkPlacementCauseEstablished": false
+    }
   },
   "sender": {
     "from": "DriveDrop <account@contact.drive-drop.com>",
@@ -48,7 +59,7 @@
     "eventTimePrecision": "Provider UI minute-resolution display; not an independently retrieved UTC event timestamp.",
     "providerAcceptance": true,
     "providerDeliveryStatus": "DELIVERED",
-    "recipientReceiptConfirmed": false,
+    "recipientReceiptConfirmed": true,
     "duplicateGuard": "One Send test submission was journaled before the action; no resend after the pending state. One matching new record was visible in the sent list. Dashboard does not expose an operator-supplied idempotency key."
   },
   "access": {
@@ -75,9 +86,25 @@
     "allTableOrStorageFingerprintsRefreshed": false
   },
   "limitations": [
-    "Await the named recipient’s inbox/spam and rendered-link confirmation; provider Delivered does not establish inbox placement or user receipt.",
+    "The recipient confirms receipt in Junk and successful navigation to the DriveDrop home page. Inbox placement is not passed; the cause of Junk placement is not established. The exact destination URL was not reported by the recipient; the sent CTA href was independently checked above.",
     "This proves the exercised sender/domain and provider-template delivery. It does not exercise the deployed application RESEND_API_KEY or sendTransactionalEmail path.",
     "Lifecycle notification delivery, failure/retry handling and production-scoped email acceptance remain open.",
     "The genuine Stripe balance_insufficient reversal failure/retry remains UNVERIFIED."
-  ]
+  ],
+  "providerInsights": {
+    "source": "Authenticated Resend Insights tab for the existing single message; read-only follow-up after recipient confirmation.",
+    "reportTimeAsDisplayed": "Oct 22, 9:25 PM",
+    "needsAttentionCount": 1,
+    "warning": "Ensure link URLs match sending domain",
+    "flaggedUrl": "https://drivedrop-git-feature-ui-polish-future-9f39.vercel.app/",
+    "senderDomain": "contact.drive-drop.com",
+    "providerExplanation": "Mismatched link and sending domains can trigger spam filters.",
+    "positiveChecksObserved": [
+      "Include valid DMARC record",
+      "Include plain text version"
+    ],
+    "interpretation": "The provider flags the preview URL mismatch as a possible filtering issue. This is not proof of the recipient provider’s reason for Junk placement.",
+    "changesMade": false,
+    "additionalMessagesSent": 0
+  }
 }
