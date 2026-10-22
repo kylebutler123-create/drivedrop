@@ -1,6 +1,6 @@
 {
   "run": "QA22 E2E",
-  "status": "TRANSPORTER_SUBMITTED_AWAITING_STRIPE_ONBOARDING_HANDOFF",
+  "status": "CONNECT_READY_DOCUMENT_REVIEW_IN_PROGRESS",
   "approval": {
     "date": "2026-10-22",
     "source": "Kye answered Yes to the exact bounded sandbox run presented after commit 4d45e2e",
@@ -12,7 +12,10 @@
     "freshSandboxConnectAccount": true,
     "syntheticVerificationAndDeliveryUploads": true,
     "expectedAppEmails": 5,
-    "recipients": ["delivered+drivedrop-qa22-e2e-customer@resend.dev", "delivered+drivedrop-qa22-e2e-transporter@resend.dev"],
+    "recipients": [
+      "delivered+drivedrop-qa22-e2e-customer@resend.dev",
+      "delivered+drivedrop-qa22-e2e-transporter@resend.dev"
+    ],
     "automaticReleaseScheduled": false,
     "productionOrLiveApproval": false
   },
@@ -27,8 +30,21 @@
     "refundsEnabled": false,
     "environmentMetadataEntries": 29,
     "proposedUsersAlreadyExist": false,
-    "protected110": {"status":"PAID","paidPence":11000,"reimbursedPence":0,"payoutStatus":"HELD","updatedAt":"2026-10-20T22:08:06.590Z"},
-    "protectedQA21": {"status":"REFUNDED","combinedReimbursedPence":110,"alternativePence":110,"payoutStatus":"CANCELLED","updatedAt":"2026-10-21T16:26:37.057Z","evidenceSha256":"69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e"},
+    "protected110": {
+      "status": "PAID",
+      "paidPence": 11000,
+      "reimbursedPence": 0,
+      "payoutStatus": "HELD",
+      "updatedAt": "2026-10-20T22:08:06.590Z"
+    },
+    "protectedQA21": {
+      "status": "REFUNDED",
+      "combinedReimbursedPence": 110,
+      "alternativePence": 110,
+      "payoutStatus": "CANCELLED",
+      "updatedAt": "2026-10-21T16:26:37.057Z",
+      "evidenceSha256": "69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e"
+    },
     "fullDatabaseFingerprintOrCutoverBackup": false
   },
   "signup": {
@@ -55,8 +71,23 @@
     "verificationSubmittedAt": "2026-10-22T21:30:11.912Z",
     "adminReviewCompleted": false,
     "documents": [
-      {"id":"3080bcb0-fd8f-46ea-85b4-493970639aa3","type":"DRIVING_LICENCE","fixture":"driving-licence.png","status":"PENDING","ownerMatches":true,"storageExists":true},
-      {"id":"a2e7b311-3bc9-41f5-96af-f3671ff8dcd4","type":"INSURANCE","fixture":"insurance.png","status":"PENDING","expiresAt":"2027-10-23T00:00:00Z","ownerMatches":true,"storageExists":true}
+      {
+        "id": "3080bcb0-fd8f-46ea-85b4-493970639aa3",
+        "type": "DRIVING_LICENCE",
+        "fixture": "driving-licence.png",
+        "status": "PENDING",
+        "ownerMatches": true,
+        "storageExists": true
+      },
+      {
+        "id": "a2e7b311-3bc9-41f5-96af-f3671ff8dcd4",
+        "type": "INSURANCE",
+        "fixture": "insurance.png",
+        "status": "PENDING",
+        "expiresAt": "2027-10-23T00:00:00Z",
+        "ownerMatches": true,
+        "storageExists": true
+      }
     ],
     "verificationProof": "preview-payment-qa22-verification-submitted.jpg",
     "connect": {
@@ -99,7 +130,21 @@
     "nextEarliestJobCreationUK": "23 October 2026, 09:05 BST",
     "accountSetupAllowedBeforeThen": true
   },
-  "actionsPerformed": ["Read-only branch, deployment, flags, sandbox identity and protected-case checks", "Normal logout of existing transporter session", "Prepared approved transporter name/email/role in signup form", "Confirmed transporter signup after the user completed the secure handoff", "Disabled daily job emails only for the new transporter through Account preferences", "Saved clearly labelled synthetic business details", "Uploaded both synthetic verification fixtures through the normal UI and submitted for review", "Created one new sandbox Connect account through the normal Set up payouts flow", "Stopped at Stripe onboarding signup/terms for manual handoff", "Rechecked protected payment amounts/status/timestamps, QA21 evidence hash, refunds-off flag and production aliases"],
+  "actionsPerformed": [
+    "Read-only branch, deployment, flags, sandbox identity and protected-case checks",
+    "Normal logout of existing transporter session",
+    "Prepared approved transporter name/email/role in signup form",
+    "Confirmed transporter signup after the user completed the secure handoff",
+    "Disabled daily job emails only for the new transporter through Account preferences",
+    "Saved clearly labelled synthetic business details",
+    "Uploaded both synthetic verification fixtures through the normal UI and submitted for review",
+    "Created one new sandbox Connect account through the normal Set up payouts flow",
+    "Stopped at Stripe onboarding signup/terms for manual handoff",
+    "Rechecked protected payment amounts/status/timestamps, QA21 evidence hash, refunds-off flag and production aliases",
+    "Confirmed canonical Stripe sandbox readiness after user onboarding",
+    "Normal secure administrator sign-in; reviewed both private synthetic document images",
+    "Approved the insurance fixture; paused before final licence approval to retain an explicit sandbox-only admin note"
+  ],
   "newHostedUsersCreatedByAgent": 0,
   "newJobsCreated": 0,
   "newStripeAccountsCreated": 1,
@@ -107,5 +152,58 @@
   "newAppEmailsSent": 0,
   "hostedUploads": 2,
   "productionChanges": 0,
-  "providerInsufficientBalanceGate": "UNVERIFIED"
+  "providerInsufficientBalanceGate": "UNVERIFIED",
+  "connectReadyCheck": {
+    "checkedAt": "2026-10-22T21:45:25.371348Z",
+    "userCompletedStripeOnboarding": true,
+    "appRefreshStatusClicked": true,
+    "canonicalStripeRead": true,
+    "stripeAccountId": "acct_1UTTZQLAzgzcUlfr",
+    "livemode": false,
+    "closed": false,
+    "dashboard": "express",
+    "country": "GB",
+    "currency": "gbp",
+    "responsibilities": {
+      "fees_collector": "application",
+      "losses_collector": "application",
+      "requirements_collector": "stripe"
+    },
+    "metadata": {
+      "environment": "preview",
+      "driveDropUserId": "cmvk1r4020000l207e3d2dt2q",
+      "driveDropAccountId": "76d84d22-dd5c-45c7-9b4b-d7667d23451e"
+    },
+    "transfersStatus": "active",
+    "payoutsStatus": "active",
+    "requirementEntries": 0,
+    "appStatus": "READY",
+    "appRequirementsDue": false,
+    "appLastCheckedAt": "2026-10-22T21:45:15.594Z",
+    "dailyJobEmails": false,
+    "appSdkOrApiVersionChanged": false
+  },
+  "administratorReviewProgress": {
+    "checkedAt": "2026-10-22T21:53:24.144377Z",
+    "normalSecureAdminSignInConfirmed": true,
+    "bothSyntheticFilesOpenedAndVisuallyCheckedAsAdministrator": true,
+    "downloadHelperTimedOutOnInlineImage": true,
+    "fileReviewRecoveredThroughNormalBrowserNavigation": true,
+    "insuranceApprovedAt": "2026-10-22T21:50:30.031Z",
+    "insuranceReviewNote": null,
+    "licenceStatus": "PENDING",
+    "verificationStatus": "PENDING",
+    "gapFound": "Document approval UI had no note prompt and final-document approval cleared the verification note.",
+    "fix": "Ask for an optional approval note; Cancel submits no document review; carry the final document note into automatic account approval.",
+    "localRegressionDemonstratedBeforeFix": true,
+    "localChecksPassed": [
+      "test-verification-review-notes.cjs",
+      "test-admin-verification-review.cjs",
+      "test-transporter-verification.cjs",
+      "test-verification-uploads.cjs"
+    ],
+    "buildPassed": true,
+    "buildEnvironment": "Telemetry disabled; process-scoped localhost offline placeholder database URL; no hosted database or credentials used.",
+    "hostedFixVerified": false
+  }
 }

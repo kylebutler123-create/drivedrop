@@ -1,4 +1,4 @@
-name: Payment and file access regression checks
+name: Payment, verification and file access regression checks
 on:
   push:
     branches: ['feature/ui-polish']
@@ -6,6 +6,11 @@ on:
       - '.github/workflows/payment-access-checks.yml'
       - 'scripts/test-private-file-access.cjs'
       - 'scripts/test-dispute-fines.cjs'
+      - 'scripts/test-verification-review-notes.cjs'
+      - 'scripts/test-admin-verification-review.cjs'
+      - 'src/app/api/admin/verifications/**'
+      - 'src/components/VerificationAdmin.tsx'
+      - 'src/components/VerificationDesktopReview.tsx'
       - 'src/app/api/evidence/**'
       - 'src/app/api/messages/attachments/**'
       - 'src/app/api/account/profile-image/**'
@@ -37,3 +42,7 @@ jobs:
         run: node scripts/test-private-file-access.cjs
       - name: Verify dispute fine authorization, amounts and duplicate protection
         run: node scripts/test-dispute-fines.cjs
+      - name: Verify document review notes, cancellation and administrator access
+        run: |
+          node scripts/test-verification-review-notes.cjs
+          node scripts/test-admin-verification-review.cjs

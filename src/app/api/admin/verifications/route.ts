@@ -46,7 +46,7 @@ export async function PATCH(r:Request){
      await tx.transporterVerification.update({where:{id:document.verificationId},data:{status:'REJECTED',reviewNote:documentReview.reviewNote||`${documentLabel.charAt(0).toUpperCase()+documentLabel.slice(1)} rejected. Upload a replacement document and submit verification again.`,reviewedAt:now,reviewerId:u.id}});
      verificationStatusChanged='REJECTED';
     }else if(documentReview.documentStatus==='APPROVED'&&approvedInsurance&&approvedDrivingLicence&&currentVerification&&['PENDING','REJECTED'].includes(currentVerification.status)){
-     await tx.transporterVerification.update({where:{id:document.verificationId},data:{status:'APPROVED',reviewNote:null,reviewedAt:now,reviewerId:u.id}});
+     await tx.transporterVerification.update({where:{id:document.verificationId},data:{status:'APPROVED',reviewNote:documentReview.reviewNote||null,reviewedAt:now,reviewerId:u.id}});
      verificationStatusChanged='APPROVED';
     }
    }
