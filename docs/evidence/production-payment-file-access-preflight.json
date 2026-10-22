@@ -137,5 +137,61 @@
     "result": "UNCONFIRMED",
     "secondCredentialSubmissionAttempted": false,
     "next": "Authentication handoff on the existing customer login page. No credentials inspected and no session fabricated."
+  },
+  "customerReadOnlyFollowUp": {
+    "checkedAt": "2026-10-22T19:39:37.000790+00:00",
+    "sourceCommit": "6e33d541f35be5b0d7e05e7f05f99287887d1bf1",
+    "previewDeployment": "dpl_3eATyKQ1cKDMXAMDGaztFqR4Kct2",
+    "authentication": "User completed the manual authentication handoff. Fresh /customer page displayed DriveDrop Test Customer, Customer role.",
+    "supersedes": "customerAuthenticationFollowUp.result UNCONFIRMED",
+    "observedScreens": [
+      "Customer dashboard and Your deliveries populated",
+      "Payments loaded 52 records; existing test-payment filter and breakdown worked",
+      "Get a quote loaded UK collection window and vehicle fields; no submission"
+    ],
+    "dashboardCounts": {
+      "quoteRequests": 2,
+      "activeDeliveries": 4,
+      "completed": 36,
+      "cancelled": 9
+    },
+    "initialLoadingObservation": "Initial loading state persisted across observations. One reload and navigation to Your deliveries were followed by populated data. Cause not established; no source change made.",
+    "receipt": {
+      "bookingId": "cmv2t86d70003jw06etugtsly",
+      "reference": "DD-ETUGTSLY",
+      "provider": "TEST",
+      "paidPence": 33000,
+      "refundedPence": 0,
+      "status": "PAID",
+      "payoutStatus": "NOT_READY",
+      "paymentUpdatedAt": "2026-10-10T19:51:25.243Z",
+      "downloadSucceeded": true,
+      "pdfMagic": true,
+      "bytes": 213002,
+      "sha256": "a00c73d5473473c94433957af63d32b284266496b56a933c742b8a2ff4eb47eb",
+      "pages": 1,
+      "referenceAndAmountMatched": true,
+      "explicitTestPaymentDisclaimer": true,
+      "commissionLabelPresent": false,
+      "databaseOwnershipConfirmed": true
+    },
+    "observedAccessDenials": [
+      {
+        "target": "Existing QA21 administrator alternative-repayment evidence",
+        "body": "Administrator access required"
+      },
+      {
+        "target": "Customer receipt for QA21 booking belonging to another customer",
+        "body": "Receipt not found."
+      }
+    ],
+    "limits": [
+      "Observed denial bodies do not independently establish HTTP status codes.",
+      "Existing TEST payment and read-only screens; no live or sandbox Stripe checkout performed.",
+      "No booking/quote/payment/refund/confirmation/upload/message/email submitted. Normal authentication affects session state.",
+      "Initial dashboard loading delay cause remains unestablished.",
+      "No new all-table/storage fingerprint comparison or consistent pre-cutover backup.",
+      "Transporter, hosted uploads, bounded financial lifecycle, scheduler/email and production-mode acceptance remain separate gates."
+    ]
   }
 }
