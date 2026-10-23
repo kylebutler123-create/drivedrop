@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-23T11:15:23.927Z",
+  "ukNow": {
+    "date": "2026-10-23",
+    "time": "12:15",
+    "hour": 12
+  },
+  "collectionDate": "2026-10-23",
+  "collectionFrom": "15:00",
+  "collectionUntil": "18:00",
+  "collectionStartUtc": "2026-10-23T14:00:00.000Z",
+  "collectionEndUtc": "2026-10-23T17:00:00.000Z",
+  "hoursUntilUkMidnight": 11.743353611111111,
+  "minutesUntilCollection": 164.60121666666666,
+  "nextDigestCutoff": "2026-10-24T08:00:00.000Z",
+  "excludedBeforeCutoffByCreationWindow": true,
+  "excludedAtNextCutoffByCollectionDate": true,
+  "fixtureHashesVerified": 5
+}

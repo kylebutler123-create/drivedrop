@@ -1,0 +1,255 @@
+{
+  "run": "QA22 E2E",
+  "status": "JOB_CREATED_AWAITING_TRANSPORTER_SIGNIN",
+  "date": "2026-10-23",
+  "sourceCommit": "806fe3cab5933b451004a605b5dad56940a4819e",
+  "sourceTree": "568af6d4cfb069b316f2aed6cfbf347af99745b2",
+  "branch": "feature/ui-polish",
+  "branchRefreshedAndNoDrift": true,
+  "previewDeployment": "dpl_DFAzS5j6VSAD2L1YLA4PD8VdR857",
+  "previewReady": true,
+  "canonicalConnect": {
+    "checkedOn": "2026-10-23",
+    "id": "acct_1UTTZQLAzgzcUlfr",
+    "livemode": false,
+    "closed": false,
+    "dashboard": "express",
+    "country": "GB",
+    "currency": "gbp",
+    "responsibilities": {
+      "fees_collector": "application",
+      "losses_collector": "application",
+      "requirements_collector": "stripe"
+    },
+    "metadata": {
+      "environment": "preview",
+      "driveDropUserId": "cmvk1r4020000l207e3d2dt2q",
+      "driveDropAccountId": "76d84d22-dd5c-45c7-9b4b-d7667d23451e"
+    },
+    "transfersStatus": "active",
+    "payoutsStatus": "active",
+    "requirementEntries": 0
+  },
+  "job": {
+    "checked_at": "2026-10-23 11:17:29.342215+00",
+    "id": "cmvkvkm8b0001jp08vdrm4w6z",
+    "customerId": "cmvk3dp1f0000jx0786ueo8e8",
+    "collection": "QA22 E2E TEST ONLY — London",
+    "delivery": "QA22 E2E TEST ONLY — Birmingham",
+    "vehicleMake": "QA22",
+    "vehicleModel": "E2E TEST ONLY",
+    "registration": "QA22 E2E",
+    "collectionDate": "2026-10-23 00:00:00+00",
+    "collectionFrom": "15:00",
+    "collectionUntil": "18:00",
+    "status": "OPEN",
+    "createdAt": "2026-10-23 11:16:56.076+00",
+    "has_photo": true,
+    "quotes": 0,
+    "availability_requests": 0,
+    "bookings": 0,
+    "owner_path_matches": true,
+    "matching_storage_objects": 1,
+    "digest_runs": 0,
+    "proof": "preview-payment-qa22-job-created.jpg",
+    "submittedThroughNormalCustomerUI": true,
+    "syntheticOnly": true,
+    "initialOwnershipCheckCorrection": "The first read-only check incorrectly expected an environment prefix. Source createVehiclePhotoPath stores userId/randomUUID.ext; the corrected owner-prefix and exact storage-object checks both passed."
+  },
+  "timeGateEvidence": "preview-payment-qa22-morning-time-preflight.json",
+  "ci": {
+    "runId": 39863797153,
+    "jobId": 120120801871,
+    "sourceCommit": "826132226b32532b3ca414aadc4b775edc265620",
+    "status": "completed",
+    "conclusion": "failure",
+    "fixtureIntegrationTest": "PASS",
+    "updatedAndBaselineBuilds": "PASS",
+    "disputeFineSuite": "PASS",
+    "integratedStorageFixture": {
+      "result": "PASS",
+      "missingAvatarReads": 65,
+      "unexpectedRequests": 0
+    },
+    "broadPassClaimed": false,
+    "failureLineCount": 71,
+    "failureLines": [
+      "FAIL AUTHENTICATED MOBILE UNCHANGED customer-dashboard — 390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; {\"matching\":false,\"dimensions\":[390,1435,390,1658]}",
+      "FAIL AUTHENTICATED MOBILE UNCHANGED customer-new-request — 390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; {\"matching\":false,\"dimensions\":[390,1435,390,1658]}",
+      "FAIL AUTHENTICATED MOBILE UNCHANGED customer-quote-requests — 390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; {\"matching\":false,\"changedPixels\":31671,\"totalPixels\":390000,\"maxChannelDifference\":231}",
+      "FAIL AUTHENTICATED MOBILE UNCHANGED customer-deliveries — 390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; {\"matching\":false,\"changedPixels\":7144,\"totalPixels\":762060,\"maxChannelDifference\":248}",
+      "FAIL updated customer 1024 account: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated customer 1440 account: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated customer 1920 account: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 390 dashboard: execution — page.waitForFunction: Timeout 10000ms exceeded.",
+      "FAIL updated transporter 390 available-jobs: execution — page.waitForFunction: Timeout 10000ms exceeded.",
+      "FAIL updated transporter 390 active-deliveries: execution — page.waitForFunction: Timeout 10000ms exceeded.",
+      "FAIL updated transporter 390 submitted-quotes: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 390 proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 390 ready-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 390 held-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 390 paid-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 390 adjustments: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL AUTHENTICATED MOBILE UNCHANGED transporter-verification — 390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; {\"matching\":false,\"dimensions\":[390,1813,390,1828]}",
+      "FAIL AUTHENTICATED MOBILE UNCHANGED transporter-account — 390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; {\"matching\":false,\"dimensions\":[390,4307,390,4783]}",
+      "FAIL updated transporter 761 dashboard: execution — page.waitForFunction: Timeout 10000ms exceeded.",
+      "FAIL updated transporter 761 available-jobs: execution — page.waitForFunction: Timeout 10000ms exceeded.",
+      "FAIL updated transporter 761 active-deliveries: execution — page.waitForFunction: Timeout 10000ms exceeded.",
+      "FAIL updated transporter 761 submitted-quotes: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 761 proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 761 ready-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 761 held-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 761 paid-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 761 adjustments: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1024 submitted-quotes: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1024 proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1024 ready-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1024 held-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1024 paid-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1024 adjustments: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1440 submitted-quotes: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1440 proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1440 ready-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1440 held-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1440 paid-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1440 adjustments: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1920 submitted-quotes: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1920 proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1920 ready-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1920 held-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1920 paid-proceeds: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated transporter 1920 adjustments: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL AUTHENTICATED MOBILE UNCHANGED admin-dashboard — 390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; {\"matching\":false,\"dimensions\":[390,6228,390,5875]}",
+      "FAIL AUTHENTICATED MOBILE UNCHANGED admin-verification — 390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; {\"matching\":false,\"dimensions\":[390,1990,390,1972]}",
+      "FAIL AUTHENTICATED MOBILE UNCHANGED admin-disputes — 390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; {\"matching\":false,\"dimensions\":[390,2060,390,1705]}",
+      "FAIL AUTHENTICATED MOBILE UNCHANGED admin-payouts — 390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; {\"matching\":false,\"dimensions\":[390,1562,390,1581]}",
+      "FAIL AUTHENTICATED MOBILE UNCHANGED admin-messages — 390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; {\"matching\":false,\"changedPixels\":8320,\"totalPixels\":519480,\"maxChannelDifference\":247}",
+      "FAIL AUTHENTICATED MOBILE UNCHANGED admin-notifications — 390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; {\"matching\":false,\"changedPixels\":168992,\"totalPixels\":390000,\"maxChannelDifference\":237}",
+      "FAIL updated admin 390 account: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated admin 761 account: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated admin 1024 account: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated admin 1440 account: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL updated admin 1920 account: execution — locator.waitFor: Error: strict mode violation: locator('main') resolved to 2 elements:",
+      "FAIL customer: desktop conversation beside inbox",
+      "FAIL Customer: message transporter visible",
+      "FAIL Customer: call transporter visible",
+      "FAIL transporter: desktop conversation beside inbox",
+      "FAIL transporter interaction delivery-form — locator.waitFor: Timeout 15000ms exceeded.",
+      "FAIL admin interaction custom-dispute-fine — locator.click: Timeout 15000ms exceeded.",
+      "FAIL admin interaction rail-user-manager — locator.click: Timeout 15000ms exceeded.",
+      "FAIL admin interaction rail-transporter-verification — locator.click: Timeout 15000ms exceeded.",
+      "FAIL admin interaction rail-dispute-management — locator.click: Timeout 15000ms exceeded.",
+      "FAIL admin interaction rail-bookings-deliveries — locator.click: Timeout 15000ms exceeded.",
+      "FAIL Local customer creates quote request",
+      "FAIL Local approved transporter submits quote — {\"status\":422,\"error\":\"Invalid request\"}",
+      "FAIL Customer accepts quote using existing Preview payment flow",
+      "FAIL Existing fee calculation remains authoritative",
+      "FAIL Authenticated suite execution — apiRequestContext.post: Cannot read properties of undefined (reading 'on')"
+    ],
+    "interpretation": "Optional-avatar storage setup is verified in the broad suite; selector, mobile comparison, interaction and old job/booking contract failures remain unresolved. No mobile baseline or application business rule was changed or waived."
+  },
+  "authentication": {
+    "normalCustomerLogout": true,
+    "secureTransporterRequestResult": "submitted",
+    "verifiedTransporterSession": false,
+    "freshCanonicalDashboardShowsSignedInIdentity": false,
+    "unexpiredQa22SessionsAtCheck": 0,
+    "visibleCredentialError": false,
+    "rootCauseEstablished": false,
+    "credentialsInspectedOrRecorded": false,
+    "secondCredentialSubmission": false,
+    "nextAction": "User completes normal QA22 transporter sign-in in the browser handoff; verify identity before quoting. No new account or request."
+  },
+  "preservation": {
+    "checked_at": "2026-10-23 11:22:11.000155+00",
+    "qa22": {
+      "jobs": 1,
+      "quotes": 0,
+      "bookings": 0,
+      "digestRuns": 0,
+      "availabilityRequests": 0
+    },
+    "protected_payments": [
+      {
+        "id": "cmvh5nyop0002l507vqfjq5fl",
+        "status": "PAID",
+        "paidPence": 11000,
+        "updatedAt": "2026-10-20T22:08:06.59+00:00",
+        "payoutStatus": "HELD",
+        "refundedPence": 0
+      },
+      {
+        "id": "cmvibep670002jn088ghnin68",
+        "status": "REFUNDED",
+        "paidPence": 110,
+        "updatedAt": "2026-10-21T16:26:37.057+00:00",
+        "payoutStatus": "CANCELLED",
+        "refundedPence": 110
+      }
+    ],
+    "protected110_reservation": {
+      "status": "FAILED",
+      "activePaymentId": "cmvh5nyop0002l507vqfjq5fl"
+    },
+    "protected_qa21": {
+      "id": "5f82847b-20a0-4a3e-91ab-7e2c0994c0bb",
+      "auditCount": 1,
+      "amountPence": 110,
+      "evidenceBytes": 44415,
+      "evidenceSha256": "69991625af954c80f978ec3b9932e88909cd10818545e80f2d20bbc09eef8d5e",
+      "refundEventCount": 1,
+      "stripeRefundedPence": 0
+    }
+  },
+  "flags": {
+    "checkedAt": "2026-10-23T11:22:12.885Z",
+    "count": 29,
+    "flags": [
+      {
+        "key": "STRIPE_REFUNDS_ENABLED",
+        "type": "plain",
+        "target": [
+          "preview"
+        ],
+        "branch": "feature/ui-polish",
+        "value": "false"
+      },
+      {
+        "key": "STRIPE_CONNECT_ENABLED",
+        "type": "plain",
+        "target": [
+          "preview"
+        ],
+        "branch": "feature/ui-polish",
+        "value": "true"
+      }
+    ]
+  },
+  "production": {
+    "id": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+    "readyState": "READY",
+    "commit": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c",
+    "aliases": [
+      "drivedrop-pink.vercel.app",
+      "drivedrop-future-9f39.vercel.app",
+      "drivedrop-git-main-future-9f39.vercel.app"
+    ]
+  },
+  "scope": {
+    "newJobs": 1,
+    "newQuotes": 0,
+    "newAvailabilityRequests": 0,
+    "newBookings": 0,
+    "newFinancialStripeObjects": 0,
+    "newLifecycleEmailsExpectedFromPerformedActions": 0,
+    "providerEmailLogReadToday": false,
+    "additionalHostedUploads": 1,
+    "noFinancialOperationSubmitted": true,
+    "productionChanges": 0,
+    "automaticReleaseScheduled": false,
+    "refundsEnabled": false,
+    "providerInsufficientBalanceGate": "UNVERIFIED",
+    "fullDatabaseFingerprintOrCutoverBackup": false
+  },
+  "resume": "Continue the same job cmvkvkm8b0001jp08vdrm4w6z after verified QA22 transporter sign-in. Recheck date/window before quote/payment; never create a duplicate or propose a future collection date. If the run is aborted before booking, normal customer Cancel request is required. This checkpoint is a temporary authentication handoff, not a completed or aborted financial test."
+}

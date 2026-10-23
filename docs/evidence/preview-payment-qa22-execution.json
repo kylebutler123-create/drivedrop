@@ -1,6 +1,6 @@
 {
   "run": "QA22 E2E",
-  "status": "ACCOUNTS_READY_AWAITING_BOOKING_WINDOW",
+  "status": "JOB_CREATED_AWAITING_TRANSPORTER_SIGNIN",
   "approval": {
     "date": "2026-10-22",
     "source": "Kye answered Yes to the exact bounded sandbox run presented after commit 4d45e2e",
@@ -153,14 +153,20 @@
     "Confirmed the user-created customer account and zero jobs/bookings",
     "Recovered the browser session through normal secure customer sign-in",
     "Confirmed customer denial of the new transporter private licence and a fully loaded fresh customer dashboard",
-    "Added and locally tested the isolated optional-avatar storage fixture without changing application behavior or mobile baselines"
+    "Added and locally tested the isolated optional-avatar storage fixture without changing application behavior or mobile baselines",
+    "Refreshed feature branch, preview deployment, refunds-off state, canonical QA22 sandbox Connect readiness and protected cases on 23 October",
+    "Passed source-based same-day digest/window preflight and verified all five local fixture hashes",
+    "Created one labelled QA22 request through the customer UI with one synthetic vehicle photo; verified its customer ownership and storage object",
+    "Signed the customer out normally and requested secure transporter sign-in; submission was unconfirmed on a fresh canonical page, with no unexpired QA22 session found",
+    "Recorded the completed CI rerun: integrated avatar fixture passed; the broader suite still failed",
+    "Rechecked the protected reservation, QA21 audit/accounting counts and original evidence hash, refunds off and unchanged production deployment/aliases at 11:22 UTC"
   ],
   "newHostedUsersCreatedByAgent": 0,
-  "newJobsCreated": 0,
+  "newJobsCreated": 1,
   "newStripeAccountsCreated": 1,
   "newFinancialStripeObjectsCreated": 0,
   "newAppEmailsSent": 0,
-  "hostedUploads": 2,
+  "hostedUploads": 3,
   "productionChanges": 0,
   "providerInsufficientBalanceGate": "UNVERIFIED",
   "connectReadyCheck": {
@@ -341,7 +347,7 @@
     "applicationSourceChanged": false,
     "mobileBaselinesChanged": false,
     "localIntegrationTest": "PASS scripts/desktop-account-storage-fixture.test.mjs",
-    "broadRerun": "IN_PROGRESS",
+    "broadRerun": "COMPLETED_FAILURE",
     "remainingCiFindings": "preview-payment-qa22-ci-findings.json",
     "commit": "826132226b32532b3ca414aadc4b775edc265620",
     "runId": 39863797153,
@@ -350,7 +356,13 @@
       "The old job POST fixture omits required collectionFrom/collectionUntil",
       "The old booking assertion expects immediate confirmed/captured booking; the current route returns a separate authorization/availability request",
       "No production or application rule changed to satisfy those obsolete assertions"
-    ]
+    ],
+    "integratedStorageFixture": {
+      "result": "PASS",
+      "missingAvatarReads": 65,
+      "unexpectedRequests": 0
+    },
+    "completedRerunEvidence": "preview-payment-qa22-morning-checkpoint.json"
   },
   "postCustomerPreservationCheck": {
     "checkedAt": "2026-10-22T22:18:03.223136Z",
@@ -369,5 +381,19 @@
     "productionCommitUnchanged": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c",
     "productionAliasesUnchanged": true,
     "fullDatabaseFingerprintOrCutoverBackup": false
+  },
+  "latestCheckpoint": {
+    "date": "2026-10-23",
+    "evidence": "preview-payment-qa22-morning-checkpoint.json",
+    "jobId": "cmvkvkm8b0001jp08vdrm4w6z",
+    "createdAt": "2026-10-23T11:16:56.076Z",
+    "collectionDate": "2026-10-23",
+    "collectionFrom": "15:00",
+    "collectionUntil": "18:00",
+    "timeZone": "Europe/London",
+    "financialRunStarted": false,
+    "transporterSigninVerified": false,
+    "providerEmailLogReadToday": false,
+    "instruction": "Resume the same request after verified normal transporter sign-in; recheck the same-day window. No duplicate job/account/payment."
   }
 }
