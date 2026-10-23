@@ -1,6 +1,6 @@
 {
   "run": "QA22 E2E",
-  "status": "CHECKOUT_UNPAID_BROWSER_APPROVAL_BLOCKED",
+  "status": "CHECKOUT_UNPAID_MANUAL_CONTINUATION_REQUIRED",
   "sourceCommit": "97edb3308d56d61479b5de8b436554a910c90cde",
   "previewDeployment": "dpl_GNPqoaPxRFaC6cuFdCuieSF1pmch",
   "scope": "Previously approved single preview sandbox journey; no production or live action",
@@ -20,7 +20,7 @@
     "status": "PENDING",
     "proposedCollectionDate": null,
     "dateNegotiationStatus": "ORIGINAL",
-    "message": "QA22 E2E TEST ONLY — synthetic sandbox quote. No real vehicle movement or money. Original 23 October collection window only.",
+    "message": "QA22 E2E TEST ONLY \u2014 synthetic sandbox quote. No real vehicle movement or money. Original 23 October collection window only.",
     "createdAt": "2026-10-23 11:31:51.874+00",
     "customerId": "cmvk3dp1f0000jx0786ueo8e8",
     "job_status": "QUOTED",
@@ -42,7 +42,7 @@
     "deliveredDisplayed": "Oct 23, 12:31 PM",
     "ctaLabel": "Review your quote",
     "ctaUrl": "https://drivedrop-git-feature-ui-polish-future-9f39.vercel.app/customer",
-    "customerAmount": "£11.00",
+    "customerAmount": "\u00a311.00",
     "providerLogId": "f204b2fa-5ec5-4572-82bb-7ef1488c52c2",
     "testRecipientSimulation": true,
     "humanInboxPlacementProven": false,
@@ -167,11 +167,11 @@
   "refundsEnabled": false,
   "providerInsufficientBalanceGate": "UNVERIFIED",
   "pause": {
-    "reason": "Browser approval block; retain the same existing unpaid checkout for user-authorized continuation.",
+    "reason": "Automatic browser review remains blocked after explicit user approval; manual browser continuation is required.",
     "aborted": false,
     "cancellationSubmitted": false,
     "automaticReleaseScheduled": false,
-    "resume": "Recheck canonical Stripe and app state before any submission. Use the same request and checkout only while valid and within the original same-day window. Do not create duplicate work or infer authorization from the filled form. If aborted before booking, use normal customer Cancel request and reconcile any authorization first."
+    "resume": "Existing checkout only. The user has approved continuation. Do not repeat automated submissions or switch payment routes to bypass the restriction. Manual browser continuation, followed by canonical Stripe/app and time checks, is required. If the test is aborted, use normal customer cancellation and reconcile any authorization first."
   },
   "remaining": [
     "3DS and uncaptured authorization",
@@ -183,5 +183,38 @@
     "Hosted recovery of real pending work",
     "Previously recorded broader CI failures",
     "Production cutover gates"
-  ]
+  ],
+  "reapprovalContinuation": {
+    "date": "2026-10-23",
+    "userApprovedResume": true,
+    "userMessage": "Let\u2019s continue",
+    "sourceCommit": "03edc8f3224a5efec2e1af3b4b9cf44a08130f69",
+    "branchRefreshNoDrift": true,
+    "canonicalPreflightAt": "2026-10-23T11:55:39.829Z",
+    "checkoutStatus": "open",
+    "paymentStatus": "unpaid",
+    "livemode": false,
+    "amountPence": 1100,
+    "currency": "gbp",
+    "paymentIntent": null,
+    "appPreflightAt": "2026-10-23T11:55:39.6283Z",
+    "requestStatus": "AWAITING_AUTHORISATION",
+    "paymentState": "PENDING",
+    "requestsForJob": 1,
+    "bookingsForJob": 0,
+    "respondBy": "2026-10-23T12:38:13.572Z",
+    "checkoutExpiresAt": "2026-10-24T11:38:17Z",
+    "sameDayWindowStillValidAtCheck": true,
+    "attemptsAfterUserApproval": 1,
+    "result": "Automatic browser approval review rejected submission before WebMCP execution, again citing a possible earlier successful submission and duplicate-authorization risk.",
+    "successfulSubmitResultObserved": false,
+    "threeDSChallengeObserved": false,
+    "paymentAuthorizedVerified": false,
+    "furtherAutomatedAttempts": 0,
+    "alternateRouteOrDirectApiWriteAttempted": false,
+    "manualBrowserContinuationRequired": true,
+    "proof": "preview-payment-qa22-checkout-manual-handoff.jpg",
+    "proofContainsOnlyPublishedTestCardAndSyntheticBilling": true,
+    "instruction": "Do not ask for the same payment approval again. The user has approved. Automatic browser review still blocks the agent submission; continue only through permitted manual browser control, then recheck canonical Stripe and app state. Recheck the original same-day deadline before progressing."
+  }
 }

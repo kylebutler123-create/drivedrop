@@ -1,6 +1,6 @@
 {
   "run": "QA22 E2E",
-  "status": "CHECKOUT_UNPAID_BROWSER_APPROVAL_BLOCKED",
+  "status": "CHECKOUT_UNPAID_MANUAL_CONTINUATION_REQUIRED",
   "approval": {
     "date": "2026-10-22",
     "source": "Kye answered Yes to the exact bounded sandbox run presented after commit 4d45e2e",
@@ -167,7 +167,8 @@
     "Created one preview AvailabilityRequest and opened its 1100p Stripe sandbox Checkout through the normal customer authorization flow",
     "Prepared the published 3DS test card and synthetic billing fields; disabled saving with Link",
     "Stopped after automatic browser approval review blocked checkout submission twice on duplicate-risk grounds; a canonical read found the existing session open/unpaid with no PaymentIntent",
-    "Verified one job, one quote, one request, zero bookings and refunds still off at 11:49 UTC; no submission workaround or duplicate checkout was attempted"
+    "Verified one job, one quote, one request, zero bookings and refunds still off at 11:49 UTC; no submission workaround or duplicate checkout was attempted",
+    "After explicit user approval to resume, refreshed the branch without drift and confirmed the same unpaid GBP1100 sandbox checkout with no PaymentIntent or booking; automatic browser review still blocked the single submission attempt. Preserved the current synthetic checkout for manual continuation without changing payment routes."
   ],
   "newHostedUsersCreatedByAgent": 0,
   "newJobsCreated": 1,
@@ -401,13 +402,14 @@
     "collectionUntil": "18:00",
     "timeZone": "Europe/London",
     "financialRunStarted": true,
-    "financialStage": "CHECKOUT_CREATED_UNPAID",
+    "financialStage": "CHECKOUT_CREATED_UNPAID_MANUAL_CONTINUATION_REQUIRED",
     "transporterSigninVerified": true,
     "customerSigninVerified": true,
     "providerEmailLogReadToday": true,
     "authorizedPaymentVerified": false,
     "captureVerified": false,
-    "instruction": "Payment submission is blocked by automatic browser approval review. Ask for approval to resume the same existing checkout, then recheck canonical Stripe/app state and original same-day validity. No duplicate job, request or payment. If aborted, normal customer cancellation and any necessary authorization reconciliation remain required."
+    "instruction": "The user approved resuming. Fresh 11:55 UTC Stripe/app reads confirmed the same unpaid checkout, null PaymentIntent, one pending request and zero bookings. Automatic browser approval review rejected the single reapproved submission. Do not ask for the same approval or repeat automated submissions. Manual browser continuation and fresh state/time checks are required; preserve the same request/checkout.",
+    "userApprovedResume": true
   },
   "newCheckoutSessionsCreated": 1,
   "newPaymentIntentsVerified": 0
