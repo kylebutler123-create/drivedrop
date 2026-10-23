@@ -1,0 +1,187 @@
+{
+  "run": "QA22 E2E",
+  "status": "CHECKOUT_UNPAID_BROWSER_APPROVAL_BLOCKED",
+  "sourceCommit": "97edb3308d56d61479b5de8b436554a910c90cde",
+  "previewDeployment": "dpl_GNPqoaPxRFaC6cuFdCuieSF1pmch",
+  "scope": "Previously approved single preview sandbox journey; no production or live action",
+  "signIn": {
+    "transporterVerified": true,
+    "customerVerified": true,
+    "method": "Normal browserAuth secure prompt, suitable for the user's mobile device",
+    "credentialsReadOrSaved": false,
+    "earlierUnconfirmedSigninCauseEstablished": false
+  },
+  "quote": {
+    "checked_at": "2026-10-23 11:31:59.133954+00",
+    "id": "cmvkw3tfm0001jk08uesxd59w",
+    "jobId": "cmvkvkm8b0001jp08vdrm4w6z",
+    "transporterId": "cmvk1r4020000l207e3d2dt2q",
+    "pricePence": 1000,
+    "status": "PENDING",
+    "proposedCollectionDate": null,
+    "dateNegotiationStatus": "ORIGINAL",
+    "message": "QA22 E2E TEST ONLY — synthetic sandbox quote. No real vehicle movement or money. Original 23 October collection window only.",
+    "createdAt": "2026-10-23 11:31:51.874+00",
+    "customerId": "cmvk3dp1f0000jx0786ueo8e8",
+    "job_status": "QUOTED",
+    "requests": 0,
+    "bookings": 0
+  },
+  "quoteUi": {
+    "transporterVisiblePence": 1000,
+    "customerVisiblePence": 1100,
+    "commissionBreakdownDisplayed": false,
+    "proof": "preview-payment-qa22-quote-created.jpg"
+  },
+  "lifecycleEmail": {
+    "id": "01a16888-1bb7-7ce8-9f12-3e695a0392e2",
+    "to": "delivered+drivedrop-qa22-e2e-customer@resend.dev",
+    "from": "DriveDrop <account@contact.drive-drop.com>",
+    "subject": "New quote for your QA22 E2E TEST ONLY",
+    "sentDisplayed": "Oct 23, 12:31 PM",
+    "deliveredDisplayed": "Oct 23, 12:31 PM",
+    "ctaLabel": "Review your quote",
+    "ctaUrl": "https://drivedrop-git-feature-ui-polish-future-9f39.vercel.app/customer",
+    "customerAmount": "£11.00",
+    "providerLogId": "f204b2fa-5ec5-4572-82bb-7ef1488c52c2",
+    "testRecipientSimulation": true,
+    "humanInboxPlacementProven": false,
+    "proof": "preview-payment-qa22-quote-email.jpg"
+  },
+  "authorizationStarted": {
+    "checked_at": "2026-10-23 11:38:30.189374+00",
+    "id": "cmvkwc13v0001jn088qia7cqc",
+    "jobId": "cmvkvkm8b0001jp08vdrm4w6z",
+    "quoteId": "cmvkw3tfm0001jk08uesxd59w",
+    "customerId": "cmvk3dp1f0000jx0786ueo8e8",
+    "transporterId": "cmvk1r4020000l207e3d2dt2q",
+    "status": "AWAITING_AUTHORISATION",
+    "paymentProvider": "STRIPE",
+    "paymentState": "PENDING",
+    "paymentEnvironment": "preview",
+    "authorisedAmountPence": 1100,
+    "paymentIntentId": null,
+    "respondBy": "2026-10-23 12:38:13.572",
+    "bookingId": null,
+    "createdAt": "2026-10-23 11:38:15.067"
+  },
+  "checkout": {
+    "checkedAt": "2026-10-23T11:46:42.072Z",
+    "status": "open",
+    "payment_status": "unpaid",
+    "livemode": false,
+    "amount_total": 1100,
+    "currency": "gbp",
+    "client_reference_id": "cmvkwc13v0001jn088qia7cqc",
+    "metadata": {
+      "availabilityRequestId": "cmvkwc13v0001jn088qia7cqc"
+    },
+    "payment_intent": null,
+    "checkoutSessionMatchesAvailabilityRequest": true,
+    "fullCheckoutUrlOrClientSecretSaved": false,
+    "testCard": "Stripe published 3DS test card ending 3155",
+    "testBillingOnly": true,
+    "country": "GB",
+    "saveWithLink": false,
+    "formPrepared": true,
+    "appReviewProof": "preview-payment-qa22-authorise-review.jpg"
+  },
+  "browserApprovalBlock": {
+    "blockedAttemptsInThisContinuation": 2,
+    "reason": "Automatic approval review believed an earlier checkout submission could have succeeded and rejected another submission as a duplicate-payment risk.",
+    "firstResponse": "Blocked before WebMCP execution",
+    "verification": "Read-only canonical Stripe check found this exact existing checkout open/unpaid, livemode=false, GBP1100, payment_intent=null; DriveDrop remained PENDING with no booking.",
+    "secondResponse": "Blocked by automatic review despite the canonical check; no further submission attempted.",
+    "successfulSubmitResultObserved": false,
+    "threeDSChallengeObserved": false,
+    "authorizedPaymentVerified": false,
+    "captureVerified": false,
+    "workaroundOrNewCheckoutAttempted": false,
+    "userApprovalRequiredToResumeBlockedStep": true
+  },
+  "latestAppState": {
+    "checked_at": "2026-10-23 11:49:00.800963+00",
+    "jobs": 1,
+    "quotes": 1,
+    "requests": 1,
+    "bookings": 0,
+    "request": {
+      "id": "cmvkwc13v0001jn088qia7cqc",
+      "status": "AWAITING_AUTHORISATION",
+      "bookingId": null,
+      "respondBy": "2026-10-23T12:38:13.572",
+      "updatedAt": "2026-10-23T11:38:19.101",
+      "paymentState": "PENDING",
+      "paymentIntentId": null,
+      "paymentEnvironment": "preview",
+      "authorisedAmountPence": 1100
+    }
+  },
+  "flags": {
+    "checkedAt": "2026-10-23T11:49:02.078Z",
+    "count": 29,
+    "flags": [
+      {
+        "key": "STRIPE_REFUNDS_ENABLED",
+        "type": "plain",
+        "target": [
+          "preview"
+        ],
+        "branch": "feature/ui-polish",
+        "value": "false"
+      },
+      {
+        "key": "STRIPE_CONNECT_ENABLED",
+        "type": "plain",
+        "target": [
+          "preview"
+        ],
+        "branch": "feature/ui-polish",
+        "value": "true"
+      }
+    ]
+  },
+  "observedApplicationCopy": {
+    "transporterQuoteForm": "You confirm availability before the customer pays.",
+    "authorizationDialog": "Correctly explains authorization before transporter confirmation and capture only on confirmation.",
+    "sourceChanged": false
+  },
+  "counts": {
+    "jobs": 1,
+    "quotes": 1,
+    "availabilityRequests": 1,
+    "checkoutSessions": 1,
+    "paymentIntentsVerified": 0,
+    "bookings": 0,
+    "captures": 0,
+    "transfers": 0,
+    "verifiedAppEmails": 1
+  },
+  "previousPreservationEvidence": {
+    "file": "preview-payment-qa22-morning-checkpoint.json",
+    "checkedAt": "2026-10-23T11:22:11.000155Z",
+    "notRefreshedByThisCheckpoint": true,
+    "fullDatabaseFingerprintOrCutoverBackup": false
+  },
+  "productionChanges": 0,
+  "refundsEnabled": false,
+  "providerInsufficientBalanceGate": "UNVERIFIED",
+  "pause": {
+    "reason": "Browser approval block; retain the same existing unpaid checkout for user-authorized continuation.",
+    "aborted": false,
+    "cancellationSubmitted": false,
+    "automaticReleaseScheduled": false,
+    "resume": "Recheck canonical Stripe and app state before any submission. Use the same request and checkout only while valid and within the original same-day window. Do not create duplicate work or infer authorization from the filled form. If aborted before booking, use normal customer Cancel request and reconcile any authorization first."
+  },
+  "remaining": [
+    "3DS and uncaptured authorization",
+    "Capture of the same intent on transporter confirmation",
+    "Four later lifecycle emails and actual CTA navigation",
+    "Collection/delivery uploads and file access checks",
+    "Customer delivery confirmation and natural 24-hour hold",
+    "Manual administrator platform transfer after the hold",
+    "Hosted recovery of real pending work",
+    "Previously recorded broader CI failures",
+    "Production cutover gates"
+  ]
+}

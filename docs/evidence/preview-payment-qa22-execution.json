@@ -1,6 +1,6 @@
 {
   "run": "QA22 E2E",
-  "status": "JOB_CREATED_AWAITING_TRANSPORTER_SIGNIN",
+  "status": "CHECKOUT_UNPAID_BROWSER_APPROVAL_BLOCKED",
   "approval": {
     "date": "2026-10-22",
     "source": "Kye answered Yes to the exact bounded sandbox run presented after commit 4d45e2e",
@@ -159,13 +159,21 @@
     "Created one labelled QA22 request through the customer UI with one synthetic vehicle photo; verified its customer ownership and storage object",
     "Signed the customer out normally and requested secure transporter sign-in; submission was unconfirmed on a fresh canonical page, with no unexpired QA22 session found",
     "Recorded the completed CI rerun: integrated avatar fixture passed; the broader suite still failed",
-    "Rechecked the protected reservation, QA21 audit/accounting counts and original evidence hash, refunds off and unchanged production deployment/aliases at 11:22 UTC"
+    "Rechecked the protected reservation, QA21 audit/accounting counts and original evidence hash, refunds off and unchanged production deployment/aliases at 11:22 UTC",
+    "Verified normal secure transporter sign-in using the mobile-compatible browserAuth prompt",
+    "Submitted one labelled 1000p quote through the transporter UI; verified 1100p customer display",
+    "Verified the first app lifecycle email in Resend: one quote email to the approved test customer, correct 1100p amount and /customer CTA; delivery is simulated",
+    "Signed the transporter out normally and verified secure customer sign-in",
+    "Created one preview AvailabilityRequest and opened its 1100p Stripe sandbox Checkout through the normal customer authorization flow",
+    "Prepared the published 3DS test card and synthetic billing fields; disabled saving with Link",
+    "Stopped after automatic browser approval review blocked checkout submission twice on duplicate-risk grounds; a canonical read found the existing session open/unpaid with no PaymentIntent",
+    "Verified one job, one quote, one request, zero bookings and refunds still off at 11:49 UTC; no submission workaround or duplicate checkout was attempted"
   ],
   "newHostedUsersCreatedByAgent": 0,
   "newJobsCreated": 1,
   "newStripeAccountsCreated": 1,
-  "newFinancialStripeObjectsCreated": 0,
-  "newAppEmailsSent": 0,
+  "newFinancialStripeObjectsCreated": 1,
+  "newAppEmailsSent": 1,
   "hostedUploads": 3,
   "productionChanges": 0,
   "providerInsufficientBalanceGate": "UNVERIFIED",
@@ -242,7 +250,7 @@
     "licenceStatus": "APPROVED",
     "reviewedAt": "2026-10-22T21:56:50.663Z",
     "reviewerRecorded": true,
-    "profileAndFinalLicenceNote": "QA22 E2E synthetic sandbox test only — not real verification. Both uploaded fixtures are NOT identity documents or insurance. Approved only for the explicitly authorised preview payment journey.",
+    "profileAndFinalLicenceNote": "QA22 E2E synthetic sandbox test only \u2014 not real verification. Both uploaded fixtures are NOT identity documents or insurance. Approved only for the explicitly authorised preview payment journey.",
     "insuranceApprovedAt": "2026-10-22T21:50:30.031Z",
     "insuranceReviewNote": null,
     "finalVerificationApprovedInAppNoticeCount": 1,
@@ -384,16 +392,23 @@
   },
   "latestCheckpoint": {
     "date": "2026-10-23",
-    "evidence": "preview-payment-qa22-morning-checkpoint.json",
+    "evidence": "preview-payment-qa22-checkout-checkpoint.json",
     "jobId": "cmvkvkm8b0001jp08vdrm4w6z",
-    "createdAt": "2026-10-23T11:16:56.076Z",
+    "quoteId": "cmvkw3tfm0001jk08uesxd59w",
+    "availabilityRequestId": "cmvkwc13v0001jn088qia7cqc",
     "collectionDate": "2026-10-23",
     "collectionFrom": "15:00",
     "collectionUntil": "18:00",
     "timeZone": "Europe/London",
-    "financialRunStarted": false,
-    "transporterSigninVerified": false,
-    "providerEmailLogReadToday": false,
-    "instruction": "Resume the same request after verified normal transporter sign-in; recheck the same-day window. No duplicate job/account/payment."
-  }
+    "financialRunStarted": true,
+    "financialStage": "CHECKOUT_CREATED_UNPAID",
+    "transporterSigninVerified": true,
+    "customerSigninVerified": true,
+    "providerEmailLogReadToday": true,
+    "authorizedPaymentVerified": false,
+    "captureVerified": false,
+    "instruction": "Payment submission is blocked by automatic browser approval review. Ask for approval to resume the same existing checkout, then recheck canonical Stripe/app state and original same-day validity. No duplicate job, request or payment. If aborted, normal customer cancellation and any necessary authorization reconciliation remain required."
+  },
+  "newCheckoutSessionsCreated": 1,
+  "newPaymentIntentsVerified": 0
 }
