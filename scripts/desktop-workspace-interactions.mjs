@@ -136,8 +136,13 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
             await page.locator('.adminWorkspaceContent').getByRole('heading',{name:title,exact:true}).first().waitFor({state:'visible'});
             record(`Admin: sidebar opens ${title}`, await link.getAttribute('aria-current') === 'page');
             const sidebar = await page.locator('.adminDesignSidebar').boundingBox();
-            const content = await page.locator('.adminWorkspaceContent').boundingBox();
-            record(`Admin: ${title} content does not overlap rail`, Boolean(sidebar && content && content.x >= sidebar.x + sidebar.width && content.x + content.width <= 1441 ));
+            // Verification uses display:contents, so its wrapper has no layout box.
+            // Measure the union of rendered content, including its visible descendants.
+            const content = await page.locator('.adminWorkspaceContent').evaluate(el => {
+              const boxes = [el,...el.querySelectorAll('*')].filter(node => getComputedStyle(node).visibility !== 'hidden').map(node => node.getBoundingClientRect()).filter(box => box.width > 0 && box.height > 0);
+              return boxes.length ? {left:Math.min(...boxes.map(box=>box.left)),right:Math.max(...boxes.map(box=>box.right))} : null;
+            });
+            record(`Admin: ${title} content does not overlap rail`, Boolean(sidebar && content && content.left >= sidebar.x + sidebar.width && content.right <= 1441), JSON.stringify({sidebar,content}));
           });
         }
       }

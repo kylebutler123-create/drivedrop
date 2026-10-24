@@ -1,0 +1,15 @@
+diff --git a/src/app/transporter/proceeds/proceeds.module.css b/src/app/transporter/proceeds/proceeds.module.css
+index 53a6571..920138c 100644
+--- a/src/app/transporter/proceeds/proceeds.module.css
++++ b/src/app/transporter/proceeds/proceeds.module.css
+@@ -135,3 +135,10 @@
+  .downloadBar>div:first-child{gap:6px}
+ }
+ @media(min-width:1024px){.page.legacyLayout{display:none!important}}
++/* Keep the mobile totals single-copy and the tablet summary within its container. */
++@media(max-width:1023px){
++ .summary :global(.desktopAdjustmentRows){display:none}
++ .summary>a{min-width:0}
++ .summary strong.adjustmentsTotal{white-space:normal;overflow-wrap:anywhere}
++}
++@media(min-width:761px) and (max-width:1023px){.summary{grid-template-columns:repeat(3,minmax(0,1fr))}}

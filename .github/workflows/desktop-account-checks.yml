@@ -6,6 +6,7 @@ on:
       - '.github/workflows/desktop-account-checks.yml'
       - 'scripts/desktop-account-*.mjs'
       - 'scripts/desktop-workspace-interactions.mjs'
+      - 'scripts/fixtures/proceeds-responsive-baseline.patch'
       - 'src/app/**'
       - 'src/components/**'
   workflow_dispatch:
@@ -67,6 +68,10 @@ jobs:
           git archive "$BASELINE_REF" | tar -x -C "$RUNNER_TEMP/drivedrop-account-baseline"
           cp -a node_modules "$RUNNER_TEMP/drivedrop-account-baseline/node_modules"
           cd "$RUNNER_TEMP/drivedrop-account-baseline"
+          # Frozen, reviewed reference correction for the two proceeds overflow bugs.
+          # Never copy current application files into the reference build.
+          git apply --check "$GITHUB_WORKSPACE/scripts/fixtures/proceeds-responsive-baseline.patch"
+          git apply "$GITHUB_WORKSPACE/scripts/fixtures/proceeds-responsive-baseline.patch"
           npm run build
       - name: Check authenticated screens and isolated workflows
         timeout-minutes: 15

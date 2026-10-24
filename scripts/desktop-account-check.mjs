@@ -59,7 +59,7 @@ const pages={
  ],
  transporter:[
   {name:'dashboard',route:'/transporter'},
-  {name:'available-jobs',route:'/transporter',click:'[data-available-jobs-summary]'},
+  {name:'available-jobs',route:'/transporter?view=jobs'},
   {name:'active-deliveries',route:'/transporter?view=deliveries'},
   {name:'submitted-quotes',route:'/transporter/quotes'},
   {name:'completed',route:'/transporter/delivered'},
@@ -119,6 +119,7 @@ async function open(browser,version,role,scenario,width){
   if(dashboardPath==='/notifications')await page.locator('.notificationCard').first().waitFor({state:'visible'});
   if(dashboardPath==='/transporter/verification')await page.locator('.documentRow').first().waitFor({state:'visible'});
   if(scenario.click)await page.locator(scenario.click).first().click();
+  if(scenario.name==='available-jobs')await page.locator('#available-jobs [data-job-id="ci-job-open"]').waitFor({state:'visible'});
   await page.evaluate(async()=>{await document.fonts.ready;await Promise.all(Array.from(document.images,im=>{im.loading='eager';return im.decode().catch(()=>{})}));await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))});
   // A bounded presentation settling window also captures asynchronous error boundaries.
   await page.waitForTimeout(600);
@@ -153,7 +154,7 @@ try{
       record(`${version} ${role} ${width} ${scenario.name}: API server errors`,v.failed.length===0,v.failed.join(' | '));
       const overflow=await v.page.evaluate(()=>({viewport:innerWidth,scroll:document.documentElement.scrollWidth}));
       record(`${version} ${role} ${width} ${scenario.name}: no horizontal overflow`,overflow.scroll<=width,JSON.stringify(overflow));
-      if(width===390||width===1440){
+      if(width===390||width===1440||(width===761&&scenario.route.startsWith('/transporter/proceeds'))){
        const png=await v.page.screenshot({fullPage:true,animations:'disabled',caret:'hide'});await writeFile(path.join(out,`${version}-${role}-${width}-${scenario.name}.png`),png);
        if(width===390){const key=`${role}-${scenario.name}`;if(version==='baseline'){mobile.set(key,png);if(legacyCompletedBug)mobileKnownError.add(key)}else if(mobileKnownError.has(key)||legacyCompletedBug)known(`AUTHENTICATED MOBILE ${key}`,'NOT_COMPARABLE','The baseline delivered page has a known error; the corrected page cannot be compared pixel for pixel with that error screen.');else {const comparison=await mobileImageDifference(v.page,mobile.get(key),png);record(`AUTHENTICATED MOBILE BASELINE MATCH ${key}`,comparison.matching,`390px comparison against reviewed preview source, allowing at most 0.03% antialiasing drift; ${JSON.stringify(comparison)}`)}}
       }

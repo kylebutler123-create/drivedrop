@@ -171,11 +171,11 @@ try {
   await view.context.close();
 
   const help = await open(browser, urls.updated, '/help', 1440);
-  const question = help.page.locator('.approvedHelpBody details').first();
+  const question = help.page.locator('.helpPageFaq details').first();
   await question.locator('summary').click();
-  record('FAQ opens', await question.getAttribute('open') !== null);
+  record('FAQ opens', await question.getAttribute('open') !== null && await question.locator('p').isVisible());
   await question.locator('summary').click();
-  record('FAQ closes', await question.getAttribute('open') === null);
+  record('FAQ closes', await question.getAttribute('open') === null && !await question.locator('p').isVisible());
   await help.context.close();
 
   const home = await open(browser, urls.updated, '/', 1440);

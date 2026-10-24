@@ -1,6 +1,6 @@
 # Browser regression reference — 24 October 2026
 
-The browser suites now pin `b54e1f827b00ebe2b0ccd7720a595940b57387c7`, the existing preview immediately before this test repair. The repair changes test code and fixtures, not application layouts or payment rules.
+The browser suites pin `b54e1f827b00ebe2b0ccd7720a595940b57387c7`, the existing preview immediately before this test repair. The authenticated reference also includes the small, frozen proceeds CSS correction described below. Payment rules are unchanged.
 
 The previous reference, `215f74942949572ae40f242f3e284308a2f29286` (28 September), predates subsequent requested functionality. Comparing every later release with it asserted that none of those changes existed on mobile. That assertion is no longer an appropriate regression contract. This update does **not** claim the current UI is pixel-identical to September.
 
@@ -24,6 +24,14 @@ The old comparisons and errors remain in [account run 40129969709](https://githu
 Future source changes must still pass comparisons against the pinned October reference. Screenshot thresholds have not been increased, failing pages have not been excluded, and no fields have been newly masked. Existing full screenshots remain artifacts. A future intentional design change requires a reviewed reference update with its rationale; a failed comparison alone is not a reason to advance it.
 
 ## Functional contracts
+
+### Proceeds responsive correction
+
+[Account run 40130985883](https://github.com/kylebutler123-create/drivedrop/actions/runs/40130985883) exposed real horizontal overflow: 431px of content in a 390px viewport and 922px at 761px. The full screenshots show desktop fine/refund totals duplicated alongside the mobile totals. The tablet also retained the six-column summary intended for wider screens.
+
+The application correction hides the duplicate desktop totals below 1024px, permits long mobile amounts to wrap, and uses three summary columns from 761–1023px. Desktop styles and payment values are unchanged. The reference build applies the explicit, frozen `scripts/fixtures/proceeds-responsive-baseline.patch` to the pinned source so this intentional repair is represented in expected screenshots. This patch contains only those CSS rules; it must never be regenerated automatically from current source. Absolute no-overflow checks remain mandatory, and all five proceeds views remain in screenshot comparisons. Full before/after screenshots remain in the linked run and the repair run.
+
+### Current interactions
 
 - Select visible responsive controls and the current admin sidebar. Hidden legacy controls are not valid click targets.
 - Customer/transporter conversations expand below the selected inbox card; the admin conversation retains its adjacent layout.
