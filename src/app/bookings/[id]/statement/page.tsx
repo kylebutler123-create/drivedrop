@@ -10,8 +10,8 @@ export const revalidate=0;
 
 const money=(pence:number)=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(pence/100);
 const bookingReference=(value:string)=>'DD-'+value.slice(-8).toUpperCase();
-const dateOnly=(value:Date|null|undefined)=>value?new Intl.DateTimeFormat('en-GB',{dateStyle:'long'}).format(value):'Not recorded';
-const dateTime=(value:Date|null|undefined)=>value?new Intl.DateTimeFormat('en-GB',{dateStyle:'long',timeStyle:'short'}).format(value):'Not recorded';
+const dateOnly=(value:Date|null|undefined)=>value?new Intl.DateTimeFormat('en-GB',{dateStyle:'long',timeZone:'Europe/London'}).format(value):'Not recorded';
+const dateTime=(value:Date|null|undefined)=>value?new Intl.DateTimeFormat('en-GB',{dateStyle:'long',timeStyle:'short',timeZone:'Europe/London'}).format(value):'Not recorded';
 const label=(value:string)=>value.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,character=>character.toUpperCase());
 
 export default async function DeliveryStatement({params}:{params:Promise<{id:string}>}){
