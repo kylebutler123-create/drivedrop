@@ -53,7 +53,8 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
         record(`${role}: one conversation composer`, await page.locator('.messageComposer textarea').count() === 1);
         const panelBox = await pane.boundingBox();
         const inboxBox = await page.locator('.conversationCard').first().boundingBox();
-        record(`${role}: desktop conversation beside inbox`, Boolean(panelBox && inboxBox && panelBox.x >= inboxBox.x + inboxBox.width && panelBox.x + panelBox.width <= 1441));
+        const fits=Boolean(panelBox&&inboxBox&&panelBox.x>=0&&panelBox.x+panelBox.width<=1441);
+        record(`${role}: conversation follows the approved desktop layout`, fits&&(role==='admin'?panelBox.x>=inboxBox.x+inboxBox.width:panelBox.y>=inboxBox.y+inboxBox.height),JSON.stringify({panelBox,inboxBox}));
         await pane.locator('.messageComposer textarea').fill('Unsent isolated layout check');
         record(`${role}: composer accepts text`, await pane.locator('.messageComposer textarea').inputValue() === 'Unsent isolated layout check');
         await pane.locator('.messageComposer textarea').fill('');
@@ -65,8 +66,8 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
           const card = page.locator('.bookingCard[data-booking-id="ci-booking-active"]');
           await card.locator('.customerCardToggle').click();
           record('Customer: booking details expand', await card.locator('.customerCardToggle').getAttribute('aria-expanded') === 'true');
-          record('Customer: message transporter visible', await card.locator('.customerMessageTransporter').isVisible());
-          record('Customer: call transporter visible', await card.locator('.customerCallTransporter').isVisible());
+          record('Customer: message transporter visible', await card.getByRole('link',{name:'Message transporter about Audi A6',exact:true}).filter({visible:true}).isVisible());
+          record('Customer: call transporter visible', await card.getByRole('link',{name:'Call transporter CI Transporter',exact:true}).filter({visible:true}).isVisible());
         });
       }
       if (role === 'transporter') {
@@ -81,7 +82,7 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
         await check('delivery-form', async () => {
           await page.goto(base + '/transporter?view=deliveries', {waitUntil: 'domcontentloaded'});
           const card = page.locator('.transporterBooking[data-booking-id="ci-booking-transit"]');
-          const deliveryAction = card.locator('.transporterCompactDeliveryAction');
+          const deliveryAction = card.locator('.tdActiveCompactActions');
           await deliveryAction.waitFor({state:'visible'});
           await deliveryAction.getByRole('button', {name: 'Complete delivery', exact: true}).click();
           record('Transporter: delivery signature available', await card.locator('.podMount canvas').isVisible());
@@ -108,7 +109,7 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
         });
         await check('custom-dispute-fine', async () => {
           await page.goto(base + '/admin', {waitUntil: 'domcontentloaded'});
-          await page.locator('.adminWorkspace .adminSectionGrid').getByRole('button').filter({hasText:'Dispute management'}).click();
+          await page.getByRole('navigation',{name:'Administration',exact:true}).getByRole('link',{name:'Dispute management',exact:true}).click();
           const card=page.locator('.disputeReviewCard').filter({hasText:'DD-ING-HELD'});
           await card.locator('.disputeReviewSummary').click();
           record('Admin: full route visible on compact dispute',await card.locator('.disputeCompactRoute').isVisible()&&(await card.locator('.disputeCompactRoute').innerText()).includes('Manchester'));
@@ -126,17 +127,17 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
           await dialog.dismiss();await clicked;
           record('Admin: cancelled confirmation preserves editable amount',await amount.inputValue()==='75.25'&&await card.locator('.disputeFineRecorded').count()===0);
         });
-        for (const title of ['User manager','Transporter verification','Dispute management','Bookings & deliveries']) {
+        for (const title of ['User management','Transporter verification','Dispute management','Bookings & deliveries']) {
           await check(`rail-${title.toLowerCase().replace(/[^a-z]+/g,'-')}`, async () => {
             await page.goto(base + '/admin', {waitUntil: 'domcontentloaded'});
-            const rail = page.locator('.adminWorkspace .adminSectionGrid');
-            const button = rail.getByRole('button').filter({hasText: title});
-            await button.click();
-            record(`Admin: existing rail opens ${title}`, await button.getAttribute('aria-pressed') === 'true');
-            const sidebar = await page.locator('.approvedRail').boundingBox();
-            const actions = await rail.boundingBox();
+            const rail = page.getByRole('navigation',{name:'Administration',exact:true});
+            const link = rail.getByRole('link',{name:title,exact:true});
+            await link.click();
+            await page.locator('.adminWorkspaceContent').getByRole('heading',{name:title,exact:true}).first().waitFor({state:'visible'});
+            record(`Admin: sidebar opens ${title}`, await link.getAttribute('aria-current') === 'page');
+            const sidebar = await page.locator('.adminDesignSidebar').boundingBox();
             const content = await page.locator('.adminWorkspaceContent').boundingBox();
-            record(`Admin: ${title} content does not overlap rail`, Boolean(sidebar && content && content.x >= sidebar.x + sidebar.width && content.x + content.width <= 1441 && actions && content.y >= actions.y + actions.height));
+            record(`Admin: ${title} content does not overlap rail`, Boolean(sidebar && content && content.x >= sidebar.x + sidebar.width && content.x + content.width <= 1441 ));
           });
         }
       }

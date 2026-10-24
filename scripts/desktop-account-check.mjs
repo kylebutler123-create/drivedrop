@@ -8,6 +8,7 @@ import {createWriteStream,writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {checkWorkspaceInteractions} from './desktop-workspace-interactions.mjs';
 import {startCustomerPhotoStorageFixture} from './desktop-account-storage-fixture.mjs';
+import {checkLocalBookingWorkflow} from './desktop-account-workflows.mjs';
 
 const root=process.cwd(),baseline=process.argv[2],out=path.join(root,'account-browser-evidence');
 const database=new URL(process.env.POSTGRES_PRISMA_URL||'');
@@ -108,10 +109,12 @@ async function open(browser,version,role,scenario,width){
  try{
   // The transporter has periodic refreshes. Wait for actual loaded controls, not network idleness.
   const response=await page.goto(bases[version]+scenario.route,{waitUntil:'domcontentloaded'});
-  await page.locator('main').waitFor({state:'visible'});
+  // Some existing account pages nest their content main inside a workspace main.
+  // Wait for the innermost visible content, without selecting a hidden responsive copy.
+  await page.locator('main:visible').last().waitFor({state:'visible'});
   const dashboardPath=new URL(scenario.route,'http://localhost').pathname;
   if(role==='customer'&&dashboardPath==='/customer')await page.waitForFunction(()=>{const s=document.querySelectorAll('.customerDashboardSummary strong');return s.length>0&&Array.from(s).every(e=>e.textContent!=='—')},null,{timeout:10000});
-  if(role==='transporter'&&dashboardPath==='/transporter')await page.waitForFunction(()=>{const s=document.querySelectorAll('.dashboardSummary strong');return s.length>0&&Array.from(s).every(e=>e.textContent!=='—')},null,{timeout:10000});
+  if(role==='transporter'&&dashboardPath==='/transporter')await page.waitForFunction(()=>{const s=Array.from(document.querySelectorAll('.dashboardSummary strong')).filter(e=>e.getClientRects().length);return s.length>0&&s.every(e=>e.textContent!=='—')},null,{timeout:10000});
   if(dashboardPath==='/messages')await page.locator('.conversationCard').first().waitFor({state:'visible'});
   if(dashboardPath==='/notifications')await page.locator('.notificationCard').first().waitFor({state:'visible'});
   if(dashboardPath==='/transporter/verification')await page.locator('.documentRow').first().waitFor({state:'visible'});
@@ -152,7 +155,7 @@ try{
       record(`${version} ${role} ${width} ${scenario.name}: no horizontal overflow`,overflow.scroll<=width,JSON.stringify(overflow));
       if(width===390||width===1440){
        const png=await v.page.screenshot({fullPage:true,animations:'disabled',caret:'hide'});await writeFile(path.join(out,`${version}-${role}-${width}-${scenario.name}.png`),png);
-       if(width===390){const key=`${role}-${scenario.name}`;if(version==='baseline'){mobile.set(key,png);if(legacyCompletedBug)mobileKnownError.add(key)}else if(mobileKnownError.has(key)||legacyCompletedBug)known(`AUTHENTICATED MOBILE ${key}`,'NOT_COMPARABLE','The baseline delivered page has a known error; the corrected page cannot be compared pixel for pixel with that error screen.');else {const comparison=await mobileImageDifference(v.page,mobile.get(key),png);record(`AUTHENTICATED MOBILE UNCHANGED ${key}`,comparison.matching,`390px comparison against pre-redesign source, allowing at most 0.03% antialiasing drift; ${JSON.stringify(comparison)}`)}}
+       if(width===390){const key=`${role}-${scenario.name}`;if(version==='baseline'){mobile.set(key,png);if(legacyCompletedBug)mobileKnownError.add(key)}else if(mobileKnownError.has(key)||legacyCompletedBug)known(`AUTHENTICATED MOBILE ${key}`,'NOT_COMPARABLE','The baseline delivered page has a known error; the corrected page cannot be compared pixel for pixel with that error screen.');else {const comparison=await mobileImageDifference(v.page,mobile.get(key),png);record(`AUTHENTICATED MOBILE BASELINE MATCH ${key}`,comparison.matching,`390px comparison against reviewed preview source, allowing at most 0.03% antialiasing drift; ${JSON.stringify(comparison)}`)}}
       }
      }catch(error){record(`${version} ${role} ${width} ${scenario.name}: execution`,false,error.message);if(v)await v.page.screenshot({path:path.join(out,`error-${version}-${role}-${width}-${scenario.name}.png`),fullPage:true}).catch(()=>{})}
      finally{if(v)await v.context.close()}
@@ -161,27 +164,7 @@ try{
   }
  }
  await checkWorkspaceInteractions({browser,base:bases.updated,states,out,record});
- // Existing real APIs against synthetic local accounts only; no mocked financial endpoints.
- const apis={};for(const role of ['customer','transporter','admin'])apis[role]=await request.newContext({baseURL:bases.updated,storageState:states[`updated-${role}`]});
- const guest=await request.newContext({baseURL:bases.updated});
- record('Unauthenticated admin verification rejected',(await guest.get('/api/admin/verifications')).status()===403);
- record('Customer cannot access admin verification',(await apis.customer.get('/api/admin/verifications')).status()===403);
- record('Transporter cannot confirm customer receipt',(await apis.transporter.patch('/api/bookings/confirm-delivery',{data:{bookingId:'ci-booking-awaiting'}})).status()===403);
- const invalid=await apis.customer.post('/api/jobs',{data:{collection:'CI collection',delivery:'CI delivery',collectionDate:'2030-10-15',transportType:'ENCLOSED',vehicleType:'Van',vehicleMake:'CI',vehicleModel:'Invalid',running:true}});
- record('Server rejects incompatible enclosed/van request',invalid.status()===400);
- const jobRes=await apis.customer.post('/api/jobs',{data:{collection:'CI collection',delivery:'CI delivery',collectionDate:'2030-10-15',transportType:'OPEN',vehicleType:'Car',vehicleMake:'CI',vehicleModel:'Workflow',running:true}});const job=await jobRes.json();record('Local customer creates quote request',jobRes.status()===201&&job.status==='OPEN');
- const quoteRes=await apis.transporter.post('/api/quotes',{data:{jobId:job.id,pricePence:20000,message:'CI test quote, no live customer'}});const quote=await quoteRes.json();record('Local approved transporter submits quote',quoteRes.status()===201&&Boolean(quote.id),JSON.stringify({status:quoteRes.status(),error:quote.error}));
- const bookRes=await apis.customer.post('/api/bookings',{data:{quoteId:quote.id}});const booking=await bookRes.json();record('Customer accepts quote using existing Preview payment flow',bookRes.status()===201&&booking.status==='CONFIRMED'&&booking.payment?.status==='PAID');
- record('Existing fee calculation remains authoritative',booking.payment?.transportValuePence===22000&&booking.payment?.transporterProceedsPence===20000,JSON.stringify(booking.payment));
- const sent=await apis.customer.post('/api/bookings/messages',{multipart:{bookingId:booking.id,body:'Isolated CI message; no real customer or recipient.'}});record('Real local booking message can be sent',sent.status()===201);
- const received=await apis.transporter.get(`/api/bookings/messages?bookingId=${booking.id}`);const messages=await received.json();record('Other booking party can read the local message',received.ok()&&Array.isArray(messages)&&messages.some(x=>x.body.startsWith('Isolated CI message')));
- const fine=await apis.admin.post('/api/admin/disputes',{data:{disputeId:'ci-dispute-held',action:'FINE_TRANSPORTER',amountPence:7525}});record('Admin records custom £75.25 fine in test database',fine.ok(),String(fine.status()));
- const confirmation=await apis.customer.patch('/api/bookings/confirm-delivery',{data:{bookingId:'ci-booking-awaiting'}});record('Customer confirms delivered test booking',confirmation.ok());
- const payout=await apis.admin.post('/api/admin/payments/payout',{data:{paymentId:'ci-payment-awaiting'}});const payment=await payout.json();record('Existing sandbox payout releases after confirmation',payout.ok()&&payment.payoutStatus==='PAID',JSON.stringify({status:payout.status(),error:payment.error}));
- record('Custom £75.25 fine deducted once from eligible test proceeds',payment.cancellationDeductionPence===7525&&payment.transporterProceedsPence===22475);
- const repeat=await apis.admin.post('/api/admin/payments/payout',{data:{paymentId:'ci-payment-awaiting'}});record('Repeated payout request does not pay twice',repeat.status()===400);
- const held=await apis.admin.post('/api/admin/payments/payout',{data:{paymentId:'ci-payment-held'}});record('Active dispute prevents payout',held.status()===400);
- for(const api of [...Object.values(apis),guest])await api.dispose();
+ await checkLocalBookingWorkflow({request,base:bases.updated,states,record});
 }catch(error){record('Authenticated suite execution',false,error.stack||error.message)}
 finally{
  if(browser)await browser.close();for(const child of servers)child.kill('SIGTERM');for(const stream of streams)stream.end();

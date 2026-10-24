@@ -46,7 +46,7 @@ try {
   for (let i=0;i<definitions.length;i++) {
     const [suffix, jobStatus, bookingStatus, payoutStatus, customerConfirmedAt,vehicleMake,vehicleModel] = definitions[i];
     const jobId=`ci-job-${suffix}`;
-    await prisma.transportJob.create({data:{id:jobId,customerId:'ci-customer',collection:'Manchester M1 — CI fixture',delivery:'Bristol BS1 — CI fixture',collectionDate:new Date('2030-10-15T12:00:00Z'),transportType:'OPEN',vehicleMake,vehicleModel,registration:`CI0${i} TST`,running:true,status:jobStatus,createdAt:suffix==='open'||suffix==='quoted'?new Date(new Date().toISOString().slice(0,10)+'T00:00:00Z'):stamp}});
+    await prisma.transportJob.create({data:{id:jobId,customerId:'ci-customer',collection:'Manchester M1 — CI fixture',delivery:'Bristol BS1 — CI fixture',collectionDate:new Date('2030-10-15T12:00:00Z'),collectionFrom:'09:00',collectionUntil:'17:00',transportType:'OPEN',vehicleMake,vehicleModel,registration:`CI0${i} TST`,running:true,status:jobStatus,createdAt:suffix==='open'||suffix==='quoted'?new Date(new Date().toISOString().slice(0,10)+'T00:00:00Z'):stamp}});
     await prisma.$executeRawUnsafe('UPDATE "TransportJob" SET "vehicleType"=$1 WHERE "id"=$2',vehicleMake==='Ford'?'Van':'Car',jobId);
     if (suffix==='open') continue;
     await prisma.quote.create({data:{id:`ci-quote-${suffix}`,jobId,transporterId:'ci-transporter',pricePence:30000,status:suffix==='quoted'?'PENDING':suffix==='cancelled'?'DECLINED':'ACCEPTED',message:'Illustrative quotation for isolated browser testing.',createdAt:stamp}});

@@ -102,15 +102,15 @@ try {
           normalizedScreenshots[name] = await view.page.screenshot({fullPage: true, animations: 'disabled', caret: 'hide', mask: [view.page.locator('input,select')], maskColor: '#db00ed'});
         }
         if (route === '/') {
-          await view.page.locator('.homeQuoteExpand').click();
+          await view.page.locator('.homeQuoteExpand:visible').click();
           await view.page.locator('.homeQuoteTransport').waitFor({state: 'visible'});
           expandedScreenshots[name] = await view.page.screenshot({fullPage: true, animations: 'disabled', caret: 'hide'});
           await writeFile(path.join(out, `${name}-${width}-home-expanded.png`), expandedScreenshots[name]);
         }
         await view.context.close();
       }
-      if (route === '/') record(`MOBILE EXPANDED UNCHANGED ${width}px`, hash(expandedScreenshots.baseline) === hash(expandedScreenshots.updated));
-      record(`MOBILE UNCHANGED ${width}px ${route}`, hash(normalizedScreenshots.baseline || screenshots.baseline) === hash(normalizedScreenshots.updated || screenshots.updated), `${route.startsWith('/register?') ? 'Native fields masked to remove one-colour-level antialiasing noise; full screenshots retained' : 'Exact screenshot hash comparison'}; baseline ` + process.env.BASELINE_REF);
+      if (route === '/') record(`MOBILE EXPANDED BASELINE MATCH ${width}px`, hash(expandedScreenshots.baseline) === hash(expandedScreenshots.updated));
+      record(`MOBILE BASELINE MATCH ${width}px ${route}`, hash(normalizedScreenshots.baseline || screenshots.baseline) === hash(normalizedScreenshots.updated || screenshots.updated), `${route.startsWith('/register?') ? 'Native fields masked to remove one-colour-level antialiasing noise; full screenshots retained' : 'Exact screenshot hash comparison'}; baseline ` + process.env.BASELINE_REF);
     }
   }
 
@@ -140,7 +140,12 @@ try {
   record('Quote wizard: calendar closes on Escape', await view.page.getByRole('dialog', {name:'Choose collection date'}).count() === 0);
   await view.page.locator('.homeQuoteDateButton').click();
   await view.page.getByRole('button', {name:'Next month'}).click();
-  await view.page.locator('.homeQuoteCalendarDays button').first().click();
+  await view.page.locator('.homeQuoteCalendarDays button:not([disabled])').first().click();
+  await view.page.getByRole('button', {name:'Available from Select time',exact:true}).click();
+  await view.page.getByRole('button', {name:'09:00',exact:true}).click();
+  await view.page.getByRole('button', {name:'11:00',exact:true}).click();
+  await view.page.getByRole('button', {name:'Use this window',exact:true}).click();
+  record('Quote wizard: collection window retained', await view.page.locator('input[name="collectionFrom"]').inputValue()==='09:00' && await view.page.locator('input[name="collectionUntil"]').inputValue()==='11:00');
   await view.page.getByRole('button', {name:'Continue →'}).click();
   record('Quote wizard: vehicle step', await view.page.locator('#home-quote-make').isVisible());
   record('Quote wizard: vehicle placeholder', await view.page.locator('#home-quote-vehicle-type').inputValue() === '');
@@ -177,15 +182,18 @@ try {
   // Autocomplete is stubbed in this client-value-persistence check; no address provider is contacted.
   await home.page.route('**/api/address/**', request => request.fulfill({status: 200, contentType: 'application/json', body: '[]'}));
   record('Compact desktop bar: vehicle visible', await home.page.locator('#home-quote-vehicle-type').isVisible());
-  record('Compact desktop bar: make visible', await home.page.locator('#home-quote-make').isVisible());
-  record('Compact desktop bar: delivery waits for expansion', !await home.page.locator('input[name="delivery"]').isVisible());
-  await home.page.locator('#home-quote-make').fill('Ford');
-  await home.page.locator('#home-quote-model').fill('Focus');
-  await home.page.locator('.homeQuoteForm .quoteCta').click();
+  record('Compact desktop bar: collection visible', await home.page.locator('input[name="collection"]').isVisible());
+  record('Compact desktop bar: delivery visible', await home.page.locator('input[name="delivery"]').isVisible());
+  record('Compact desktop bar: make waits for expansion', !await home.page.locator('#home-quote-make').isVisible());
+  await home.page.locator('input[name="collection"]').fill('CI collection address');
+  await home.page.locator('input[name="delivery"]').fill('CI delivery address');
+  await home.page.locator('#home-quote-vehicle-type').selectOption('Car');
+  await home.page.getByRole('button',{name:'Expand account details',exact:true}).filter({visible:true}).click();
   await home.page.locator('.homeHeroPanelShell.isQuoteExpanded').waitFor({state:'visible'});
-  record('Expanded bar preserves make', await home.page.locator('#home-quote-make').inputValue() === 'Ford');
-  record('Expanded bar preserves model', await home.page.locator('#home-quote-model').inputValue() === 'Focus');
-  record('Expanded bar reveals collection', await home.page.locator('input[name="collection"]').isVisible());
+  record('Expanded bar preserves collection', await home.page.locator('input[name="collection"]').inputValue() === 'CI collection address');
+  record('Expanded bar preserves delivery', await home.page.locator('input[name="delivery"]').inputValue() === 'CI delivery address');
+  record('Expanded bar preserves vehicle type', await home.page.locator('#home-quote-vehicle-type').inputValue() === 'Car');
+  record('Expanded bar reveals make', await home.page.locator('#home-quote-make').isVisible());
   record('Expanded bar reveals customer phone', await home.page.locator('#home-quote-phone').isVisible());
   const banner = await home.page.locator('.approvedTransporterBanner').evaluate(el=>({height:el.getBoundingClientRect().height,image:getComputedStyle(el).backgroundImage}));
   record('Approved banner: original height and reframed photograph', banner.height === 275 && banner.image.includes('home-transporter-wide.webp'));

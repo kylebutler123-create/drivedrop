@@ -39,7 +39,8 @@ jobs:
       VERCEL_ENV: preview
       POSTGRES_PRISMA_URL: postgresql://ci_only:ci_only@127.0.0.1:55432/drivedrop_browser_ci
       DATABASE_URL: postgresql://ci_only:ci_only@127.0.0.1:55432/drivedrop_browser_ci
-      BASELINE_REF: 215f74942949572ae40f242f3e284308a2f29286
+      # Reviewed current preview; see docs/browser-regression-baseline.md.
+      BASELINE_REF: b54e1f827b00ebe2b0ccd7720a595940b57387c7
     steps:
       - uses: actions/checkout@v6
         with:
