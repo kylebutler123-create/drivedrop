@@ -195,8 +195,10 @@ try {
   record('Expanded bar preserves vehicle type', await home.page.locator('#home-quote-vehicle-type').inputValue() === 'Car');
   record('Expanded bar reveals make', await home.page.locator('#home-quote-make').isVisible());
   record('Expanded bar reveals customer phone', await home.page.locator('#home-quote-phone').isVisible());
-  const banner = await home.page.locator('.approvedTransporterBanner').evaluate(el=>({height:el.getBoundingClientRect().height,image:getComputedStyle(el).backgroundImage}));
-  record('Approved banner: original height and reframed photograph', banner.height === 275 && banner.image.includes('home-transporter-wide.webp'));
+  const previewSections = home.page.locator('.approvedReferenceHome');
+  record('Homepage: sample statistics and reviews remain labelled', await previewSections.locator('.referenceStats').isVisible() && await previewSections.locator('.referenceReviews').isVisible() && await previewSections.locator('.referenceSampleNote').isVisible() && (await previewSections.locator('.referenceSampleNote').innerText()).includes('sample content'));
+  const transporterJoin = home.page.locator('.desktopPublicFooter').getByRole('link',{name:'Join DriveDrop',exact:true});
+  record('Homepage: transporter signup link available', await transporterJoin.isVisible() && await transporterJoin.getAttribute('href') === '/register?account=transporter');
   await home.page.screenshot({path: path.join(out, 'desktop-1440-home-expanded.png'), fullPage: true, animations: 'disabled', caret: 'hide'});
   await home.page.locator('.desktopPublicHeader').getByRole('link', {name: 'Get a Quote', exact: true}).click();
   await home.page.waitForURL('**/get-quotes');

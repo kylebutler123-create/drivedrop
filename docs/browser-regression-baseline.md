@@ -10,6 +10,7 @@ The old comparisons and errors remain in [account run 40129969709](https://githu
 
 | Screen | Material change visible against September |
 | --- | --- |
+| Public homepage | Current reference sections, labelled sample statistics/reviews and footer signup link; the former transporter photograph banner is no longer rendered |
 | Customer dashboard/request | Calendar and mandatory collection time window; explicit running-condition choice |
 | Customer quote requests | Current quote indicator and compact card presentation |
 | Customer deliveries | Delivery progress labels and collection-date presentation |
@@ -34,6 +35,7 @@ The application correction hides the duplicate desktop totals below 1024px, perm
 ### Current interactions
 
 - Select visible responsive controls and the current admin sidebar. Hidden legacy controls are not valid click targets.
+- The current homepage has no `.approvedTransporterBanner`; its unused CSS is not evidence of rendered content. Check the visible sample-content labels and transporter signup link instead of asserting the retired photograph's height.
 - Customer/transporter conversations expand below the selected inbox card; the admin conversation retains its adjacent layout.
 - A quote request includes collection times. Selection authorises TEST payment and waits for transporter confirmation; confirmation captures once and creates one booking.
 - Check customer and transporter prices separately, and verify the authoritative fee in the disposable local database, not a deliberately restricted customer API response.
