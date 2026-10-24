@@ -79,7 +79,7 @@ export async function completePaymentRecoveryRun(id: string) {
   const table = recoveryTable();
   let result = {checked: 0, failed: 0};
   // A failure in one queue must not prevent the other queues from reconciling.
-  for (const worker of [reconcileBookingAuthorisations, recoverStripePayouts, recoverStripeRefunds]) {
+  for (const worker of [reconcileBookingAuthorisations, () => recoverStripePayouts(id), recoverStripeRefunds]) {
     try {
       const outcome = await worker();
       result.checked += outcome.checked;

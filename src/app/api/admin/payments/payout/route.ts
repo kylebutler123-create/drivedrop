@@ -1,5 +1,6 @@
 import {after,NextResponse} from 'next/server';
 import {prepareStripePayout,reconcileStripePayout} from '@/lib/stripe-payouts';
+import {deferPayoutRecoveryProbe} from '@/lib/stripe-payout-recovery-probe';
 import {connectErrorMessage,connectFailureCode,connectOrigin,connectReconciliationEnabled} from '@/lib/stripe-connect-provider';
 import {paymentEnvironment,productionPaymentsEnabled} from '@/lib/payment-runtime';
 export const maxDuration=180;
@@ -31,7 +32,7 @@ export async function POST(r:Request){
   try{
    if((paymentEnvironment()==='production'||r.headers.get('origin'))&&r.headers.get('origin')!==connectOrigin())return NextResponse.json({error:'Invalid request origin'},{status:403});
    const payout=await prepareStripePayout(paymentId,u.id);
-   if(!['TRANSFERRED','DEDUCTED','REVERSED'].includes(payout.status))after(()=>reconcileStripePayout(payout.id));
+   if(!['TRANSFERRED','DEDUCTED','REVERSED'].includes(payout.status)&&!await deferPayoutRecoveryProbe(payout,r))after(()=>reconcileStripePayout(payout.id));
    return NextResponse.json({accepted:true,payoutStatus:['TRANSFERRED','DEDUCTED'].includes(payout.status)?'PAID':payout.status==='REVERSED'?'HELD':'PROCESSING',payoutId:payout.id},{status:202});
   }catch(error){
    console.error('Stripe payout preparation deferred',{paymentId,code:connectFailureCode(error)});
