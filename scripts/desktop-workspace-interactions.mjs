@@ -74,7 +74,9 @@ export async function checkWorkspaceInteractions({browser, base, states, out, re
         await check('collection-form', async () => {
           await page.goto(base + '/transporter?view=deliveries', {waitUntil: 'domcontentloaded'});
           const card = page.locator('.transporterBooking[data-booking-id="ci-booking-active"]');
-          await card.getByRole('button', {name: 'Complete collection', exact: true}).click();
+          const collectionAction = card.locator('.tdActiveCompactActions');
+          await collectionAction.waitFor({state:'visible'});
+          await collectionAction.getByRole('button', {name: 'Complete collection', exact: true}).click();
           record('Transporter: collection signature available', await card.locator('[data-poc] canvas').isVisible());
           record('Transporter: collection photos available', await card.locator('[data-poc] input[type="file"]').isVisible());
           record('Transporter: collection confirmation available', await card.locator('[data-poc] input[type="checkbox"]').isVisible());

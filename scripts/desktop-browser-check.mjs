@@ -188,7 +188,7 @@ try {
   await home.page.locator('input[name="collection"]').fill('CI collection address');
   await home.page.locator('input[name="delivery"]').fill('CI delivery address');
   await home.page.locator('#home-quote-vehicle-type').selectOption('Car');
-  await home.page.getByRole('button',{name:'Expand account details',exact:true}).filter({visible:true}).click();
+  await home.page.locator('.homeQuoteForm .approvedInlineExpand').click();
   await home.page.locator('.homeHeroPanelShell.isQuoteExpanded').waitFor({state:'visible'});
   record('Expanded bar preserves collection', await home.page.locator('input[name="collection"]').inputValue() === 'CI collection address');
   record('Expanded bar preserves delivery', await home.page.locator('input[name="delivery"]').inputValue() === 'CI delivery address');
