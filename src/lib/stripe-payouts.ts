@@ -5,7 +5,6 @@ import {applyCancellationFeesToPayout} from './cancellation-fees';
 import {syncConnectAccount} from './stripe-connect-accounts';
 import {ConnectError, connectEnabled, connectReconciliationEnabled, connectFailureCode, verifiedConnectClient} from './stripe-connect-provider';
 import {assertCapturedSource, assertPayoutEligible, assertTransferMatches, payoutRetrySafe} from './stripe-payout-policy';
-import {tracePayoutRecoveryProbe} from './stripe-payout-recovery-probe';
 
 const paymentInclude = {events: {where: {type: 'PAYOUT_READY' as const}}, booking: {include: {
   disputes: {select: {id: true, status: true, resolution: true}},
@@ -102,7 +101,7 @@ async function finishPayout(tx: any, payout: any, transfer: Stripe.Transfer | nu
   return payment;
 }
 
-export async function reconcileStripePayout(id: string, recoveryRunId?: string) {
+export async function reconcileStripePayout(id: string) {
   if (!connectReconciliationEnabled()) throw new ConnectError('Stripe payout processing is not enabled yet.');
   const original = await prisma.stripePayout.findUniqueOrThrow({where: {id}, include: {payment: {select: {bookingId: true}}}});
   if (original.environment !== paymentEnvironment()) throw new ConnectError('Payout environment mismatch.');
@@ -111,7 +110,6 @@ export async function reconcileStripePayout(id: string, recoveryRunId?: string) 
     OR: [{leaseUntil: null}, {leaseUntil: {lt: new Date()}}]},
     data: {leaseUntil: new Date(Date.now() + 120_000), attemptCount: {increment: 1}}});
   if (!claimed.count) return original;
-  tracePayoutRecoveryProbe(original, recoveryRunId, 'worker_claimed');
   try {
     const stripe = await verifiedConnectClient();
     const transfer = await existingTransfer(stripe, original);
@@ -145,13 +143,11 @@ export async function reconcileStripePayout(id: string, recoveryRunId?: string) 
         throw new ConnectError('Reserved payout amounts changed.', 'PAYMENT_MISMATCH');
       }
       if (!current.amountPence) return finishPayout(tx, current, null);
-      tracePayoutRecoveryProbe(current, recoveryRunId, 'worker_transfer_submitted');
       const created = await stripe.transfers.create({amount: current.amountPence, currency: 'gbp',
         destination: current.destinationAccountId, source_transaction: current.sourceChargeId,
         transfer_group: `dd_payout_${current.id}`,
         metadata: {driveDropPayoutId: current.id, paymentId: current.paymentId, environment: current.environment},
       }, {idempotencyKey: `dd-payout-${current.id}`});
-      tracePayoutRecoveryProbe(current, recoveryRunId, 'worker_transfer_returned');
       return finishPayout(tx, current, created);
     }, {timeout: 25_000, maxWait: 5_000});
   } catch (error) {
@@ -171,23 +167,16 @@ export async function reconcileStripePayout(id: string, recoveryRunId?: string) 
   return prisma.stripePayout.findUniqueOrThrow({where: {id}});
 }
 
-export async function recoverStripePayouts(runId?: string) {
+export async function recoverStripePayouts() {
   if (!connectReconciliationEnabled()) return {checked: 0, failed: 0};
   const rows = await prisma.stripePayout.findMany({where: {environment: paymentEnvironment(), status: {in: ['PENDING', 'RETRY']},
     AND: [{OR: [{retryAfter: null}, {retryAfter: {lte: new Date()}}]}, {OR: [{leaseUntil: null}, {leaseUntil: {lt: new Date()}}]}]},
     orderBy: {updatedAt: 'asc'}, take: 1});
   let failed = 0;
   for (const row of rows) {
-    tracePayoutRecoveryProbe(row, runId, 'worker_selected');
-    try {
-      await reconcileStripePayout(row.id, runId);
-      const fresh = await prisma.stripePayout.findUniqueOrThrow({where: {id: row.id}});
-      tracePayoutRecoveryProbe(fresh, runId, 'worker_finished');
-      if (!terminal(fresh.status)) failed++;
-    } catch (error) {
-      tracePayoutRecoveryProbe(row, runId, 'worker_threw');
-      throw error;
-    }
+    await reconcileStripePayout(row.id);
+    const fresh = await prisma.stripePayout.findUniqueOrThrow({where: {id: row.id}});
+    if (!terminal(fresh.status)) failed++;
   }
   return {checked: rows.length, failed};
 }
