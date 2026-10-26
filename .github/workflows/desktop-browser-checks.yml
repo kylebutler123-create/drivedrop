@@ -8,6 +8,9 @@ on:
       - 'scripts/desktop-browser-check.mjs'
       - 'src/app/**'
       - 'src/components/**'
+      - 'src/lib/stripe-*.ts'
+      - 'src/lib/booking-authorisation*.ts'
+      - 'src/lib/payment-runtime.ts'
       - 'public/**'
   workflow_dispatch:
 

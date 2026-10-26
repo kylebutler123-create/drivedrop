@@ -9,6 +9,9 @@ on:
       - 'scripts/fixtures/proceeds-responsive-baseline.patch'
       - 'src/app/**'
       - 'src/components/**'
+      - 'src/lib/stripe-*.ts'
+      - 'src/lib/booking-authorisation*.ts'
+      - 'src/lib/payment-runtime.ts'
   workflow_dispatch:
 permissions:
   contents: read

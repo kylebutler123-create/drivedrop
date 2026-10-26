@@ -9,6 +9,7 @@ on:
       - 'scripts/test-native-payment-recovery.cjs'
       - 'scripts/test-booking-authorisation.cjs'
       - 'scripts/test-production-payment-runtime.cjs'
+      - 'scripts/test-payout-response-loss-probe.cjs'
       - 'scripts/production-database/**'
       - 'scripts/sql/production-schema-baseline.sql'
       - 'scripts/sql/rehearse-production-payment-audit.sql'
@@ -56,6 +57,7 @@ jobs:
       REHEARSAL_REPORT: /tmp/drivedrop-production-database-rehearsal.json
       NATIVE_RECOVERY_REPORT: /tmp/drivedrop-native-recovery.json
       NATIVE_AUTHORISATION_REPORT: /tmp/drivedrop-native-authorisation.json
+      QA24_REPORT: /tmp/drivedrop-qa24-response-loss.json
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -77,6 +79,8 @@ jobs:
         run: node scripts/test-booking-authorisation.cjs
       - name: Verify production configuration and paused-operation controls
         run: node scripts/test-production-payment-runtime.cjs
+      - name: Verify bounded response loss through the real SDK and local TCP
+        run: node scripts/test-payout-response-loss-probe.cjs
       - name: Record bounded evidence in job logs and summary
         if: ${{ always() }}
         run: |
@@ -84,9 +88,10 @@ jobs:
           const fs = require('node:fs'), {createHash} = require('node:crypto');
           const paths = ['scripts/production-database/supabase/migrations/20261021193022_production_payment_schema.sql',
             'scripts/rehearse-production-database.cjs', 'scripts/native-payment-rehearsal.cjs',
-            'scripts/test-native-payment-recovery.cjs', 'scripts/test-booking-authorisation.cjs'];
+            'scripts/test-native-payment-recovery.cjs', 'scripts/test-booking-authorisation.cjs',
+            'scripts/test-payout-response-loss-probe.cjs', 'src/lib/stripe-payout-response-loss-probe.ts'];
           const sourceHashes = Object.fromEntries(paths.map(path => [path, createHash('sha256').update(fs.readFileSync(path)).digest('hex')]));
-          const reports = Object.fromEntries(['REHEARSAL_REPORT', 'NATIVE_RECOVERY_REPORT', 'NATIVE_AUTHORISATION_REPORT'].map(key =>
+          const reports = Object.fromEntries(['REHEARSAL_REPORT', 'NATIVE_RECOVERY_REPORT', 'NATIVE_AUTHORISATION_REPORT', 'QA24_REPORT'].map(key =>
             [key, fs.existsSync(process.env[key]) ? JSON.parse(fs.readFileSync(process.env[key], 'utf8')) : {completed: false}]));
           const evidence = {sourceCommit: process.env.GITHUB_SHA, sourceHashes, reports,
             limits: ['Disposable localhost database only; no hosted migration or configuration changed.',
