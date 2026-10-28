@@ -5,7 +5,6 @@ import {applyCancellationFeesToPayout} from './cancellation-fees';
 import {syncConnectAccount} from './stripe-connect-accounts';
 import {ConnectError, connectEnabled, connectReconciliationEnabled, connectFailureCode, verifiedConnectClient} from './stripe-connect-provider';
 import {assertCapturedSource, assertPayoutEligible, assertTransferMatches, payoutRetrySafe} from './stripe-payout-policy';
-import {createPayoutResponseLossProbe} from './stripe-payout-response-loss-probe';
 
 const paymentInclude = {events: {where: {type: 'PAYOUT_READY' as const}}, booking: {include: {
   disputes: {select: {id: true, status: true, resolution: true}},
@@ -20,7 +19,7 @@ async function capturedSource(stripe: Stripe, payment: any) {
   }});
   if (!request?.paymentIntentId) throw new ConnectError('This booking has no matching Stripe payment authorisation.', 'PAYMENT_MISMATCH');
   const intent = await stripe.paymentIntents.retrieve(request.paymentIntentId, {expand: ['latest_charge']});
-  return {chargeId: assertCapturedSource(intent, {...payment, environment: paymentEnvironment()}, request), intentId: intent.id, intent};
+  return {chargeId: assertCapturedSource(intent, {...payment, environment: paymentEnvironment()}, request), intentId: intent.id};
 }
 
 export async function prepareStripePayout(paymentId: string, actorId: string) {
@@ -112,8 +111,7 @@ export async function reconcileStripePayout(id: string) {
     data: {leaseUntil: new Date(Date.now() + 120_000), attemptCount: {increment: 1}}});
   if (!claimed.count) return original;
   try {
-    const probe = createPayoutResponseLossProbe(original);
-    const stripe = await verifiedConnectClient(probe?.httpClient);
+    const stripe = await verifiedConnectClient();
     const transfer = await existingTransfer(stripe, original);
     // Always reconcile an existing transfer, even if a dispute arrived later.
     if (transfer) return await prisma.$transaction(async tx => {
@@ -145,13 +143,11 @@ export async function reconcileStripePayout(id: string) {
         throw new ConnectError('Reserved payout amounts changed.', 'PAYMENT_MISMATCH');
       }
       if (!current.amountPence) return finishPayout(tx, current, null);
-      probe?.arm(current, fresh, source.intent);
       const created = await stripe.transfers.create({amount: current.amountPence, currency: 'gbp',
         destination: current.destinationAccountId, source_transaction: current.sourceChargeId,
         transfer_group: `dd_payout_${current.id}`,
         metadata: {driveDropPayoutId: current.id, paymentId: current.paymentId, environment: current.environment},
       }, {idempotencyKey: `dd-payout-${current.id}`});
-      probe?.returned(created);
       return finishPayout(tx, current, created);
     }, {timeout: 25_000, maxWait: 5_000});
   } catch (error) {

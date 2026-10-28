@@ -16,7 +16,7 @@ export function connectReconciliationEnabled() {
   return paymentEnvironment() === 'production' ? productionPaymentsEnabled() : process.env.STRIPE_CONNECT_ENABLED === 'true';
 }
 
-export function connectClient(httpClient?: Stripe.HttpClient) {
+export function connectClient() {
   if (!connectReconciliationEnabled()) throw new ConnectError('Stripe payout processing is not enabled yet.');
   try {assertProductionPaymentConfiguration();} catch (error) {throw new ConnectError(error instanceof Error ? error.message : 'Invalid payment configuration.', 'CONFIGURATION');}
   const key = process.env.STRIPE_CONNECT_SECRET_KEY || '';
@@ -26,11 +26,11 @@ export function connectClient(httpClient?: Stripe.HttpClient) {
   }
   // The SDK's pinned API version applies only to this new Connect integration.
   // Existing, verified Checkout authorisations keep their current API version.
-  return new Stripe(key, {timeout: 12_000, maxNetworkRetries: 0, ...(httpClient ? {httpClient} : {})});
+  return new Stripe(key, {timeout: 12_000, maxNetworkRetries: 0});
 }
 
-export async function verifiedConnectClient(httpClient?: Stripe.HttpClient) {
-  const stripe = connectClient(httpClient);
+export async function verifiedConnectClient() {
+  const stripe = connectClient();
   const account = await stripe.accounts.retrieveCurrent();
   if (account.id !== expectedStripePlatform()) throw new ConnectError('Stripe platform account does not match this environment.', 'CONFIGURATION');
   return stripe;
