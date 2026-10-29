@@ -17,6 +17,7 @@ function load(file, mocks, clock = Date) {
   const rows = [1, 2, 3].map(id => ({id: String(id), status: 'CAPTURING', updatedAt: new Date(0)}));
   class Clock extends Date {static now() {return now;}}
   const worker = load('src/lib/booking-authorisation-recovery.ts', {
+    './payment-recovery-heartbeat': {paymentRecoveryHeartbeatTarget: () => null},
     './payment-runtime': {assertProductionPaymentConfiguration: () => {}},
     './stripe-payouts': {recoverStripePayouts: async () => ({checked:0,failed:0})},
     './stripe-refunds': {recoverStripeRefunds: async () => ({checked:0,failed:0})},

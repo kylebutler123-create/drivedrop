@@ -1,0 +1,47 @@
+name: Offline payment completion heartbeat checks
+on:
+  pull_request:
+    branches: ['feature/ui-polish']
+    paths:
+      - '.github/workflows/payment-heartbeat-checks.yml'
+      - 'src/lib/payment-recovery-heartbeat.ts'
+      - 'src/lib/booking-authorisation-recovery.ts'
+      - 'src/app/api/cron/booking-authorisations/route.ts'
+      - 'scripts/test-payment-recovery*.cjs'
+  push:
+    branches: ['feature/ui-polish']
+    paths:
+      - '.github/workflows/payment-heartbeat-checks.yml'
+      - 'src/lib/payment-recovery-heartbeat.ts'
+      - 'src/lib/booking-authorisation-recovery.ts'
+      - 'src/app/api/cron/booking-authorisations/route.ts'
+      - 'scripts/test-payment-recovery*.cjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-heartbeat:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      CHECKPOINT_DISABLE: '1'
+      VERCEL_ENV: preview
+      DRIVEDROP_PAYMENT_HEALTHCHECK_ENABLED: 'false'
+      POSTGRES_PRISMA_URL: postgresql://offline:offline@127.0.0.1:9/drivedrop_heartbeat_offline
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx --no-install prisma generate
+      - name: Verify completion, stale-run and redacted failure behavior without external services
+        run: |
+          node scripts/test-payment-recovery-heartbeat.cjs
+          node scripts/test-payment-recovery.cjs
+      - run: npm run typecheck
+      - run: npm run build
