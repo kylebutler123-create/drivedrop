@@ -1,0 +1,382 @@
+{
+  "checkedAt": "2026-10-29T01:50:51.506Z",
+  "failedReproduction": {
+    "commit": "f1331431657c6c21e8054cf248bcb7c0ed6e6bc0",
+    "runId": 40802028607,
+    "jobId": 123212118755,
+    "url": "https://github.com/kylebutler123-create/drivedrop/actions/runs/40802028607",
+    "finding": "A health query blocked by ACCESS EXCLUSIVE table lock outlived the 5000ms Prisma transaction timeout; the harness released the blocker after its 6500ms guard."
+  },
+  "passingRun": {
+    "runId": 40802374705,
+    "jobId": 123213224261,
+    "url": "https://github.com/kylebutler123-create/drivedrop/actions/runs/40802374705",
+    "checkedAt": "2026-10-29T01:46:36.508Z",
+    "version": "PostgreSQL 17.11 (Debian 17.11-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+    "native1711Verified": true,
+    "testedCommit": "3c6465adb3528c484536335de84ae704e9fc78d6",
+    "sourceHashes": {
+      "src/lib/booking-authorisation-recovery.ts": "9fcec2a26146889633714504c7033bf8d813d415a695de0300e4f0d0d056b2ab",
+      "src/lib/payment-recovery-heartbeat.ts": "f222c194367e7f5b6aa3c2970333e4c706d014b38035d51a8d48332e13432ab4",
+      "scripts/test-payment-recovery-heartbeat-native.cjs": "52e26e28204b2cc322097a89bd2a18725cbd47628737e0e718e2afa0b75a0ea9"
+    },
+    "passed": [
+      "Four native PostgreSQL 17.11 connections; reviewed operational DDL and empty local health fixtures",
+      "Completion is visible to another connection before signaling; the dispatch lock remains held through delivery",
+      "A replacement claimed after completion suppresses the old run signal",
+      "A busy native dispatch lock skips signaling without undoing completion",
+      "Concurrent duplicate completions send at most one signal; interrupted records stay untouched",
+      "Actual review backlog sends failure and leaves the review evidence intact",
+      "A hung simulated HTTPS request times out and releases the native lock without retrying stages",
+      "A saturated native connection pool respects maxWait and preserves completion",
+      "A blocked health SQL read is bounded and releases the native advisory lock while the blocker remains",
+      "A slow native SQL statement is cancelled without signaling or leaking its timeout setting",
+      "The disabled path uses no monitoring transaction or network fixture"
+    ],
+    "failures": [],
+    "measurements": {
+      "httpsTimeoutMs": 2004,
+      "poolWaitMs": 1002,
+      "blockedSqlMs": 1005,
+      "slowSqlMs": 1004
+    },
+    "limits": [
+      "Disposable localhost database only; financial stages, email, HTTPS and runtime credential guard are fixtures.",
+      "Minimal health tables and reviewed operational DDL test monitoring behavior, not production migration, RLS, provider delivery or hosted scheduling.",
+      "No distributed atomicity or behavior during host termination/network partition is established."
+    ]
+  },
+  "productionReadOnly": {
+    "project": "srqhjgrhgyyfdaxckjum",
+    "status": "ACTIVE_HEALTHY",
+    "databaseCatalog": {
+      "observed_at": "2026-10-29 01:46:58.15268+00",
+      "postgres_version": "17.11",
+      "public_tables": 27,
+      "production_ops_schema": null,
+      "cron_schema": null,
+      "auth_users": 0,
+      "stored_objects": 0,
+      "migration_history": [
+        {
+          "version": "20261019020729",
+          "name": "drivedrop_production_schema_and_storage_baseline"
+        }
+      ],
+      "public_table_names": [
+        "AvailabilityRequest",
+        "Booking",
+        "BookingPayment",
+        "ConversationInboxState",
+        "Dispute",
+        "DisputeReviewNote",
+        "EmailChangeToken",
+        "Evidence",
+        "FinanceEvent",
+        "JobDigestRun",
+        "Message",
+        "MessageAttachment",
+        "Notification",
+        "PasswordResetToken",
+        "Quote",
+        "Review",
+        "Session",
+        "SupportConversation",
+        "SupportMessage",
+        "TrackingEvent",
+        "TransportJob",
+        "TransporterCancellationDeduction",
+        "TransporterCancellationFee",
+        "TransporterPayoutDetails",
+        "TransporterVerification",
+        "User",
+        "VerificationDocument"
+      ]
+    },
+    "fingerprint": [
+      {
+        "schema_md5": "dbafd834d5aaa168c554d9a62c382b84",
+        "counts": {
+          "bookings": 0,
+          "auth_users": 0,
+          "storage_objects": 0,
+          "application_users": 0
+        }
+      }
+    ],
+    "rowCounts": [
+      {
+        "observed_at": "2026-10-29 01:48:28.210681+00",
+        "tables_checked": 29,
+        "total_rows": 0,
+        "max_rows": 0
+      }
+    ],
+    "migration": {
+      "path": "scripts/production-database/supabase/migrations/20261021193022_production_payment_schema.sql",
+      "sha256": "7d3864f328b3429e7b8c1cb736a8c05e98581796e31d2caaeb174252428eb8ff",
+      "applied": false
+    },
+    "vercel": {
+      "projectId": "prj_8BO4s7P2sffGKR4czg6nHOZqg4Ze",
+      "teamId": "team_HR29ivw10fPMfg8JK98snQj5",
+      "deploymentId": "dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz",
+      "mainSha": "8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c",
+      "aliases": [
+        "drivedrop-pink.vercel.app",
+        "drivedrop-future-9f39.vercel.app",
+        "drivedrop-git-main-future-9f39.vercel.app"
+      ],
+      "configuredDomains": [
+        {
+          "name": "drivedrop-pink.vercel.app",
+          "verified": true
+        }
+      ],
+      "hiddenProductionEnvCount": 0,
+      "environmentMetadata": [
+        {
+          "key": "DRIVEDROP_QA25_RESPONSE_LOSS",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "feature/ui-polish",
+          "type": "encrypted"
+        },
+        {
+          "key": "DRIVEDROP_QA23_PAYOUT_RECOVERY",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "feature/ui-polish",
+          "type": "encrypted"
+        },
+        {
+          "key": "STRIPE_REFUNDS_ENABLED",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "feature/ui-polish",
+          "type": "plain"
+        },
+        {
+          "key": "STRIPE_CONNECT_ENABLED",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "feature/ui-polish",
+          "type": "plain"
+        },
+        {
+          "key": "STRIPE_CONNECT_WEBHOOK_SECRET",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "feature/ui-polish",
+          "type": "sensitive"
+        },
+        {
+          "key": "STRIPE_CONNECT_EVENTS_SECRET",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "feature/ui-polish",
+          "type": "sensitive"
+        },
+        {
+          "key": "STRIPE_CONNECT_SECRET_KEY",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "feature/ui-polish",
+          "type": "sensitive"
+        },
+        {
+          "key": "STRIPE_SECRET_KEY",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "feature/ui-polish",
+          "type": "sensitive"
+        },
+        {
+          "key": "STRIPE_WEBHOOK_SECRET",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "feature/ui-polish",
+          "type": "sensitive"
+        },
+        {
+          "key": "CRON_SECRET",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "feature/ui-polish",
+          "type": "sensitive"
+        },
+        {
+          "key": "STRIPE_CHECKOUT_ORIGIN",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "feature/ui-polish",
+          "type": "plain"
+        },
+        {
+          "key": "STRIPE_SANDBOX_PENDING_KEY",
+          "target": [
+            "preview"
+          ],
+          "gitBranch": "feature/ui-polish",
+          "type": "sensitive"
+        },
+        {
+          "key": "RESEND_API_KEY",
+          "target": [
+            "preview"
+          ],
+          "type": "sensitive"
+        },
+        {
+          "key": "IDEAL_POSTCODES_API_KEY",
+          "target": [
+            "production"
+          ],
+          "type": "sensitive"
+        },
+        {
+          "key": "IDEAL_POSTCODES_API_KEY",
+          "target": [
+            "preview"
+          ],
+          "type": "sensitive"
+        },
+        {
+          "key": "POSTGRES_URL",
+          "target": [
+            "production"
+          ],
+          "type": "sensitive"
+        },
+        {
+          "key": "POSTGRES_PRISMA_URL",
+          "target": [
+            "production",
+            "preview"
+          ],
+          "type": "sensitive"
+        },
+        {
+          "key": "POSTGRES_URL_NON_POOLING",
+          "target": [
+            "production"
+          ],
+          "type": "sensitive"
+        },
+        {
+          "key": "POSTGRES_USER",
+          "target": [
+            "production"
+          ],
+          "type": "encrypted"
+        },
+        {
+          "key": "POSTGRES_HOST",
+          "target": [
+            "production"
+          ],
+          "type": "encrypted"
+        },
+        {
+          "key": "POSTGRES_PASSWORD",
+          "target": [
+            "production"
+          ],
+          "type": "sensitive"
+        },
+        {
+          "key": "POSTGRES_DATABASE",
+          "target": [
+            "production"
+          ],
+          "type": "encrypted"
+        },
+        {
+          "key": "SUPABASE_URL",
+          "target": [
+            "production",
+            "preview",
+            "development"
+          ],
+          "type": "encrypted"
+        },
+        {
+          "key": "SUPABASE_JWT_SECRET",
+          "target": [
+            "production"
+          ],
+          "type": "sensitive"
+        },
+        {
+          "key": "SUPABASE_ANON_KEY",
+          "target": [
+            "production"
+          ],
+          "type": "encrypted"
+        },
+        {
+          "key": "SUPABASE_SERVICE_ROLE_KEY",
+          "target": [
+            "production",
+            "preview",
+            "development"
+          ],
+          "type": "sensitive"
+        },
+        {
+          "key": "SUPABASE_PUBLISHABLE_KEY",
+          "target": [
+            "production"
+          ],
+          "type": "encrypted"
+        },
+        {
+          "key": "SUPABASE_SECRET_KEY",
+          "target": [
+            "production"
+          ],
+          "type": "sensitive"
+        },
+        {
+          "key": "NEXT_PUBLIC_SUPABASE_URL",
+          "target": [
+            "production"
+          ],
+          "type": "encrypted"
+        },
+        {
+          "key": "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+          "target": [
+            "production"
+          ],
+          "type": "encrypted"
+        },
+        {
+          "key": "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+          "target": [
+            "production"
+          ],
+          "type": "encrypted"
+        }
+      ]
+    }
+  },
+  "boundaries": {
+    "hostedMutations": false,
+    "hostedPaymentTests": false,
+    "healthchecksPings": false,
+    "emailsSent": 0,
+    "productionMonitoringEnabled": false
+  }
+}
