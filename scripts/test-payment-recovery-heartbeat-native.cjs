@@ -48,7 +48,18 @@ function fixture(db, options = {}) {
     },
     $transaction: (fn, settings) => {
       if (settings) monitoringTransactions++;
-      return db.$transaction(fn, settings);
+      return db.$transaction(async tx => {
+        if (!options.slowHealth) return fn(tx);
+        // Inject real server-side work into a health read. No fake clock or
+        // simulated timeout: PostgreSQL must cancel the sleeping statement.
+        return fn({
+          $executeRaw: (...args) => tx.$executeRaw(...args),
+          $queryRaw: async (...args) => {
+            if (args[0].join('?').includes('select id, status')) await tx.$queryRaw`SELECT pg_sleep(3)::text`;
+            return tx.$queryRaw(...args);
+          },
+        });
+      }, settings);
     },
   };
   const mocks = {
@@ -135,6 +146,8 @@ async function check(name, fn) {
   assert.equal(n, 0, 'A new empty disposable database is required');
   const pids = (await Promise.all(clients.map(db => db.$queryRaw`SELECT pg_backend_pid() AS pid`))).map(rows => rows[0].pid);
   assert.equal(new Set(pids).size, 4, 'Four separate native connections are required');
+  const statementTimeout = async () => (await a.$queryRaw`SELECT current_setting('statement_timeout') AS value`)[0].value;
+  const initialStatementTimeout = await statementTimeout();
 
   // Reuse the reviewed operational table/index DDL verbatim. Minimal backlog
   // tables support the actual aggregate SQL; this is not a migration/RLS test.
@@ -164,6 +177,7 @@ async function check(name, fn) {
     } finally {respond.release(); await completion;}
     assert.equal(f.requests.length, 1); assert.equal(f.requests[0].healthy, true); assertOnce(f);
     assert.equal(await lockAvailable(), true);
+    assert.equal(await statementTimeout(), initialStatementTimeout, 'Timeout must not leak after commit');
     assert((await fixture(b).worker.claimPaymentRecoveryRun()).created);
   });
 
@@ -249,11 +263,23 @@ async function check(name, fn) {
       'Expected real PostgreSQL lock wait was not observed');
       await bounded(completion, 6500, 'Blocked SQL outlived the five-second monitoring transaction budget');
       measurements.blockedSqlMs = Date.now() - f.persistedAt;
-      assert(measurements.blockedSqlMs < 6000, 'Blocked SQL must finish within the transaction budget plus scheduling tolerance');
+      assert(measurements.blockedSqlMs >= 750 && measurements.blockedSqlMs < 3000,
+        'PostgreSQL must bound the blocked statement to one second plus scheduling tolerance');
       assert.equal(f.requests.length, 0); assert(f.logs.some(line => line.includes('health_unavailable')));
       assert.equal((await run(id)).status, 'succeeded'); assertOnce(f);
       assert.equal(await lockAvailable(), true, 'Timed-out monitoring must release its lock before the blocker is removed');
+      assert.equal(await statementTimeout(), initialStatementTimeout, 'Timeout must not leak after rollback');
     } finally {release.release(); await holding; if (completion) await completion;}
+  });
+
+  await check('A slow native SQL statement is cancelled without signaling or leaking its timeout setting', async () => {
+    const f = fixture(a, {slowHealth: true}), id = await insertRun();
+    await bounded(f.worker.completePaymentRecoveryRun(id), 4000, 'Slow health SQL was not cancelled');
+    measurements.slowSqlMs = Date.now() - f.persistedAt;
+    assert(measurements.slowSqlMs >= 750 && measurements.slowSqlMs < 3000);
+    assert.equal(f.requests.length, 0); assert(f.logs.some(line => line.includes('health_unavailable')));
+    assert.equal((await run(id)).status, 'succeeded'); assertOnce(f);
+    assert.equal(await lockAvailable(), true); assert.equal(await statementTimeout(), initialStatementTimeout);
   });
 
   await check('The disabled path uses no monitoring transaction or network fixture', async () => {

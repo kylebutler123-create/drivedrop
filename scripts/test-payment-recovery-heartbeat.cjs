@@ -23,6 +23,9 @@ function fixture(options = {}) {
     availabilityRequest: {findMany: async () => {events.push('authorisations'); return [];},
       updateMany: async () => {throw Error('Unexpected money-state update');}},
     $executeRaw: async (parts, ...values) => {
+      if (parts.join('?') === "SET LOCAL statement_timeout = '1000ms'") {
+        events.push('statement-timeout'); return 0;
+      }
       assert.match(parts.join('?'), /where id = \? and finished_at is null/);
       events.push('persist-start');
       if (options.persistBarrier) await options.persistBarrier.promise;
@@ -135,7 +138,7 @@ const pass = message => console.log('PASS: ' + message);
     const f = fixture({env});
     if (env.VERCEL_ENV === 'development') await assert.rejects(f.worker.completePaymentRecoveryRun('current'), /configured deployment/);
     else await f.worker.completePaymentRecoveryRun('current');
-    assert.equal(f.requests.length, 0); assert(!f.events.includes('lock'));
+    assert.equal(f.requests.length, 0); assert(!f.events.includes('lock')); assert(!f.events.includes('statement-timeout'));
   }
   assert.equal(fixture({env: {VERCEL_ENV: undefined, NODE_ENV: 'production'}}).heartbeat.paymentRecoveryHeartbeatTarget(), null);
   pass('Disabled and non-production deployments do no monitoring queries or networking');
@@ -145,7 +148,7 @@ const pass = message => console.log('PASS: ' + message);
   await new Promise(resolve => setImmediate(resolve));
   assert(f.events.includes('persist-start')); assert(!f.events.includes('lock')); assert.equal(f.requests.length, 0);
   pending.release(); await completion;
-  assert.deepEqual(f.events, ['authorisations','payouts','refunds','persist-start','persisted','lock','health-runs','health-backlog','request','unlock']);
+  assert.deepEqual(f.events, ['authorisations','payouts','refunds','persist-start','persisted','statement-timeout','lock','health-runs','health-backlog','request','unlock']);
   assert.equal(f.requests[0].url, fakeUrl);
   assert.equal(f.requests[0].settings.method, 'POST');
   assert.deepEqual(JSON.parse(JSON.stringify(f.requests[0].settings.headers)), {'Content-Length': '0'});
