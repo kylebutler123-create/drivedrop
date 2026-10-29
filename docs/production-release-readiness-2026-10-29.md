@@ -38,7 +38,7 @@ permission for the application to process live payments.
 
 | Observed area | Result and remaining gate |
 | --- | --- |
-| Business details | Business information, customer-facing information, statement descriptor and account representative are each marked **Incomplete**. |
+| Business details | After Kye authorized onboarding, industry **Other transportation services**, the vehicle-transport marketplace description and statement descriptor **DRIVEDROP** were saved. Business information and statement descriptor no longer show **Incomplete**. Customer-facing information and account representative remain **Incomplete**. |
 | Product and live setup | The setup guide marks product activation and Connect business-model selection **Not Started**; identity verification and integration confirmation are blocked. The Connect platform profile independently says **Onboarding incomplete**. |
 | Dashboard phone verification | The account details page offers **Verify now** and says SMS verification is needed to process payments from the Dashboard. This is not evidence about API capability status. |
 | Server API keys | The API keys page shows a create-key prompt and a publishable key, with no existing server-key permission scopes listed. Restricted live-key permissions remain unverified; no key was created, revealed or copied. |
@@ -49,13 +49,28 @@ The Stripe connector still exposes only the separate sandbox
 `acct_1US4BzLAzgkvCvrI` (`livemode=false`); browser sign-in does not grant that
 connector access to live data. No sandbox configuration was changed.
 
-The next step is completing the live business/product and Connect onboarding
-requirements with the account holder, then reviewing actual capabilities and
-restricted-key scopes. Preserve the existing separate-charges-and-transfers
-integration; do not repeat financial QA or create test accounts from the setup
-guide. Any submission, acknowledgement, credential provisioning or production
-configuration is outside this read-only review. The review template now records
-the non-secret platform ID; deployed environment values are unchanged.
+Kye subsequently authorized proceeding with business verification and Connect
+onboarding. Only the industry, product description and statement descriptor above
+have been saved. The description accurately states that the card is authorized
+when a quote is chosen and charged when the transporter confirms, before
+collection. Transporter funds remain subject to delivery, customer confirmation,
+the applicable dispute period and administrator release.
+
+The open **Add customer support details** form needs the account holder's chosen
+customer-facing phone, address and email; those fields were empty. Its option to
+show the phone on receipts and invoices is currently checked. The existing
+business name and website are populated. Support, privacy-policy and terms URLs
+are blank; do not guess them or treat the unattached launch domain as an already
+verified public policy site. No support details or representative information
+have been submitted. The local Chrome tab is left on this form for user input.
+
+The live Connect **View onboarding** action displayed a prompt requiring setup in
+the sandbox first. **Stay in live mode** was selected; no sandbox switch, test
+account, liability acknowledgement or financial QA was performed. Finish the
+required onboarding using the existing approved integration, without repeating
+completed QA. Actual live capabilities, restricted-key scopes, signed webhooks
+and final activation remain pending. The website's production configuration and
+deployed environment values are unchanged.
 
 ## Completed work to retain
 
