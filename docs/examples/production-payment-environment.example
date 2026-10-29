@@ -14,6 +14,11 @@ STRIPE_CONNECT_WEBHOOK_SECRET=
 STRIPE_CONNECT_EVENTS_SECRET=
 CRON_SECRET=
 
+# Optional completion monitor. Keep disabled until a separate production
+# activation review. Private UUID ping URL; never set either value in Preview.
+DRIVEDROP_PAYMENT_HEALTHCHECK_ENABLED=false
+DRIVEDROP_PAYMENT_HEALTHCHECK_URL=
+
 # Master canonical reconciliation control. Initially false; once live instructions
 # exist, keep true during a creation pause so recovery/webhooks continue.
 STRIPE_PAYMENTS_ENABLED=false
