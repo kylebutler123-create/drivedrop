@@ -40,7 +40,12 @@ monitoring reads or network calls.
   four-minute leases and three recovery stages are unchanged.
 - The monitoring transaction permits up to one second to obtain a connection,
   has a five-second transaction limit, and stops sending at a four-second budget
-  inside the callback. HTTPS has at most two seconds, reduced to the remaining
+  inside the callback. A transaction-local PostgreSQL `statement_timeout` of one
+  second also bounds each monitoring SQL statement, including lock waits. The
+  Prisma transaction limit alone did not cancel a blocked native health read;
+  the focused native rehearsal reproduced that failure. The setting resets at
+  commit/rollback and never applies to the already-completed financial stages.
+  HTTPS has at most two seconds, reduced to the remaining
   budget. There is no automatic ping retry. A platform termination or database
   outage therefore becomes a missing-heartbeat alert once monitoring is active.
 - Only an exact `https://hc-ping.com/<UUID>` endpoint is accepted. No custom host,
@@ -95,9 +100,21 @@ warnings, strict URL handling, redacted errors, body limits and a real timeout.
 `scripts/test-payment-recovery.cjs` retains the existing offline dispatch checks.
 The focused CI workflow also typechecks and builds with a dummy localhost URL.
 
-These tests do not repeat QA25, establish native database concurrency proof for
-this addition, validate production configuration, or claim hosted monitoring is
-active. Production activation and live observation remain separate release gates.
+`node scripts/test-payment-recovery-heartbeat-native.cjs` is the separate native
+PostgreSQL 17.11 monitoring-only rehearsal. It requires an explicitly named empty
+localhost database and uses four independent connections. The actual worker and
+sender run with financial, email and HTTPS dependencies replaced by strict inert
+fixtures. It checks committed visibility, native lock ownership, duplicate and
+superseded completion, review preservation, connection acquisition, transport
+timeout, genuinely blocked/slow SQL, and timeout-setting reset. The operational
+table/index DDL comes from the reviewed migration; minimal backlog fixtures do
+not certify the full migration or RLS. CI records the exact tested source and
+measured bounds. See the native evidence before treating this gate as passed.
+
+Neither suite repeats QA25, validates production configuration, or claims hosted
+monitoring is active. Process termination, network partitions and distributed
+delivery atomicity remain outside the proof. Production activation and live
+observation remain separate release gates.
 
 References: [Healthchecks ping API](https://healthchecks.io/docs/http_api/),
 [failure signals](https://healthchecks.io/docs/signaling_failures/), and the

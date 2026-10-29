@@ -106,6 +106,9 @@ export async function completePaymentRecoveryRun(id: string) {
     // This transaction never writes financial state or changes the run result.
     await prisma.$transaction(async tx => {
       const deadline = Date.now() + 4000;
+      // Prisma's transaction deadline alone does not cancel blocked SQL. Bound
+      // each monitoring query at PostgreSQL; SET LOCAL cannot affect later work.
+      await tx.$executeRaw`SET LOCAL statement_timeout = '1000ms'`;
       const [lock] = await tx.$queryRaw<Array<{locked: boolean}>>`
         select pg_try_advisory_xact_lock(hashtext(${`drivedrop-${paymentEnvironment()}-payment-recovery`})) as locked`;
       if (!lock?.locked) return;

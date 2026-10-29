@@ -1,4 +1,4 @@
-name: Offline payment completion heartbeat checks
+name: Offline and native payment completion heartbeat checks
 on:
   pull_request:
     branches: ['feature/ui-polish']
@@ -45,3 +45,47 @@ jobs:
           node scripts/test-payment-recovery.cjs
       - run: npm run typecheck
       - run: npm run build
+  native-heartbeat:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17.11-bookworm
+        env:
+          POSTGRES_USER: ci_only
+          POSTGRES_PASSWORD: ci_only
+          POSTGRES_DB: drivedrop_rehearsal_heartbeat
+        ports: ['55432:5432']
+        options: >-
+          --health-cmd "pg_isready -U ci_only -d drivedrop_rehearsal_heartbeat"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      CHECKPOINT_DISABLE: '1'
+      POSTGRES_PRISMA_URL: postgresql://ci_only:ci_only@127.0.0.1:55432/drivedrop_rehearsal_heartbeat
+      REHEARSAL_DATABASE_URL: postgresql://ci_only:ci_only@127.0.0.1:55432/drivedrop_rehearsal_heartbeat
+      NATIVE_HEARTBEAT_REPORT: /tmp/drivedrop-native-heartbeat.json
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx --no-install prisma generate
+      - name: Verify enabled monitoring with separate native connections and inert services
+        run: node scripts/test-payment-recovery-heartbeat-native.cjs
+      - name: Preserve bounded native evidence
+        if: ${{ always() }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const report = fs.existsSync(process.env.NATIVE_HEARTBEAT_REPORT)
+            ? fs.readFileSync(process.env.NATIVE_HEARTBEAT_REPORT, 'utf8') : '{"completed":false}';
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, 'Native monitoring-only rehearsal\n\n```json\n' + report + '\n```\n');
+          NODE
