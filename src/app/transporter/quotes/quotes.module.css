@@ -29,3 +29,9 @@
 }
 @media(min-width:1024px) and (max-width:1199px){.page{width:calc(100% - 48px)}.top{grid-template-columns:minmax(190px,1fr) minmax(210px,1fr) auto 114px;gap:10px}.identity{gap:12px}.identity>svg{width:44px}.price{padding-left:14px}.price strong{font-size:23px}.facts>div{padding:0 12px;gap:10px}.badges{max-width:145px}}
 @media(min-width:1024px){.page.embedded{position:relative;width:100%;max-width:none;padding:0;margin:18px 0 0}.embedded header h1{font-size:28px;margin-bottom:4px}.embedded header p{margin-bottom:14px}.embedded .heading{position:absolute;right:0;top:12px;margin:0}.embedded .bottom :global(.btn svg){width:17px;height:17px}}
+
+@media(max-width:1023px){
+ .page.embedded{display:block;color:#071c43;margin-top:18px}
+ .embedded>header{display:none}.embedded .cards{display:grid;gap:14px}.embedded .card{border:1px solid #e3eaf3;border-radius:13px;overflow:hidden;background:#fff;min-width:0}
+ .embedded .card>:global(.tdCompactToggle){display:none}.embedded .card>:global(.tdQuoteActions){display:flex;flex-wrap:wrap;gap:8px;padding:0 12px 12px}.embedded .card>:global(.tdQuoteBody):not([hidden]){padding:16px;border-top:1px solid #e3eaf3;font-size:13px;line-height:1.5}.embedded .card>:global(.tdQuoteBody) svg{width:20px;height:20px}.embedded .empty{padding:22px;background:white;border:1px solid #e3eaf3;border-radius:12px;font-size:13px}.embedded .empty h2{font-size:18px}
+}

@@ -3,7 +3,7 @@ import {useEffect,useId,useRef,useState} from 'react';
 import type {ReactNode} from 'react';
 
 type Hit={id:string;suggestion:string};
-export default function AddressAutocomplete({name,label,desktopPlaceholder}:{name:string;label:ReactNode;desktopPlaceholder?:string}){
+export default function AddressAutocomplete({name,label,desktopPlaceholder,initialValue=''}:{name:string;label:ReactNode;desktopPlaceholder?:string;initialValue?:string}){
  const inputId=useId();
  const [desktopPrompt,setDesktopPrompt]=useState(false);
  useEffect(()=>{
@@ -14,7 +14,7 @@ export default function AddressAutocomplete({name,label,desktopPlaceholder}:{nam
   return()=>media.removeEventListener('change',sync);
  },[desktopPlaceholder]);
  const hintId=inputId+'-hint';
- const [value,setValue]=useState(''),[hits,setHits]=useState<Hit[]>([]),[open,setOpen]=useState(false),[loading,setLoading]=useState(false);
+ const [value,setValue]=useState(initialValue),[hits,setHits]=useState<Hit[]>([]),[open,setOpen]=useState(false),[loading,setLoading]=useState(false);
  const [lookupMessage,setLookupMessage]=useState<string|null>(null);
  const timer=useRef<ReturnType<typeof setTimeout>|null>(null);
  const requestVersion=useRef(0);

@@ -53,20 +53,20 @@ export default function TransporterCancelledDeliveries({selected,onCountChange,o
   return()=>{media.removeEventListener('change',update);inFlight.current?.abort();inFlight.current=null};
  },[]);
  useEffect(()=>{
-  if(!desktop)return;
+  if(!desktop&&!selected)return;
   void refresh();
   const update=()=>{void refresh()};
   window.addEventListener('drivedrop-bookings-updated',update);
   window.addEventListener('focus',update);
   return()=>{window.removeEventListener('drivedrop-bookings-updated',update);window.removeEventListener('focus',update)};
- },[desktop,refresh]);
+ },[desktop,selected,refresh]);
  useEffect(()=>{
-  if(selected&&desktop)void refresh();
+  if(selected)void refresh();
   if(!selected)setExpanded(null);
  },[selected,desktop,refresh]);
 
  return <>
-  {selected&&desktop&&<section className="transporterCancelledList" id="cancelled-deliveries" aria-labelledby="cancelled-deliveries-heading" aria-busy={refreshing}>
+  {selected&&<section className="transporterCancelledList" id="cancelled-deliveries" aria-labelledby="cancelled-deliveries-heading" aria-busy={refreshing}>
    <div className="transporterCancelledHeading"><h2 id="cancelled-deliveries-heading">Cancelled deliveries</h2><span aria-live="polite">{refreshing?'Refreshing…':bookings!==null?`${bookings.length} total`:error?'Unavailable':'Loading…'}</span></div>
    {error&&<div className="formNotice errorNotice" role="alert"><span>{bookings===null?'Unable to load cancelled deliveries.':'Unable to refresh cancelled deliveries. Your existing cards are still shown.'}</span><button type="button" className="btn light" onClick={()=>void refresh()} disabled={refreshing}>Try again</button></div>}
    {bookings===null&&!error&&<p role="status">Loading cancelled deliveries…</p>}
