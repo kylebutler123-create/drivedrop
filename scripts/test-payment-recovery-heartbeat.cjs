@@ -94,7 +94,7 @@ function fixture(options = {}) {
           const response = new EventEmitter(); response.statusCode = options.httpStatus ?? 200;
           onResponse(response);
           if (options.aborted) {response.emit('aborted'); return;}
-          response.emit('data', Buffer.from(options.body ?? 'OK'));
+          for (const chunk of options.chunks || [options.body ?? 'OK']) response.emit('data', Buffer.from(chunk));
           response.emit('end');
         });
       };
@@ -194,13 +194,14 @@ const pass = message => console.log('PASS: ' + message);
   pass('Only the exact HTTPS Healthchecks UUID endpoint is accepted; invalid configuration stays private');
 
   for (const options of [{networkError: true}, {aborted: true}, {httpStatus: 302}, {httpStatus: 503},
-    {body: 'OK (not found)'}, {body: 'OK (rate limited)'}, {body: 'x'.repeat(100)},
+    {body: 'OK (not found)'}, {body: 'OK (rate limited)'}, {body: 'x'.repeat(100)}, {chunks: ['é'.repeat(10), 'é'.repeat(10)]},
     {healthError: true}, {transactionError: true}, {healthDelay: 4000}]) {
     const x = fixture(options); await x.worker.completePaymentRecoveryRun('current');
     assert.equal(x.writes.length, 1); assert.equal(x.writes[0].status, 'succeeded');
     assert.deepEqual(x.events.filter(event => ['authorisations','payouts','refunds'].includes(event)), ['authorisations','payouts','refunds']);
     assert(x.logs.some(line => line.includes('heartbeat failed'))); assert(!x.logs.join('').includes(fakeUrl));
     assert(!x.logs.join('').includes('Sensitive')); assert.equal(x.isLocked(), false);
+    if (options.chunks) assert(x.events.includes('destroy'), 'The response limit counts bytes across UTF-8 chunks');
   }
   const timeout = fixture({hang: true}), start = Date.now();
   const keepAlive = setTimeout(() => {}, 2500);

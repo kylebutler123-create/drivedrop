@@ -26,9 +26,10 @@ export async function sendPaymentRecoveryHeartbeat(target: string, healthy: bool
         method: 'POST', headers: {'Content-Length': '0'}, agent: false,
         signal: AbortSignal.timeout(timeoutMs),
       }, res => {
-        let body = '';
+        let body = '', responseBytes = 0;
         res.on('data', (chunk: Buffer) => {
-          if (body.length + chunk.length > 32) {
+          responseBytes += chunk.length;
+          if (responseBytes > 32) {
             reject(new Error('Unexpected heartbeat response'));
             req.destroy(new Error('Unexpected heartbeat response'));
             return;
