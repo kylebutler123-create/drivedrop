@@ -1,0 +1,153 @@
+/* Account and messaging extension of the approved mobile app. Desktop is unchanged. */
+@media(max-width:1023px){
+  body:is(.role-customer,.role-transporter) main.ddAccountPage{padding-top:18px!important}
+  .ddAccountPage>.backLink,.ddAccountPage>.accountHero{display:none!important}
+  .ddAccountPage>:not(.ddAccountNavigation){display:none!important}
+  .ddAccountPage[data-mobile-account-section=personal]>.accountEditorHost,
+  .ddAccountPage[data-mobile-account-section=business]>.accountEditorHost,
+  .ddAccountPage[data-mobile-account-section=business]>.profileImageCard,
+  .ddAccountPage[data-mobile-account-section=payouts]>.payoutDetailsCard,
+  .ddAccountPage[data-mobile-account-section=alerts]>#email-preferences,
+  .ddAccountPage[data-mobile-account-section=security]>:is(.transporterSecurityHost,.ddCustomerSecurity),
+  .ddAccountPage[data-mobile-account-section=close]>.accountCloseHost{display:block!important}
+  .ddAccountPage:is([data-mobile-account-section=personal],[data-mobile-account-section=business])>.accountGrid{display:block!important}
+  .ddAccountPage .accountGrid>.accountCard{display:none!important}
+  .ddAccountPage[data-mobile-account-section=personal] .accountGrid>.personalAccountCard,
+  .ddAccountPage[data-mobile-account-section=business] .accountGrid>:is(.businessAccountCard,.accountDocumentsCard){display:block!important}
+  .ddAccountIntro h1,.ddInboxIntro h1{font-size:32px;line-height:1.12;font-weight:750;letter-spacing:-1px;color:#071c43;margin:0 0 5px}
+  .ddAccountIntro p,.ddInboxIntro>p{font-size:15px;line-height:1.5;color:#354f78;margin:0}
+  .ddAccountIdentity{display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;isolation:isolate;background:#071c43;border-radius:13px;padding:15px 16px;margin:16px 0;color:white;min-height:100px}
+  .ddAccountIdentity:before,.ddAccountIdentity:after{content:'';position:absolute;z-index:-1;width:250px;height:140px;background:#112f56;transform:rotate(33deg);right:-100px;top:-30px}
+  .ddAccountIdentity:after{top:80px;right:20px;background:#0b254c;transform:rotate(-35deg)}
+  .ddAccountInitials{display:grid;place-items:center;flex:0 0 64px;height:64px;border-radius:50%;background:#eff5fb;color:#071c43;font-weight:750;font-size:19px}
+  .ddAccountIdentity>div{min-width:0;flex:1;display:grid;justify-items:start;gap:3px}
+  .ddAccountIdentity strong{font-size:21px;line-height:1.2;overflow-wrap:anywhere;letter-spacing:-.4px}
+  .ddAccountIdentity>div>span{font-size:14px;line-height:1.5;color:#e1eaf6}
+  .ddAccountIdentity small{font-size:11px;line-height:1.5;color:#7b3211;background:#ffead5;border-radius:5px;padding:3px 7px;margin-top:2px}
+  .ddAccountIdentity small[data-state=active]{color:#005e49;background:#c9f5e5}
+  .ddAccountIdentity>button{display:grid;place-items:center;flex:0 0 46px;height:46px;border:0;border-radius:50%;background:#ff7114;color:#fff;cursor:pointer}
+  .ddAccountIdentity>button svg{width:23px;height:23px}
+  .ddSettingsGroup{margin-top:16px}
+  .ddSettingsGroup h2{font-size:16px;letter-spacing:-.3px;line-height:1.3;margin:0 0 8px;color:#071c43}
+  .ddSettingsGroup>div{background:#fff;border:1px solid #e2eaf4;border-radius:13px;padding:0 11px;box-shadow:0 3px 14px #10274904}
+  .ddSettingsRow{display:flex;align-items:center;gap:13px;width:100%;min-height:60px;padding:9px 0;border:0;background:none;color:#071c43;text-align:left;text-decoration:none;cursor:pointer}
+  .ddSettingsRow+.ddSettingsRow{border-top:1px solid #edf1f7}
+  .ddSettingsIcon{display:grid;place-items:center;flex:0 0 40px;height:40px;background:#edf4fb;border-radius:12px}
+  .ddSettingsIcon svg{width:25px;height:25px}
+  .ddSettingsRow>span:nth-child(2){display:grid;gap:4px;flex:1;min-width:0}
+  .ddSettingsRow strong{font-size:14px;line-height:1.3;font-weight:700}
+  .ddSettingsRow small{font-size:12px;line-height:1.35;color:#506b93}
+  .ddSettingsRow>svg{width:17px;height:17px;flex:0 0 17px}
+  .ddAccountFooter{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;column-gap:6px;margin-top:6px}
+  .ddAccountFooter a,.ddAccountFooter button{display:flex;align-items:center;gap:5px;min-height:40px;padding:0;border:0;background:none;font-size:11px;text-decoration:none;color:#0e3b80;cursor:pointer}
+  .ddAccountFooter svg{width:16px;height:16px}.ddAccountFooter form{margin:0}.ddAccountFooter .ddCloseLink{color:#bc1f34}
+  .ddAccountSubheading{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+  .ddAccountSubheading button{display:grid;place-items:center;min-width:44px;height:44px;background:white;border:1px solid #e3eaf3;border-radius:12px;color:#071c43;cursor:pointer}
+  .ddAccountSubheading svg{width:21px;height:21px;transform:rotate(180deg)}
+  .ddAccountSubheading h1{font-size:24px;line-height:1.2;letter-spacing:-.5px;margin:0;color:#071c43}
+  .ddAccountPage :is(.accountEditPanel,.accountEditCard,.accountCard,.profileImageCard){margin:14px 0;border:1px solid #e3eaf3;background:white;border-radius:13px;padding:17px;box-shadow:0 3px 12px #10274905;min-width:0}
+  .ddAccountPage .accountEditPanel{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+  .ddAccountPage :is(.accountEditPanel,.panelHeading) p{font-size:13px;line-height:1.55;color:#63799d}
+  .ddAccountPage .accountEditGrid,.ddAccountPage .accountGrid{grid-template-columns:1fr;gap:16px}
+  .ddAccountPage .accountEditGrid input{width:100%;box-sizing:border-box}
+  .ddAccountPage :is(.infoRow b,.accountEmailCopy,.accountInfoPanel){overflow-wrap:anywhere;min-width:0}
+  .ddAccountPage .panelIcon{display:none}
+  .ddAccountPage .transporterSecurityHost>h2{display:none!important}
+  .ddAccountPage .accountEditActions{gap:10px}
+  .ddAccountPage .accountEditActions .btn{flex:1}
+  body:is(.role-customer,.role-transporter) main.ddMessagesPage{padding-top:18px!important}
+  .ddMessagesPage>.backLink,.ddMessagesPage>.messagesHero,.ddMessagesPage .conversationListHeading,.ddMessagesPage .conversationSearch{display:none!important}
+  .ddInboxSearch{display:flex;align-items:center;gap:11px;padding:0 13px;height:47px;background:#f5f8fc;border:1px solid #e1e9f4;border-radius:10px;margin:19px 0 13px}
+  .ddInboxSearch>svg{width:22px;height:22px;flex:0 0 22px}
+  .ddInboxSearch input{border:0!important;box-shadow:none;background:transparent!important;width:100%;min-width:0;padding:0;font-size:14px!important;outline-offset:2px}
+  .ddInboxTabs{display:flex;padding:3px;border:1px solid #e1e9f4;background:#f6f9fd;border-radius:10px;margin:0 0 14px;gap:3px}
+  .ddInboxTabs button{display:flex;justify-content:center;align-items:center;gap:7px;flex:1;min-height:40px;padding:7px 8px;border:0;border-radius:8px;background:none;color:#071c43;font-size:14px;cursor:pointer}
+  .ddInboxTabs button span{display:grid;place-items:center;min-width:25px;height:25px;border-radius:50%;padding:0 5px;background:#ff7114;color:#fff;font-size:13px;box-sizing:border-box}
+  .ddInboxTabs button[aria-pressed=true]{background:#071c43;color:#fff;font-weight:650;box-shadow:0 3px 7px #071c4318}
+  .ddInboxTabs button[aria-pressed=true] span{background:#264267;color:#fff}
+  .ddMessagesPage .messagesLayout,.ddMessagesPage .conversationListPanel,.ddMessagesPage .conversationList,.ddMessagesPage .conversationEntry{display:block;width:100%;min-width:0;max-width:none;border:0;background:none;padding:0;margin:0;box-shadow:none}
+  .ddMessagesPage .conversationEntry{margin-bottom:10px}
+  .ddMessagesPage .conversationCard{display:block;width:100%;padding:12px;border:1px solid #e2eaf4!important;background:#fff!important;border-radius:13px;box-shadow:0 2px 10px #10274903;text-align:left;overflow:hidden}
+  .ddMessagesPage .conversationCard.hasUnread{border-color:#ffe0c1!important;background:#fff7ef!important}
+  .ddMessagesPage .conversationCard>:not(.ddConversationCard){display:none!important}
+  .ddMessagesPage .conversationCard:before,.ddMessagesPage .conversationCard:after{display:none!important}
+  .ddMessagesPage .ddConversationCard{display:grid!important;grid-template-columns:72px minmax(0,1fr);gap:12px;position:relative;min-height:102px}
+  .ddConversationCard .ddVehiclePhoto,.ddSupportAvatar{width:72px;height:76px;border-radius:10px;overflow:hidden;align-self:start;display:block;margin:0;background:#edf2f7}
+  .ddConversationCard .ddVehiclePhoto img{width:100%;height:100%;object-fit:cover}
+  .ddConversationCard .ddNoPhoto{display:grid;place-items:center}.ddConversationCard .ddNoPhoto svg{width:34px;height:34px}.ddConversationCard .ddNoPhoto>span{display:none}
+  .ddSupportAvatar{display:grid;place-items:center;background:#071c43}.ddSupportAvatar svg{width:35px;height:35px;color:#ff7114;stroke-width:3}
+  .ddConversationCopy{display:flex;flex-direction:column;min-width:0;gap:3px}
+  .ddConversationCopy>strong{display:block;font-size:16px;line-height:1.25;letter-spacing:-.3px;padding-right:59px;color:#071c43;overflow-wrap:anywhere}
+  .ddConversationPerson{font-size:12px;line-height:1.35;color:#253f67;padding-right:25px}
+  .ddConversationPreview{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;line-height:1.5;color:#506b93;margin:1px 0 3px}
+  .ddConversationTags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
+  .ddConversationTags small,.ddConversationStatus{font-size:10px;line-height:1.4;border-radius:5px;background:#edf2fa;color:#385b91;padding:4px 7px;display:inline-block;max-width:100%;overflow-wrap:anywhere}
+  .ddConversationStatus[data-status=CONFIRMED]{background:#d4f6e8;color:#00644c}
+  .ddConversationStatus:is([data-status=COLLECTION_SCHEDULED],[data-status=COLLECTED],[data-status=IN_TRANSIT],[data-status=ARRIVING_SOON]){background:#def0ff;color:#075aab}
+  .ddConversationStatus[data-status=CANCELLED]{background:#ffeded;color:#a42b3c}
+  .ddConversationAside{position:absolute;right:0;top:0;display:grid;justify-items:end;gap:7px;color:#63799d}
+  .ddConversationAside time{font-size:10px;line-height:1.5}
+  .ddConversationAside b{display:grid;place-items:center;min-width:23px;height:23px;border-radius:50%;background:#ff7114;color:white;font-size:12px;padding:0 5px;box-sizing:border-box}
+  .ddConversationAside svg{width:13px;height:13px}
+  .ddMessagesPage .conversationFilterEmpty{padding:30px 18px;background:#fff;border:1px solid #e3eaf3;border-radius:13px}
+  body:is(.role-customer,.role-transporter):has(.ddThreadOpen){overflow:hidden}
+  body:is(.role-customer,.role-transporter):has(.ddThreadOpen)>.ddMobileHeader{display:none!important}
+  body:is(.role-customer,.role-transporter):has(.ddThreadOpen)>.ddBottomNav{top:calc(var(--dd-message-top,0px) + var(--dd-message-height,100dvh) - 74px - env(safe-area-inset-bottom));bottom:auto}
+  .ddMessagesPage.ddThreadOpen>.ddInboxIntro,.ddThreadOpen .conversationEntry:not([data-active=true]),.ddThreadOpen .conversationEntry>.conversationCard{display:none!important}
+  .ddMessagesPage.ddThreadOpen .inlineConversationPanel{position:fixed;z-index:125;top:var(--dd-message-top,0px);left:0;right:0;height:calc(var(--dd-message-height,100dvh) - 74px - env(safe-area-inset-bottom));max-width:760px;width:100%;margin:0 auto;padding:0;box-sizing:border-box;display:flex;flex-direction:column;overflow:hidden;border:0;border-radius:0;background:#f7fafe;box-shadow:none}
+  .ddConversationHeading{flex:0 0 auto}
+  .ddConversationHeading>header{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:7px;align-items:center;padding:calc(9px + env(safe-area-inset-top)) 13px 9px;background:#fff;border-bottom:1px solid #e3eaf3;min-height:72px;box-sizing:border-box}
+  .ddConversationHeading>header>button,.ddConversationMenu>summary{display:grid;place-items:center;width:44px;height:44px;border:0;background:none;color:#071c43;cursor:pointer;list-style:none}
+  .ddConversationHeading>header>button svg{width:22px;height:22px;transform:rotate(180deg)}
+  .ddConversationHeading>header>div{text-align:center;min-width:0}.ddConversationHeading strong{font-size:17px;line-height:1.3;display:block;overflow-wrap:anywhere}
+  .ddConversationHeading header small{display:block;font-size:12px;line-height:1.4;margin-top:3px;overflow-wrap:anywhere;color:#38577f}
+  .ddConversationMenu{position:relative}.ddConversationMenu svg{width:21px;height:21px;stroke-width:3}.ddConversationMenu summary::-webkit-details-marker{display:none}
+  .ddConversationMenu>div{position:absolute;z-index:3;top:44px;right:0;background:white;border:1px solid #e3eaf3;border-radius:12px;box-shadow:0 6px 24px #071c4320;min-width:200px;padding:6px}
+  .ddConversationMenu button{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;background:none;border:0;padding:10px;font-size:13px;color:#ad2939;text-align:left;cursor:pointer}
+  .ddConversationContext{display:flex;align-items:center;gap:12px;background:white;margin:11px 16px 0;padding:10px;border:1px solid #e3eaf3;border-radius:12px}
+  .ddConversationContext .ddVehiclePhoto{flex:0 0 66px;width:66px;height:64px;border-radius:9px;overflow:hidden;margin:0}
+  .ddConversationContext .ddVehiclePhoto img{width:100%;height:100%;object-fit:cover}.ddConversationContext .ddNoPhoto{display:grid;place-items:center}.ddConversationContext .ddNoPhoto span{display:none}
+  .ddConversationContext>div:last-child{flex:1;min-width:0}.ddConversationContext strong{display:flex;align-items:center;gap:10px;font-size:13px;line-height:1.4;margin-bottom:5px}.ddConversationContext strong span{min-width:0;overflow-wrap:anywhere}.ddConversationContext strong svg{width:19px;height:19px;flex:0 0 19px}
+  .ddMessagesPage.ddThreadOpen .messageStream{flex:1;min-height:0;max-height:none;overflow:auto;overscroll-behavior:contain;padding:16px;background:transparent;display:block}
+  .ddMessagesPage .messageRow{display:flex;flex-direction:column;align-items:flex-start;gap:0;margin:0 0 28px;width:100%}
+  .ddMessagesPage .messageRow.mine{align-items:flex-end}
+  .ddMessagesPage .ddMessageDate{display:flex!important;align-items:center;gap:15px;align-self:stretch;width:100%;margin:1px 0 18px;font-size:12px;line-height:1.4;color:#63799d;justify-content:center}
+  .ddMessageDate:before,.ddMessageDate:after{content:'';height:1px;background:#e3eaf3;flex:1}
+  .ddMessagesPage .messageBubblePolished{position:relative;display:flex;flex-direction:column;max-width:88%;min-width:0;padding:11px 13px;border:1px solid #e1e9f4;border-radius:12px;background:#fff;color:#071c43;box-shadow:0 2px 6px #071c4303;margin:0;gap:6px}
+  .ddMessagesPage .mine .messageBubblePolished{background:#071c43;border-color:#071c43;color:#fff}
+  .ddMessagesPage .messageBody{color:#071c43}
+  .ddMessagesPage .mine .messageBody{color:#fff}
+  .ddMessagesPage .messageDesignIcon{display:block}
+  .ddAccountPage .ddAccountFooter button{font-size:11px}
+  .ddMessagesPage .ddInboxTabs button{font-size:14px}
+  .ddMessagesPage .messageSender{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .ddMessagesPage .messageBody{font-size:15px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+  .ddMessagesPage .messageTimestamp{position:absolute;bottom:-18px;left:0;font-size:10px;line-height:1.4;margin:0;color:#63799d;align-self:flex-end}
+  .ddMessagesPage .mine .messageTimestamp{left:auto;right:0;color:#63799d}
+  .ddMessagesPage .ddMessageFullTime{display:none}.ddMessagesPage .ddMessageShortTime{font-size:10px}
+  .ddMessagesPage .messageAttachmentGrid{order:0;max-width:100%;width:100%;gap:5px;margin:0}
+  .ddMessagesPage .messageBubblePolished:has(.messageAttachmentGrid) .messageBody{order:1}
+  .ddMessagesPage .messageBubblePolished:has(.messageAttachmentGrid) .messageTimestamp{order:2}
+  .ddMessagesPage .messageAttachment{border-radius:8px;overflow:hidden}.ddMessagesPage .messageAttachment img{display:block;width:100%;max-height:230px;object-fit:cover}
+  .ddMessagesPage .messageComposer{flex:0 0 auto;display:grid;grid-template-columns:34px minmax(0,1fr) 48px;align-items:end;gap:8px;margin:0;padding:10px 16px;border:0;border-top:1px solid #e3eaf3;border-radius:0;background:white}
+  .ddMessagesPage .messageComposerTop,.ddMessagesPage .messageComposerActions{display:contents}
+  .ddMessagesPage .messageTextField{grid-column:2;grid-row:1;margin:0;min-width:0}
+  .ddMessagesPage .messageTextField>label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .ddMessagesPage .messageTextField textarea{width:100%;height:48px;min-height:48px;max-height:110px;resize:none;font-size:14px!important;line-height:1.5;padding:12px;border:1px solid #e1e9f4;border-radius:10px;background:#fcfdff;box-sizing:border-box}
+  .ddMessagesPage .messagePictureControl{grid-column:1;grid-row:1;padding:0;min-width:0}
+  .ddMessagesPage .messagePictureControl>small{display:none}
+  .ddMessagesPage .messageAttachButton{position:relative;display:grid;place-items:center;width:34px;height:48px;min-height:48px;font-size:0;padding:0;background:none;border:0;color:#071c43;cursor:pointer;border-radius:8px}
+  .ddMessagesPage .messageAttachButton>.messageDesignIcon{display:none}
+  .ddMessagesPage .messageComposer .messageComposerActions>.btn{color:#fff}
+  .ddMessagesPage .messageAttachButton svg{width:24px;height:24px}.ddMessagesPage .messageAttachButton .messageLegacyIcon{display:none}
+  .ddMessagesPage .messageAttachButton:focus-within{outline:3px solid #ff8c3a;outline-offset:2px}
+  .ddMessagesPage .messageAttachButton input{position:absolute;width:100%;height:100%;inset:0;opacity:0;display:block;cursor:pointer;min-height:0}
+  .ddMessagesPage .messageComposerActions>.dangerAction{display:none}
+  .ddMessagesPage .messageComposerActions>.btn{grid-column:3;grid-row:1;display:grid;place-items:center;width:48px;height:48px;min-height:48px;border-radius:11px;background:#ff7114;color:#fff;border:0;padding:0;font-size:0}
+  .ddMessagesPage .messageComposerActions>.btn svg{width:23px;height:23px}.ddMessagesPage .messageComposerActions>.btn:disabled{opacity:.5}
+  .ddMessagesPage .messageComposer>:is(.selectedAttachments,.formNotice){grid-column:1/-1;grid-row:auto;max-height:115px;overflow:auto;font-size:12px;line-height:1.5}
+  .ddMessagesPage .messageComposer:not(:has(.messagePictureControl)){grid-template-columns:minmax(0,1fr) 48px}
+  .ddMessagesPage .messageComposer:not(:has(.messagePictureControl)) .messageTextField{grid-column:1}
+  .ddMessagesPage .messageComposer:not(:has(.messagePictureControl)) .messageComposerActions>.btn{grid-column:2}
+  @media(max-width:350px){.ddAccountIdentity{gap:10px;padding:15px 12px}.ddAccountInitials{flex-basis:51px;height:51px}.ddAccountIdentity strong{font-size:18px}.ddSettingsRow{gap:10px}.ddSettingsIcon{flex-basis:40px;height:40px}.ddSettingsRow strong{font-size:13px}.ddSettingsRow small{font-size:11px}.ddAccountFooter a,.ddAccountFooter button{font-size:10px}.ddMessagesPage .ddConversationCard{grid-template-columns:58px minmax(0,1fr);gap:9px}.ddConversationCard .ddVehiclePhoto,.ddSupportAvatar{width:58px;height:66px}.ddConversationCopy>strong{font-size:14px}.ddConversationTags small{font-size:9px}.ddInboxTabs button{font-size:12px}}
+}
