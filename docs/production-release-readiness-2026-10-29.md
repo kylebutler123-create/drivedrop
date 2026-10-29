@@ -5,6 +5,28 @@ blocked-query timeout fix. Production is still unchanged and monitoring is off.
 This document updates the historical 21 October plan; it does not authorize a
 production migration, deployment, secret change, alert or money operation.
 
+## Confirmed launch address
+
+Kye confirmed **https://drive-drop.com** as the canonical launch origin on
+29 October 2026. The planned `NEXT_PUBLIC_APP_URL` and
+`STRIPE_CHECKOUT_ORIGIN` both use this exact origin; only the review template has
+been filled in. No deployed environment variable was changed.
+
+Read-only Vercel checks confirm the domain is already registered to and verified
+for team `team_HR29ivw10fPMfg8JK98snQj5`, with `ns1.vercel-dns.com` and
+`ns2.vercel-dns.com` authoritative. Apex and `www` configuration checks report no
+DNS conflicts and `misconfigured=false`. The domain has no project assignments,
+so this is not proof that the DriveDrop website or its HTTPS certificate is live
+there. No domain purchase, transfer, DNS edit, project assignment or verification
+mutation was performed.
+
+The zone contains existing Resend/DMARC records, certificate-authority records,
+and apex/wildcard aliases. Preserve those records. At the approved release,
+connect the apex to the intended production candidate and verify HTTPS and app
+routing. A `www` redirect to the canonical apex is a proposed release detail;
+neither hostname has been attached or redirected in this pass. Use Vercel's
+then-current project-specific instructions rather than hardcoded DNS targets.
+
 ## Completed work to retain
 
 | Area | Evidence and scope |
@@ -27,8 +49,9 @@ or process termination. Distributed delivery is not atomic with database state.
 - Main remains `8b87d8c66bd9fcca3f7f4716366cd6ea9b86485c`; deployment
   `dpl_B4bCCxXTQT3EECVXJT6CF2cC6YUz` is READY with its three existing aliases.
 - Vercel's project domain list contains only `drivedrop-pink.vercel.app`.
-  A permanent launch origin still needs a decision and ownership/DNS verification.
-  The verified email sender domain alone is not website-domain verification.
+  The subsequently confirmed launch origin is `https://drive-drop.com`, whose
+  team ownership and Vercel DNS configuration were verified separately above.
+  Project attachment, website routing and HTTPS acceptance remain pending.
 - Prepared Supabase project `srqhjgrhgyyfdaxckjum` is ACTIVE_HEALTHY on PostgreSQL
   17.11. At 01:48 UTC, all 27 application tables plus Auth users and stored objects
   contained zero rows. The exact catalog/bucket fingerprint remains
@@ -48,7 +71,7 @@ or process termination. Distributed delivery is not atomic with database state.
 
 | Requirement | Concrete next action | Release condition |
 | --- | --- | --- |
-| Launch address | Select the permanent website address; verify domain control, DNS and intended aliases without assuming the email domain is already connected. | Exact HTTPS origin agreed for app links, Checkout, webhooks and redirects. |
+| Launch address | Confirmed: `https://drive-drop.com`; team ownership and Vercel DNS configuration verified. Connect and verify the website only during the approved release. | Exact origin fixed for app links, Checkout and webhooks; project assignment, HTTPS and any `www` redirect still require acceptance. |
 | Live Stripe identity | Securely verify the intended live platform account and restricted-key scopes. Preserve the separate sandbox identity and credentials. | Live account, ownership, mode, capabilities and all three webhook destinations/signatures verified. No keys in chat or Git. |
 | Isolated production configuration | Split only the required production database/storage scopes to the prepared project; preserve every preview value. Use the existing environment template with all creation, email and heartbeat flags initially false. | Candidate proves its actual production database, storage and identity; metadata alone is insufficient. |
 | Additive migration and access | Recheck the exact empty baseline, apply only the reviewed additive migration after approval, verify permissions/postflight, and securely bootstrap the real administrator. | Expected schema and private access; no preview database clone or synthetic account import. |
@@ -63,7 +86,7 @@ canonical reconciliation; it must not restore old data over new financial histor
 
 ## Proposed controlled sequence — not executed
 
-1. Finish the website-origin and live-account decisions above. Record the final
+1. Use the confirmed `https://drive-drop.com` origin and finish live-account verification. Record the final
    reviewed release commit and lockfile, incorporating the monitoring timeout fix.
 2. Capture fresh backup/restore and alias evidence for the actual cutover window.
    Recheck the prepared database's fingerprint and emptiness immediately before
