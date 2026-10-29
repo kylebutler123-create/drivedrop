@@ -1,6 +1,7 @@
 'use client';
 
-import {useState} from 'react';
+import {useContext,useState} from 'react';
+import {AccountEditorContext} from './AccountEditorContext';
 import {useRouter} from 'next/navigation';
 import Icon from '../components/AccountDesignIcon';
 
@@ -8,7 +9,10 @@ type Props={customerDesktop?:boolean;name:string;email:string;phone:string|null;
 
 export default function AccountEditor({name,email,phone,role,business,customerDesktop=false}:Props){
   const router=useRouter();
-  const [editing,setEditing]=useState(false);
+  const [localEditing,setLocalEditing]=useState(false);
+  const sharedEditor=useContext(AccountEditorContext);
+  const editing=sharedEditor?.editing??localEditing;
+  const setEditing=sharedEditor?.setEditing??setLocalEditing;
   const [saving,setSaving]=useState(false);
   const [notice,setNotice]=useState('');
   const [form,setForm]=useState({name,businessName:business?.businessName||'',companyNumber:business?.companyNumber||'',businessAddress:business?.businessAddress||'',phone:role==='CUSTOMER'?(phone||''):(business?.phone||''),yearsOperating:business?.yearsOperating?.toString()||'',website:business?.website||''});
@@ -29,7 +33,7 @@ export default function AccountEditor({name,email,phone,role,business,customerDe
     finally{setSaving(false);}
   }
 
-  if(!editing)return <div className="accountEditPanel"><div><strong>Need to change something?</strong><p>Update your account details without changing your login email or verification documents.</p></div><button className="btn orange" type="button" onClick={()=>setEditing(true)}>{customerDesktop&&<Icon name="edit"/>}Edit account details</button>{notice&&<div className="formNotice accountEditNotice">{notice}</div>}</div>;
+  if(!editing)return <div className="accountEditPanel"><div><strong>Need to change something?</strong><p>Update your account details without changing your login email or verification documents.</p></div><button className="btn orange" type="button" onClick={()=>setEditing(true)}>{customerDesktop&&<Icon name="edit"/>}Edit account details</button>{notice&&<div className="formNotice accountEditNotice" role="status">{notice}</div>}</div>;
 
   return <section className="dashboardCard accountEditCard">
     <div className="panelHeading"><div><span className="panelIcon">✏️</span><div><h2>Edit account details</h2><p>Keep your contact and business information accurate.</p></div></div></div>

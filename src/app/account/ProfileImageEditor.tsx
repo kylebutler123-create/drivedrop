@@ -7,8 +7,8 @@ import {prepareUploadImages} from '@/lib/prepare-message-images';
 
 type ProfileImageKind='logo'|'transporter'|'truck';
 type Images={logo:string|null;transporter:string|null;truck:string|null};
-type Props={initialImages:Images;businessName:string};
-type UploadProps={kind:ProfileImageKind;title:string;description:string;icon:string;initialUrl:string|null;businessName:string;shape:'logo'|'person'|'truck'};
+type Props={initialImages:Images;businessName:string;personName?:string};
+type UploadProps={kind:ProfileImageKind;title:string;description:string;icon:string;initialUrl:string|null;businessName:string;personName?:string;shape:'logo'|'person'|'truck'};
 type CropState={file:File;previewUrl:string};
 
 async function createCroppedFile(source:CropState,kind:ProfileImageKind,zoom:number,positionX:number,positionY:number){
@@ -36,7 +36,7 @@ async function createCroppedFile(source:CropState,kind:ProfileImageKind,zoom:num
   return new File([blob],baseName+'-cropped.jpg',{type:'image/jpeg'});
 }
 
-function MediaUpload({kind,title,description,icon,initialUrl,businessName,shape}:UploadProps){
+function MediaUpload({kind,title,description,icon,initialUrl,businessName,personName,shape}:UploadProps){
   const router=useRouter();
   const inputRef=useRef<HTMLInputElement>(null);
   const [url,setUrl]=useState(initialUrl);
@@ -107,12 +107,12 @@ function MediaUpload({kind,title,description,icon,initialUrl,businessName,shape}
   const cropTitle=kind==='transporter'?'Crop your photo':'Crop your truck photo';
 
   return <article className="profileMediaItem" data-media-kind={kind}>
-    <div className={'profileMediaPreview '+shape}>{url?<img src={url} alt={alt}/>:<span aria-hidden="true"><span className="transporterLegacyIcon">{icon}</span><AccountIcon name={kind==='transporter'?'user':'truck'}/></span>}</div>
+    <div className={'profileMediaPreview '+shape}>{url?<img src={url} alt={alt}/>:<span aria-hidden="true"><span className="transporterLegacyIcon">{icon}</span><AccountIcon name={kind==='transporter'?'user':'truck'}/>{kind!=='truck'&&<b className="ddMobileOnly ddMediaInitials">{(kind==='transporter'?personName||businessName:businessName).trim().split(/\s+/).slice(0,2).map(word=>word[0]).join('').toUpperCase()}</b>}</span>}</div>
     <div className="profileMediaItemBody">
       <h3>{kind==='transporter'?<><span className="transporterLegacyCopy">{title}</span><span className="transporterDesktopOnly">Transporter photo</span></>:title}</h3>
-      <p>{description}</p>
+      <p><span className="ddMediaDescription">{description}</span><span className="ddMobileOnly">{kind==='transporter'?'A clear photo helps build trust.':kind==='truck'?'Show your main vehicle.':'Your company logo (optional).'}</span></p>
       <div className="actionButtons">
-        <label className={'btn orange'+(busy?' disabled':'')}>{busy?'Uploading…':url?'Change photo':'Upload photo'}<input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden disabled={busy} onChange={e=>{const file=e.target.files?.[0];if(file)chooseFile(file)}}/></label>
+        <label className={'btn orange'+(busy?' disabled':'')}><span className="ddMediaLegacyLabel">{busy?'Uploading…':url?'Change photo':'Upload photo'}</span><span className="ddMobileOnly ddMediaShortLabel"><AccountIcon name="image"/>{busy?'Uploading…':url?'Change':'Upload'}</span><input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden disabled={busy} onChange={e=>{const file=e.target.files?.[0];if(file)chooseFile(file)}}/></label>
         {url&&<button className="btn light" type="button" disabled={busy} onClick={remove}>Remove</button>}
       </div>
       {notice&&<div role="status" className={'formNotice '+(notice.includes('successfully')||notice.includes('removed')?'successNotice':'errorNotice')}>{notice}</div>}
@@ -137,12 +137,12 @@ function MediaUpload({kind,title,description,icon,initialUrl,businessName,shape}
   </article>;
 }
 
-export default function ProfileImageEditor({initialImages,businessName}:Props){
+export default function ProfileImageEditor({initialImages,businessName,personName}:Props){
   return <section className="dashboardCard profileImageCard">
     <div className="panelHeading"><div><span className="panelIcon"><span className="transporterLegacyIcon">📷</span><AccountIcon name="image"/></span><div><h2>Profile photos</h2><p className="transporterLegacyCopy">Help customers recognise you, your transport business and the vehicle that will collect their vehicle.</p><p className="transporterDesktopOnly">Help customers recognise you and your transport business.</p></div></div></div>
     <p className="profileMediaHelp">Upload JPG, PNG or WebP images. Personal and truck photos can be repositioned and cropped before saving.</p>
     <div className="profileMediaEditorGrid">
-      <MediaUpload kind="transporter" title="Your photo" description="A clear, professional photo of you. This will be your main display photo when customers compare quotes." icon="👤" initialUrl={initialImages.transporter} businessName={businessName} shape="person"/>
+      <MediaUpload personName={personName} kind="transporter" title="Your photo" description="A clear, professional photo of you. This will be your main display photo when customers compare quotes." icon="👤" initialUrl={initialImages.transporter} businessName={businessName} shape="person"/>
       <MediaUpload kind="truck" title="Truck photo" description="Show customers the truck or transporter vehicle you use for collections." icon="🚛" initialUrl={initialImages.truck} businessName={businessName} shape="truck"/>
       <MediaUpload kind="logo" title="Business logo" description="Your existing company logo remains available as part of your public profile." icon="🏢" initialUrl={initialImages.logo} businessName={businessName} shape="logo"/>
     </div>
