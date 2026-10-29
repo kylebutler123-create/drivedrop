@@ -27,6 +27,36 @@ routing. A `www` redirect to the canonical apex is a proposed release detail;
 neither hostname has been attached or redirected in this pass. Use Vercel's
 then-current project-specific instructions rather than hardcoded DNS targets.
 
+## Live Stripe account review
+
+Read-only inspection of the signed-in local Chrome dashboard on 29 October 2026
+identified **drivedrop**, live platform **`acct_1US4BsLo6y2NJoQw`**. The account
+switcher shows the signed-in user's role as **Super Administrator**. The account's
+business website is already `https://drive-drop.com`. This establishes the
+dashboard identity and access role, not completed legal/identity verification or
+permission for the application to process live payments.
+
+| Observed area | Result and remaining gate |
+| --- | --- |
+| Business details | Business information, customer-facing information, statement descriptor and account representative are each marked **Incomplete**. |
+| Product and live setup | The setup guide marks product activation and Connect business-model selection **Not Started**; identity verification and integration confirmation are blocked. The Connect platform profile independently says **Onboarding incomplete**. |
+| Dashboard phone verification | The account details page offers **Verify now** and says SMS verification is needed to process payments from the Dashboard. This is not evidence about API capability status. |
+| Server API keys | The API keys page shows a create-key prompt and a publishable key, with no existing server-key permission scopes listed. Restricted live-key permissions remain unverified; no key was created, revealed or copied. |
+| Live webhook destinations | Workbench shows the empty destination setup screen. No live destinations or signatures were verified; the three reviewed application webhook routes still need configuration during an approved preparation step. |
+| Application capabilities | Live capability status was not read through the API and remains unverified. Dashboard access and a live publishable key do not establish payment or transfer readiness. |
+
+The Stripe connector still exposes only the separate sandbox
+`acct_1US4BzLAzgkvCvrI` (`livemode=false`); browser sign-in does not grant that
+connector access to live data. No sandbox configuration was changed.
+
+The next step is completing the live business/product and Connect onboarding
+requirements with the account holder, then reviewing actual capabilities and
+restricted-key scopes. Preserve the existing separate-charges-and-transfers
+integration; do not repeat financial QA or create test accounts from the setup
+guide. Any submission, acknowledgement, credential provisioning or production
+configuration is outside this read-only review. The review template now records
+the non-secret platform ID; deployed environment values are unchanged.
+
 ## Completed work to retain
 
 | Area | Evidence and scope |
@@ -72,7 +102,7 @@ or process termination. Distributed delivery is not atomic with database state.
 | Requirement | Concrete next action | Release condition |
 | --- | --- | --- |
 | Launch address | Confirmed: `https://drive-drop.com`; team ownership and Vercel DNS configuration verified. Connect and verify the website only during the approved release. | Exact origin fixed for app links, Checkout and webhooks; project assignment, HTTPS and any `www` redirect still require acceptance. |
-| Live Stripe identity | Securely verify the intended live platform account and restricted-key scopes. Preserve the separate sandbox identity and credentials. | Live account, ownership, mode, capabilities and all three webhook destinations/signatures verified. No keys in chat or Git. |
+| Live Stripe readiness | Live dashboard identity `acct_1US4BsLo6y2NJoQw` and Super Administrator access verified. Complete the observed business/product and Connect onboarding requirements, then securely verify capabilities and restricted-key scopes. Preserve the separate sandbox. | Legal/identity requirements satisfied, live capabilities and application key permissions verified, and all three webhook destinations/signatures configured and verified. No keys in chat or Git. |
 | Isolated production configuration | Split only the required production database/storage scopes to the prepared project; preserve every preview value. Use the existing environment template with all creation, email and heartbeat flags initially false. | Candidate proves its actual production database, storage and identity; metadata alone is insufficient. |
 | Additive migration and access | Recheck the exact empty baseline, apply only the reviewed additive migration after approval, verify permissions/postflight, and securely bootstrap the real administrator. | Expected schema and private access; no preview database clone or synthetic account import. |
 | Provider limitation | Retain the genuine insufficient-balance reversal/retry gate as unverified until supported evidence or an explicit reviewed disposition exists. | QA25 response-loss/idempotency evidence is not relabelled as this provider failure. No repeated payment experiment in this plan. |
@@ -86,7 +116,7 @@ canonical reconciliation; it must not restore old data over new financial histor
 
 ## Proposed controlled sequence — not executed
 
-1. Use the confirmed `https://drive-drop.com` origin and finish live-account verification. Record the final
+1. Use the confirmed `https://drive-drop.com` origin and live platform ID; finish live-account onboarding, capability and key-permission verification. Record the final
    reviewed release commit and lockfile, incorporating the monitoring timeout fix.
 2. Capture fresh backup/restore and alias evidence for the actual cutover window.
    Recheck the prepared database's fingerprint and emptiness immediately before

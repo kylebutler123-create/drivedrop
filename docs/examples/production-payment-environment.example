@@ -7,7 +7,8 @@ SUPABASE_SERVICE_ROLE_KEY=
 # Canonical launch origin confirmed by Kye; domain attachment is still pending.
 NEXT_PUBLIC_APP_URL=https://drive-drop.com
 STRIPE_CHECKOUT_ORIGIN=https://drive-drop.com
-STRIPE_PLATFORM_ACCOUNT_ID=
+# Live dashboard identity verified; business/Connect onboarding remains incomplete.
+STRIPE_PLATFORM_ACCOUNT_ID=acct_1US4BsLo6y2NJoQw
 STRIPE_SECRET_KEY=
 STRIPE_CONNECT_SECRET_KEY=
 STRIPE_WEBHOOK_SECRET=
