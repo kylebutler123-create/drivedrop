@@ -1,0 +1,9 @@
+# Mobile expanded delivery cards
+
+Matches the approved expanded-card preview below 1024px. The existing mobile summary continues to show the vehicle, route, collection schedule, progress and contact actions. Expanded cards now show four additional vehicle facts, one payment panel, transporter next actions, and collapsible delivery history and evidence.
+
+`MobileDeliveryDetails.tsx` contains presentation components. Amounts, payment status, payout status and refund adjustments come from the existing role-scoped booking response. No pricing, payment or eligibility rules change. Signed collection/delivery reports use the same authorised evidence URLs and retain timestamps, condition notes, signatures and location information. The existing upload, proof, confirmation, dispute, cancellation, review and receipt controls remain mounted with their original handlers.
+
+The older identity/route/payment nodes remain available to the desktop layout and selector-based enhancers, but are hidden on mobile where their information is already shown. History keeps unique dated updates and notes. Messages remain accessible through the summary's existing conversation link. All new styles are scoped to the mobile breakpoint and customer/transporter roles.
+
+Validation uses isolated customer/transporter fixtures and intercepted API requests: 320/390/430/768px layouts, disclosure and collapse behaviour, dispute drafting/cancellation, collection and delivery forms, status drafting, cancellation prompt, delivered confirmation, signed evidence, refunds, completed receipts/reviews, cancelled bookings, active disputes and missing payment data. No live payment, booking, message or evidence mutations are performed. TypeScript and the production build are checked before preview publication.
