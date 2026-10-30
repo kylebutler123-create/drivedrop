@@ -1,4 +1,5 @@
 'use client';
+import MobilePublicAuth from '@/app/components/MobilePublicAuth';
 import ApprovedAuthCopy from '@/app/components/ApprovedAuthCopy';
 
 import Link from 'next/link';
@@ -25,7 +26,7 @@ export default function Login(){
 
   async function submit(e:any){e.preventDefault();setErr('');const f=new FormData(e.currentTarget);const res=await fetch('/api/auth/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.fromEntries(f))});const d=await res.json();if(!res.ok)return setErr(d.error);router.push(d.role==='CUSTOMER'?`/customer${requestedVehicleType?`?vehicleType=${encodeURIComponent(requestedVehicleType)}`:''}`:d.role==='TRANSPORTER'?'/transporter':'/admin');router.refresh();}
 
-  return <main className={`authPage loginPage ${isTransporter?'transporterLogin':'customerLogin'}`}>
+  return <><MobilePublicAuth mode="login"/><main className={`authPage loginPage ${isTransporter?'transporterLogin':'customerLogin'}`}>
     <section className="authVisual">
       <ApprovedAuthCopy transporter={isTransporter}/><div className="authOverlay"/>
       <div className="authVisualContent">
@@ -76,5 +77,5 @@ export default function Login(){
         <p className="authFootnote">Your account credentials are handled securely by DriveDrop.</p>
       </div>
     </section>
-  </main>;
+  </main></>;
 }

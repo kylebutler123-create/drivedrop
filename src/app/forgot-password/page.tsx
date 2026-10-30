@@ -1,4 +1,5 @@
 'use client';
+import MobilePublicAuth from '@/app/components/MobilePublicAuth';
 import ApprovedAuthCopy from '@/app/components/ApprovedAuthCopy';
 
 import Link from 'next/link';
@@ -23,7 +24,7 @@ export default function ForgotPassword(){
     }catch{setError('Unable to start password recovery. Please try again.')}finally{setBusy(false)}
   }
 
-  return <main className="authShell">
+  return <><MobilePublicAuth mode="forgot"/><main className="authShell">
     <section className="authVisual"><ApprovedAuthCopy/><div className="authVisualOverlay"/><div className="authVisualContent"><span className="eyebrow">ACCOUNT RECOVERY</span><h2>Get back into your DriveDrop account.</h2><p>Use the email address linked to your account to start secure password recovery.</p><div className="authTrust"><span>✓ One-time reset link</span><span>✓ 30-minute expiry</span><span>✓ Existing sessions revoked after reset</span></div></div></section>
     <section className="authFormSide"><div className="authCard">
       <div style={{display:'flex',flexDirection:'column',alignItems:'flex-start',gap:'18px',marginBottom:'10px'}}><Link className="authBack" href={`/login${account?`?account=${account}`:''}`}>← Back to login</Link><span className="dashboardEyebrow dark">Password recovery</span></div>
@@ -33,5 +34,5 @@ export default function ForgotPassword(){
       <div className="authDivider"><span>Remembered your password?</span></div>
       <Link className="authSecondary" href={`/login${account?`?account=${account}`:''}`}>Return to sign in →</Link>
     </div></section>
-  </main>;
+  </main></>;
 }

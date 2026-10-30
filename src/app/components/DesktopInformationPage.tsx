@@ -1,3 +1,4 @@
+import MobilePublicInformation from './MobilePublicPages';
 import ApprovedPublicContent from './ApprovedPublicContent';
 import Link from 'next/link';
 
@@ -25,7 +26,7 @@ const questions = [
 export default function DesktopInformationPage({page}: {page: InformationPage}) {
   const content = copy[page];
   const transporter = page === 'for-transporters';
-  return <main className={`desktopInformationPage information-${page}`}><ApprovedPublicContent page={page} questions={questions}/>
+  return <main className={`desktopInformationPage information-${page}`}><MobilePublicInformation page={page} questions={questions}/><ApprovedPublicContent page={page} questions={questions}/>
     <section className="informationHero" style={{backgroundImage: `linear-gradient(90deg,#f6f9fd 0%,rgba(246,249,253,.94) 38%,rgba(246,249,253,.05) 74%),url('${content.image}')`}}>
       <div><span className="desktopSectionEyebrow">{content.eyebrow}</span><h1>{content.title}</h1><p>{content.description}</p>
         {page !== 'help' && page !== 'contact' && <div className="informationActions"><Link className="btn orange" href={transporter ? '/register?account=transporter' : '/get-quotes'} prefetch={false}>{transporter ? 'Join as a Transporter' : 'Get a Quote'} <span aria-hidden="true">→</span></Link><Link className="btn light" href={transporter ? '/login?account=transporter' : '/how-it-works'} prefetch={false}>{transporter ? 'Transporter login' : 'How It Works'}</Link></div>}

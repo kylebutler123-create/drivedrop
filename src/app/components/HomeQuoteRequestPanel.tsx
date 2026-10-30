@@ -1,6 +1,6 @@
 'use client';
 import useUkToday from './useUkToday';
-import {ukParts} from '@/lib/availability-time';
+import {ukParts,validateCollectionWindow} from '@/lib/availability-time';
 import VehiclePhotoField from './VehiclePhotoField';
 import CollectionDateWindowField from './CollectionDateWindowField';
 import CollectionWindowFields,{Icon as CollectionIcon} from './CollectionWindowFields';
@@ -56,7 +56,7 @@ function CollectionDatePicker({value,onChange,disabled,combined=false}:{value:st
   return <div className={combined?'dd-date-column homeQuoteCombinedDate':'field homeQuoteCalendarField'} ref={container}>
     {combined?<label htmlFor="home-quote-date-button">Collection date</label>:<span className="homeQuoteFieldLabel" id="home-quote-date-label"><span className="homeQuoteDateLegacyLabel">COLLECTION DATE</span><span className="homeQuoteDatePolishLabel">Collection date</span></span>}
     <input type="hidden" name="collectionDate" value={value}/>
-    <button id="home-quote-date-button" type="button" className={combined?`dd-field dd-date-contained${value?' has-value':''}`:'homeQuoteDateButton'} aria-label={`Collection date: ${label}`} aria-expanded={open} aria-haspopup="dialog" onClick={()=>{if(!open)setMonth(new Date((value>=ukParts().date?value:ukParts().date).slice(0,7)+'-01T12:00:00'));setOpen(current=>!current)}} disabled={disabled}>{combined?<><CollectionIcon name="calendar"/><span>{label}</span><CollectionIcon name="chevron"/></>:<>{label}<span aria-hidden="true">▦</span></>}</button>
+    <button id="home-quote-date-button" type="button" className={combined?`dd-field dd-date-contained${value?' has-value':''}`:'homeQuoteDateButton'} aria-label={`Collection date: ${label}`} aria-expanded={open} aria-haspopup="dialog" onClick={()=>{if(!open)setMonth(new Date((value>=ukParts().date?value:ukParts().date).slice(0,7)+'-01T12:00:00'));setOpen(current=>!current)}} disabled={disabled}>{combined?<><CollectionIcon name="calendar"/><span>{label}</span><CollectionIcon name="chevron"/></>:<><span className="mpOnly mpQuoteCalendarIcon"><CollectionIcon name="calendar"/></span><span>{label}</span><span className="mpQuoteLegacyCalendar" aria-hidden="true">▦</span><span className="mpOnly mpQuoteCalendarChevron"><CollectionIcon name="chevron"/></span></>}</button>
     {open&&createPortal(<div ref={popup} className="homeQuoteCalendar" role="dialog" aria-label="Choose collection date" style={position}>
       <div className="homeQuoteCalendarHeader"><button type="button" aria-label="Previous month" disabled={`${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,'0')}`<=today.slice(0,7)} onClick={()=>setMonth(current=>new Date(current.getFullYear(),current.getMonth()-1,1))}>‹</button><strong>{month.toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</strong><button type="button" aria-label="Next month" onClick={()=>setMonth(current=>new Date(current.getFullYear(),current.getMonth()+1,1))}>›</button></div>
       <div className="homeQuoteCalendarDays">{['M','T','W','T','F','S','S'].map((day,index)=><span key={index} aria-hidden="true">{day}</span>)}{Array.from({length:firstDay},(_,index)=><span key={`empty-${index}`}/>)}{Array.from({length:days},(_,index)=>{const day=index+1;const date=`${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;return <button type="button" key={day} aria-label={new Date(`${date}T12:00:00`).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})} aria-pressed={value===date} disabled={date<today} onClick={()=>{if(date<ukParts().date)return;onChange(date);setOpen(false)}}>{day}</button>})}</div>
@@ -69,15 +69,18 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
   const [desktop,setDesktop]=useState(false);
   useEffect(()=>{const media=window.matchMedia('(min-width:1024px)');const sync=()=>setDesktop(media.matches);sync();media.addEventListener('change',sync);return()=>media.removeEventListener('change',sync)},[]);
   const polished=desktop&&!wizard;
-  const fieldLabel=(label:string)=>polished?label:label.toUpperCase();
+  const fieldLabel=(label:string)=>polished||(wizard&&!desktop)?label:label.toUpperCase();
   const [step,setStep]=useState(1);
   const [draft,setDraft]=useState<Record<string,string>>({});
   const formRef=useRef<HTMLFormElement>(null);
+  useEffect(()=>{if(wizard&&window.matchMedia('(max-width:1023px)').matches&&step>1){const title=formRef.current?.querySelector<HTMLElement>('.mpQuoteTitle');title?.focus();title?.scrollIntoView({block:'start'})}},[step,wizard]);
   function updateDraft(){if(formRef.current)setDraft(Object.fromEntries(Array.from(new FormData(formRef.current).entries()).map(([key,value])=>[key,String(value)])))}
   function nextStep(){
     const names=step===1?['collection','delivery']:step===2?['vehicleType','vehicleMake','vehicleModel','running']:step===3?['transportType']:[];
     for(const name of names){const input=formRef.current?.elements.namedItem(name);if(input instanceof HTMLInputElement||input instanceof HTMLSelectElement){if(!input.reportValidity())return}}
     if(step===1&&!collectionDate){setError('Choose a collection date from the calendar.');return}
+    if(step===1&&wizard&&!desktop){const f=new FormData(formRef.current!);try{if(!f.get('collectionFrom')||!f.get('collectionUntil'))throw new Error('Choose both collection times.');validateCollectionWindow(collectionDate,String(f.get('collectionFrom')),String(f.get('collectionUntil')))}catch(err){setError((err as Error).message);return}}
+    if(step===3&&!desktop&&!isTransportRunningCompatible(transportType,running)){setError(drivenTransportCompatibilityMessage);return}
     if(step===3&&incompatible){setError(enclosedTransportCompatibilityMessage);return}
     updateDraft();setError('');setStep(current=>Math.min(4,current+1));
   }
@@ -96,7 +99,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
 
   async function submit(event:FormEvent<HTMLFormElement>){
     event.preventDefault();
-    if(wizard&&window.matchMedia('(min-width:1024px)').matches&&step<4){nextStep();return}
+    if(wizard&&step<4){nextStep();return}
     if(!expanded){onExpandChange(true);return}
     if(requestInFlight.current)return;
     const form=event.currentTarget;
@@ -159,7 +162,7 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
   }
 
   const content = <>
-    {wizard&&<div className="approvedWizard approvedWizardProgress" aria-label="Quote request progress">{['Delivery Details','Vehicle Details','Transport Type','Review & Quote'].map((label,index)=><div key={label} className={step===index+1?'current':step>index+1?'complete':''} aria-current={step===index+1?'step':undefined}><b>{step>index+1?'✓':index+1}</b><span>{label}</span></div>)}</div>}
+    {wizard&&<div className="approvedWizard approvedWizardProgress" aria-label="Quote request progress">{['Delivery Details','Vehicle Details','Transport Type','Review & Quote'].map((label,index)=><div key={label} className={step===index+1?'current':step>index+1?'complete':''} aria-current={step===index+1?'step':undefined}><b>{step>index+1?'✓':index+1}</b><span className="mpDesktopLabel">{label}</span><span className="mpOnly">{['Journey','Vehicle','Transport','Review'][index]}</span></div>)}</div>}
     <nav className="desktopQuotePurpose" aria-label="Transport purpose">
       <span className="isActive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m5 10 2-5h10l2 5M4 10h16v9H4zM7 19v2m10-2v2M6 14h3m6 0h3"/></svg>I need to move a vehicle</span>
       <Link href="/for-transporters" prefetch={false}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M2 5h12v12H2zM14 9h5l3 4v4h-8"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>I want to deliver vehicles</Link>
@@ -169,7 +172,8 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
       <button type="button" className="homeQuoteExpand" aria-label={expanded?'Collapse account details':'Expand account details'} aria-expanded={expanded} aria-controls="home-quote-extra" disabled={submitting} onClick={()=>{setError('');onExpandChange(!expanded)}}>{expanded?'−':'+'}</button>
     </div>
     <form ref={formRef} noValidate={wizard} className="quoteForm homeQuoteForm homeQuoteApproved" onChange={wizard?updateDraft:undefined} onSubmit={submit} onReset={()=>{setRunning('');setCollectionDate('');setWindowTimes({from:'',until:''})}} aria-busy={submitting}>
-      {wizard&&<section className="approvedWizard approvedWizardReview"><h2>Review your request</h2>{[['collection','Collection'],['delivery','Delivery'],['vehicleType','Vehicle type'],['vehicleMake','Make'],['vehicleModel','Model'],['registration','Registration'],['running','Running condition'],['transportType','Transport type']].map(([key,label])=><div key={key}><span>{label}</span><strong>{key==='running'?(draft[key]==='true'?'Runs and drives':'Non-running'):key==='transportType'?transportTypes.find(type=>type.value===draft[key])?.label:draft[key]||'Not specified'}</strong></div>)}<div><span>Collection date</span><strong>{collectionDate?new Date(collectionDate+'T12:00:00').toLocaleDateString('en-GB'):'Not specified'}</strong></div><button type="button" className="btn light" onClick={()=>setStep(1)}>Edit request</button></section>}
+      {wizard&&<h2 className="mpOnly mpQuoteTitle" tabIndex={-1}>{['1. Collection & delivery','2. Vehicle details','3. Transport type','4. Review & request'][step-1]}</h2>}
+      {wizard&&<section className="approvedWizard approvedWizardReview"><h2>Review your request</h2>{[['collection','Collection'],['delivery','Delivery'],['vehicleType','Vehicle type'],['vehicleMake','Make'],['vehicleModel','Model'],['registration','Registration'],['running','Running condition'],['transportType','Transport type']].map(([key,label])=><div key={key}><span>{label}</span><strong>{key==='running'?(draft[key]==='true'?'Runs and drives':'Non-running'):key==='transportType'?transportTypes.find(type=>type.value===draft[key])?.label:draft[key]||'Not specified'}</strong></div>)}<div><span>Collection date</span><strong>{collectionDate?new Date(collectionDate+'T12:00:00').toLocaleDateString('en-GB'):'Not specified'}</strong></div><div className="mpOnly"><span>Collection window</span><strong>{draft.collectionFrom&&draft.collectionUntil?`${draft.collectionFrom} – ${draft.collectionUntil} (UK time)`:"Not specified"}</strong></div><button type="button" className="btn light" onClick={()=>setStep(1)}>Edit request</button></section>}
       <div className="homeQuoteSection homeQuoteVehicle">
           <strong>Vehicle details</strong>
           <div className="homeQuoteFieldGrid">
@@ -179,16 +183,16 @@ export default function HomeQuoteRequestPanel({expanded,onExpandChange,wizard=fa
             <div className="field"><label htmlFor="home-quote-registration">{fieldLabel('Registration')}</label><input id="home-quote-registration" name="registration" maxLength={20} placeholder="e.g. AB12 CDE" autoCapitalize="characters" disabled={submitting}/></div>
             <div className="field"><label htmlFor="home-quote-running">{fieldLabel('Running condition')}</label><select id="home-quote-running" name="running" defaultValue="" onChange={event=>setRunning(event.target.value)} required disabled={submitting}><option value="" disabled>{polished?'Select running condition':'Select'}</option><option value="true">Runs and drives</option><option value="false" disabled={['ANY','DRIVEN'].includes(transportType)}>Non-running</option></select></div>
           </div>
-          {desktop&&<VehiclePhotoField disabled={submitting}/>}
+          {(desktop||wizard)&&<VehiclePhotoField disabled={submitting}/>}
       </div>
       <div className={`homeQuoteSection homeQuoteTransport${expanded?'':' desktopCompactLocations'}`}>
         <strong>{wizard&&step===3?'Transport Type':'Collection & delivery'}</strong>
         <div className="quoteGrid homeQuoteLocations">
-          <AddressAutocomplete name="collection" label={fieldLabel('Collection')} desktopPlaceholder={!wizard?'Town or postcode':undefined}/>
-          <AddressAutocomplete name="delivery" label={fieldLabel('Delivery')} desktopPlaceholder={!wizard?'Town or postcode':undefined}/>
+          <AddressAutocomplete name="collection" label={fieldLabel(wizard&&!desktop?'Collection address':'Collection')} placeholder={wizard&&!desktop?'Town, postcode or address':undefined} desktopPlaceholder={!wizard?'Town or postcode':undefined}/>
+          <AddressAutocomplete name="delivery" label={fieldLabel(wizard&&!desktop?'Delivery address':'Delivery')} placeholder={wizard&&!desktop?'Town, postcode or address':undefined} desktopPlaceholder={!wizard?'Town or postcode':undefined}/>
         </div>
         <div className="homeQuoteFieldGrid homeQuoteDateTransport">
-          {desktop&&!wizard?<CollectionDateWindowField id="home-collection-window" required={expanded} disabled={submitting} initialValue={collectionDate} initialFrom={windowTimes.from} initialUntil={windowTimes.until} onChange={selection=>{setCollectionDate(selection.value);setWindowTimes({from:selection.from,until:selection.until});setError('')}}/>:<><CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/><CollectionWindowFields required={expanded} date={collectionDate}/></>}
+          {desktop&&!wizard?<CollectionDateWindowField id="home-collection-window" required={expanded} disabled={submitting} initialValue={collectionDate} initialFrom={windowTimes.from} initialUntil={windowTimes.until} onChange={selection=>{setCollectionDate(selection.value);setWindowTimes({from:selection.from,until:selection.until});setError('')}}/>:<><CollectionDatePicker value={collectionDate} onChange={date=>{setCollectionDate(date);setError('')}} disabled={submitting}/><CollectionWindowFields required={expanded} date={collectionDate} compact={wizard&&!desktop}/></>}
           <div className="field"><label htmlFor="home-quote-transport-type">{fieldLabel('Transport type')}</label><select id="home-quote-transport-type" name="transportType" value={transportType} onChange={event=>setTransportType(event.target.value)} required disabled={submitting}><option value="" disabled>Select transport type</option>{transportTypes.map(type=><option key={type.value} value={type.value} disabled={['ANY','DRIVEN'].includes(type.value)&&running==='false'}>{type.label}</option>)}</select></div>
         </div>
       </div>
