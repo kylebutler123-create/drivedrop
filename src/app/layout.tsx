@@ -89,6 +89,7 @@ import MobileWorkspace from '@/app/components/MobileWorkspace';
 import './mobile-premium.css';
 import './mobile-account-messages.css';
 import './mobile-delivery-details.css';
+import './mobile-archived-deliveries.css';
 import './mobile-account-details.css';
 import './mobile-account-security.css';
 export const viewport={width:'device-width',initialScale:1,viewportFit:'cover',themeColor:'#ffffff'};

@@ -1,4 +1,5 @@
 'use client';
+import {MobileCancelledSummary} from './MobileArchivedDeliveries';
 import useDesktopCardActivity from './useDesktopCardActivity';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import Icon from './ApprovedIcon';
@@ -8,7 +9,7 @@ import '../transporter-cancelled.css';
 type CancelledBooking={
  id:string;cancelledAt:string|null;cancellationNote:string|null;
  customer:{name:string};
- job:{vehicleType?:string|null;vehicleMake:string;vehicleModel:string;collection:string;delivery:string;registration:string|null;running:boolean;transportType:string;collectionDate:string};
+ job:{id?:string;vehiclePhotoPath?:string|null;vehicleType?:string|null;vehicleMake:string;vehicleModel:string;collection:string;delivery:string;registration:string|null;running:boolean;transportType:string;collectionDate:string};
 };
 const date=(value:string|null)=>{
  const parsed=value?new Date(value):null;
@@ -67,7 +68,7 @@ export default function TransporterCancelledDeliveries({selected,onCountChange,o
 
  return <>
   {selected&&<section className="transporterCancelledList" id="cancelled-deliveries" aria-labelledby="cancelled-deliveries-heading" aria-busy={refreshing}>
-   <div className="transporterCancelledHeading"><h2 id="cancelled-deliveries-heading">Cancelled deliveries</h2><span aria-live="polite">{refreshing?'Refreshing…':bookings!==null?`${bookings.length} total`:error?'Unavailable':'Loading…'}</span></div>
+   <div className="transporterCancelledHeading"><h2 id="cancelled-deliveries-heading">Cancelled deliveries</h2><span aria-live="polite">{refreshing?'Refreshing…':bookings!==null?`${bookings.length} total`:error?'Unavailable':'Loading…'}</span><span className="ddMobileOnly ddCancelledCount" aria-live="polite">{refreshing?'Refreshing…':bookings!==null?`${bookings.length} cancelled ${bookings.length===1?'delivery':'deliveries'}`:error?'Unavailable':'Loading…'}</span></div>
    {error&&<div className="formNotice errorNotice" role="alert"><span>{bookings===null?'Unable to load cancelled deliveries.':'Unable to refresh cancelled deliveries. Your existing cards are still shown.'}</span><button type="button" className="btn light" onClick={()=>void refresh()} disabled={refreshing}>Try again</button></div>}
    {bookings===null&&!error&&<p role="status">Loading cancelled deliveries…</p>}
    {bookings?.length===0&&<div className="transporterCancelledEmpty"><h3>No cancelled deliveries</h3><p>Your cancelled deliveries will appear here.</p></div>}
@@ -75,6 +76,7 @@ export default function TransporterCancelledDeliveries({selected,onCountChange,o
     const open=expanded===booking.id;
     const detailsId=`cancelled-details-${booking.id}`;
     return <article className={`transporterCancelledCard${activity.unread(booking.id,booking.cancelledAt||'CANCELLED')?' hasUnreadCardActivity':''}`} key={booking.id} id={'booking-'+booking.id} ref={node=>{if(node&&window.location.hash==='#booking-'+booking.id)node.scrollIntoView({block:'center'})}}>
+     <MobileCancelledSummary booking={booking} open={open} detailsId={detailsId} onToggle={()=>{if(!open)activity.mark(booking.id,booking.cancelledAt||'CANCELLED');setExpanded(open?null:booking.id)}}/>
      <button type="button" className="transporterCancelledToggle" aria-expanded={open} aria-controls={detailsId} onClick={()=>{if(!open)activity.mark(booking.id,booking.cancelledAt||'CANCELLED');setExpanded(open?null:booking.id)}}>
       <CompactRow kind="cancelled" job={booking.job} date={booking.cancelledAt} dateLabel="Cancelled on" status="Cancelled" open={open}/>
       <Icon name="car"/>

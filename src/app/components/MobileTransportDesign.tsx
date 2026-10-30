@@ -59,7 +59,7 @@ export function MobileCustomerHome({name, jobs, bookings, jobsLoaded, bookingsLo
 }
 
 export function MobileJobsIntro({view}: {view: string}) {
-  return <div className="ddMobileOnly ddJobsIntro"><p>Ready for your next move?</p><h1>{view === 'JOBS' || view === 'ALL' ? 'Available jobs' : view === 'DELIVERIES' ? 'Your deliveries' : view === 'QUOTES' ? 'My quotes' : view === 'CANCELLED' ? 'Cancelled deliveries' : 'Completed deliveries'}</h1><a className="ddProceeds" href="/transporter/proceeds"><span className="ddProceedsIcon"><Icon name="coins"/></span><span data-mobile-booked-proceeds="true"/><i><Icon name="arrow"/></i></a>{view==='QUOTES'&&<a className="ddQuoteHistoryLink" href="/transporter/quotes">View all quote history <Icon name="arrow"/></a>}</div>;
+  return <div className={`ddMobileOnly ddJobsIntro${['DELIVERIES','COMPLETED','CANCELLED'].includes(view)?' ddDeliveriesIntro':''}`}><p>Ready for your next move?</p><h1>{view === 'JOBS' || view === 'ALL' ? 'Available jobs' : ['DELIVERIES','COMPLETED','CANCELLED'].includes(view) ? 'Your deliveries' : view === 'QUOTES' ? 'My quotes' : view === 'CANCELLED' ? 'Cancelled deliveries' : 'Completed deliveries'}</h1><a className="ddProceeds" href="/transporter/proceeds"><span className="ddProceedsIcon"><Icon name="coins"/></span><span data-mobile-booked-proceeds="true"/><i><Icon name="arrow"/></i></a>{view==='QUOTES'&&<a className="ddQuoteHistoryLink" href="/transporter/quotes">View all quote history <Icon name="arrow"/></a>}</div>;
 }
 
 export function MobileJobCard({job, open, ownQuote, onToggle}: {job: Vehicle; open: boolean; ownQuote?: {pricePence?: number; dateNegotiationStatus?: string}; onToggle: () => void}) {

@@ -1,0 +1,120 @@
+/* Approved transporter app archive cards; desktop keeps its existing components. */
+.ddArchivePrintIcon,.ddArchiveFilterIcon{display:none}
+@media(max-width:1023px){
+ body.role-transporter .ddDeliveriesIntro>p{display:none}
+ body.role-transporter .ddDeliveriesIntro>h1{margin-bottom:14px}
+ .ddDeliveriesIntro .ddProceeds{position:relative;isolation:isolate;overflow:hidden;background:#071c43;min-height:88px}
+ .ddDeliveriesIntro .ddProceeds:before,.ddDeliveriesIntro .ddProceeds:after{content:'';position:absolute;z-index:-1;width:250px;height:130px;right:-70px;top:-45px;transform:rotate(32deg);background:#112f56}
+ .ddDeliveriesIntro .ddProceeds:after{top:100px;right:0;transform:rotate(-35deg);background:#0b254c}
+ .ddDeliveriesIntro .ddProceedsIcon{background:none;border-radius:0;color:#a9c9ee}
+ .ddDeliveriesIntro .ddProceedsIcon svg{width:42px;height:42px}
+ body.role-transporter .ddTransporterWorkspace>.ddDeliveryTabs{gap:3px;padding:2px;border:1px solid #dce7f4;border-radius:11px;margin:0 0 12px;background:#f7fbff}
+ body.role-transporter .ddDeliveryTabs>button{flex:1;min-width:0;min-height:42px;padding:9px 5px;border:0;border-radius:9px;background:transparent;color:#071c43;font-size:13px;font-weight:600;cursor:pointer}
+ body.role-transporter .ddDeliveryTabs>button[aria-pressed=true]{background:#071c43;color:white;box-shadow:0 2px 5px #071c4310}
+ body.role-transporter .ddTransporterWorkspace .transporterCompletedList{margin:0!important;padding:0;border:0;background:none;box-shadow:none;max-width:none!important}
+ .transporterCompletedList:has(.transporterCompletedFilter)>.dashboardSectionHeading{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ body.role-transporter .transporterCompletedFilter{position:relative;display:flex;align-items:center;width:100%;margin:0 0 12px;border:1px solid #dce7f4;border-radius:10px;background:#fff;gap:0}
+ body.role-transporter .transporterCompletedFilter>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+ body.role-transporter .transporterCompletedFilter>select{flex:1;width:100%;min-width:0;min-height:46px;border:0;padding:10px 30px 10px 44px;background:transparent;color:#071c43;font-size:14px;font-weight:600;text-transform:none;letter-spacing:0}
+ .transporterCompletedFilter .ddArchiveFilterIcon{display:block;position:absolute;left:13px;width:21px;height:21px;pointer-events:none}
+ body.role-transporter .ddTransporterWorkspace :is(.transporterCompletedCard,.transporterCancelledCard){margin:0 0 14px;padding:0!important;overflow:hidden;border:1px solid #dce7f4;border-radius:12px!important;background:#fff;box-shadow:0 2px 8px #071c4304}
+ body.role-transporter .transporterCompletedCard>.transporterCompletedSummary,
+ body.role-transporter .transporterCompletedCard>.tdMobileOnly,
+ body.role-transporter .transporterCancelledCard>.transporterCancelledToggle{display:none!important}
+ .ddArchiveSummary{color:#071c43}
+ .ddArchiveHero{position:relative;min-height:220px;isolation:isolate;background:#dfe9f2;overflow:hidden}
+ .ddArchiveHero:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#071c4300 22%,#061a3c30 47%,#041329ed 100%);pointer-events:none;z-index:0}
+ .ddArchiveHero .ddVehiclePhoto{position:absolute;inset:0;width:100%;height:100%;min-height:0}
+ .ddArchiveHero .ddVehiclePhoto img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 55%}
+ .ddArchiveHero .ddNoPhoto{background:linear-gradient(135deg,#d7e6f2,#b7cedf);color:#24496e}
+ .ddArchiveHero .ddNoPhoto svg{width:68px;height:68px;margin-top:-28px}
+ .ddArchiveHero .ddNoPhoto>span{font-size:11px;margin-top:-15px}
+ .ddArchiveLabels{position:absolute;z-index:1;left:12px;right:12px;top:11px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+ .ddArchiveLabels>span{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;background:#d9fae9;color:#00684d;font-size:11px;line-height:1.3}
+ .ddArchiveLabels>span.isCancelled{background:#fff0f0;color:#b1212d}
+ .ddArchiveLabels>span>svg{width:16px;height:16px;flex-shrink:0}
+ .ddArchiveLabels>small{padding:5px 7px;border-radius:5px;background:#fffffff0;color:#071c43;font-size:9px;line-height:1.5;overflow-wrap:anywhere;max-width:48%;text-align:right}
+ .ddArchiveTitle{position:relative;z-index:1;padding:145px 13px 14px;color:#fff}
+ .ddArchiveTitle h2{color:#fff;font-size:26px;letter-spacing:-.7px;line-height:1.15;margin:0 0 10px}
+ .ddArchiveTitle .ddRouteLine{font-size:14px;line-height:1.4;color:#fff}
+ .ddArchiveTitle .ddRouteLine>span{overflow-wrap:anywhere;align-items:flex-start}
+ .ddArchiveTitle .ddRouteLine>span>svg{width:16px;height:18px;flex-shrink:0}
+ .ddArchiveTitle .ddRouteLine>span:first-child>svg{color:#ff7114}
+ .ddArchiveTitle .ddRouteLine>span:last-child>svg{color:#fff}
+ .ddArchiveTitle .ddRouteLine>svg{width:20px;color:#fff;flex-shrink:0}
+ .ddArchiveCustomer{display:flex;align-items:center;gap:12px;padding:10px 13px 8px}
+ .ddArchiveCustomer>span{display:grid;place-items:center;flex:0 0 50px;width:50px;height:50px;border-radius:50%;background:#e9f5ff;font-size:18px;font-weight:700;color:#071c43}
+ .ddArchiveCustomer>div{min-width:0}.ddArchiveCustomer strong{display:block;font-size:16px;line-height:1.4;overflow-wrap:anywhere}.ddArchiveCustomer small{display:block;font-size:13px;color:#63799d;margin-top:3px;line-height:1.4}.ddArchiveCustomer svg{width:24px;height:24px}
+ .ddArchiveSummaryBody{padding:0 13px 0}
+ .ddArchiveDate{display:flex;align-items:center;gap:12px;min-height:38px;font-size:13px;line-height:1.4;margin-bottom:7px}
+ .ddArchiveDate>span{display:grid;place-items:center;width:30px;height:30px;background:#eef5fc;border-radius:6px}
+ .ddArchiveDate svg{width:21px;height:21px}
+ .ddArchivePayout{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:#eaf5ff;min-width:0}
+ .ddArchiveMoneyIcon{display:grid;place-items:center;flex:0 0 34px;height:34px;border:1.5px solid #071c43;border-radius:50%;outline:5px solid #dceeff;margin:0 3px;color:#071c43}
+ .ddArchiveMoneyIcon svg{width:20px;height:20px}
+ .ddArchivePayout>div{flex:1;min-width:0}
+ .ddArchivePayout small{display:block;font-size:11px;line-height:1.4;color:#526f96}
+ .ddArchivePayout strong{display:block;font-size:22px;line-height:1.2;letter-spacing:-.5px;overflow-wrap:anywhere}
+ .ddArchivePayoutStatus{padding:6px 8px;border-radius:6px;background:#d2e6ff;color:#0758a6;font-size:10px;line-height:1.4;font-weight:600;max-width:47%;overflow-wrap:anywhere}
+ .ddArchivePayoutStatus[data-state=READY]{background:#d2e6ff;color:#064785}
+ .ddArchivePayoutStatus[data-state=PAID]{background:#c9f2df;color:#00684a}
+ .ddArchivePayoutStatus:is([data-state=AWAITING],[data-state=WAITING],[data-state=HELD]){background:#fff0d7;color:#835013}
+ .ddArchivePayoutStatus:is([data-state=FAILED],[data-state=BLOCKED],[data-state=CANCELLED],[data-state=REFUNDED]){background:#ffe8eb;color:#a52837}
+ .ddArchiveProofStatus{display:flex;align-items:center;gap:9px;margin:7px 0 6px;padding:7px 10px;background:#e1faee;color:#00654c;border-radius:7px;font-size:11px;line-height:1.4}
+ .ddArchiveProofStatus svg{width:20px;height:20px;flex-shrink:0;fill:#078c6a;color:#fff}
+ .ddArchiveProofStatus.isIncomplete{background:#fff6e8;color:#80521b}.ddArchiveProofStatus.isIncomplete svg{fill:none;color:inherit}
+ body.role-transporter .ddArchiveToggle{display:flex;align-items:center;justify-content:center;gap:11px;min-height:46px;width:100%;padding:11px 9px;border:0;border-radius:8px;background:#071c43;color:#fff;font-size:16px;font-weight:700;line-height:1.4;cursor:pointer}
+ .ddArchiveToggle>svg{width:20px;height:20px;flex-shrink:0}.ddArchiveToggle[aria-expanded=true]>svg{transform:rotate(180deg)}
+ body.role-transporter .transporterCompletedContact{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:6px 13px 13px;background:white}
+ body.role-transporter .transporterCompletedContact>.btn{flex:0 0 100%;display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:46px;margin:0;padding:10px;border:1px solid #dce7f4;border-radius:8px;background:#edf4fc;color:#071c43;font-size:14px;font-weight:600;text-align:center}
+ body.role-transporter .transporterCompletedContact>a[href$="/statement"]{background:#ff7114;border-color:#ff7114;color:#071c43;font-size:16px;font-weight:700;order:-1}
+ body.role-transporter .transporterCompletedContact>a[href^="/messages"]{background:#e8f1ff;color:#1156ad;border-color:#cddff6}
+ .transporterCompletedContact .ddArchiveLegacyPrint{display:none}
+ .transporterCompletedContact .ddArchivePrintIcon{display:block;width:23px;height:23px;flex-shrink:0}
+ .transporterCompletedCard>.reviewWindowNotice{margin:10px 13px!important;font-size:12px;border-radius:8px}
+ .transporterCompletedCard>.tdFourHeaderTools{display:block;padding:10px 13px 0}
+ .transporterCompletedCard>.tdFourHeaderTools .tdFourContacts{display:flex;flex-wrap:wrap;gap:8px}
+ .transporterCompletedCard>.tdFourHeaderTools a{display:flex;align-items:center;gap:8px;min-height:40px;padding:8px 12px;border-radius:8px;background:#2563eb;color:white;font-size:12px;text-decoration:none}
+ .transporterCompletedCard>.tdFourHeaderTools a[href^="tel:"]{background:#16a34a}.transporterCompletedCard>.tdFourHeaderTools svg{width:18px;height:18px}
+ .transporterCompletedCard:has(>.tdFourHeaderTools)>.transporterCompletedContact>a[href^="/messages"]{display:none!important}
+ .transporterCompletedCard>.transporterDisputeForm,.transporterCompletedCard>.transporterDisputeNotice{margin:0 13px 13px;padding:13px;border-radius:10px;font-size:13px}
+ .transporterCompletedCard>.transporterDisputeForm textarea{width:100%;box-sizing:border-box;min-height:120px;background:#fff;border:1px solid #cbdced;padding:12px}
+ .transporterCompletedCard>.transporterDisputeForm .actionButtons{display:flex;gap:8px;flex-wrap:wrap}
+ .ddArchiveExpanded{padding:0 13px 13px;background:#f5f9fd;border-top:1px solid #dce7f4}
+ .ddArchiveExpanded h3{font-size:16px;line-height:1.4;letter-spacing:-.2px;margin:0 0 10px;color:#071c43}
+ .ddArchiveExpanded>section{padding:16px 0 0}
+ .ddArchiveExpanded dl{padding:0 12px;margin:0;background:#fff;border:1px solid #dce7f4;border-radius:10px}
+ .ddArchiveExpanded dl>div{display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:10px 0;font-size:12px;line-height:1.5}
+ .ddArchiveExpanded dl>div+div{border-top:1px solid #e4edf6}
+ .ddArchiveExpanded dt{color:#63799d}.ddArchiveExpanded dd{margin:0;text-align:right;color:#071c43;font-weight:600;max-width:60%;overflow-wrap:anywhere}
+ .ddArchiveHeld{padding:12px;margin-top:10px;background:#fff4df;border:1px solid #f4dbae;border-radius:9px;font-size:12px;line-height:1.5;color:#714718}
+ .ddArchiveHeld p{margin:5px 0}.ddArchiveHeld a{display:flex;align-items:center;gap:8px;min-height:40px;color:#071c43;font-weight:700}.ddArchiveHeld svg{width:18px;height:18px}
+ .ddArchiveStripeNote{font-size:12px;line-height:1.6;color:#63799d}
+ .ddArchiveHistory{border:1px solid #dce7f4;border-radius:10px;background:#fff;margin-top:14px;padding:0 12px}
+ .ddArchiveHistory>summary{display:flex;align-items:center;gap:10px;min-height:48px;font-size:14px;font-weight:700;cursor:pointer;list-style:none}.ddArchiveHistory>summary::-webkit-details-marker{display:none}.ddArchiveHistory>summary>svg{width:20px;height:20px}.ddArchiveHistory>summary>svg:last-child{margin-left:auto;width:15px}.ddArchiveHistory[open]>summary>svg:last-child{transform:rotate(180deg)}
+ .ddArchiveHistory .tdFourProgress{padding:0 0 12px;background:none;border:0}.ddArchiveHistory .tdFourProgress>h3{display:none}.ddArchiveHistory .tdFourTimeline{display:grid;gap:10px;font-size:12px}.ddArchiveHistory .tdFourEvent{border-left:2px solid #b9d3ea;padding-left:12px}.ddArchiveHistory .tdFourEvent b,.ddArchiveHistory .tdFourEvent small{display:block}.ddArchiveHistory .tdFourEvent small{font-size:11px;color:#63799d;margin-top:4px}.ddArchiveHistory .tdFourStatusNotes{font-size:12px;line-height:1.5;margin-top:12px}
+ .ddArchiveExpanded .ddEvidenceReports{margin-top:14px;padding:0 12px;border:1px solid #dce7f4;border-radius:10px;background:white}
+ .ddArchiveExpanded .ddEvidenceReports>.tdFourProof:first-child{border-top:0}
+ body.role-transporter .transporterCancelledList{margin-top:0}
+ body.role-transporter .transporterCancelledHeading{margin:4px 0 10px;min-height:22px}
+ .transporterCancelledHeading h2,.transporterCancelledHeading>span:not(.ddCancelledCount){display:none}
+ .transporterCancelledHeading>.ddCancelledCount{font-size:13px;color:#63799d}
+ .transporterCancelledCard .ddArchiveSummaryBody{padding-bottom:13px}
+ .ddArchiveCancelledDate{display:flex;align-items:center;gap:12px;background:#ffedef;color:#b01f2b;padding:9px 12px;border-radius:8px;margin:0 0 9px;font-size:13px;line-height:1.4}
+ .ddArchiveCancelledDate svg{width:23px;height:23px;flex-shrink:0}
+ body.role-transporter .transporterCancelledDetails:not([hidden]){display:block;padding:0 13px 13px;border:0;background:white}
+ .transporterCancelledDetails>.tdCancelledColumns{display:block}
+ .transporterCancelledDetails .tdCancelledColumns>section{padding:12px 0;border:0}
+ .transporterCancelledDetails .tdCancelledColumns>section+section{border-top:1px solid #e1eaf4}
+ .transporterCancelledDetails .tdCancelledColumns>section:first-child{position:relative;padding-left:56px}
+ .transporterCancelledDetails h3{margin:0 0 4px;font-size:13px;font-weight:400;color:#63799d;line-height:1.5}
+ .transporterCancelledDetails .tdCancelledScheduled{display:flex;gap:12px;font-size:14px;color:#071c43}
+ .transporterCancelledDetails .tdCancelledScheduled svg{position:absolute;left:0;top:13px;width:41px;height:43px;padding:8px;border-radius:9px;background:#edf5fd}
+ .transporterCancelledDetails .tdCancelledColumns>section>p{padding:12px;margin:8px 0 0;background:#edf3fb;border-radius:9px;font-size:13px;line-height:1.6;color:#3e5f8a;overflow-wrap:anywhere}
+ .transporterCancelledDetails>.tdCancelledFooter{display:none}
+}
+@media(max-width:360px){
+ .ddArchiveHero{min-height:205px}.ddArchiveTitle{padding-top:130px}.ddArchiveTitle h2{font-size:24px}.ddArchiveTitle .ddRouteLine{font-size:12px}
+ .ddArchivePayout{gap:8px;padding:9px 8px}.ddArchiveMoneyIcon{flex-basis:27px;height:27px;outline-width:3px}.ddArchivePayout strong{font-size:19px}.ddArchivePayoutStatus{font-size:9px;padding:5px 6px}
+ body.role-transporter .ddArchiveToggle,body.role-transporter .transporterCompletedContact>a[href$="/statement"]{font-size:14px}
+}
