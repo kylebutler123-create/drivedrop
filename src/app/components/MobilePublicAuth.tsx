@@ -6,9 +6,9 @@ import {vehicleTypeCategory} from '@/lib/vehicle-types';
 import {PublicBack,PublicIcon,PublicNote} from './MobilePublicUI';
 
 type Mode='login'|'register'|'forgot'|'reset';
-function PasswordField({label,name,confirm=false,minLength}:{label:string;name:string;confirm?:boolean;minLength?:number}){
+function PasswordField({label,name,confirm=false,minLength,placeholder='Enter your password'}:{label:string;name:string;confirm?:boolean;minLength?:number;placeholder?:string}){
  const [show,setShow]=useState(false);
- return <label className="mpField">{label}<span className="mpPassword"><input name={name} type={show?'text':'password'} autoComplete={minLength?'new-password':'current-password'} required minLength={minLength} aria-label={label}/><button type="button" aria-label={`${show?'Hide':'Show'} ${confirm?'confirmation ':''}password`} aria-pressed={show} onClick={()=>setShow(v=>!v)}><PublicIcon name="eye"/></button></span></label>;
+ return <label className="mpField">{label}<span className="mpPassword"><input name={name} type={show?'text':'password'} autoComplete={minLength?'new-password':'current-password'} placeholder={placeholder} required minLength={minLength} aria-label={label}/><button type="button" aria-label={`${show?'Hide':'Show'} ${confirm?'confirmation ':''}password`} aria-pressed={show} onClick={()=>setShow(v=>!v)}><PublicIcon name="eye"/></button></span></label>;
 }
 export default function MobilePublicAuth({mode}:{mode:Mode}){
  const params=useSearchParams(),router=useRouter();
@@ -48,9 +48,9 @@ export default function MobilePublicAuth({mode}:{mode:Mode}){
    {register&&<label className="mpField">{transporter?'Name / business name':'Your name'}<input name="name" autoComplete="name" placeholder={transporter?'Your name or business name':'Your name'} required minLength={2}/></label>}
    {mode!=='reset'&&<label className="mpField">Email address<input type="email" name="email" autoComplete="email" placeholder="you@example.com" defaultValue={mode==='login'?params.get('email')||'':undefined} required/></label>}
    {register&&!transporter&&<label className="mpField">Phone number<input type="tel" name="phone" autoComplete="tel" inputMode="tel" placeholder="Your contact number" minLength={7} maxLength={30} required/></label>}
-   {mode!=='forgot'&&<PasswordField label={mode==='reset'?'New password':'Password'} name="password" minLength={mode==='login'?undefined:8}/>}
+   {mode!=='forgot'&&<PasswordField label={mode==='reset'?'New password':'Password'} name="password" placeholder={mode==='reset'?'Enter your new password':'Enter your password'} minLength={mode==='login'?undefined:8}/>}
    {register&&<small className="mpPasswordHint">At least 8 characters</small>}
-   {mode==='reset'&&<PasswordField label="Confirm new password" name="confirm" confirm minLength={8}/>}
+   {mode==='reset'&&<PasswordField label="Confirm new password" name="confirm" placeholder="Confirm your new password" confirm minLength={8}/>}
    {mode==='login'&&<Link className="mpForgot" href={'/forgot-password?'+query}>Forgot password?</Link>}
    {register&&transporter&&<PublicNote title="Verification comes next">Add your driving licence and insurance in your account.</PublicNote>}
    {error&&<p className="mpError" role="alert">{error}{mode==='reset'&&<Link href={'/forgot-password?'+query}>Request a new reset link</Link>}</p>}
