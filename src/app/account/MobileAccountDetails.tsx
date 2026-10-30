@@ -2,13 +2,14 @@
 
 import Icon from '../components/ApprovedIcon';
 import AccountIcon from '../components/AccountDesignIcon';
+import type {ReactNode} from 'react';
 
 export type MobileAccountInfo = {email: string; phone?: string | null; memberSince: string; workRestricted?: boolean; business?: {businessName?: string | null; companyNumber?: string | null; phone?: string | null; businessAddress?: string | null; yearsOperating?: number | null; website?: string | null; status: string; submittedAt?: string | null; reviewedAt?: string | null; reviewNote?: string | null} | null};
 const label = (value: string) => value.replaceAll('_', ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
 const initials = (value: string) => value.trim().split(/\s+/).slice(0, 2).map(word => word[0]).join('').toUpperCase();
 
-export function MobileAccountHero({name, subtitle, status, business = false}: {name: string; subtitle: string; status?: string; business?: boolean}) {
-  return <div className="ddAccountSectionHero"><span className="ddSectionAvatar">{business ? <Icon name="business"/> : initials(name)}</span><div><strong>{name}</strong><span>{subtitle}</span>{status && <small data-state={status.toLowerCase()}>{status}</small>}</div></div>;
+export function MobileAccountHero({name, subtitle, status, business = false, avatar}: {name: string; subtitle: string; status?: string; business?: boolean; avatar?:ReactNode}) {
+  return <div className="ddAccountSectionHero"><span className="ddSectionAvatar">{avatar ?? (business ? <Icon name="business"/> : initials(name))}</span><div><strong>{name}</strong><span>{subtitle}</span>{status && <small data-state={status.toLowerCase()}>{status}</small>}</div></div>;
 }
 
 export function MobilePersonalDetails({name, role, info, onEdit}: {name: string; role: string; info: MobileAccountInfo; onEdit: () => void}) {

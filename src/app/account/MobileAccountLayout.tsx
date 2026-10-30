@@ -6,6 +6,8 @@ import Icon from '../components/ApprovedIcon';
 import {AccountEditorContext} from './AccountEditorContext';
 import {MobileAccountHero, MobilePersonalDetails, MobileBusinessDetails, type MobileAccountInfo} from './MobileAccountDetails';
 import AccountIcon from '../components/AccountDesignIcon';
+import CustomerPhotoEditor from './CustomerPhotoEditor';
+import MobileCustomerPhoto,{useMobileViewport} from '../components/MobileCustomerPhoto';
 
 type Section = 'overview' | 'personal' | 'business' | 'payouts' | 'alerts' | 'security' | 'close';
 const titles: Record<Section, string> = {overview: 'Your account', personal: 'Personal details', business: 'Business & photos', payouts: 'Payout setup', alerts: 'Job email alerts', security: 'Login & security', close: 'Close account'};
@@ -22,6 +24,7 @@ export default function MobileAccountLayout({children, className, name, role, st
   const heading = useRef<HTMLHeadingElement>(null);
   const transporter = role === 'TRANSPORTER';
   const mobileRole = transporter || role === 'CUSTOMER';
+  const mobile = useMobileViewport();
   useEffect(() => {
     const sync = () => {
       if (window.location.hash === '#email-preferences') setSection('alerts');
@@ -40,7 +43,7 @@ export default function MobileAccountLayout({children, className, name, role, st
     {mobileRole && <div className="ddMobileOnly ddAccountNavigation">
       {section === 'overview' ? <>
         <div className="ddAccountIntro"><h1 tabIndex={-1} ref={heading}>Your account</h1><p>Everything in one place.</p></div>
-        <div className="ddAccountIdentity"><span className="ddAccountInitials">{initials}</span><div><strong>{name}</strong><span>{transporter ? 'Transporter' : 'Customer'} account</span><small data-state={status.toLowerCase()}>{status}</small></div><button type="button" aria-label="Edit personal details" onClick={() => open('personal')}><AccountIcon name="edit"/></button></div>
+        <div className="ddAccountIdentity"><span className="ddAccountInitials">{role==='CUSTOMER'?<MobileCustomerPhoto name={name}/>:initials}</span><div><strong>{name}</strong><span>{transporter ? 'Transporter' : 'Customer'} account</span><small data-state={status.toLowerCase()}>{status}</small></div><button type="button" aria-label="Edit personal details" onClick={() => open('personal')}><AccountIcon name="edit"/></button></div>
         <section className="ddSettingsGroup"><h2>{transporter ? 'Profile & business' : 'Your details'}</h2><div>
           <MenuRow icon="user" title="Personal details" description="Name, email and phone" onClick={() => open('personal')}/>
           {transporter && <><MenuRow icon="business" title="Business & photos" description="Your transporter profile" onClick={() => open('business')}/><MenuRow icon="shield" title="Verification & insurance" description="Documents and expiry dates" href="/transporter/verification"/></>}
@@ -52,7 +55,7 @@ export default function MobileAccountLayout({children, className, name, role, st
         <div className="ddAccountFooter"><a href="/help"><Icon name="help"/>Help &amp; support</a><form action="/api/auth/logout" method="post"><button type="submit"><Icon name="out"/>Sign out</button></form><button className="ddCloseLink" type="button" onClick={() => open('close')}><Icon name="trash"/>Close account</button></div>
       </> : <header className="ddAccountSubheading"><button type="button" onClick={() => open('overview')} aria-label="Back to account"><Icon name="arrow"/></button><h1 ref={heading} tabIndex={-1}>{titles[section]}</h1></header>}
       {section === 'security' && <div className="ddAccountSectionHero ddSecurityHero"><span className="ddSectionAvatar"><AccountIcon name="lock"/></span><div><strong>Manage your sign-in</strong><span>Email and password</span></div></div>}
-      {section === 'personal' && <><MobileAccountHero name={name} subtitle={`${transporter ? 'Transporter' : 'Customer'} account`} status={status}/>{!editing && <MobilePersonalDetails name={name} role={role} info={info} onEdit={() => setEditing(true)}/>}</>}
+      {section === 'personal' && <><MobileAccountHero name={name} subtitle={`${transporter ? 'Transporter' : 'Customer'} account`} status={status} avatar={role==='CUSTOMER'?<MobileCustomerPhoto name={name}/>:undefined}/>{!editing && <>{role==='CUSTOMER'&&mobile&&<CustomerPhotoEditor name={name} mobile/>}<MobilePersonalDetails name={name} role={role} info={info} onEdit={() => setEditing(true)}/></>}</>}
       {section === 'business' && <><MobileAccountHero name={info.business?.businessName || name} subtitle="Your transporter profile" business/>{!editing && <MobileBusinessDetails info={info} onEdit={() => setEditing(true)}/>}</>}
     </div>}
     {children}

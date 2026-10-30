@@ -1,29 +1,13 @@
 import {NextResponse} from 'next/server';
 import {currentUser} from '@/lib/auth';
 import {PROFILE_BUCKET,validateProfileImage} from '@/lib/supabase-storage';
+import {customerPhotoConfig as config,customerPhotoHeaders as noCache,readCustomerPhoto} from '@/lib/customer-photo-storage';
 export const runtime='nodejs';
 export const dynamic='force-dynamic';
-const noCache={'Cache-Control':'private, no-store, max-age=0','X-Content-Type-Options':'nosniff'};
-function config(userId:string){
- const url=process.env.SUPABASE_URL?.replace(/\/$/,'');
- const key=process.env.SUPABASE_SERVICE_ROLE_KEY;
- if(!url||!key)throw new Error('Storage unavailable');
- const scope=process.env.VERCEL_ENV==='production'?'production':'preview';
- const path=`customer-avatars/${scope}/${encodeURIComponent(userId)}/avatar`;
- return {url,path,headers:{apikey:key,Authorization:`Bearer ${key}`}};
-}
-function missing(status:number,body:string){return status===404||status===400&&/not.?found|does not exist/i.test(body)}
 export async function GET(){
  const user=await currentUser();
  if(!user||user.role!=='CUSTOMER')return new NextResponse(null,{status:403,headers:noCache});
- try{
- const {url,path,headers}=config(user.id);
- const response=await fetch(`${url}/storage/v1/object/authenticated/${PROFILE_BUCKET}/${path}`,{headers,cache:'no-store'});
- if(!response.ok){const body=await response.text();return new NextResponse(null,{status:missing(response.status,body)?204:502,headers:noCache})}
- const type=response.headers.get('content-type')?.split(';')[0]||'';
- if(!['image/jpeg','image/png','image/webp'].includes(type))return new NextResponse(null,{status:502,headers:noCache});
- return new NextResponse(await response.arrayBuffer(),{headers:{...noCache,'Content-Type':type}});
- }catch{return new NextResponse(null,{status:503,headers:noCache})}
+ return readCustomerPhoto(user.id);
 }
 export async function POST(request:Request){
  const user=await currentUser();

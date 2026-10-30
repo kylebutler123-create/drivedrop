@@ -1,10 +1,11 @@
 'use client';
 import {useEffect,useState} from 'react';
-export function useCustomerPhoto(){
+export function useCustomerPhoto(enabled=true){
  const [url,setUrl]=useState<string|null>(null);
  const [revision,setRevision]=useState(0);
  useEffect(()=>{const changed=()=>setRevision(n=>n+1);window.addEventListener('drivedrop:customer-photo',changed);return()=>window.removeEventListener('drivedrop:customer-photo',changed)},[]);
  useEffect(()=>{
+  if(!enabled)return;
   const controller=new AbortController();let objectUrl:string|null=null;
   fetch('/api/account/customer-photo',{cache:'no-store',signal:controller.signal}).then(async response=>{
    if(response.status===204){setUrl(null);return}
@@ -13,8 +14,8 @@ export function useCustomerPhoto(){
    objectUrl=URL.createObjectURL(blob);setUrl(objectUrl);
   }).catch(()=>{if(!controller.signal.aborted)setUrl(null)});
   return()=>{controller.abort();if(objectUrl)URL.revokeObjectURL(objectUrl)};
- },[revision]);
- return url;
+ },[revision,enabled]);
+ return enabled?url:null;
 }
 export default function CustomerAvatar({name}:{name:string}){
  const url=useCustomerPhoto();

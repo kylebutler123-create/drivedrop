@@ -5,6 +5,7 @@ import {usePathname} from 'next/navigation';
 import Icon from './ApprovedIcon';
 import MessagesNavLink from './MessagesNavLink';
 import NotificationNavLink from './NotificationNavLink';
+import MobileCustomerPhoto from './MobileCustomerPhoto';
 
 type Role = 'CUSTOMER' | 'TRANSPORTER';
 type InstallEvent = Event & {prompt: () => Promise<void>};
@@ -58,7 +59,7 @@ export default function MobileWorkspace({role, name}: {role: Role; name: string}
       {focusedDelivery ? <><a className="ddHeaderBack" href="/customer?view=bookings" aria-label="Back to deliveries"><Icon name="arrow"/></a><strong>Delivery details</strong></>
         : <a href={root} className="ddMobileBrand" aria-label="DriveDrop home"><img src="/orange-design-preview/assets/logo.svg" width="152" height="38" alt="DriveDrop"/></a>}
       <div className="ddHeaderActions"><NotificationNavLink/><details className="ddAccountMenu">
-        <summary aria-label="Open account menu"><span className="ddAvatar">{initials || <Icon name="user"/>}</span></summary>
+        <summary aria-label="Open account menu"><span className="ddAvatar">{role==='CUSTOMER'?<MobileCustomerPhoto name={name}/>:initials || <Icon name="user"/>}</span></summary>
         <div className="ddMenuPanel"><strong>{name}</strong><small>{transporter ? 'Transporter' : 'Customer'} account</small>
           <a href="/account"><Icon name="user"/>Manage account</a>
           {transporter ? <><a href="/transporter/proceeds"><Icon name="coins"/>Booked proceeds</a><a href="/transporter/verification"><Icon name="shield"/>Verification &amp; insurance</a><a href="/transporter/reviews"><Icon name="star"/>Reviews</a></> : <a href="/payments"><Icon name="wallet"/>Payments &amp; receipts</a>}
