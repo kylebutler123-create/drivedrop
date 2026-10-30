@@ -12,7 +12,7 @@ export function useMobileViewport(){
 export function PhotoOrInitials({url,name}:{url:string|null;name:string}){
  const [failed,setFailed]=useState<string|null>(null);
  const initials=name.trim().split(/\s+/).slice(0,2).map(part=>part[0]).join('').toUpperCase()||'?';
- return url&&failed!==url?<img src={url} alt="" onError={()=>setFailed(url)}/>:<>{initials}</>;
+ return url&&failed!==url?<img src={url} alt="" ref={image=>{if(image?.complete&&!image.naturalWidth)setFailed(url)}} onError={()=>setFailed(url)}/>:<>{initials}</>;
 }
 
 export default function MobileCustomerPhoto({name}:{name:string}){

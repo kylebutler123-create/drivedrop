@@ -7,7 +7,7 @@ import {AccountEditorContext} from './AccountEditorContext';
 import {MobileAccountHero, MobilePersonalDetails, MobileBusinessDetails, type MobileAccountInfo} from './MobileAccountDetails';
 import AccountIcon from '../components/AccountDesignIcon';
 import CustomerPhotoEditor from './CustomerPhotoEditor';
-import MobileCustomerPhoto,{useMobileViewport} from '../components/MobileCustomerPhoto';
+import MobileCustomerPhoto,{PhotoOrInitials,useMobileViewport} from '../components/MobileCustomerPhoto';
 
 type Section = 'overview' | 'personal' | 'business' | 'payouts' | 'alerts' | 'security' | 'close';
 const titles: Record<Section, string> = {overview: 'Your account', personal: 'Personal details', business: 'Business & photos', payouts: 'Payout setup', alerts: 'Job email alerts', security: 'Login & security', close: 'Close account'};
@@ -18,7 +18,7 @@ function MenuRow({icon, title, description, onClick, href}: {icon: string; title
 }
 
 /** Presents the existing account editors in mobile sections without duplicating their save flows. */
-export default function MobileAccountLayout({children, className, name, role, status, info}: {children: ReactNode; className: string; name: string; role: string; status: string; info: MobileAccountInfo}) {
+export default function MobileAccountLayout({children, className, name, role, status, info, transporterPhotoUrl = null}: {children: ReactNode; className: string; name: string; role: string; status: string; info: MobileAccountInfo; transporterPhotoUrl?: string|null}) {
   const [section, setSection] = useState<Section>('overview');
   const [editing, setEditing] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);
@@ -43,7 +43,7 @@ export default function MobileAccountLayout({children, className, name, role, st
     {mobileRole && <div className="ddMobileOnly ddAccountNavigation">
       {section === 'overview' ? <>
         <div className="ddAccountIntro"><h1 tabIndex={-1} ref={heading}>Your account</h1><p>Everything in one place.</p></div>
-        <div className="ddAccountIdentity"><span className="ddAccountInitials">{role==='CUSTOMER'?<MobileCustomerPhoto name={name}/>:initials}</span><div><strong>{name}</strong><span>{transporter ? 'Transporter' : 'Customer'} account</span><small data-state={status.toLowerCase()}>{status}</small></div><button type="button" aria-label="Edit personal details" onClick={() => open('personal')}><AccountIcon name="edit"/></button></div>
+        <div className="ddAccountIdentity"><span className="ddAccountInitials">{role==='CUSTOMER'?<MobileCustomerPhoto name={name}/>:transporter?<PhotoOrInitials url={transporterPhotoUrl} name={name}/>:initials}</span><div><strong>{name}</strong><span>{transporter ? 'Transporter' : 'Customer'} account</span><small data-state={status.toLowerCase()}>{status}</small></div><button type="button" aria-label="Edit personal details" onClick={() => open('personal')}><AccountIcon name="edit"/></button></div>
         <section className="ddSettingsGroup"><h2>{transporter ? 'Profile & business' : 'Your details'}</h2><div>
           <MenuRow icon="user" title="Personal details" description="Name, email and phone" onClick={() => open('personal')}/>
           {transporter && <><MenuRow icon="business" title="Business & photos" description="Your transporter profile" onClick={() => open('business')}/><MenuRow icon="shield" title="Verification & insurance" description="Documents and expiry dates" href="/transporter/verification"/></>}

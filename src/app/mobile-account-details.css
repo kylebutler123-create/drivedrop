@@ -2,6 +2,7 @@
 @media(max-width:1023px){
  .ddSectionAvatar:has(img),.ddAccountInitials:has(img),.ddAvatar:has(img),.ddContactAvatar:has(img){overflow:hidden}
  .ddSectionAvatar>img,.ddAccountInitials>img,.ddAvatar>img,.ddContactAvatar>img{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover}
+ body.role-transporter .ddAccountInitials>img{box-sizing:border-box;border:2px solid #eff5fb}
  .ddCustomerPhotoSection{margin-top:18px}
  .ddCustomerPhotoSection h2{font-size:17px;line-height:1.3;letter-spacing:-.4px;color:#071c43;margin:0 0 9px}
  .ddCustomerPhotoSection h2>span{font-size:12px;font-weight:400;letter-spacing:0;color:#63799d}
