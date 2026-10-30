@@ -100,5 +100,40 @@
  .ddVerificationPlaceholder{display:grid;grid-template-columns:42px 1fr;gap:10px;min-height:121px;padding:13px;border:1px solid #e1eaf3;border-radius:12px;background:white;box-sizing:border-box;margin-bottom:10px}
  .ddVerificationPlaceholder:last-child{min-height:143px;margin-bottom:0}.ddVerificationPlaceholder i{width:42px;height:42px;background:#edf5fd;border-radius:9px}.ddVerificationPlaceholder b,.ddVerificationPlaceholder span,.ddVerificationPlaceholder small{display:block;border-radius:4px;background:#edf2f8;height:12px;width:75%;margin:3px 0 11px}.ddVerificationPlaceholder span{width:60%;height:9px}.ddVerificationPlaceholder small{grid-column:1/-1;width:100%;height:24px;margin:0}
  .ddVerificationLoadError{padding:14px;border:1px solid #ffd0b2;border-radius:10px;background:#fff8ee;font-size:12px;line-height:1.5}.ddVerificationLoadError p{margin:0 0 9px}.ddVerificationLoadError button{border:1px solid #ff7114;border-radius:6px;padding:8px 14px;background:white;color:#071c43;min-height:40px;cursor:pointer}
+ /* One current document card replaces each completed mobile upload form. */
+ body.role-transporter .ddVerificationPage .ddVerificationDocuments,
+ body.role-transporter .ddVerificationPage .requiredDocumentUploads{display:contents!important}
+ .ddVerificationPage .ddVerificationLoading,.ddVerificationPage .ddVerificationLoadError{order:1}
+ .ddVerificationPage .ddVerificationDocument{margin:0;scroll-margin-block:100px}
+ .ddVerificationPage .ddVerificationDocument[data-document-type=DRIVING_LICENCE],
+ .ddVerificationPage .requiredDocumentUploadCard:not(.insuranceUploadCard){order:2}
+ .ddVerificationPage .ddVerificationDocument[data-document-type=INSURANCE],
+ .ddVerificationPage .insuranceUploadCard{order:3}
+ .ddVerificationPage .ddDocumentFileHelp{order:4;margin:0}
+ body.role-transporter .ddVerificationPage[data-mobile-licence-upload=false] .requiredDocumentUploadCard:not(.insuranceUploadCard),
+ body.role-transporter .ddVerificationPage[data-mobile-insurance-upload=false] .insuranceUploadCard,
+ body.role-transporter .ddVerificationPage[data-mobile-documents-loading=true] .requiredDocumentUploadCard,
+ .ddVerificationPage[data-mobile-licence-upload=false][data-mobile-insurance-upload=false] .ddDocumentFileHelp,
+ .ddVerificationPage[data-mobile-documents-loading=true] .ddDocumentFileHelp{display:none!important}
+ .ddVerificationPage .ddCancelReplacement{width:100%;min-height:40px;border:0;background:none;color:#254b7e;font-size:12px;text-decoration:underline;margin-top:6px;cursor:pointer}
+ .ddVerificationPage .ddCancelReplacement:disabled,.ddVerificationPage .ddDocumentActions button:disabled{opacity:.55;cursor:not-allowed}
+ .ddVerificationIdentity{min-height:86px;padding:14px;gap:13px}.ddVerificationIdentity strong{font-size:16px}.ddVerificationIdentity>div>span{font-size:13px;margin-top:5px}
+ .ddVerificationIdentity .ddSectionAvatar{width:54px;height:54px;flex-basis:54px}
+ .ddDocumentCopy>div{align-items:center}.ddDocumentCopy h2{font-size:14px}.ddDocumentCopy p{margin-top:5px}
+ .ddVerificationBadge[data-status=PENDING]{gap:4px;border-radius:20px;padding:6px 8px;background:#fff0cf;color:#a44c00}.ddVerificationBadge svg{width:14px;height:14px}
+ .ddVerificationDocument>.ddDocumentExpiry{grid-column:1/-1;display:flex;align-items:center;gap:8px;color:#254b7e;font-size:13px;line-height:1.5;margin:0}.ddVerificationDocument>.ddDocumentExpiry svg{width:20px;height:20px}
+ .ddDocumentActions{margin-top:8px}.ddDocumentActions button{font-weight:500}
+ body.role-transporter .ddVerificationPage .submitReviewPanel{order:5;padding:0;background:none;border:0;gap:9px}
+ .ddVerificationPage .submitReviewPanel>div,.ddVerificationPage .submitReviewPanel[data-mobile-ready=false]{display:none!important}
+ .ddVerificationPage .submitReviewPanel>.btn{order:0;min-height:46px;border-radius:9px;font-size:14px;color:white!important}
+ .ddVerificationPage .submitReviewPanel>.ddReviewHelp{order:1;text-align:center;color:#63799d;font-size:11px;line-height:1.5;margin:0}
+ body.role-transporter .ddVerificationPage .businessDetailsSection{order:6}
+ body.role-transporter .ddVerificationPage .ddVerificationBusinessToggle .verificationDesignIcon{display:block}
+ .ddVerificationHistory{order:7;border:1px solid #e1eaf3;border-radius:11px;background:white;font-size:12px;color:#254b7e}
+ .ddVerificationHistory summary{display:flex;align-items:center;gap:8px;padding:13px;cursor:pointer;min-height:44px;list-style:none}.ddVerificationHistory summary>span{margin-left:auto}.ddVerificationHistory summary>svg{width:16px;height:16px}
+ .ddVerificationHistory>div{padding:0 13px 10px}.ddVerificationHistory a{display:flex;align-items:center;gap:8px;min-height:48px;padding:8px 0;border-top:1px solid #edf2f7;text-decoration:none;color:#254b7e}.ddVerificationHistory a>span:first-child{flex:1}.ddVerificationHistory a>span:last-child{text-decoration:underline}.ddVerificationHistory small{display:block;color:#63799d;margin-top:3px;font-size:10px}
+ .ddVerificationPage .ddVerificationLegacyLabel{display:none}
+ .ddVerificationPage .ddDocumentActions .ddVerificationDetailIcon{transform:none}
+ .ddVerificationPage .ddDocumentActions a{color:#2453df}
  @media(max-width:360px){.ddAccountSectionHero{gap:10px;padding:13px}.ddSectionAvatar{flex-basis:52px;width:52px;height:52px}.ddAccountSectionHero strong{font-size:17px}.ddVerificationIdentity strong{font-size:13px}.ddVerificationIdentity .ddSectionAvatar{flex-basis:40px;width:40px;height:40px}.ddVerificationIdentity{gap:8px}.ddVerificationIdentity>.ddVerificationBadge{font-size:9px}.ddDocumentCopy>div{flex-wrap:wrap}.ddDocumentActions{gap:6px}.ddDocumentActions :is(a,button){font-size:10px}.ddDocumentActions button{padding:5px}.ddAccountSubheading h1{font-size:17px!important}.ddPayoutIdentityLabel{flex-wrap:wrap}.ddPayoutIdentity strong{font-size:16px}.ddAccountPage .profileMediaItem{column-gap:7px!important;grid-template-columns:44px minmax(0,1fr) 74px!important}.ddAccountPage .profileMediaPreview{max-width:44px;max-height:44px}.ddAccountPage .profileMediaItemBody>p{font-size:9px}}
 }
