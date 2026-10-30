@@ -124,7 +124,8 @@
 }
 
 @media(max-width:1023px){
- .ddQuoteHistoryLink{display:flex;justify-content:flex-end;align-items:center;gap:7px;min-height:40px;font-size:12px;color:#516c90;text-decoration:none}.ddQuoteHistoryLink svg{width:16px;height:16px}
+ /* Keep the transporter app focused on current quotes and pending confirmations. */
+ body.role-transporter .ddTransporterWorkspace :is(.ddQuoteHistoryLink,.transporterConfirmationHistory){display:none!important}
  .ddTransporterWorkspace #available-jobs>.dashboardSectionHeading>div,.ddTransporterWorkspace #available-jobs>.dashboardSectionHeading>span:not(.ddJobCount){display:none}
  body.role-transporter .ddTransporterWorkspace .ddJobCount{font-size:12px;color:#071c43}.ddJobSort{margin-left:auto}.ddJobSort select{font-size:12px!important;min-height:32px!important;padding:4px 22px 4px 0!important;border:0!important;background:transparent!important;color:#526b90!important;max-width:145px;cursor:pointer}
 }
