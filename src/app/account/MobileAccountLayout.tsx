@@ -1,6 +1,7 @@
 'use client';
 
 import {useEffect, useRef, useState, type ReactNode} from 'react';
+import Link from 'next/link';
 import Icon from '../components/ApprovedIcon';
 import {AccountEditorContext} from './AccountEditorContext';
 import {MobileAccountHero, MobilePersonalDetails, MobileBusinessDetails, type MobileAccountInfo} from './MobileAccountDetails';
@@ -11,7 +12,7 @@ const titles: Record<Section, string> = {overview: 'Your account', personal: 'Pe
 
 function MenuRow({icon, title, description, onClick, href}: {icon: string; title: string; description: string; onClick?: () => void; href?: string}) {
   const content = <><span className="ddSettingsIcon"><Icon name={icon}/></span><span><strong>{title}</strong><small>{description}</small></span><Icon name="chevronRight"/></>;
-  return href ? <a className="ddSettingsRow" href={href}>{content}</a> : <button className="ddSettingsRow" type="button" onClick={onClick}>{content}</button>;
+  return href ? <Link className="ddSettingsRow" href={href}>{content}</Link> : <button className="ddSettingsRow" type="button" onClick={onClick}>{content}</button>;
 }
 
 /** Presents the existing account editors in mobile sections without duplicating their save flows. */
