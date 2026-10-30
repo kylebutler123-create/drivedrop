@@ -1,13 +1,13 @@
-/* Approved homepage option 02. Applies only to the guest homepage below 1024px. */
+/* Approved homepage option 02 and consistent guest navigation below 1024px. */
 @font-face{font-family:DriveDropPremium;src:url('/mobile-public/plus-jakarta-sans-latin-400-normal.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
 @font-face{font-family:DriveDropPremium;src:url('/mobile-public/plus-jakarta-sans-latin-700-normal.woff2') format('woff2');font-style:normal;font-weight:700;font-display:swap}
 @font-face{font-family:DriveDropPremium;src:url('/mobile-public/plus-jakarta-sans-latin-800-normal.woff2') format('woff2');font-style:normal;font-weight:800;font-display:swap}
 @media(max-width:1023px){
  body.role-guest:has(.mpPremiumHome){background:#fff}
- body.role-guest:has(.mpPremiumHome) :is(.mpHeader,.mpMenuHeader){height:calc(56px + env(safe-area-inset-top));max-width:580px;margin:0 auto;padding-left:14px;padding-right:10px;border-bottom:0;font-family:DriveDropPremium,Arial,sans-serif}
- body.role-guest:has(.mpPremiumHome) :is(.mpHeader,.mpMenuHeader) img{width:143px;height:40px}
- body.role-guest:has(.mpPremiumHome)>.mpHeader>div{gap:12px}
- body.role-guest:has(.mpPremiumHome)>.mpHeader>div>a{font-size:13px;font-weight:700}
+ body.role-guest :is(.mpHeader,.mpMenuHeader){height:calc(56px + env(safe-area-inset-top));max-width:580px;margin:0 auto;padding-left:14px;padding-right:10px;border-bottom:0;font-family:DriveDropPremium,Arial,sans-serif}
+ body.role-guest :is(.mpHeader,.mpMenuHeader) img{width:143px;height:40px}
+ body.role-guest>.mpHeader>div{gap:12px}
+ body.role-guest>.mpHeader>div>a{font-size:13px;font-weight:700}
  body.role-guest:has(.mpPremiumHome)>.mpFooter{display:none!important}
  body.role-guest .mpPremiumHome{width:100%;max-width:580px;margin:0 auto;padding:0;background:#fff;color:#071c43;font-family:DriveDropPremium,Arial,sans-serif;container-type:inline-size}
  .mpPremiumHome *{box-sizing:border-box}
