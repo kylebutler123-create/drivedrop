@@ -1,0 +1,66 @@
+/* Approved homepage option 02. Applies only to the guest homepage below 1024px. */
+@font-face{font-family:DriveDropPremium;src:url('/mobile-public/plus-jakarta-sans-latin-400-normal.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:DriveDropPremium;src:url('/mobile-public/plus-jakarta-sans-latin-700-normal.woff2') format('woff2');font-style:normal;font-weight:700;font-display:swap}
+@font-face{font-family:DriveDropPremium;src:url('/mobile-public/plus-jakarta-sans-latin-800-normal.woff2') format('woff2');font-style:normal;font-weight:800;font-display:swap}
+@media(max-width:1023px){
+ body.role-guest:has(.mpPremiumHome){background:#fff}
+ body.role-guest:has(.mpPremiumHome)>.mpHeader{height:calc(56px + env(safe-area-inset-top));max-width:580px;margin:0 auto;padding-left:14px;padding-right:10px;border-bottom:0;font-family:DriveDropPremium,Arial,sans-serif}
+ body.role-guest:has(.mpPremiumHome)>.mpHeader img{width:143px;height:40px}
+ body.role-guest:has(.mpPremiumHome)>.mpHeader>div{gap:12px}
+ body.role-guest:has(.mpPremiumHome)>.mpHeader>div>a{font-size:13px;font-weight:700}
+ body.role-guest:has(.mpPremiumHome)>.mpFooter{display:none!important}
+ body.role-guest .mpPremiumHome{width:100%;max-width:580px;margin:0 auto;padding:0;background:#fff;color:#071c43;font-family:DriveDropPremium,Arial,sans-serif;container-type:inline-size}
+ .mpPremiumHome *{box-sizing:border-box}
+ .mpPremiumHome :is(a,button):focus-visible{outline:3px solid #ff8b3d;outline-offset:4px}
+ .mpPremiumHome .premiumHero{position:relative;isolation:isolate;aspect-ratio:1/1.02;background:#0a2c50;overflow:hidden}
+ .premiumHeroPhoto{position:absolute;inset:0;z-index:-2;display:block;width:100%;height:100%;object-fit:cover}
+ .premiumHero:after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#05214370,transparent 65%)}
+ .mpPremiumHome .premiumHeroCopy{padding:30px 23px 0;padding:7.8cqw 6cqw 0;color:#fff}
+ .mpPremiumHome .premiumEyebrow{font-size:9px;font-size:2.3cqw;line-height:1.5;font-weight:700;letter-spacing:1.7px;margin:0 0 8px}
+ body.role-guest .mpPremiumHome .premiumHeroCopy h1{color:#fff;font-size:37px;font-size:9.45cqw;line-height:1.04;letter-spacing:-1.4px;font-weight:800;margin:0 0 10px}
+ .mpPremiumHome .premiumHeroCopy>p:last-child{color:#fff;font-size:14px;font-size:3.65cqw;line-height:1.4;margin:0}
+ .mpPremiumHome .premiumQuoteCard{position:relative;z-index:1;margin:-12.8cqw 3.4cqw 0;padding:12px 12px 10px;background:#fff;border:1px solid #e0e6ee;border-radius:8px;box-shadow:0 9px 20px #1028490d;text-align:center}
+ .mpPremiumHome .premiumQuoteButton{display:flex;align-items:center;justify-content:center;gap:12px;min-height:44px;width:100%;padding:11px 12px;border-radius:6px;color:white;background:linear-gradient(105deg,#ff6c0b,#ff6105);font-size:16px;line-height:1.3;font-weight:800;text-decoration:none}
+ .premiumQuoteButton svg,.premiumTransporter a svg{width:21px;height:21px;flex-shrink:0}
+ .mpPremiumHome .premiumQuoteCard p{margin:6px 0 0;font-size:12px;line-height:1.5;color:#53627d}
+ .mpPremiumHome .premiumBenefits{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:0;margin:24px 3.4cqw 23px}
+ .premiumBenefits li{position:relative;display:flex;align-items:center;flex-direction:column;gap:8px;text-align:center;padding:0 2px}
+ .premiumBenefits li+li:before{content:'';position:absolute;left:0;top:4px;bottom:2px;width:1px;background:#dfe7f0}
+ .premiumBenefits svg{width:30px;height:32px}
+ .premiumBenefits strong{font-size:14px;line-height:1.4;font-weight:800;white-space:nowrap}
+ .mpPremiumHome .premiumTransporter{position:relative;overflow:hidden;margin:0 3.4cqw;padding:18px 20px;border-radius:6px;background:#072747 url('/mobile-public/premium-road.webp') center/cover no-repeat;color:#fff}
+ .premiumTransporter>div{position:relative;z-index:1}
+ body.role-guest .mpPremiumHome .premiumTransporter h2{margin:0 0 5px;color:#fff;font-size:24px;line-height:1.15;font-weight:800;letter-spacing:-.7px}
+ .mpPremiumHome .premiumTransporter p{font-size:14px;line-height:1.5;margin:0 0 9px;color:#fff}
+ .mpPremiumHome .premiumTransporter a{display:flex;align-items:center;justify-content:center;gap:15px;min-height:44px;width:fit-content;max-width:100%;padding:8px 16px;border:1.5px solid white;border-radius:5px;color:white;text-decoration:none;font-size:13px;line-height:1.4;font-weight:700}
+ .premiumTruck{position:absolute;right:20px;top:37px;opacity:.45;color:#5797ce}
+ body.role-guest .premiumTruck .mpIcon{width:47px;height:47px;stroke-width:1.2}
+ .mpPremiumHome .premiumHow{padding:25px 3.4cqw 0}
+ body.role-guest .mpPremiumHome .premiumHow h2{font-size:25px;line-height:1.2;font-weight:800;letter-spacing:-.7px;margin:0 0 5px;color:#071c43}
+ .mpPremiumHome .premiumHow>p{font-size:13px;line-height:1.6;color:#53627d;margin:0}
+ .premiumHow ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));list-style:none;gap:12px;margin:18px 0 20px;padding:0}
+ .premiumHow li{position:relative;display:flex;align-items:flex-start;gap:8px;min-width:0}
+ .premiumHow li+li:before{content:'';position:absolute;left:-7px;top:3px;bottom:1px;border-left:1px solid #dfe7f0}
+ .premiumHow li>span{display:grid;place-items:center;flex-shrink:0;width:26px;height:26px;border-radius:50%;background:#e4f0fd;font-size:14px;line-height:1;font-weight:700;color:#153e6b}
+ .premiumHow li>div{min-width:0;padding-top:3px}
+ .mpPremiumHome .premiumHow h3{margin:0 0 3px;color:#071c43;font-weight:800;font-size:11px;line-height:1.4;letter-spacing:0}
+ .mpPremiumHome .premiumHow li p{font-size:10px;line-height:1.45;color:#53627d;margin:0}
+ .mpPremiumHome .premiumFooter{padding:0 3.4cqw 15px}
+ .premiumFooter>div{display:flex;align-items:center;justify-content:space-between;gap:13px;border-top:1px solid #dfe7f0;padding-top:10px}
+ .premiumFooterBrand{flex-shrink:0;display:flex;align-items:center;min-height:44px}
+ .premiumFooterBrand img{display:block;width:89px;height:auto}
+ .premiumFooter nav{display:flex;align-items:center;justify-content:space-between;gap:10px}
+ .premiumFooter nav a{display:flex;align-items:center;min-height:44px;text-decoration:none;color:#071c43;font-size:9px;line-height:1.35}
+ .premiumFooter .premiumLegal{justify-content:flex-start;gap:6px;margin-top:0}
+ .premiumFooter .premiumLegal a,.premiumLegal>span{font-size:10px;color:#63799d;min-height:30px}
+}
+@media(min-width:580px) and (max-width:1023px){
+ .mpPremiumHome .premiumQuoteCard{padding:17px 18px 13px}.mpPremiumHome .premiumQuoteButton{min-height:55px;font-size:21px}.mpPremiumHome .premiumQuoteCard p{font-size:16px}
+ .mpPremiumHome .premiumBenefits{margin-top:33px;margin-bottom:30px}.premiumBenefits svg{width:40px;height:43px}.premiumBenefits strong{font-size:18px}
+ .mpPremiumHome .premiumTransporter{padding:25px 28px}body.role-guest .mpPremiumHome .premiumTransporter h2{font-size:31px}.mpPremiumHome .premiumTransporter p{font-size:18px}.mpPremiumHome .premiumTransporter a{font-size:17px}
+ .mpPremiumHome .premiumHow{padding-top:34px}body.role-guest .mpPremiumHome .premiumHow h2{font-size:32px}.mpPremiumHome .premiumHow>p{font-size:17px}.premiumHow li>span{width:34px;height:34px;font-size:17px}.mpPremiumHome .premiumHow h3{font-size:15px}.mpPremiumHome .premiumHow li p{font-size:13px}.premiumHow ol{gap:20px;margin-top:24px;margin-bottom:25px}.premiumHow li{gap:11px}.premiumHow li+li:before{left:-11px}.premiumFooterBrand img{width:120px}.premiumFooter nav a{font-size:12px}
+}
+@media(max-width:359px){
+ .premiumBenefits strong{font-size:12px}.mpPremiumHome .premiumTransporter{padding:17px 15px}body.role-guest .mpPremiumHome .premiumTransporter h2{font-size:21px}.premiumTruck{right:12px;top:36px}.mpPremiumHome .premiumTransporter a{padding:8px 12px;font-size:12px}
+ body.role-guest .mpPremiumHome .premiumHow h2{font-size:22px}.premiumHow ol{gap:11px}.premiumHow li{display:block}.premiumHow li>div{padding-top:7px}.mpPremiumHome .premiumHow h3{font-size:12px}.mpPremiumHome .premiumHow li p{font-size:11px}.premiumFooter>div{flex-wrap:wrap;gap:0}.premiumFooter nav{width:100%;gap:12px}.premiumFooter nav a{font-size:11px}
+}

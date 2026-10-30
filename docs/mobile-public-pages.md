@@ -4,7 +4,7 @@ Implements the first approved mobile public-page review boards on `feature/ui-po
 
 ## Pages and behaviour
 
-- Home, full-screen public menu, how it works, customer/transporter introductions, About, Help/FAQ, Contact, Terms and Privacy.
+- Home (subsequently replaced by the approved **02 / Premium photography** layout), full-screen public menu, how it works, customer/transporter introductions, About, Help/FAQ, Contact, Terms and Privacy.
 - Customer/transporter sign-in and registration, forgot-password and reset-password screens. Existing auth endpoints, role-based destinations, account notices and vehicle-type continuation are retained.
 - Four-step quote request: journey, vehicle, transport, review/account. It reuses the existing address lookup, collection calendar/window, photo preparation and auth/job request flow. Mobile step validation checks the required collection times and compatible transport type. Values remain mounted when moving between steps.
 - Contact retains its existing submit handler and request ID for retries. Terms and Privacy retain the established legal text.
@@ -21,3 +21,13 @@ Implements the first approved mobile public-page review boards on `feature/ui-po
 - Desktop public pages were compared against the preceding branch version at 1440px. No visual changes were detected in the checked initial-page screenshots.
 
 Release scope: preview branch only. No production promotion or database changes.
+
+## Homepage update — 02 / Premium photography
+
+The guest homepage below 1024px now follows the approved second concept: white brand/navigation bar, full-width coastal transport photography, overlapping orange quote action, three benefits, navy transporter panel, three delivery steps and compact footer. The homepage uses a standalone server component, locally hosted Plus Jakarta Sans fonts (SIL OFL included), optimized WebP images and the existing logo without its small tagline. Legal links remain available in the footer and menu.
+
+The quote, transporter, sign-in, menu and footer actions keep their existing destinations. The remaining public pages, desktop presentation, account workspaces, auth handlers and APIs are unchanged.
+
+Validation: production compilation and TypeScript checks passed; browser review covered 320, 375, 390, 430, 580, 768 and 1023px, with no horizontal overflow or missing images, and confirmed the desktop switch at 1024px. Quote entry, transporter/sign-in navigation, all footer routes and menu Escape/focus behaviour passed. Separate baseline comparisons found no pixel changes in the desktop homepage or the mobile transporter sign-in, transporter introduction and quote pages. No browser runtime errors or failed assets were detected in those checks. No live form submissions were made.
+
+Release scope remains `feature/ui-polish` preview only.
