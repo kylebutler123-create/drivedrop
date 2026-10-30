@@ -124,6 +124,10 @@
 }
 
 @media(max-width:1023px){
+ /* Approved transporter delivery-card colours; retain every existing control and handler. */
+ body.role-transporter .ddDeliveryPreview .ddPrimary{background:#071c43;border-color:#071c43;color:#fff}
+ body.role-transporter .ddDeliveryPreview .ddContactAction[href^="/messages"]>span{background:#2563eb;border-color:#2563eb;color:#fff}
+ body.role-transporter .ddDeliveryPreview .ddContactAction[href^="tel:"]>span{background:#16a34a;border-color:#16a34a;color:#fff}
  /* Keep the transporter app focused on current quotes and pending confirmations. */
  body.role-transporter .ddTransporterWorkspace :is(.ddQuoteHistoryLink,.transporterConfirmationHistory){display:none!important}
  .ddTransporterWorkspace #available-jobs>.dashboardSectionHeading>div,.ddTransporterWorkspace #available-jobs>.dashboardSectionHeading>span:not(.ddJobCount){display:none}
