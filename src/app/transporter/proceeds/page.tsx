@@ -96,7 +96,7 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
  const visibleRows=filter==='BOOKED'?rows:filter==='IN_PROGRESS'?rows.filter(inProgress):filter==='FINES'?selectedAdjustments:rows.filter(booking=>booking.payment?.payoutStatus===filter);
  const breakdownTitle=filter==='IN_PROGRESS'?'In progress':filter==='READY'?'Ready for release':filter==='HELD'?'Held proceeds':filter==='PAID'?'Paid proceeds':filter==='FINES'?(adjustmentFilter==='FINES'?'Fines':adjustmentFilter==='REFUNDS'?'Refunds':'Fines / Refunds'):'Booked proceeds';
  return <><ProceedsDesktop bookings={JSON.parse(JSON.stringify(allBookings))} initial={params}/><main className={`shell dashboardShell ${styles.page}`} data-mobile-proceeds>
-  <div className={styles.pageHeading}><Link href="/transporter" aria-label="Back to transporter dashboard"><ProceedsIcon name="arrow"/></Link><h1>Booked proceeds</h1></div>
+  <div className={styles.pageHeading}><Link href="/account" aria-label="Back to account"><ProceedsIcon name="arrow"/></Link><h1>Booked proceeds</h1></div>
   <header className={styles.hero}>
    <div><small>Total booked proceeds before fines</small><strong>{money(total)}</strong><span>{rows.length} booking{rows.length===1?'':'s'} · {period.title}</span><Link href={href()} aria-current={filter==='BOOKED'?'page':undefined}>All proceeds</Link></div>
    <ProceedsIcon name="wallet"/>
