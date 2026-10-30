@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import VehiclePhoto from '@/app/components/VehiclePhoto';
+import {MobileVehiclePhoto} from '@/app/components/MobileTransportDesign';
 import ProceedsDesktop from './ProceedsDesktop';
 import {notFound,redirect} from 'next/navigation';
 import {currentUser} from '@/lib/auth';
@@ -10,8 +10,13 @@ import {loadProceeds,proceedsPeriod,inProceedsPeriod,periodQuery,periodDescripti
 export const dynamic='force-dynamic';
 export const revalidate=0;
 
-function ProceedsIcon({name}:{name:'booked'|'progress'|'ready'|'held'|'paid'|'adjustments'|'car'|'van'|'pin'|'folder'|'download'|'calendar'}) {
+function ProceedsIcon({name}:{name:'booked'|'progress'|'ready'|'held'|'paid'|'adjustments'|'car'|'van'|'pin'|'folder'|'download'|'calendar'|'wallet'|'arrow'|'chevron'|'print'|'csv'}) {
  const paths={
+  wallet:'M3 7h16v14H3ZM3 7V4l13-3 2 6M15 12h7v5h-7ZM18 14.5h.01',
+  arrow:'M19 12H5m6-6-6 6 6 6',
+  chevron:'m9 5 7 7-7 7',
+  print:'M6 9V2h12v7M6 18H2V9h20v9h-4M6 14h12v8H6ZM17 12h1',
+  csv:'M5 2h9l5 5v15H5ZM14 2v6h5M8 12h8M8 16h8M8 19h8',
   folder:'M2 7V4h7l3 3h10v3M2 7h19l-4 13H2ZM2 7v13',
   download:'M12 2v13m-5-5 5 5 5-5M3 16v5h18v-5',
   calendar:'M4 4h16v18H4ZM8 2v5m8-5v5M4 10h16',
@@ -25,9 +30,9 @@ function ProceedsIcon({name}:{name:'booked'|'progress'|'ready'|'held'|'paid'|'ad
   van:'M2 17V4h13l7 7v6h-3M6 17h9M15 4v7h7M7 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0m12 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0',
   pin:'M19 9c0 6-7 13-7 13S5 15 5 9a7 7 0 0 1 14 0ZM15 9a3 3 0 1 1-6 0 3 3 0 0 1 6 0',
  };
- return <svg className={styles.desktopIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name]}/></svg>;
+ return <svg className={styles.icon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name]}/></svg>;
 }
-const desktopDate=(value:Date|string)=>new Date(value).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
+const displayDate=(value:Date|string)=>new Date(value).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
 const money=(pence:number)=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format((pence||0)/100);
 const label=(value:string)=>value.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,character=>character.toUpperCase());
 const reference=(id:string)=>'DD-'+id.slice(-8).toUpperCase();
@@ -90,52 +95,61 @@ export default async function TransporterProceeds({searchParams}:{searchParams:P
  const selectedAdjustments=adjustmentFilter==='FINES'?fineRows:adjustmentFilter==='REFUNDS'?refundRows:adjustmentRows;
  const visibleRows=filter==='BOOKED'?rows:filter==='IN_PROGRESS'?rows.filter(inProgress):filter==='FINES'?selectedAdjustments:rows.filter(booking=>booking.payment?.payoutStatus===filter);
  const breakdownTitle=filter==='IN_PROGRESS'?'In progress':filter==='READY'?'Ready for release':filter==='HELD'?'Held proceeds':filter==='PAID'?'Paid proceeds':filter==='FINES'?(adjustmentFilter==='FINES'?'Fines':adjustmentFilter==='REFUNDS'?'Refunds':'Fines / Refunds'):'Booked proceeds';
- return <><ProceedsDesktop bookings={JSON.parse(JSON.stringify(allBookings))} initial={params}/><main className={`shell dashboardShell ${styles.page} ${styles.legacyLayout}`}>
-  <Link className="backLink" href="/transporter">← Back to transporter dashboard</Link>
+ return <><ProceedsDesktop bookings={JSON.parse(JSON.stringify(allBookings))} initial={params}/><main className={`shell dashboardShell ${styles.page}`} data-mobile-proceeds>
+  <div className={styles.pageHeading}><Link href="/transporter" aria-label="Back to transporter dashboard"><ProceedsIcon name="arrow"/></Link><h1>Booked proceeds</h1></div>
   <header className={styles.hero}>
-   <div><span>Transporter finances</span><h1>Booked proceeds</h1><p>See the proceeds attached to every active and completed delivery, including payout progress and any fine deductions.</p></div>
-   <div className={styles.total}><small>Total booked proceeds before fines</small><strong>{money(total)}</strong><span>{rows.length} booking{rows.length===1?'':'s'}</span></div><span className={styles.desktopBookingCount}>{rows.length} booking{rows.length===1?'':'s'}</span>
+   <div><small>Total booked proceeds before fines</small><strong>{money(total)}</strong><span>{rows.length} booking{rows.length===1?'':'s'} · {period.title}</span><Link href={href()} aria-current={filter==='BOOKED'?'page':undefined}>All proceeds</Link></div>
+   <ProceedsIcon name="wallet"/>
   </header>
-  <section className={styles.yearSection} aria-label="Yearly statements">
-   <div className={styles.yearHeading}><h2>Yearly statements</h2><details className={styles.dateRange}><summary><ProceedsIcon name="calendar"/>Custom date range <span>⌄</span></summary><form action="/transporter/proceeds" method="get"><label>Start date<input type="date" name="start" defaultValue={period.start} required/></label><label>End date<input type="date" name="end" defaultValue={period.end} required/></label><button type="submit">Apply date range</button></form></details></div>
-   {periodError&&<p role="alert">{periodError}</p>}
-   <nav className={styles.yearCards} aria-label="Select proceeds year">{years.map(year=><Link key={year} href={'/transporter/proceeds?year='+year} className={year===period.year?styles.selectedYear:undefined} aria-current={year===period.year?'page':undefined}><ProceedsIcon name="folder"/><div className={styles.yearIdentity}><strong>{year}</strong><span className={year===period.currentYear?styles.currentYear:styles.archivedYear}>{year===period.currentYear?'Current year':'Archived'}</span><small>1 January – 31 December {year}</small></div><small className={styles.yearCount}>{allBookings.filter(b=>b.payment&&Number(londonDate(b.createdAt).slice(0,4))===year).length} bookings</small><span className={styles.viewYear}>View year <span>→</span></span></Link>)}</nav>
-   <div className={styles.downloadBar}><div><strong>Showing {period.title}</strong><span>{periodDescription(period)}</span></div><div className={styles.downloadActions}><a href={exportHref('pdf')}><ProceedsIcon name="download"/>Download PDF</a><a href={exportHref('csv')}><ProceedsIcon name="download"/>Export CSV</a></div></div>
-  </section>
   <nav className={styles.summary} aria-label="Filter proceeds">
-   <Link href={href()} className={filter==='BOOKED'?styles.active:undefined} aria-current={filter==='BOOKED'?'page':undefined}><ProceedsIcon name="booked"/><small>Booked proceeds</small><strong>{money(total)}</strong></Link>
-   <Link href={href("in_progress")} className={filter==='IN_PROGRESS'?styles.active:undefined} aria-current={filter==='IN_PROGRESS'?'page':undefined}><ProceedsIcon name="progress"/><small>In progress</small><strong>{money(inProgressTotal)}</strong></Link>
-   <Link href={href("ready")} className={filter==='READY'?styles.active:undefined} aria-current={filter==='READY'?'page':undefined}><ProceedsIcon name="ready"/><small>Ready for release</small><strong>{money(ready)}</strong></Link>
-   <Link href={href("held")} className={filter==='HELD'?styles.active:undefined} aria-current={filter==='HELD'?'page':undefined}><ProceedsIcon name="held"/><small>Held</small><strong>{money(held)}</strong></Link>
-   <Link href={href("paid")} className={filter==='PAID'?styles.active:undefined} aria-current={filter==='PAID'?'page':undefined}><ProceedsIcon name="paid"/><small>Paid</small><strong>{money(paid)}</strong></Link>
-   <Link href={href("fines")} className={`${styles.adjustments} ${filter==='FINES'?styles.active:''}`} aria-current={filter==='FINES'?'page':undefined}><ProceedsIcon name="adjustments"/><small><span className={styles.legacyCopy}>Fines/Refunds</span><span className={styles.desktopCopy}>Fines / Refunds</span></small><strong className={styles.adjustmentsTotal}><span className="desktopAdjustmentRows"><span><span>Fines</span><b>−{money(fines)}</b></span><span><span>Refunded</span><b>−{money(refunds)}</b></span></span><span className="mobileAdjustmentTotal">−{money(fines)} fines / −{money(refunds)} refunded</span></strong></Link>
+   <Link href={href("in_progress")} aria-current={filter==='IN_PROGRESS'?'page':undefined}><span className={styles.metricIcon}><ProceedsIcon name="van"/></span><span><small>In progress</small><strong>{money(inProgressTotal)}</strong></span><ProceedsIcon name="chevron"/></Link>
+   <Link href={href("ready")} aria-current={filter==='READY'?'page':undefined}><span className={styles.metricIcon}><ProceedsIcon name="progress"/></span><span><small>Ready for release</small><strong>{money(ready)}</strong></span><ProceedsIcon name="chevron"/></Link>
+   <Link href={href("held")} aria-current={filter==='HELD'?'page':undefined}><span className={`${styles.metricIcon} ${styles.heldIcon}`}><ProceedsIcon name="held"/></span><span><small>Held</small><strong>{money(held)}</strong></span><ProceedsIcon name="chevron"/></Link>
+   <Link href={href("paid")} aria-current={filter==='PAID'?'page':undefined}><span className={`${styles.metricIcon} ${styles.paidIcon}`}><ProceedsIcon name="paid"/></span><span><small>Paid</small><strong>{money(paid)}</strong></span><ProceedsIcon name="chevron"/></Link>
+   <Link href={href("fines")} className={styles.adjustments} aria-current={filter==='FINES'?'page':undefined}>
+    <span className={`${styles.metricIcon} ${styles.fineIcon}`}><ProceedsIcon name="adjustments"/></span><span className={styles.adjustmentsBody}><b>Fines / Refunds</b><span className={styles.adjustmentsTotals}><span><small>Fines</small><strong>−{money(fines)}</strong></span><span><small>Refunds</small><strong>−{money(refunds)}</strong></span></span><small className={styles.totalsNote}>Proceeds totals shown before fines.</small></span><ProceedsIcon name="chevron"/>
+   </Link>
   </nav>
-  <p className={styles.totalsNote}>Proceeds totals shown before fines.</p>
+  <section className={styles.yearSection} aria-label="Yearly statements">
+   <h2>Yearly statements</h2>
+   <div className={styles.statementCard}>
+    <details key={`${period.start}:${period.end}`} className={styles.yearPicker}>
+     <summary><span className={styles.metricIcon}><ProceedsIcon name="folder"/></span><span className={styles.yearIdentity}><strong>{period.year||'Custom date range'}</strong>{period.year&&<span className={period.year===period.currentYear?styles.currentYear:styles.archivedYear}>{period.year===period.currentYear?'Current year':'Archived'}</span>}<small>{periodDescription(period)}</small></span><ProceedsIcon name="chevron"/></summary>
+     <nav aria-label="Select proceeds year">{years.map(year=><Link key={year} href={'/transporter/proceeds?year='+year} aria-current={year===period.year?'page':undefined}><span><b>{year}</b><small>{year===period.currentYear?'Current year':'Archived'}</small></span><span>{allBookings.filter(b=>b.payment&&Number(londonDate(b.createdAt).slice(0,4))===year).length} bookings</span><ProceedsIcon name="chevron"/></Link>)}</nav>
+    </details>
+    <details key={`${period.start}:${period.end}`} className={styles.dateRange}>
+     <summary><span className={styles.metricIcon}><ProceedsIcon name="calendar"/></span><b>Custom date range</b><ProceedsIcon name="chevron"/></summary>
+     <form action="/transporter/proceeds" method="get"><label>Start date<input type="date" name="start" defaultValue={period.start} required/></label><label>End date<input type="date" name="end" defaultValue={period.end} required/></label><button type="submit">Apply date range</button></form>
+    </details>
+    {periodError&&<p className={styles.periodError} role="alert">{periodError}</p>}
+    <div className={styles.downloadBar}><p>Showing {period.title} · {allRows.length} booking{allRows.length===1?'':'s'}</p><div className={styles.downloadActions}><a href={exportHref('pdf')}><ProceedsIcon name="download"/>Download PDF</a><a href={exportHref('csv')}><ProceedsIcon name="csv"/>Export CSV</a></div></div>
+   </div>
+   <p className={styles.archiveNote}>Previous years stay available to view and download.</p>
+  </section>
   {filter==='FINES'&&<div className={styles.adjustmentControls}>
    <span>Filter Fines / Refunds records</span>
-   <details>
-    <summary>{adjustmentFilter==='FINES'?'Fines only · −'+money(fines):adjustmentFilter==='REFUNDS'?'Refunds only · −'+money(refunds):'All fines and refunds · '+adjustmentRows.length}</summary>
-    <div>
-     <Link className={adjustmentFilter==='ALL'?styles.selectedAdjustment:undefined} href={href("fines")}>All fines and refunds <b>{adjustmentRows.length}</b></Link>
-     <Link className={adjustmentFilter==='FINES'?styles.selectedAdjustment:undefined} href={href("fines","fines")}>Fines <b>−{money(fines)}</b></Link>
-     <Link className={adjustmentFilter==='REFUNDS'?styles.selectedAdjustment:undefined} href={href("fines","refunds")}>Refunds <b>−{money(refunds)}</b></Link>
-    </div>
+   <details key={adjustmentFilter}>
+    <summary>{adjustmentFilter==='FINES'?'Fines only · −'+money(fines):adjustmentFilter==='REFUNDS'?'Refunds only · −'+money(refunds):'All fines and refunds · '+adjustmentRows.length}<ProceedsIcon name="chevron"/></summary>
+    <nav aria-label="Filter adjustments">
+     <Link aria-current={adjustmentFilter==='ALL'?'page':undefined} href={href("fines")}>All fines and refunds <b>{adjustmentRows.length}</b></Link>
+     <Link aria-current={adjustmentFilter==='FINES'?'page':undefined} href={href("fines","fines")}>Fines <b>−{money(fines)}</b></Link>
+     <Link aria-current={adjustmentFilter==='REFUNDS'?'page':undefined} href={href("fines","refunds")}>Refunds <b>−{money(refunds)}</b></Link>
+    </nav>
    </details>
   </div>}
   <div className={styles.heading}><div><h2>{breakdownTitle}</h2><p>Newest bookings first</p></div><span>{visibleRows.length} record{visibleRows.length===1?'':'s'}</span></div>
-  {visibleRows.length===0?<section className="dashboardCard emptyState"><div>£</div><h3>No {breakdownTitle.toLowerCase()}</h3><p>{filter==='BOOKED'?'Proceeds will appear here after a customer accepts and pays for a delivery.':'No proceeds currently match this status.'}</p></section>:<section className={styles.list}>{visibleRows.map(booking=>{const payment=booking.payment!;const fine=payment.cancellationDeductionPence||0;const refund=payment.refundedPence||0;const net=payment.payoutStatus==='CANCELLED'?0:payment.transporterProceedsPence||0;const beforeFine=net+fine;const paidAt=payment.events[0]?.createdAt;return <article className={styles.card} key={booking.id}>
-   <div className={styles.cardTop}><div><div className={styles.pills}><span data-delivery-status={booking.status}>{label(booking.status)}</span><span data-payout-status={payment.payoutStatus} className={payment.payoutStatus==='PAID'?styles.paid:payment.payoutStatus==='HELD'?styles.held:''}>{payoutLabel(booking)}</span></div><div className={styles.identity}><span className={styles.vehicleIcon}><VehiclePhoto job={booking.job} photoClassName="financialVehiclePhoto"><ProceedsIcon name={/van|motorhome|plant|other/i.test(vehicleTypeById.get(booking.job.id)||'')?'van':'car'}/></VehiclePhoto></span><h3>{booking.job.vehicleMake} {booking.job.vehicleModel}</h3><p>{booking.customer.name}{booking.job.registration?` · ${booking.job.registration}`:''}</p><small>Delivery reference · {reference(booking.id)}</small></div></div><strong className={filter==='FINES'?styles.adjustmentAmount:undefined}>{filter==='FINES'?`−${money(fine+refund)}`:money(net)}</strong></div>
-   <div className={styles.route}><div><small>Collection</small><b><ProceedsIcon name="pin"/>{booking.job.collection}</b></div><span>→</span><div><small>Delivery</small><b><ProceedsIcon name="pin"/>{booking.job.delivery}</b></div></div>
-   <div className={styles.cardBottom}><div className={styles.breakdown}>
-    {fine>0&&<><div><span>Proceeds before fine</span><b>{money(beforeFine)}</b></div><div><span>Fine deducted</span><b className={styles.deduction}>−{money(fine)}</b></div></>}
-    {refund>0&&<div><span>Refund adjustment</span><b className={styles.deduction}>−{money(refund)}</b></div>}
-    <div><span>{fine>0?'Net proceeds':payment.payoutStatus==='CANCELLED'?'Net payout':'Booked proceeds'}</span><b>{money(net)}</b></div>
-    <div><span>Payout status</span><b>{payoutLabel(booking)}</b></div>
-    <div><span>Collection date</span><b>{booking.job.collectionDate?<><span className={styles.legacyCopy}>{new Date(booking.job.collectionDate).toLocaleDateString('en-GB')}</span><span className={styles.desktopCopy}>{desktopDate(booking.job.collectionDate)}</span></>:'Not recorded'}</b></div>
-    {paidAt&&<div><span>Paid on</span><b><span className={styles.legacyCopy}>{new Date(paidAt).toLocaleDateString('en-GB')}</span><span className={styles.desktopCopy}>{desktopDate(paidAt)}</span></b></div>}
-   </div>
-   {booking.status==='DELIVERED'&&<div className={styles.actions}><Link className="btn light" target="_blank" rel="noreferrer" href={`/bookings/${encodeURIComponent(booking.id)}/statement`}>View printable statement</Link></div>}</div>
+  {visibleRows.length===0?<section className={styles.emptyState}><ProceedsIcon name="wallet"/><h3>No {breakdownTitle.toLowerCase()}</h3><p>{filter==='BOOKED'?'Proceeds will appear here after a customer accepts and pays for a delivery.':'No proceeds currently match this status.'}</p></section>:<section className={styles.list} aria-label="Delivery proceeds">{visibleRows.map(booking=>{const payment=booking.payment!;const fine=payment.cancellationDeductionPence||0;const refund=payment.refundedPence||0;const net=payment.payoutStatus==='CANCELLED'?0:payment.transporterProceedsPence||0;const beforeFine=net+fine;const paidAt=payment.events[0]?.createdAt;return <article className={styles.card} key={booking.id}>
+   <div className={styles.pills}><span data-delivery-status={booking.status}>{label(booking.status)}</span><span data-payout-status={payment.payoutStatus}>{payoutLabel(booking)}</span></div>
+   <div className={styles.identity}><div className={styles.vehiclePhoto}><MobileVehiclePhoto job={{id:booking.job.id,vehiclePhotoPath:booking.job.vehiclePhotoPath,vehicleMake:booking.job.vehicleMake,vehicleModel:booking.job.vehicleModel,vehicleType:vehicleTypeById.get(booking.job.id)||undefined}}/></div><div><h3>{booking.job.vehicleMake} {booking.job.vehicleModel}</h3><p>{booking.customer.name}{booking.job.registration?` · ${booking.job.registration}`:''}</p><small aria-label="Delivery reference">{reference(booking.id)}</small></div></div>
+   <div className={styles.route}><div><ProceedsIcon name="pin"/><small>Collection</small><b>{booking.job.collection}</b></div><div><ProceedsIcon name="pin"/><small>Delivery</small><b>{booking.job.delivery}</b></div></div>
+   <dl className={styles.breakdown}>
+    {fine>0&&<><div><dt>Proceeds before fine</dt><dd>{money(beforeFine)}</dd></div><div><dt>Fine deducted</dt><dd className={styles.deduction}>−{money(fine)}</dd></div></>}
+    {refund>0&&<div><dt>Refund adjustment</dt><dd className={styles.deduction}>−{money(refund)}</dd></div>}
+    <div className={styles.netAmount}><dt>{fine>0?'Net proceeds':payment.payoutStatus==='CANCELLED'?'Net payout':'Booked proceeds'}</dt><dd>{money(net)}</dd></div>
+    <div><dt>Collection date</dt><dd>{booking.job.collectionDate?displayDate(booking.job.collectionDate):'Not recorded'}</dd></div>
+    {paidAt&&<div><dt>Paid on</dt><dd>{displayDate(paidAt)}</dd></div>}
+   </dl>
+   {booking.status==='DELIVERED'&&<Link className={styles.statementLink} target="_blank" rel="noreferrer" href={`/bookings/${encodeURIComponent(booking.id)}/statement`}><ProceedsIcon name="print"/>View printable statement</Link>}
   </article>})}</section>}
-  <p className={styles.archiveNote}>A new year starts automatically. Previous years stay available to view and download.</p>
  </main></>;
 }
