@@ -1,5 +1,7 @@
 'use client';
 import {useEffect} from 'react';
+import type {JobOrigin} from '@/lib/job-locations';
+import type {NearbyAction} from './MobileNearbyJobs';
 import {usePathname} from 'next/navigation';
 import {renderJobDistanceBadge} from './TransporterJobDistanceBadge';
 import {vehicleTypes,vehicleTypeCategory,vehicleTypeDisplay} from '@/lib/vehicle-types';
@@ -164,25 +166,100 @@ function ensureJobFilters(){const section=document.getElementById('available-job
    const origin=bar.dataset.distanceOrigin||bar.dataset.distancePostcode;
    if(!origin)return;
    const normalizePostcode=(value:string)=>value.replace(/\s+/g,'').toUpperCase();
-   const changed=normalizePostcode(postcode.value)!==normalizePostcode(bar.dataset.distancePostcode||'');
+   const changed=!!bar.dataset.distancePostcode&&normalizePostcode(postcode.value)!==normalizePostcode(bar.dataset.distancePostcode);
    const notice=`Showing collection points within ${radius.value} miles of ${origin}.${changed?' Postcode changed — press Apply distance to update the results.':''}`;
    if(message.textContent!==notice)message.textContent=notice;
  };
  const sortCards=()=>{const cards=Array.from(section.querySelectorAll<HTMLElement>('.jobOpportunity'));cards.forEach(card=>{if(!jobDefaultOrder.has(card))jobDefaultOrder.set(card,nextJobOrder++)});if(sort.value==='NEAREST'&&!bar?.dataset.distanceActive){const hint='Apply a postcode distance first to sort by nearest collection.';if(message.textContent!==hint)message.textContent=hint;return}const original=new Map(cards.map((card,i)=>[card,i]));cards.sort((a,b)=>{if(sort.value==='NEAREST'){const av=Number(a.dataset.distanceMiles||Number.POSITIVE_INFINITY),bv=Number(b.dataset.distanceMiles||Number.POSITIVE_INFINITY);return av-bv}if(sort.value==='COLLECTION_DATE'){const av=new Date(a.dataset.collectionDate||'9999-12-31').getTime(),bv=new Date(b.dataset.collectionDate||'9999-12-31').getTime();return av-bv}if(sort.value==='NEWEST'){const av=new Date(a.dataset.createdAt||0).getTime(),bv=new Date(b.dataset.createdAt||0).getTime();return bv-av}if(sort.value==='VEHICLE')return (a.dataset.vehicleType||'').localeCompare(b.dataset.vehicleType||'');return (jobDefaultOrder.get(a)??0)-(jobDefaultOrder.get(b)??0)});if(cards.some((card,i)=>original.get(card)!==i))cards.forEach(card=>section.appendChild(card))};
  const search=section.querySelector<HTMLInputElement>('[data-mobile-job-search]');
- const mobileSort=section.querySelector<HTMLSelectElement>('[data-mobile-job-sort]');const mobileCount=section.querySelector<HTMLElement>('[data-mobile-filter-count]');
- const applyFilters=()=>{sortCards();let visible=0;const cards=section.querySelectorAll<HTMLElement>('.jobOpportunity');cards.forEach(card=>{renderJobDistanceBadge(card);const vehicleOk=vehicle.value==='ALL'||vehicleTypeCategory(card.dataset.vehicleType)===vehicle.value;const transportOk=transport.value==='ANY'||transportTypeCategory(card.dataset.transportType)===transport.value;const distanceOk=!bar?.dataset.distanceActive||((Number(card.dataset.distanceMiles)<=Number(radius.value))&&card.dataset.distanceMiles!=='');const query=search?.value.trim().toLowerCase()||'';const searchOk=!query||(card.textContent||'').toLowerCase().includes(query);const show=vehicleOk&&transportOk&&distanceOk&&searchOk;card.style.display=show?'':'none';if(show)visible++});const footerLabel=`${visible} job${visible===1?'':'s'}`;const count=`${footerLabel} shown`;const mobileLabel=`${visible} job${visible===1?'':'s'} available`;if(mobileCount&&mobileCount.textContent!==mobileLabel)mobileCount.textContent=mobileLabel;if(mobileSort&&mobileSort.value!==sort.value)mobileSort.value=sort.value;if(result.textContent!==count)result.textContent=count;if(footerCount.textContent!==footerLabel)footerCount.textContent=footerLabel;updateJobFilterEmptyState(section,bar!,cards.length,visible,!!bar?.dataset.distanceActive,vehicle.value!=='ALL'||!!search?.value.trim(),transport.value!=='ANY')};
- if(mobileSort&&!mobileSort.dataset.bound){mobileSort.dataset.bound='true';mobileSort.addEventListener('change',()=>{sort.value=mobileSort.value;if(sort.value==='NEAREST'&&!bar?.dataset.distanceActive){const toggle=section.querySelector<HTMLButtonElement>('.ddJobToolbar>button');if(toggle?.getAttribute('aria-expanded')==='false')toggle.click()}applyFilters()})}
- if(search&&!search.dataset.bound){search.dataset.bound='true';search.addEventListener('input',applyFilters)}
- if(!vehicle.dataset.bound){vehicle.dataset.bound='true';vehicle.addEventListener('change',applyFilters)}
- if(!transport.dataset.bound){transport.dataset.bound='true';transport.addEventListener('change',applyFilters)}
- if(!sort.dataset.bound){sort.dataset.bound='true';sort.addEventListener('change',applyFilters)}
- if(!applyBtn.dataset.bound){applyBtn.dataset.bound='true';applyBtn.addEventListener('click',async()=>{const value=postcode.value.trim();if(!value){message.textContent='Enter your current postcode first.';return}cancelJobDistanceSearch(bar);const request=new AbortController();jobDistanceRequests.set(bar!,request);const isCurrent=()=>jobDistanceRequests.get(bar!)===request&&bar!.isConnected&&section.isConnected;applyBtn.disabled=true;applyBtn.textContent='Checking distance…';clearBtn.style.display='inline-flex';message.textContent='';try{const cards=Array.from(section.querySelectorAll<HTMLElement>('.jobOpportunity'));const payloadJobs=cards.map((card,i)=>{const id=card.dataset.jobId||`visible-job-${i}`;card.dataset.radiusId=id;const route=card.querySelector('.routeVisual');const collection=text(route?.querySelector('b')||null);return{id,collection}}).filter(j=>j.collection);if(!payloadJobs.length)throw new Error('No collection addresses are available to check.');const r=await fetch('/api/jobs/radius',{method:'POST',signal:request.signal,headers:{'content-type':'application/json'},body:JSON.stringify({postcode:value,jobs:payloadJobs})});const d=await r.json().catch(()=>null);if(!isCurrent())return;if(!r.ok)throw new Error(d?.error||'Unable to calculate distances');const map=new Map((d.distances||[]).map((x:any)=>[String(x.id),x.miles]));cards.forEach(card=>{const miles=map.get(card.dataset.radiusId||'');card.dataset.distanceMiles=typeof miles==='number'?String(miles):''});bar!.dataset.distanceActive='true';bar!.dataset.distancePostcode=value;bar!.dataset.distanceOrigin=String(d.origin||value);clearBtn.style.display='inline-flex';updateDistanceMessage();applyFilters()}catch(e:any){if(!isCurrent())return;delete bar!.dataset.distanceActive;delete bar!.dataset.distancePostcode;delete bar!.dataset.distanceOrigin;section.querySelectorAll<HTMLElement>('.jobOpportunity').forEach(card=>{delete card.dataset.distanceMiles;delete card.dataset.radiusId});applyFilters();message.textContent=e?.message||'Unable to calculate job distances.'}finally{if(jobDistanceRequests.get(bar!)===request){jobDistanceRequests.delete(bar!);applyBtn.disabled=false;applyBtn.textContent='Apply distance'}}})}
- if(!clearBtn.dataset.bound){clearBtn.dataset.bound='true';clearBtn.addEventListener('click',()=>{cancelJobDistanceSearch(bar);applyBtn.disabled=false;applyBtn.textContent='Apply distance';delete bar!.dataset.distanceActive;delete bar!.dataset.distancePostcode;delete bar!.dataset.distanceOrigin;section.querySelectorAll<HTMLElement>('.jobOpportunity').forEach(card=>{delete card.dataset.distanceMiles;delete card.dataset.radiusId});clearBtn.style.display='none';message.textContent='Distance filter cleared.';if(sort.value==='NEAREST')sort.value='COLLECTION_DATE';applyFilters()})}
+ const mobileSort=section.querySelector<HTMLSelectElement>('[data-mobile-job-sort]');
+ const emitState=(count:number,total:number,force=false)=>{
+  const state={count,total,active:!!bar!.dataset.distanceActive,origin:bar!.dataset.distanceOrigin||'',radius:Number(radius.value),busy:bar!.dataset.nearbyBusy==='true',error:bar!.dataset.nearbyError||'',unlocated:Number(bar!.dataset.unlocatedCount||0)};
+  const signature=JSON.stringify(state);if(!force&&bar!.dataset.nearbyState===signature)return;
+  bar!.dataset.nearbyState=signature;section.dispatchEvent(new CustomEvent('drivedrop:nearby-state',{detail:state}));
+ };
+ const applyFilters=(force=false)=>{
+  sortCards();let visible=0;const cards=section.querySelectorAll<HTMLElement>('.jobOpportunity');
+  cards.forEach(card=>{
+   renderJobDistanceBadge(card);
+   const vehicleOk=vehicle.value==='ALL'||vehicleTypeCategory(card.dataset.vehicleType)===vehicle.value;
+   const transportOk=transport.value==='ANY'||transportTypeCategory(card.dataset.transportType)===transport.value;
+   const raw=card.dataset.distanceMiles;
+   const distanceOk=!bar!.dataset.distanceActive||(raw!==undefined&&raw!==''&&Number.isFinite(Number(raw))&&Number(raw)<=Number(radius.value));
+   const query=search?.value.trim().toLowerCase()||'';
+   const searchOk=!query||(card.textContent||'').toLowerCase().includes(query);
+   const show=vehicleOk&&transportOk&&distanceOk&&searchOk;card.style.display=show?'':'none';if(show)visible++;
+  });
+  const footerLabel=`${visible} job${visible===1?'':'s'}`;const count=`${footerLabel} shown`;
+  if(mobileSort&&mobileSort.value!==sort.value)mobileSort.value=sort.value;
+  if(result.textContent!==count)result.textContent=count;if(footerCount.textContent!==footerLabel)footerCount.textContent=footerLabel;
+  updateJobFilterEmptyState(section,bar!,cards.length,visible,!!bar!.dataset.distanceActive,vehicle.value!=='ALL'||!!search?.value.trim(),transport.value!=='ANY');
+  emitState(visible,cards.length,force);
+ };
+ const cardsKey=()=>JSON.stringify(Array.from(section.querySelectorAll<HTMLElement>('.jobOpportunity')).map(card=>[card.dataset.jobId,text(card.querySelector('.routeVisual b'))]).sort((a,b)=>String(a[0]).localeCompare(String(b[0]))));
+ const cancelSearch=()=>{cancelJobDistanceSearch(bar);delete bar!.dataset.nearbyBusy;applyBtn.disabled=false;applyBtn.textContent='Apply distance'};
+ const clearDistance=()=>{
+  cancelSearch();for(const key of ['distanceActive','distancePostcode','distanceOrigin','distanceSearch','distanceCheckKey','nearbyError','unlocatedCount'])delete bar!.dataset[key];
+  section.querySelectorAll<HTMLElement>('.jobOpportunity').forEach(card=>{delete card.dataset.distanceMiles;delete card.dataset.distanceOrigin;delete card.dataset.radiusId});
+  clearBtn.style.display='none';message.textContent='Distance filter cleared.';if(sort.value==='NEAREST')sort.value='COLLECTION_DATE';applyFilters();
+ };
+ const runDistance=async(origin:JobOrigin,nextRadius:number)=>{
+  cancelSearch();const request=new AbortController();jobDistanceRequests.set(bar!,request);
+  const isCurrent=()=>jobDistanceRequests.get(bar!)===request&&bar!.isConnected&&section.isConnected;
+  bar!.dataset.nearbyBusy='true';delete bar!.dataset.nearbyError;bar!.dataset.distanceCheckKey=cardsKey();applyBtn.disabled=true;applyBtn.textContent='Checking distance…';message.textContent='';applyFilters();
+  try{
+   const cards=Array.from(section.querySelectorAll<HTMLElement>('.jobOpportunity'));
+   const payloadJobs=cards.map((card,index)=>{const id=card.dataset.jobId||`visible-job-${index}`;card.dataset.radiusId=id;return {id,collection:text(card.querySelector('.routeVisual b'))}}).filter(job=>job.collection);
+   let resolved=origin,label='',unlocated=0;const distances=new Map<string,number|null>();
+   // Preserve the endpoint's 200-job bound while covering every loaded card.
+   for(let start=0;start<Math.max(1,payloadJobs.length);start+=200){
+    const response=await fetch('/api/jobs/radius',{method:'POST',signal:request.signal,headers:{'content-type':'application/json'},body:JSON.stringify({origin:resolved,jobs:payloadJobs.slice(start,start+200)})});
+    const data=await response.json().catch(()=>null);if(!isCurrent())return;
+    if(!response.ok||!Array.isArray(data?.distances))throw new Error(data?.error||'Unable to calculate collection distances. Please try again.');
+    label=String(data.origin||'your location');unlocated+=Number(data.unlocatedCount||0);
+    if(data.point)resolved={kind:'coordinates',point:data.point,label};
+    for(const item of data.distances)distances.set(String(item.id),typeof item.miles==='number'&&Number.isFinite(item.miles)&&item.miles>=0?item.miles:null);
+   }
+   if(!isCurrent())return;
+   cards.forEach(card=>{const miles=distances.get(card.dataset.radiusId||'');card.dataset.distanceMiles=typeof miles==='number'?String(miles):'';card.dataset.distanceOrigin=label});
+   radius.value=String(nextRadius);bar!.dataset.distanceActive='true';bar!.dataset.distanceOrigin=label;
+   bar!.dataset.distanceSearch=JSON.stringify(resolved);bar!.dataset.unlocatedCount=String(unlocated);
+   if(origin.kind==='postcode'){postcode.value=origin.postcode;bar!.dataset.distancePostcode=origin.postcode}else delete bar!.dataset.distancePostcode;
+   clearBtn.style.display='inline-flex';updateDistanceMessage();
+  }catch(error){
+   if(!isCurrent())return;
+   const errorMessage=error instanceof Error?error.message:'Unable to calculate collection distances. Please try again.';
+   bar!.dataset.nearbyError=errorMessage;message.textContent=errorMessage;
+  }finally{
+   if(isCurrent()){jobDistanceRequests.delete(bar!);delete bar!.dataset.nearbyBusy;applyBtn.disabled=false;applyBtn.textContent='Apply distance';applyFilters()}
+  }
+ };
+ if(mobileSort&&!mobileSort.dataset.bound){mobileSort.dataset.bound='true';mobileSort.addEventListener('change',()=>{
+  if(mobileSort.value==='NEAREST'&&!bar!.dataset.distanceActive){bar!.dataset.nearbyError='Choose a location and tap Find jobs before sorting by nearest collection.';section.querySelector<HTMLInputElement>('.ddNearbyInput input')?.focus();mobileSort.value=sort.value}else{sort.value=mobileSort.value;delete bar!.dataset.nearbyError}applyFilters();
+ })}
+ if(search&&!search.dataset.bound){search.dataset.bound='true';search.addEventListener('input',()=>applyFilters())}
+ for(const control of [vehicle,transport,sort])if(!control.dataset.bound){control.dataset.bound='true';control.addEventListener('change',()=>applyFilters())}
+ if(!applyBtn.dataset.bound){applyBtn.dataset.bound='true';applyBtn.addEventListener('click',()=>{
+  if(!postcode.value.trim()){message.textContent='Enter your current postcode first.';return}
+  void runDistance({kind:'postcode',postcode:postcode.value.trim()},Number(radius.value));
+ })}
+ if(!clearBtn.dataset.bound){clearBtn.dataset.bound='true';clearBtn.addEventListener('click',clearDistance)}
  if(!postcode.dataset.bound){postcode.dataset.bound='true';postcode.addEventListener('input',updateDistanceMessage)}
- if(!radius.dataset.bound){radius.dataset.bound='true';radius.addEventListener('change',()=>{if(bar?.dataset.distanceActive){updateDistanceMessage();applyFilters()}})}
+ if(!radius.dataset.bound){radius.dataset.bound='true';radius.addEventListener('change',()=>{if(bar!.dataset.distanceActive)updateDistanceMessage();applyFilters()})}
+ if(!bar.dataset.nearbyBound){
+  bar.dataset.nearbyBound='true';
+  section.addEventListener('drivedrop:nearby-ready',()=>applyFilters(true));
+  section.addEventListener('drivedrop:nearby-action',(event:Event)=>{
+   const detail=(event as CustomEvent<NearbyAction>).detail;
+   if(detail.type==='search'&&detail.origin)void runDistance(detail.origin,detail.radius||Number(radius.value));
+   if(detail.type==='clear'||detail.type==='reset')clearDistance();
+   if(detail.type==='reset'){vehicle.value='ALL';transport.value='ANY';sort.value='COLLECTION_DATE';radius.value='25';applyFilters()}
+   if(detail.type==='cancel'){cancelSearch();delete bar!.dataset.nearbyError;applyFilters()}
+   if(detail.type==='radius'&&[10,25,50,75,100,150,200].includes(detail.radius||0)){radius.value=String(detail.radius);updateDistanceMessage();applyFilters()}
+  });
+ }
  applyFilters();
- // Refreshed jobs must be checked against an already applied distance filter too.
- if(bar.dataset.distanceActive&&!jobDistanceRequests.has(bar)&&Array.from(section.querySelectorAll<HTMLElement>('.jobOpportunity')).some(card=>card.dataset.distanceMiles===undefined))applyBtn.click();
+ // New/refreshed collection addresses must be checked once; failures wait for an explicit retry.
+ if(bar.dataset.distanceActive&&bar.dataset.distanceSearch&&!jobDistanceRequests.has(bar)&&bar.dataset.distanceCheckKey!==cardsKey())void runDistance(JSON.parse(bar.dataset.distanceSearch),Number(radius.value));
 }
 export default function TransporterCardExpander(){const pathname=usePathname();useEffect(()=>{if(pathname!=='/transporter')return;let bookings:any[]=[];let cancelled=false;let scheduled=false;const scan=()=>{scheduled=false;if(cancelled)return;const deliveryCards=Array.from(document.querySelectorAll<HTMLElement>('main.dashboardShell .transporterBooking'));deliveryCards.forEach((card,i)=>enhance(card,undefined,findBooking(card,i,bookings)));const jobCards=Array.from(document.querySelectorAll<HTMLElement>('main.dashboardShell .jobOpportunity'));jobCards.forEach(card=>enhance(card));ensureJobFilters()};const scheduleScan=()=>{if(scheduled||cancelled)return;scheduled=true;window.requestAnimationFrame(scan)};const load=async()=>{try{const response=await fetch('/api/my-bookings',{cache:'no-store'});if(response.ok){const data=await response.json();if(Array.isArray(data))bookings=data}}catch{}if(cancelled)return;scheduleScan()};load();scheduleScan();const observer=new MutationObserver(scheduleScan);observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-booking-status-label','data-transport-type','data-has-own-quote','data-own-quote-price-pence','data-has-customer-counter-date','data-customer-counter-date']});return()=>{cancelled=true;observer.disconnect();cancelJobDistanceSearch(document.querySelector<HTMLElement>('[data-job-filters]'));document.querySelector('[data-job-filters]')?.remove();document.querySelector('[data-job-filter-empty]')?.remove();document.querySelectorAll<HTMLElement>('#available-jobs .jobOpportunity').forEach(card=>card.style.display='')}},[pathname]);return null}

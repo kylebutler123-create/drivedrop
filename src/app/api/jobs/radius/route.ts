@@ -1,11 +1,23 @@
 import {NextResponse} from 'next/server';
 import {currentUser} from '@/lib/auth';
 import {z} from 'zod';
+import {collectionMiles,collectionPostcode,fullPostcode,jobOriginSchema,postcodePoint,resolveJobOrigin,type JobPoint} from '@/lib/job-locations';
 
-const S=z.object({postcode:z.string().min(2).max(16),jobs:z.array(z.object({id:z.string().min(1),collection:z.string().min(1)})).max(200)});
-const postcodePattern=/\b([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})\b/i;
-const toRad=(n:number)=>n*Math.PI/180;
-function miles(a:{lat:number;lon:number},b:{lat:number;lon:number}){const R=3958.7613;const dLat=toRad(b.lat-a.lat),dLon=toRad(b.lon-a.lon);const x=Math.sin(dLat/2)**2+Math.cos(toRad(a.lat))*Math.cos(toRad(b.lat))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
-function normalisePostcode(v:string){return v.toUpperCase().replace(/\s+/g,'').trim()}
-async function coords(postcode:string,key:string){const value=normalisePostcode(postcode);const r=await fetch(`https://api.ideal-postcodes.co.uk/v1/postcodes/${encodeURIComponent(value)}?api_key=${encodeURIComponent(key)}`,{headers:{accept:'application/json'},cache:'no-store'});const d=await r.json().catch(()=>null);if(!r.ok)throw new Error(d?.message||`Postcode ${postcode} could not be found`);const rows=Array.isArray(d?.result)?d.result:[];const row=rows.find((x:any)=>Number.isFinite(Number(x?.latitude))&&Number.isFinite(Number(x?.longitude)));if(!row)throw new Error(`No location data is available for postcode ${postcode}`);return{lat:Number(row.latitude),lon:Number(row.longitude)}}
-export async function POST(req:Request){try{const u=await currentUser();if(!u||u.role!=='TRANSPORTER')return NextResponse.json({error:'Transporter login required'},{status:403});const body=S.parse(await req.json());const key=process.env.IDEAL_POSTCODES_API_KEY;if(!key)return NextResponse.json({error:'Postcode distance lookup is not configured'},{status:503});const origin=await coords(body.postcode,key);const unique=Array.from(new Set(body.jobs.map(j=>j.collection.match(postcodePattern)?.[1]).filter((x):x is string=>!!x).map(normalisePostcode)));const locations=new Map<string,{lat:number;lon:number}>();await Promise.all(unique.map(async p=>{try{locations.set(p,await coords(p,key))}catch{}}));const distances=body.jobs.map(job=>{const raw=job.collection.match(postcodePattern)?.[1];if(!raw)return{id:job.id,miles:null};const point=locations.get(normalisePostcode(raw));return{id:job.id,miles:point?Math.round(miles(origin,point)*10)/10:null}});return NextResponse.json({origin:normalisePostcode(body.postcode),distances})}catch(e:any){return NextResponse.json({error:e?.message||'Unable to calculate job distances'},{status:400})}}
+const S=z.object({postcode:z.string().trim().regex(fullPostcode).optional(),origin:jobOriginSchema.optional(),jobs:z.array(z.object({id:z.string().min(1).max(150),collection:z.string().min(1).max(1000)})).max(200)}).refine(value=>!!value.origin||!!value.postcode);
+export async function POST(request:Request){
+ const user=await currentUser();
+ if(!user||user.role!=='TRANSPORTER')return NextResponse.json({error:'Transporter login required'},{status:403});
+ const parsed=S.safeParse(await request.json().catch(()=>null));
+ if(!parsed.success)return NextResponse.json({error:'Choose a UK town, city or postcode and try again.'},{status:400});
+ try{
+  const body=parsed.data;
+  const origin=await resolveJobOrigin(body.origin||{kind:'postcode',postcode:body.postcode!});
+  const unique=Array.from(new Set(body.jobs.map(job=>job.collection.match(collectionPostcode)?.[1]?.replace(/\s/g,'').toUpperCase()).filter((p):p is string=>!!p)));
+  const locations=new Map<string,JobPoint>();
+  // Bound provider concurrency and look up each collection postcode once.
+  for(let start=0;start<unique.length;start+=8)await Promise.all(unique.slice(start,start+8).map(async postcode=>{try{locations.set(postcode,await postcodePoint(postcode))}catch{}}));
+  if(unique.length&&!locations.size)throw new Error('Collection distances could not be checked. Please try again.');
+  const distances=body.jobs.map(job=>{const postcode=job.collection.match(collectionPostcode)?.[1]?.replace(/\s/g,'').toUpperCase();const point=postcode?locations.get(postcode):null;return {id:job.id,miles:point?collectionMiles(origin.point,point):null}});
+  return NextResponse.json({origin:origin.label,point:origin.point,distances,unlocatedCount:distances.filter(item=>item.miles===null).length});
+ }catch(error){return NextResponse.json({error:error instanceof Error?error.message:'Unable to calculate collection distances. Please try again.'},{status:503})}
+}

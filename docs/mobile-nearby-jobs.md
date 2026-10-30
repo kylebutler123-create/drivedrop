@@ -1,0 +1,15 @@
+# Mobile nearby job search
+
+Below 1024px, Available jobs uses the approved white location panel: Collection near, town/city/postcode suggestions, Use my location, visible Within selector (10–200 miles), and orange Find jobs button. Results identify the applied origin/radius; each card has a straight-line collection-distance badge. Soonest first remains the default, with Nearest collection and Newest request alongside Filters. The filter panel contains vehicle and transport type only. Desktop retains its existing postcode filter and layout.
+
+The new location search replaces keyword matching; a search around Manchester includes nearby collection points regardless of the town name written on a card. Full UK postcodes work without selecting a suggestion. Device location is requested only after tapping Use my location, and is used after Find jobs. Clearing the location restores all distance results while retaining vehicle/transport choices; Clear filters resets all filters. Empty matches offer the next wider radius and Clear filters.
+
+## Data and behaviour
+
+- Authenticated transporter-only `/api/jobs/locations` uses [Postcodes.io OS Open Names place search](https://postcodes.io/docs/place/query/) for Great Britain. Where there is no match, the existing Ideal Postcodes provider supplies [UK place suggestions](https://docs.ideal-postcodes.co.uk/docs/api/find-place), including Northern Ireland. IDs are resolved through the corresponding provider when searching; coordinates are not invented from names.
+- `/api/jobs/radius` still accepts the legacy postcode request and uses the existing Ideal Postcodes collection-postcode lookup. It also accepts a selected place or validated coordinates. Each collection postcode is looked up once per request, with bounded concurrency. Browser requests are split at the existing 200-job boundary.
+- Radius changes and sorting reuse the calculated distances. Refreshed jobs are checked against the active origin. No job, booking or payment record is written. Device coordinates stay in the current page state and read-only lookup request; they are not saved to a profile or local storage.
+- Distance failures keep the last successfully applied results and show an error. Missing collection postcodes/coordinates are excluded from a radius search and counted explicitly. Stale suggestions/searches are cancelled; clearing a pending search cannot bring old results back. Location permission failures leave the manual search usable.
+- The place picker supports keyboard arrows, Enter and Escape with combobox/listbox semantics. Responsive checks cover 320, 390, 430, 768 and 1023px, plus the desktop layout at 1440px.
+
+Validation: production build, `node scripts/test-nearby-jobs.cjs` (roles, search/resolve, actual distance helper, UK/input validation, deduplication and lookup failures), and local compiled-browser checks with synthetic records for search, filter combinations, empty/error states, geolocation, stale responses, refreshes and existing quote controls. Live public Manchester place search and ID resolution were also checked; no live bookings were modified.
