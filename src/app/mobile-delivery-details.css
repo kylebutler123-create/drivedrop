@@ -80,7 +80,7 @@
  body.role-transporter .bookingCard :is(.ddCollectionIntro,.transporterNextActionIntro)>p{font-size:12px;line-height:1.5;color:#5d687a;margin:0 0 11px}
  body.role-transporter .bookingCard .actionPanel>.actionButtons{display:flex;flex-direction:column;gap:7px;margin:0}
  body.role-transporter .bookingCard :is(.actionPanel,.transporterCollectionAction) .btn{width:100%;min-height:42px!important;padding:10px 12px!important;margin:0;border-radius:8px;font-size:14px;line-height:1.4;font-weight:700;justify-content:center;box-shadow:none}
- body.role-transporter .bookingCard:has(>.ddDeliveryPreview) :is([data-poc],[data-pod-mount])>.btn.orange.fullBtn{font-size:16px}
+ body.role-transporter .bookingCard:has(>.ddDeliveryPreview) :is([data-poc],[data-pod-mount])>.btn.orange.fullBtn{font-size:16px;font-weight:700}
  body.role-transporter .bookingCard :is(.actionPanel,.transporterCollectionAction) .btn.orange{background:#ff7114;border:1px solid #ff7114;color:#071c43}
  body.role-transporter .bookingCard .actionPanel [data-cancel-delivery]{background:#dfe8f2;border-color:#dfe8f2;color:#071c43}
  body.role-transporter .bookingCard .actionPanel>[data-pod-mount]{margin-top:8px}
