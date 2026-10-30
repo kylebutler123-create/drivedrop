@@ -40,6 +40,7 @@ export function MobileCompletedDetails({booking,payoutDetailsComplete,payoutStat
    {!payoutDetailsComplete&&!['PAID','CANCELLED'].includes(booking.payment?.payoutStatus)&&<div className="ddArchiveHeld"><strong>Payout details required</strong><p>Complete payout setup in Account before DriveDrop can release this payout.</p><Link href="/account">Set up payouts <Icon name="arrow"/></Link></div>}
    {booking.payment?.provider==='STRIPE'&&booking.payment?.payoutStatus==='PAID'&&<p className="ddArchiveStripeNote">Released to your Stripe balance. Bank arrival is shown separately in your Stripe dashboard.</p>}
   </section>
+  <section className="ddCompletedStatement"><h3>Statement</h3><p>View or save your delivery statement.</p><Link prefetch={false} target="_blank" rel="noreferrer" href={`/bookings/${encodeURIComponent(booking.id)}/statement`} aria-label={`Open printable payment statement for ${booking.job.vehicleMake} ${booking.job.vehicleModel}`}><ArchivePrintIcon/>Printable statement</Link></section>
   <details className="ddCompletedEvidence"><summary><Icon name="file"/><span><strong>Collection &amp; delivery evidence</strong><small>Photos and signed reports</small></span><Icon name="chevronDown"/></summary><div className="ddEvidenceReports"><TransporterDeliveryProof booking={booking} type="COLLECTION"/><TransporterDeliveryProof booking={booking} type="DELIVERY"/></div></details>
  </div>;
 }
