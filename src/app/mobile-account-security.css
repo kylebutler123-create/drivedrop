@@ -1,0 +1,57 @@
+/* The mobile website and installed app share the original security editors. */
+.ddSecurityMobile{display:none!important}
+.securityEditCard input::placeholder{color:transparent!important}
+@media(max-width:1023px){
+ .ddAccountPage .ddSecurityLegacy{display:none!important}
+ .ddAccountPage .ddSecurityMobile{display:flex!important}
+ .ddAccountPage .ddSecurityHero{min-height:108px;gap:17px;padding:16px 14px}
+ .ddAccountPage .ddSecurityHero .ddSectionAvatar{width:72px;height:72px;flex-basis:72px;background:linear-gradient(135deg,#fff,#e5f0fa)}
+ .ddAccountPage .ddSecurityHero .ddSectionAvatar svg{width:35px;height:35px}
+ .ddAccountPage .ddSecurityHero strong{font-size:20px;letter-spacing:-.5px}
+ .ddAccountPage .ddSecurityHero>div>span{font-size:14px;margin-top:4px}
+ body:is(.role-customer,.role-transporter) .ddAccountPage :is(.ddLoginEmailPanel,.ddPasswordPanel,.ddSecurityEdit){display:flex;flex-direction:column;align-items:stretch;gap:16px;margin:13px 0 0;padding:14px 12px;border:1px solid #dfebf8;border-radius:12px;background:#fff;box-shadow:none}
+ .ddAccountPage .ddSecurityCardHeading{align-items:flex-start;gap:14px;min-width:0}
+ .ddAccountPage .ddSecurityCardHeading>div{min-width:0;flex:1}
+ .ddAccountPage .ddSecurityIcon{display:grid;place-items:center;flex:0 0 54px;width:54px;height:54px;border-radius:10px;background:#e7f2ff;color:#071c43}
+ .ddAccountPage .ddSecurityIcon svg{width:31px;height:31px}
+ .ddAccountPage .ddSecurityCardHeading :is(strong,h2){display:block;color:#071c43;font-size:17px;font-weight:700;line-height:1.4;letter-spacing:-.4px;margin:2px 0 0}
+ .ddAccountPage .ddSecurityEmail{display:block;font-size:16px;line-height:1.45;color:#071c43;overflow-wrap:anywhere;margin-top:3px}
+ .ddAccountPage .ddSecurityCardHeading p{margin:5px 0 0;color:#63799d;font-size:13px;line-height:1.55}
+ .ddAccountPage .ddPasswordPanel .ddSecurityCardHeading{align-items:center}
+ body:is(.role-customer,.role-transporter) .ddAccountPage .ddSecurityChange{display:flex;align-items:center;justify-content:center;width:100%;min-height:45px;padding:10px 12px;border:1.5px solid #ff7114;border-radius:8px;background:#fff;color:#d94700;font-size:15px;font-weight:600;box-shadow:none;margin:0}
+ .ddAccountPage .ddSecurityChange:hover{background:#fff7f0}
+ .ddAccountPage .ddSecurityEdit .panelHeading{margin:0;padding:0;border:0;display:block}
+ .ddAccountPage .ddSecurityEdit .ddSecurityCardHeading{gap:13px;align-items:center}
+ .ddAccountPage .ddSecurityEdit .ddSecurityIcon{width:46px;height:46px;flex-basis:46px;border-radius:9px}
+ .ddAccountPage .ddSecurityEdit .ddSecurityIcon svg{width:28px;height:28px}
+ .ddAccountPage .ddSecurityEdit .ddSecurityCardHeading p{font-size:11px;line-height:1.5;margin:5px 0 0}
+ .ddAccountPage .ddSecurityEdit .accountEditGrid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:0}
+ .ddAccountPage .ddEmailEdit{gap:10px!important}
+ .ddAccountPage .ddSecurityEdit .accountEditGrid label>span{font-size:13px;line-height:1.4;font-weight:400;letter-spacing:0;text-transform:none}
+ .ddAccountPage .ddSecurityEdit .accountEditGrid label{gap:5px;font-size:13px;font-weight:400;line-height:1.4;color:#294a77;min-width:0}
+ .ddAccountPage .ddSecurityEdit .accountEditGrid input{min-width:0;width:100%;min-height:42px;padding:9px 11px;font-size:16px;line-height:1.4;background:#fff;border:1px solid #cddff4;border-radius:7px;color:#071c43;box-shadow:none}
+ .ddAccountPage .ddSecurityEdit input::placeholder{color:#7085a6!important;opacity:1}
+ .ddAccountPage .ddSecurityEdit input:disabled{color:#63799d;background:#f0f2f5;opacity:1;-webkit-text-fill-color:#63799d}
+ .ddAccountPage .ddSecurityEdit input:focus-visible{outline:2px solid #315b94;outline-offset:2px}
+ .ddAccountPage .ddEmailVerificationNote{align-items:flex-start;gap:12px;padding:12px;border-radius:9px;background:#eaf3ff;color:#071c43}
+ .ddEmailVerificationNote>svg{flex:0 0 29px;width:29px;height:29px;margin-top:2px}
+ .ddEmailVerificationNote strong{font-size:13px;line-height:1.4}.ddEmailVerificationNote p{font-size:12px;line-height:1.55;color:#526d94;margin:4px 0 0}
+ .ddAccountPage .ddSecurityEdit>.formNotice,.ddAccountPage .ddPasswordPanel>.accountEditNotice{margin:0;overflow-wrap:anywhere;font-size:13px;line-height:1.55}
+ .ddAccountPage .ddSecurityEdit .accountEditActions{display:flex!important;flex-direction:column;gap:8px;margin:0!important;padding:0;border:0}
+ body:is(.role-customer,.role-transporter) .ddAccountPage .ddSecurityEdit .accountEditActions .btn{display:flex;justify-content:center;align-items:center;flex:auto;width:100%;min-height:44px;padding:10px 12px;margin:0;font-size:15px;font-weight:700;border-radius:8px;box-shadow:none}
+ .ddAccountPage .ddSecurityEdit .accountEditActions .btn.orange{background:#ff7114;color:#071c43;border:1px solid #ff7114}
+ .ddAccountPage .ddSecurityEdit .accountEditActions .btn.light{background:#e6f1ff;color:#071c43;border:1px solid #e6f1ff}
+ .ddAccountPage .ddSecurityEdit .accountEditActions .btn:disabled{opacity:.55;cursor:wait}
+ .ddAccountPage :is(.transporterSecurityHost,.ddCustomerSecurity):has(.securityEditCard) .ddLoginEmailPanel{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;padding:10px 12px}
+ .ddAccountPage :is(.transporterSecurityHost,.ddCustomerSecurity):has(.securityEditCard) .ddLoginEmailPanel .ddSecurityCardHeading{align-items:center;gap:10px}
+ .ddAccountPage :is(.transporterSecurityHost,.ddCustomerSecurity):has(.securityEditCard) .ddLoginEmailPanel .ddSecurityIcon{width:42px;height:42px;flex-basis:42px}
+ .ddAccountPage :is(.transporterSecurityHost,.ddCustomerSecurity):has(.securityEditCard) .ddLoginEmailPanel .ddSecurityIcon svg{width:27px;height:27px}
+ .ddAccountPage :is(.transporterSecurityHost,.ddCustomerSecurity):has(.securityEditCard) .ddLoginEmailPanel .ddSecurityCardHeading strong{font-size:15px;margin:0}
+ .ddAccountPage :is(.transporterSecurityHost,.ddCustomerSecurity):has(.securityEditCard) .ddLoginEmailPanel .ddSecurityEmail{font-size:13px;margin:1px 0 0}
+ .ddAccountPage :is(.transporterSecurityHost,.ddCustomerSecurity):has(.securityEditCard) .ddLoginEmailPanel p{display:none}
+ body:is(.role-customer,.role-transporter) .ddAccountPage :is(.transporterSecurityHost,.ddCustomerSecurity):has(.securityEditCard) .ddLoginEmailPanel .ddSecurityChange{width:auto;min-height:44px;padding:4px 0 4px 4px;border:0;background:none;font-size:11px;white-space:nowrap}
+ body:is(.role-customer,.role-transporter) .ddAccountPage[data-mobile-account-section=security]>.ddSecurityPrivacy{display:flex!important;align-items:center;gap:14px;padding:15px 17px;margin-top:13px;border:1px solid #d1e5ff;border-radius:11px;background:#e7f2ff;font-size:14px;line-height:1.5;color:#071c43}
+ .ddSecurityPrivacy>svg{width:27px;height:31px;flex:0 0 27px}
+ body:is(.role-customer,.role-transporter) .ddAccountPage[data-mobile-account-section=security]:has(.ddSecurityEdit)>.ddSecurityPrivacy{display:none!important}
+ @media(max-width:359px){.ddAccountPage .ddSecurityHero{gap:12px}.ddAccountPage .ddSecurityHero strong{font-size:17px}.ddAccountPage .ddSecurityHero .ddSectionAvatar{width:60px;height:60px;flex-basis:60px}}
+}

@@ -51,10 +51,12 @@ export default function MobileAccountLayout({children, className, name, role, st
         </div></section>
         <div className="ddAccountFooter"><a href="/help"><Icon name="help"/>Help &amp; support</a><form action="/api/auth/logout" method="post"><button type="submit"><Icon name="out"/>Sign out</button></form><button className="ddCloseLink" type="button" onClick={() => open('close')}><Icon name="trash"/>Close account</button></div>
       </> : <header className="ddAccountSubheading"><button type="button" onClick={() => open('overview')} aria-label="Back to account"><Icon name="arrow"/></button><h1 ref={heading} tabIndex={-1}>{titles[section]}</h1></header>}
+      {section === 'security' && <div className="ddAccountSectionHero ddSecurityHero"><span className="ddSectionAvatar"><AccountIcon name="lock"/></span><div><strong>Manage your sign-in</strong><span>Email and password</span></div></div>}
       {section === 'personal' && <><MobileAccountHero name={name} subtitle={`${transporter ? 'Transporter' : 'Customer'} account`} status={status}/>{!editing && <MobilePersonalDetails name={name} role={role} info={info} onEdit={() => setEditing(true)}/>}</>}
       {section === 'business' && <><MobileAccountHero name={info.business?.businessName || name} subtitle="Your transporter profile" business/>{!editing && <MobileBusinessDetails info={info} onEdit={() => setEditing(true)}/>}</>}
     </div>}
     {children}
+    {mobileRole && section === 'security' && <div className="ddMobileOnly ddSecurityPrivacy"><AccountIcon name="lock"/><span>Keep your sign-in details private.</span></div>}
     {mobileRole && section === 'personal' && !editing && <button type="button" className="ddMobileOnly ddPersonalSecurityLink" onClick={() => open('security')}><span><Icon name="lock"/></span><div><strong>Login &amp; security</strong><small>Change your login email and password securely.</small></div><Icon name="chevronRight"/></button>}
   </main></AccountEditorContext.Provider>;
 }
