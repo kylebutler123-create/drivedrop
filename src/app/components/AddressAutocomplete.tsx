@@ -3,8 +3,9 @@ import {useEffect,useId,useRef,useState} from 'react';
 import type {ReactNode} from 'react';
 
 type Hit={id:string;suggestion:string};
-export default function AddressAutocomplete({name,label,desktopPlaceholder,placeholder,initialValue=''}:{name:string;label:ReactNode;desktopPlaceholder?:string;placeholder?:string;initialValue?:string}){
+export default function AddressAutocomplete({name,label,desktopPlaceholder,placeholder,initialValue='',compact=false,manualEntry=false}:{name:string;label:ReactNode;desktopPlaceholder?:string;placeholder?:string;initialValue?:string;compact?:boolean;manualEntry?:boolean}){
  const inputId=useId();
+ const pointerActive=useRef(false);
  const [desktopPrompt,setDesktopPrompt]=useState(false);
  useEffect(()=>{
   if(!desktopPlaceholder)return;
@@ -26,14 +27,21 @@ export default function AddressAutocomplete({name,label,desktopPlaceholder,place
   activeRequest.current?.abort();activeRequest.current=null;
  }
  useEffect(()=>()=>cancelPending(),[]);
+ useEffect(()=>{if(manualEntry){cancelPending();setOpen(false);setHits([]);setLoading(false);setLookupMessage(null)}},[manualEntry]);
  useEffect(()=>{
   if(!open)return;
-  const onOutsidePointer=(event:PointerEvent)=>{
+  const beginPointer=()=>{pointerActive.current=true};
+  const endPointer=()=>{pointerActive.current=false};
+  const onOutsidePointer=(event:MouseEvent)=>{
+   endPointer();
    if(event.target instanceof Node&&!field.current?.contains(event.target))setOpen(false);
   };
-  document.addEventListener('pointerdown',onOutsidePointer);
-  return()=>document.removeEventListener('pointerdown',onOutsidePointer);
- },[open]);
+  // Compact results occupy space: wait for the click before collapsing them.
+  const outsideEvent=compact?'click':'pointerdown';
+  document.addEventListener(outsideEvent,onOutsidePointer);
+  if(compact){document.addEventListener('pointerdown',beginPointer,true);document.addEventListener('keydown',endPointer,true);document.addEventListener('pointercancel',endPointer)}
+  return()=>{document.removeEventListener(outsideEvent,onOutsidePointer);document.removeEventListener('pointerdown',beginPointer,true);document.removeEventListener('keydown',endPointer,true);document.removeEventListener('pointercancel',endPointer);endPointer()};
+ },[open,compact]);
  function useEnteredAddress(){
   cancelPending();
   setOpen(false);setHits([]);setLoading(false);
@@ -43,6 +51,7 @@ export default function AddressAutocomplete({name,label,desktopPlaceholder,place
   cancelPending();
   const version=requestVersion.current;
   setValue(v);setOpen(true);setHits([]);setLoading(false);setLookupMessage(null);
+  if(manualEntry){setOpen(false);return}
   if(v.trim().length<3)return;
   timer.current=setTimeout(async()=>{
    timer.current=null;
@@ -80,5 +89,5 @@ export default function AddressAutocomplete({name,label,desktopPlaceholder,place
    if(version===requestVersion.current)activeRequest.current=null;
   }
  }
- return <div className="field addressField" ref={field} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget as Node|null))setOpen(false)}} onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();setOpen(false)}}}><label htmlFor={inputId}>{label}</label><input id={inputId} aria-describedby={hintId} name={name} value={value} onChange={e=>change(e.target.value)} onFocus={()=>setOpen(true)} autoComplete="off" placeholder={placeholder||(desktopPrompt?desktopPlaceholder:"Start typing an address or postcode")} required aria-autocomplete="list"/>{open&&(value.trim().length>0||loading||hits.length>0)&&<div className="addressSuggestions">{value.trim().length>0&&<button type="button" style={{fontWeight:700,color:'#b9560c',background:'#fff8f1'}} onPointerDown={e=>e.preventDefault()} onMouseDown={e=>e.preventDefault()} onClick={useEnteredAddress}>Use address as entered</button>}{loading&&<div className="addressStatus">Finding addresses…</div>}{!loading&&hits.map(h=><button type="button" key={h.id} onPointerDown={e=>e.preventDefault()} onMouseDown={e=>e.preventDefault()} onClick={()=>choose(h)}>{h.suggestion}</button>)}</div>}<small id={hintId} className="muted" role={lookupMessage?'status':undefined}>{lookupMessage||'Can’t find it? Type the full address and choose “Use address as entered”.'}</small></div>
+ return <div className={"field addressField"+(compact?" compactAddressField":"")} ref={field} onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget as Node|null)&&!(compact&&pointerActive.current))setOpen(false)}} onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();setOpen(false)}}}><label htmlFor={inputId}>{label}</label><span className="addressInputWrap" style={compact?undefined:{display:'contents'}}>{compact&&<svg className="addressPin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.6"/></svg>}<input id={inputId} aria-describedby={!compact||lookupMessage?hintId:undefined} name={name} value={value} onChange={e=>change(e.target.value)} onFocus={()=>setOpen(!manualEntry)} autoComplete="off" placeholder={placeholder||(desktopPrompt?desktopPlaceholder:"Start typing an address or postcode")} required aria-autocomplete={manualEntry?"none":"list"}/></span>{open&&(value.trim().length>0||loading||hits.length>0)&&<div className="addressSuggestions">{value.trim().length>0&&<button type="button" style={{fontWeight:700,color:'#b9560c',background:'#fff8f1'}} onPointerDown={e=>e.preventDefault()} onMouseDown={e=>e.preventDefault()} onClick={useEnteredAddress}>Use address as entered</button>}{loading&&<div className="addressStatus">Finding addresses…</div>}{!loading&&hits.map(h=><button type="button" key={h.id} onPointerDown={e=>e.preventDefault()} onMouseDown={e=>e.preventDefault()} onClick={()=>choose(h)}>{h.suggestion}</button>)}</div>}{(!compact||lookupMessage)&&<small id={hintId} className="muted" role={lookupMessage?'status':undefined}>{lookupMessage||'Can’t find it? Type the full address and choose “Use address as entered”.'}</small>}</div>
 }

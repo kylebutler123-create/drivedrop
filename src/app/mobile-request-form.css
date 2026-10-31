@@ -1,0 +1,43 @@
+@media(max-width:1023px){
+ body.role-customer main:has(.mobileRequestForm:not([hidden]))>.ddMobilePageTitle{display:none!important}
+ body.role-customer .mobileRequestForm[hidden]{display:none!important}
+ body.role-customer .mobileRequestForm{padding:0!important;margin:0!important;border:0!important;background:none!important;box-shadow:none!important}
+ .mobileRequestIntro{margin:0 0 20px;padding:0 3px}
+ body.role-customer .mobileRequestIntro h1{font-size:26px;line-height:1.2;letter-spacing:-.7px;color:#071c43;margin:0 0 8px;font-weight:700}
+ .mobileRequestIntro p{font-size:14px;line-height:1.5;color:#637b9c;margin:0}
+ .mobileRequestForm form{display:grid;gap:18px}
+ .mobileRequestSection{background:#fff;border:1px solid #dce6f2;border-radius:18px;padding:16px;box-shadow:0 5px 18px #193d6405;min-width:0}
+ body.role-customer .mobileRequestSection h2{display:flex;align-items:center;gap:12px;font-size:21px;line-height:1.3;letter-spacing:-.5px;margin:0 0 16px;color:#071c43;font-weight:700}
+ .mobileRequestSection h2>span{display:grid;place-items:center;width:38px;height:38px;flex-shrink:0;background:#fff0e6;border-radius:12px;color:#ff7114;font-size:22px}
+ .mobileRequestSection>.field,.mobileRequestSection>.mobileMakeModel{margin:0 0 15px;min-width:0}
+ body.role-customer .mobileRequestForm label,body.role-customer .mobileRequestForm .vehiclePhotoLabel{display:block;font-size:14px;line-height:1.4;font-weight:500;color:#071c43;text-transform:none;letter-spacing:0;margin:0 0 6px}
+ .mobileRequestForm label small{font-size:inherit;font-weight:400;color:#7085a1}
+ body.role-customer .mobileRequestForm .field :is(input:not(.quotePickerValidation),select),body.role-customer .mobileRequestForm .quotePickerTrigger{width:100%;min-width:0;min-height:48px;padding:12px 13px;border:1px solid #d3dfed;border-radius:11px;background:#f8fafd;color:#071c43;font-size:16px;line-height:1.4;box-sizing:border-box;box-shadow:none}
+ body.role-customer .mobileRequestForm input::placeholder,body.role-customer .mobileRequestForm .quotePickerTrigger:not(.hasValue){color:#7b8595;opacity:1}
+ .mobileRequestForm .addressInputWrap{display:block;position:relative}
+ .mobileRequestForm .addressPin{position:absolute;left:13px;top:14px;width:20px;height:20px;color:#5d7290;pointer-events:none}
+ body.role-customer .mobileRequestForm .addressField input{padding-left:40px!important}
+ .mobileRequestForm .addressField{position:relative}
+ .mobileRequestForm .addressField small[role=status]{display:block;font-size:12px;line-height:1.5;margin-top:6px}
+ .mobileRequestForm .addressSuggestions{position:relative;inset:auto;z-index:20;width:100%;margin-top:6px;max-height:220px;overflow-y:auto}
+ .mobileRequestForm .mobileAddressHelp{font-size:12px;line-height:1.5;color:#637b9c;margin:-7px 0 17px}
+ .mobileAddressHelp button{border:0;padding:0;background:none;font:inherit;color:#0075ff;text-decoration:underline;cursor:pointer}
+ .mobileRequestForm .collectionDateWindowField{position:relative;margin-bottom:0;min-width:0}
+ .mobileRequestForm .collectionDateWindowField>small{display:block;font-size:12px;line-height:1.5;color:#637b9c;margin-top:6px}
+ .mobileRequestForm .quotePickerTrigger svg{width:22px;height:22px;color:#071c43}
+ .mobileRequestForm .mobileMakeModel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+ .mobileRequestForm .mobileMakeModel>.field{min-width:0;margin:0}
+ body.role-customer .mobileRequestForm .vehiclePhotoField{display:block!important;margin:0 0 16px!important}
+ body.role-customer .mobileRequestForm .vehiclePhotoArea{padding:12px;gap:12px;border:1px dashed #bdcfe4;border-radius:12px;background:#f8fafd;display:flex;align-items:center}
+ body.role-customer .mobileRequestForm .vehiclePhotoPreview{width:60px;height:62px;border-radius:9px;background:#e8eff6;flex:none}
+ body.role-customer .mobileRequestForm .vehiclePhotoCopy{min-width:0;flex:1}
+ .mobileRequestForm .vehiclePhotoCopy>strong{display:block;font-size:13px;line-height:1.4;font-weight:400;color:#071c43}
+ body.role-customer .mobileRequestForm .vehiclePhotoCopy p{font-size:12px!important;line-height:1.5;color:#7085a1;margin:3px 0 8px!important}
+ body.role-customer .mobileRequestForm .vehiclePhotoActions .vehiclePhotoUpload{display:flex;align-items:center;gap:8px;padding:8px 10px!important;border:1px solid #c3d3e5;border-radius:8px;color:#071c43;background:#fff;font-size:12px;margin:0;min-height:36px}
+ body.role-customer .mobileRequestForm .vehiclePhotoLabel small{font-size:14px;color:#7085a1;font-weight:400}
+ body.role-customer .mobileRequestForm .mobileRequestSubmit{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;padding:12px 38px;border-radius:10px;background:linear-gradient(110deg,#ff6b08,#ff7a17);color:#071c43;font-size:16px;font-weight:700;line-height:1.4;margin:0;box-shadow:none}
+ .mobileRequestSubmit svg{position:absolute;right:15px;width:23px;height:23px}
+ .mobileRequestForm .mobileRequestCompare{font-size:11px;line-height:1.5;text-align:center;color:#7085a1;margin:8px 0 0}
+ .mobileRequestForm .mobileRequestNotice{font-size:12px;line-height:1.5;color:#637b9c;margin:0 0 15px}
+ @media(max-width:360px){.mobileRequestSection{padding:13px}.mobileRequestIntro h1{font-size:25px}.mobileRequestForm .vehiclePhotoArea{padding:10px;gap:9px}.mobileRequestForm .vehiclePhotoPreview{width:46px;height:56px}.mobileRequestForm .mobileAddressHelp{font-size:11px}}
+}

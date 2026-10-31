@@ -1,8 +1,7 @@
 'use client';
 
 import {useEffect,useState,type FormEventHandler,type ReactNode} from 'react';
-import useUkToday from './useUkToday';
-import CollectionWindowFields,{Icon as CollectionIcon} from './CollectionWindowFields';
+import MobileRequestForm from './MobileRequestForm';
 import CollectionDateWindowField from './CollectionDateWindowField';
 import VehiclePhotoField from './VehiclePhotoField';
 import Image from 'next/image';
@@ -12,7 +11,7 @@ import {vehicleTypes} from '@/lib/vehicle-types';
 import {transportTypes} from '@/lib/transport-types';
 
 type QuoteView = 'QUOTES' | 'BOOKINGS' | 'COMPLETED' | 'CANCELLED';
-type Props = {
+export type RequestFormProps = {
   hidden: boolean;
   initialRoute?: {collection: string; delivery: string};
   newJobId: string | null;
@@ -43,21 +42,13 @@ function FieldLabel({mobile, desktop}: {mobile: string; desktop: string}) {
   return <><span className="quoteMobileOnly">{mobile}</span><span className="quoteDesktopOnly">{desktop}</span></>;
 }
 
-function desktopCalendarOnly(){
-  return typeof window !== 'undefined' && window.matchMedia('(min-width:1024px)').matches && document.body.classList.contains('approvedDesktop');
-}
-function openCollectionCalendar(input: HTMLInputElement){
-  if(!desktopCalendarOnly())return;
-  try{input.showPicker?.();}catch{/* The native calendar icon remains available. */}
-}
-
-export default function CustomerQuoteRequest(props: Props) {
-  const today=useUkToday();
+export default function CustomerQuoteRequest(props: RequestFormProps) {
   const [date,setDate]=useState('');
   const [windowTimes,setWindowTimes]=useState({from:'',until:''});
   const [desktop,setDesktop]=useState(false);
   useEffect(()=>{const media=window.matchMedia('(min-width:1024px)');const sync=()=>setDesktop(media.matches);sync();media.addEventListener('change',sync);return()=>media.removeEventListener('change',sync)},[]);
   const [transport,setTransport]=useState(''),[running,setRunning]=useState('');
+  if(!desktop)return <MobileRequestForm key={props.newJobId||'draft'} {...props}/>;
   return <section className="dashboardCard requestPanel customerQuoteRequest" hidden={props.hidden}>
     <div className="quoteDesktopOnly quotePageIntro">
       <div className="quotePageHeading"><div><h1>Get a quote</h1><p>Tell us what needs moving and receive quotes from independent transporters.</p></div><span>UK vehicle transport</span></div>
@@ -71,7 +62,7 @@ export default function CustomerQuoteRequest(props: Props) {
             <div className="quoteDesktopOnly quoteSectionTitle quoteCollectionTitle"><span className="quoteSectionNumber">1</span><QuoteIcon name="pin"/><div><h2>Collection &amp; delivery</h2><p>Where is your vehicle going?</p></div></div>
             <AddressAutocomplete key={`collection-${props.newJobId || props.initialRoute?.collection || 'draft'}`} initialValue={props.initialRoute?.collection} name="collection" label={<FieldLabel mobile="COLLECTION" desktop="Collection"/>} desktopPlaceholder="Enter collection address"/>
             <AddressAutocomplete key={`delivery-${props.newJobId || props.initialRoute?.delivery || 'draft'}`} initialValue={props.initialRoute?.delivery} name="delivery" label={<FieldLabel mobile="DELIVERY" desktop="Delivery"/>} desktopPlaceholder="Enter delivery address"/>
-            {desktop?<CollectionDateWindowField key={props.newJobId||'draft'} id="request-collection-window" required disabled={props.submitting} initialValue={date} initialFrom={windowTimes.from} initialUntil={windowTimes.until} onChange={selection=>{setDate(selection.value);setWindowTimes({from:selection.from,until:selection.until})}}/>:<CollectionWindowFields required key={props.newJobId||'draft'} date={date} dateField={<div className="dd-date-column"><label htmlFor="request-collection-date">Collection date</label><div className="dd-date-contained"><CollectionIcon name="calendar"/><span aria-hidden="true">{date?new Date(date+'T12:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'Europe/London'}):'Select date'}</span><CollectionIcon name="chevron"/><input id="request-collection-date" type="date" min={today} name="collectionDate" required value={date} onChange={e=>setDate(e.target.value)} onClick={event=>openCollectionCalendar(event.currentTarget)} onKeyDown={event=>{if(!desktopCalendarOnly()||event.key==='Tab'||event.key==='Escape')return;event.preventDefault();if(event.key==='Enter'||event.key===' '||event.key==='ArrowDown')openCollectionCalendar(event.currentTarget);}} onBeforeInput={event=>{if(desktopCalendarOnly())event.preventDefault()}} onPaste={event=>{if(desktopCalendarOnly())event.preventDefault()}} onDrop={event=>{if(desktopCalendarOnly())event.preventDefault()}}/></div></div>}/>}<div className="field"><label htmlFor="request-transport-type"><FieldLabel mobile="TRANSPORT TYPE" desktop="Transport type"/></label><select id="request-transport-type" name="transportType" required defaultValue="" onChange={event=>setTransport(event.target.value)}><option value="" disabled>Select transport type</option>{transportTypes.map(type => <option key={type.value} value={type.value} disabled={['ANY','DRIVEN'].includes(type.value)&&running==='false'}>{type.label}</option>)}</select></div>
+            <CollectionDateWindowField key={props.newJobId||'draft'} id="request-collection-window" required disabled={props.submitting} initialValue={date} initialFrom={windowTimes.from} initialUntil={windowTimes.until} onChange={selection=>{setDate(selection.value);setWindowTimes({from:selection.from,until:selection.until})}}/><div className="field"><label htmlFor="request-transport-type"><FieldLabel mobile="TRANSPORT TYPE" desktop="Transport type"/></label><select id="request-transport-type" name="transportType" required defaultValue="" onChange={event=>setTransport(event.target.value)}><option value="" disabled>Select transport type</option>{transportTypes.map(type => <option key={type.value} value={type.value} disabled={['ANY','DRIVEN'].includes(type.value)&&running==='false'}>{type.label}</option>)}</select></div>
             <div className="quoteDesktopOnly quoteSectionTitle quoteVehicleTitle"><span className="quoteSectionNumber">2</span><QuoteIcon name="car"/><div><h2>Vehicle details</h2><p>Help transporters provide an accurate quote.</p></div></div>
             <div className="field quoteVehicleType"><label htmlFor="request-vehicle-type"><FieldLabel mobile="VEHICLE TYPE" desktop="Vehicle type"/></label><select id="request-vehicle-type" name="vehicleType" required value={props.selectedVehicleType} onChange={event => props.onVehicleTypeChange(event.target.value)}><option value="" disabled>Select vehicle type</option>{vehicleTypes.map(type => <option key={type} value={type}>{type}</option>)}</select></div>
             <div className="field quoteExampleField"><label htmlFor="request-vehicle-make"><FieldLabel mobile="MAKE" desktop="Make"/></label><input id="request-vehicle-make" name="vehicleMake" required placeholder=" "/><span className="quoteDesktopOnly quoteExample">e.g. BMW</span></div>
