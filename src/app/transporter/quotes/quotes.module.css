@@ -1,4 +1,5 @@
 .page{display:none}
+.mobileDetails{display:none}
 @media(min-width:1024px){
  :global(body.approvedDesktop):has(.page){background:#f3f8fd}
  .legacy{display:none!important}
@@ -34,4 +35,25 @@
  .page.embedded{display:block;color:#071c43;margin-top:18px}
  .embedded>header{display:none}.embedded .cards{display:grid;gap:14px}.embedded .card{border:1px solid #e3eaf3;border-radius:13px;overflow:hidden;background:#fff;min-width:0}
  .embedded .card>:global(.tdCompactToggle){display:none}.embedded .card>:global(.tdQuoteActions){display:flex;flex-wrap:wrap;gap:8px;padding:0 12px 12px}.embedded .card>:global(.tdQuoteBody):not([hidden]){padding:16px;border-top:1px solid #e3eaf3;font-size:13px;line-height:1.5}.embedded .card>:global(.tdQuoteBody) svg{width:20px;height:20px}.embedded .empty{padding:22px;background:white;border:1px solid #e3eaf3;border-radius:12px;font-size:13px}.embedded .empty h2{font-size:18px}
+ .embedded .card>:global(.tdQuoteActions){padding:0 11px 12px}
+ .embedded .card > :global(.tdQuoteActions) :global(.requoteWrap){width:100%;margin:0}
+ .embedded .card > :global(.tdQuoteActions) :global(.requoteWrap) > :global(.requoteActions){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0;width:100%}
+ .embedded .card > :global(.tdQuoteActions) :global(.requoteWrap) > :global(.requoteActions) > :global(.btn){display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;width:100%;padding:8px 10px;border:1px solid #b7c9df!important;border-radius:8px;background:#fff!important;color:#081c43!important;font-size:13px;font-weight:600;box-shadow:none;line-height:1.3}
+ .embedded .card > :global(.tdQuoteActions) :global(.requoteWrap) > :global(.requoteActions) > :global(.btn):last-child{border-color:#efc5c9!important;color:#b4232c!important}
+ .embedded .card > :global(.tdQuoteActions) :global(.requoteWrap) > :global(.requoteActions) > :global(.btn) > svg{display:block;width:16px;height:16px;flex:none}
+ .embedded :global(.ddMyQuotePrice){display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;margin:10px 0;border-top:1px solid #e3eaf3}
+ .embedded :global(.ddMyQuotePrice) small{display:block;font-size:11px;color:#63799d;margin-bottom:3px}
+ .embedded :global(.ddMyQuotePrice) strong{display:block;font-size:23px;color:#081c43;font-weight:700;line-height:1.2}
+ .embedded :global(.ddMyQuotePrice)>span{font-size:10px;line-height:1.3;border-radius:20px;padding:6px 9px;background:#fff2dc;color:#925810;font-weight:600}
+ .embedded :global(.tdQuoteBody) > :global(.tdQuoteSummary),.embedded :global(.tdQuoteBody) > :global(.tdCardEnd){display:none}
+ .embedded .mobileDetails{display:block}
+ .mobileDetails h3{margin:0 0 12px;font-size:16px;line-height:1.3;letter-spacing:-.2px;color:#081c43}
+ .quoteMeta{margin:0;padding:0 12px;border:1px solid #dce6f2;border-radius:10px;background:#f8fbff}
+ .quoteMeta>div{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid #e3eaf3;font-size:12px;line-height:1.5}
+ .quoteMeta>div:last-child{border:0}
+ .quoteMeta dt{color:#63799d;flex-shrink:0}
+ .quoteMeta dd{margin:0;min-width:0;color:#081c43;text-align:right;font-weight:600;overflow-wrap:anywhere}
+ .quoteMeta dd small{display:block;font-size:11px;font-weight:400;color:#63799d;margin-top:2px}
+ .quoteMessage{margin-top:17px}
+ .quoteMessage p{font-size:13px;line-height:1.65;margin:0;color:#536b90;background:#f8fbff;padding:13px;border:1px solid #dce6f2;border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere}
 }
