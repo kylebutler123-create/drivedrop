@@ -5,11 +5,11 @@
   body:is(.role-customer,.role-transporter) .ddMobileOnly{display:block}
   body:is(.role-customer,.role-transporter)>.top{display:none!important}
   body:is(.role-customer,.role-transporter)>main.shell{max-width:760px;margin:0 auto;padding:20px 16px calc(100px + env(safe-area-inset-bottom))!important}
-  body:is(.role-customer,.role-transporter) :is(button,input,select,textarea){font:inherit}
-  body:is(.role-customer,.role-transporter) :is(button,a,input,select,textarea):focus-visible{outline:3px solid #ff8c3a;outline-offset:3px}
-  body:is(.role-customer,.role-transporter) :is(input,select,textarea){font-size:16px;min-height:46px;border-color:var(--dd-line);border-radius:9px;color:var(--dd-ink)}
-  body:is(.role-customer,.role-transporter) .btn{min-height:44px;font-size:14px;border-radius:10px;white-space:normal}
-  body:is(.role-customer,.role-transporter) .btn.orange{color:#071c43;background:var(--dd-orange);box-shadow:none;border-color:var(--dd-orange)}
+  body:is(.role-customer,.role-transporter):where(:not(:has(>.mpHeader))) :is(button,input,select,textarea){font:inherit}
+  body:is(.role-customer,.role-transporter):where(:not(:has(>.mpHeader))) :is(button,a,input,select,textarea):focus-visible{outline:3px solid #ff8c3a;outline-offset:3px}
+  body:is(.role-customer,.role-transporter):where(:not(:has(>.mpHeader))) :is(input,select,textarea){font-size:16px;min-height:46px;border-color:var(--dd-line);border-radius:9px;color:var(--dd-ink)}
+  body:is(.role-customer,.role-transporter):where(:not(:has(>.mpHeader))) .btn{min-height:44px;font-size:14px;border-radius:10px;white-space:normal}
+  body:is(.role-customer,.role-transporter):where(:not(:has(>.mpHeader))) .btn.orange{color:#071c43;background:var(--dd-orange);box-shadow:none;border-color:var(--dd-orange)}
   body:is(.role-customer,.role-transporter) .dashboardCard{border:1px solid var(--dd-line);border-radius:13px;box-shadow:0 3px 10px #0b245307}
   body:is(.role-customer,.role-transporter) .dashboardSectionHeading{display:flex;flex-direction:row;align-items:center;gap:12px;margin:20px 0 12px}
   body:is(.role-customer,.role-transporter) .dashboardSectionHeading h2{font-size:20px;letter-spacing:-.4px;color:var(--dd-ink)}
