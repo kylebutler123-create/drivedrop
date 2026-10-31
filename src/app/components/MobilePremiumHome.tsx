@@ -13,7 +13,7 @@ const steps=[
  ['Book','Choose the right transporter for your needs.'],
 ];
 
-/** Approved 02 / Premium photography homepage; guest mobile presentation only. */
+/** Approved 02 / Premium photography homepage; shared public mobile presentation. */
 export default function MobilePremiumHome(){
  return <div className="mpOnly mpHome mpPremiumHome">
   <section className="premiumHero" aria-labelledby="premium-home-title">
