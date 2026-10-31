@@ -31,6 +31,7 @@
  body.role-customer .bookingCard:has(>.ddDeliveryPreview) .customerDeliveryDetails>:is(.customerCollapsedDeliveryIdentity,.customerDeliveryDate,.customerViewTransporterProfile,.customerTransporterContactActions){display:none!important}
  body.role-customer .bookingCard:has(>.ddDeliveryPreview) .customerDeliveryDetails{order:4;display:contents!important}
  body.role-customer .bookingCard:has(>.ddDeliveryPreview) .customerDeliveryDetails>:is(.deliveryConfirmationBanner,.customerStatementButton,.customerDeliveryLocationMap){order:4;margin:14px 16px!important}
+ body.role-customer .bookingCard:has(>.ddDeliveryPreview) .deliveryConfirmationBanner>.btn.orange.fullBtn{font-size:16px;font-weight:700}
  body:is(.role-customer,.role-transporter) .bookingCard:not(.isCollapsed):has(>.ddDeliveryPreview)>.bookingColumns,
  body.role-customer .bookingCard:not(.isCollapsed):has(>.ddDeliveryPreview) .expandedPayment,
  body.role-transporter .bookingCard:not(.isCollapsed):has(>.ddDeliveryPreview) .tdFourProgressHost{display:contents!important}
