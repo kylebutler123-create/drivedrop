@@ -124,6 +124,7 @@
 }
 
 @media(max-width:1023px){
+ body.role-customer #quote-requests>.emptyState>.btn.orange{font-size:16px;font-weight:700}
  /* Approved delivery-card colours; retain every existing control and handler. */
  body.role-transporter .ddDeliveryPreview .ddPrimary{background:#071c43;border-color:#071c43;color:#fff}
  body:is(.role-customer,.role-transporter) .ddDeliveryPreview .ddContactAction[href^="/messages"]>span{background:#2563eb;border-color:#2563eb;color:#fff}
