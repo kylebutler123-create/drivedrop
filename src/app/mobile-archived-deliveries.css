@@ -8,9 +8,9 @@
  .ddDeliveriesIntro .ddProceeds:after{top:100px;right:0;transform:rotate(-35deg);background:#0b254c}
  .ddDeliveriesIntro .ddProceedsIcon{background:none;border-radius:0;color:#a9c9ee}
  .ddDeliveriesIntro .ddProceedsIcon svg{width:42px;height:42px}
- body.role-transporter .ddTransporterWorkspace>.ddDeliveryTabs{gap:3px;padding:2px;border:1px solid #dce7f4;border-radius:11px;margin:0 0 12px;background:#f7fbff}
- body.role-transporter .ddDeliveryTabs>button{flex:1;min-width:0;min-height:42px;padding:9px 5px;border:0;border-radius:9px;background:transparent;color:#071c43;font-size:13px;font-weight:600;cursor:pointer}
- body.role-transporter .ddDeliveryTabs>button[aria-pressed=true]{background:#071c43;color:white;box-shadow:0 2px 5px #071c4310}
+ body:is(.role-customer,.role-transporter) :is(.customerLiveWorkspace,.ddTransporterWorkspace)>.ddDeliveryTabs{gap:3px;padding:2px;border:1px solid #dce7f4;border-radius:11px;margin:0 0 12px;background:#f7fbff}
+ body:is(.role-customer,.role-transporter) .ddDeliveryTabs>button{flex:1;min-width:0;min-height:42px;padding:9px 5px;border:0;border-radius:9px;background:transparent;color:#071c43;font-size:13px;font-weight:600;cursor:pointer}
+ body:is(.role-customer,.role-transporter) .ddDeliveryTabs>button[aria-pressed=true]{background:#071c43;color:white;box-shadow:0 2px 5px #071c4310}
  body.role-transporter .ddTransporterWorkspace .transporterCompletedList{margin:0!important;padding:0;border:0;background:none;box-shadow:none;max-width:none!important}
  .transporterCompletedList:has(.transporterCompletedFilter)>.dashboardSectionHeading{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
  body.role-transporter .transporterCompletedFilter{position:relative;display:flex;align-items:center;width:100%;margin:0 0 12px;border:1px solid #dce7f4;border-radius:10px;background:#fff;gap:0}
