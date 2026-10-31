@@ -88,5 +88,6 @@
   .ddMobileQuoteCard .customerDateActions{margin:10px 0}
   .ddMobileQuoteCard .customerDateActions .actionButtons{display:flex;flex-wrap:wrap;gap:6px}
   .ddMobileQuoteCard .customerDateActions .btn{font-size:11px;min-height:40px;border-radius:7px;padding:8px}
+  .ddMobileQuoteCard .customerDateActions .customerAcceptDate{width:100%;background:#081c43;color:#fff;border-color:#081c43}
   @media(max-width:359px){.ddQuoteBody{padding:13px}.ddQuoteBadges{left:12px;right:12px;gap:6px}.ddQuoteBadges>span{padding:5px 7px;font-size:10px}.ddQuoteBadges>small{font-size:9px;padding:6px}.ddQuoteOfferFooter{flex-wrap:wrap}.ddQuoteTotal{flex-basis:100%;margin:0 0 2px}.ddQuoteProfile,.ddQuoteSelect{flex:1}.ddQuoteTrust{gap:3px 6px}}
 }

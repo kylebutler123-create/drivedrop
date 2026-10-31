@@ -12,10 +12,11 @@ type DateUpdate = {
 type Props = {
   quoteId: string;
   proposedDate: string;
+  acceptOnly?: boolean;
   onUpdated: (update: DateUpdate) => void;
 };
 
-export default function CustomerCollectionDateActions({quoteId, proposedDate, onUpdated}: Props) {
+export default function CustomerCollectionDateActions({quoteId, proposedDate, acceptOnly=false, onUpdated}: Props) {
   const [editing, setEditing] = useState(false);
   const [date, setDate] = useState('');
   const [pending, setPending] = useState(false);
@@ -85,9 +86,11 @@ export default function CustomerCollectionDateActions({quoteId, proposedDate, on
         <button type="button" className="btn light" disabled={pending} onClick={() => {setEditing(false); setError('');}}>Cancel</button>
       </div>
     </form> : <div className="actionButtons">
-      <button type="button" className="btn orange" disabled={pending} onClick={() => void send('ACCEPT')}>Accept date</button>
-      <button type="button" className="btn light" disabled={pending} onClick={() => void send('DECLINE')}>Keep original date</button>
-      <button type="button" className="btn navy" disabled={pending} onClick={() => {setDate(proposedDate.slice(0, 10)); setError(''); setEditing(true);}}>Offer another date</button>
+      <button type="button" className={acceptOnly ? 'btn navy customerAcceptDate' : 'btn orange'} disabled={pending} onClick={() => void send('ACCEPT')}>Accept date</button>
+      {!acceptOnly && <>
+        <button type="button" className="btn light" disabled={pending} onClick={() => void send('DECLINE')}>Keep original date</button>
+        <button type="button" className="btn navy" disabled={pending} onClick={() => {setDate(proposedDate.slice(0, 10)); setError(''); setEditing(true);}}>Offer another date</button>
+      </>}
     </div>}
     {error && <p id={errorId} className="formNotice errorNotice" role="alert">{error}</p>}
   </div>;
