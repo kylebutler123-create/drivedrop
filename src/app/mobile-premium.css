@@ -125,9 +125,10 @@
 
 @media(max-width:1023px){
  body.role-customer #quote-requests>.emptyState>.btn.orange{font-size:16px;font-weight:700}
- body.role-customer .customerConfirmationHistory,body.role-customer main:has(#quote-requests)>.ddMobilePageTitle,body.role-customer #availability-requests:not(:has(>:not(.customerConfirmationHistory))){display:none!important}
- body.role-customer #quote-requests>.dashboardSectionHeading{margin:0 0 18px!important;align-items:center}
- body.role-customer #quote-requests>.dashboardSectionHeading h2{font-size:27px!important;font-weight:700!important;line-height:normal!important;letter-spacing:-.7px!important;color:var(--dd-ink)!important;margin:0!important}
+ body.role-customer .customerConfirmationHistory,body.role-customer #quote-requests>.dashboardSectionHeading,body.role-customer #availability-requests:not(:has(>:not(.customerConfirmationHistory))){display:none!important}
+ body.role-customer .ddQuotePageHeading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 18px}
+ body.role-customer .ddQuotePageHeading>.ddMobilePageTitle{margin:0}
+ .ddQuotePageHeading>span{font-size:12px;color:var(--dd-muted)}
  /* Approved delivery-card colours; retain every existing control and handler. */
  body.role-transporter .ddDeliveryPreview .ddPrimary{background:#071c43;border-color:#071c43;color:#fff}
  body:is(.role-customer,.role-transporter) .ddDeliveryPreview .ddContactAction[href^="/messages"]>span{background:#2563eb;border-color:#2563eb;color:#fff}
