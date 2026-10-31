@@ -1,1 +1,9 @@
-import { NextResponse } from 'next/server';import { currentUser } from '@/lib/auth';export async function GET(){const u=await currentUser();return u?NextResponse.json({id:u.id,name:u.name,email:u.email,role:u.role}):NextResponse.json({error:'Unauthorized'},{status:401})}
+import {NextResponse} from 'next/server';
+import {currentUser} from '@/lib/auth';
+
+export async function GET(){
+ const user=await currentUser();
+ const headers={'Cache-Control':'private, no-store, max-age=0'};
+ return user?NextResponse.json({id:user.id,name:user.name,email:user.email,role:user.role},{headers})
+  :NextResponse.json({error:'Unauthorized'},{status:401,headers});
+}

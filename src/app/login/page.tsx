@@ -48,13 +48,14 @@ export default function Login(){
           <h2>{heading}</h2>
           <p>{intro}</p>
         </div>
+        {searchParams.get('session')==='expired'&&<div className="formNotice" role="status">Your session has ended. Please sign in again.</div>}
         {accountClosed==='1'&&<div className="formNotice">Your DriveDrop account has been closed and you have been signed out.</div>}
         {emailNotice&&<div className={`formNotice${emailChange==='confirmed'?'':' errorNotice'}`}>{emailNotice}</div>}
         <div className="accountSwitch" aria-label="Choose account type">
           <Link className={!isTransporter?'active':''} aria-current={!isTransporter?'page':undefined} href={`/login?account=customer${vehicleTypeQuery}`}>Customer</Link>
           <Link className={isTransporter?'active':''} aria-current={isTransporter?'page':undefined} href="/login?account=transporter">Transporter</Link>
         </div>
-        <form onSubmit={submit}>
+        <form method="post" onSubmit={submit}>
           <div className="field">
             <label>EMAIL</label>
             <input type="email" name="email" autoComplete="email" placeholder="you@example.com" defaultValue={changedEmail} required/>

@@ -24,12 +24,9 @@ export async function currentUser(){
   if(!token)return null
   const tokenHash=hash(token)
   const s=await prisma.session.findUnique({where:{tokenHash},include:{user:true}})
-  if(!s)return null
-  if(s.expiresAt<new Date()){
-    await prisma.session.deleteMany({where:{tokenHash}})
-    jar.delete(COOKIE)
-    return null
-  }
+  // This helper also runs in Server Components, where cookies cannot be changed.
+  // Expired records are cleaned up by createSession; logout clears its own cookie.
+  if(!s||s.expiresAt<=new Date())return null
   return s.user
 }
 
