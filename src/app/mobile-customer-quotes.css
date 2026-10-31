@@ -1,0 +1,92 @@
+.ddMobileQuoteCard{display:none}
+@media(max-width:1023px){
+  body.role-customer .customerQuoteRequestGroup>.quoteRequestCard{display:none!important}
+  body.role-customer .ddMobileQuoteCard{display:block;overflow:hidden;border:1px solid #d9e4f1;border-radius:14px;background:#fff;color:#081c43;box-shadow:0 4px 16px #10274905;margin:0 0 16px;scroll-margin-top:84px}
+  body.role-customer .ddMobileQuoteCard[data-has-quotes=true]{border-color:#ff9a45}
+  .ddMobileQuoteCard [hidden]{display:none!important}
+  .ddMobileQuoteCard :is(button,a,summary):focus-visible{outline:3px solid #ff7114;outline-offset:3px}
+  .ddMobileQuoteCard button:disabled{opacity:.55;cursor:not-allowed}
+  .ddQuoteImage{height:190px;position:relative;isolation:isolate;overflow:hidden;background:#e5edf4}
+  .ddQuoteImage>.ddVehiclePhoto{position:absolute;inset:0;width:100%;height:100%;background:#e5edf4}
+  .ddQuoteImage>.ddVehiclePhoto>img{display:block;width:100%;height:100%;object-fit:cover}
+  .ddQuoteImage>.ddNoPhoto{display:flex;align-items:center;justify-content:flex-start;gap:0;flex-direction:column;padding-top:49px;color:#607893}
+  .ddQuoteImage>.ddNoPhoto>svg{width:70px;height:70px;order:2;stroke-width:1.3;margin-top:4px}
+  .ddQuoteImage>.ddNoPhoto>span{font-size:11px;order:1}
+  .ddQuoteImage:after{content:'';position:absolute;inset:20% 0 0;background:linear-gradient(transparent,#102137e8);z-index:1;pointer-events:none}
+  .ddQuoteBadges{position:absolute;z-index:2;left:14px;right:14px;top:14px;display:flex;align-items:start;justify-content:space-between;gap:8px}
+  .ddQuoteBadges>span{background:#ffead4;color:#a84409;border-radius:7px;padding:5px 9px;font-size:11px;font-weight:700}
+  .ddQuoteBadges>small{background:#fffffff0;border-radius:6px;padding:6px 8px;font-size:10px;color:#081c43;overflow-wrap:anywhere;text-align:right}
+  .ddQuoteIdentity{position:absolute;bottom:12px;left:16px;right:16px;z-index:2;color:#fff}
+  .ddQuoteIdentity h2{font-size:23px;line-height:1.2;font-weight:700;letter-spacing:-.5px;margin:0;overflow-wrap:anywhere}
+  .ddQuoteIdentity p{margin:4px 0 0;font-size:14px;font-weight:700;line-height:1.3}
+  .ddQuoteBody{padding:16px}
+  .ddQuoteRoute{display:grid;gap:16px;margin:0 0 18px}
+  .ddQuoteRoute>div{display:flex;align-items:start;gap:12px;position:relative;min-width:0}
+  .ddQuoteRoute>div:first-child:after{content:'';position:absolute;left:8px;top:23px;height:calc(100% - 7px);border-left:1px dashed #b7c9df}
+  .ddQuoteRoute>div>svg{width:18px;height:22px;flex:none;color:#081c43}
+  .ddQuoteRoute>div:first-child>svg{color:#ff7114}
+  .ddQuoteRoute small,.ddQuoteSchedule small{display:block;color:#63799d;font-size:12px;line-height:1.4}
+  .ddQuoteRoute strong{display:block;overflow-wrap:anywhere;font-size:14px;line-height:1.4;font-weight:700}
+  .ddQuoteSchedule{display:flex;gap:12px;align-items:center;min-height:54px;padding:8px 12px;border:1px solid #d9e5f3;background:#f8fbff;border-radius:9px}
+  .ddQuoteSchedule>svg{width:23px;height:23px;flex:none}
+  .ddQuoteSchedule strong{display:block;font-size:13px;line-height:1.5;font-weight:400}
+  .ddQuotePriceSummary{display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid #dce6f2;margin-top:16px;padding:16px 0}
+  .ddQuotePriceSummary small{display:block;font-size:12px;color:#63799d;line-height:1.5}
+  .ddQuotePriceSummary strong{display:block;font-size:23px;line-height:1.3;font-weight:700;letter-spacing:-.5px}
+  .ddQuotePriceSummary p{margin:0;font-size:13px;line-height:1.5;color:#526b90}
+  .ddQuotePriceSummary>div+p{border-left:1px solid #dce6f2;padding-left:24px;min-width:42%}
+  .ddMobileQuoteCard .ddQuoteCompare{min-height:50px;font-size:16px;font-weight:700;border-radius:11px}
+  .ddQuoteDetails{margin-top:8px}
+  .ddQuoteDetails>summary{display:flex;align-items:center;gap:12px;min-height:44px;padding:10px 12px;border:1px solid #d9e5f3;border-radius:8px;background:#f8fbff;cursor:pointer;list-style:none;font-size:12px;font-weight:700}
+  .ddQuoteDetails>summary::-webkit-details-marker{display:none}
+  .ddQuoteDetails>summary>svg:first-child{width:22px;height:22px;flex:none}
+  .ddQuoteDetails>summary>svg:last-child{width:17px;height:17px;margin-left:auto;flex:none}
+  .ddQuoteDetails[open]>summary>svg:last-child{transform:rotate(180deg)}
+  .ddQuoteDetailsBody{padding:14px 0 4px}
+  .ddQuoteDetailsBody dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0}
+  .ddQuoteDetailsBody dl>div{min-width:0}
+  .ddQuoteDetailsBody dl>div:nth-last-child(-n+2){grid-column:1/-1}
+  .ddQuoteDetailsBody dt{font-size:11px;color:#63799d;margin-bottom:4px}
+  .ddQuoteDetailsBody dd{margin:0;font-size:13px;line-height:1.4;font-weight:600;overflow-wrap:anywhere}
+  .ddQuoteOffers{border-top:1px solid #dce6f2;margin-top:12px;padding-top:10px}
+  .ddQuoteOffers>header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .ddQuoteOffers h3{margin:0;font-size:16px;line-height:1.4;font-weight:700;letter-spacing:-.4px}
+  .ddQuoteOffers>header>span{color:#63799d;font-size:11px;white-space:nowrap}
+  .ddQuoteOffer{border:1px solid #d9e5f3;border-radius:12px;padding:10px;margin-bottom:10px;background:#fff}
+  .ddQuoteOffer:last-child{margin-bottom:0}
+  .ddQuoteTransporter{display:flex;align-items:center;gap:10px;min-width:0}
+  .ddQuoteAvatar{display:grid;place-items:center;flex:0 0 40px;height:40px;border-radius:50%;background:#e1edf6;color:#081c43;font-size:16px;font-weight:700;overflow:hidden}
+  .ddQuoteAvatar img{width:100%;height:100%;object-fit:cover}
+  .ddQuoteTransporter>div{min-width:0}
+  .ddQuoteTransporter h4{margin:0;font-size:13px;line-height:1.4;font-weight:700;overflow-wrap:anywhere}
+  .ddQuoteTrust{display:flex;flex-wrap:wrap;gap:4px 9px;margin-top:4px;color:#63799d;font-size:10px;line-height:1.4}
+  .ddQuoteTrust>span{display:flex;align-items:center;gap:4px}
+  .ddQuoteTrust svg{width:13px;height:13px;flex:none}
+  .ddQuoteTrust .isVerified{color:#15834d}
+  .ddQuoteTrust>span:last-child svg{color:#e8a035;fill:#e8a035}
+  .ddQuoteOfferedDate{display:flex;gap:10px;align-items:center;margin-top:10px}
+  .ddQuoteOfferedDate>svg{width:20px;height:20px;flex:none}
+  .ddQuoteOfferedDate small{display:block;font-size:10px;line-height:1.4;color:#63799d}
+  .ddQuoteOfferedDate strong{display:block;font-size:11px;line-height:1.5;font-weight:500}
+  .ddQuoteMessage{font-size:10px;line-height:1.5;color:#63799d;margin:6px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+  .ddQuoteOfferFooter{display:flex;align-items:center;gap:6px;border-top:1px solid #e4ebf4;margin-top:7px;padding-top:8px}
+  .ddQuoteTotal{margin-right:auto;min-width:0}
+  .ddQuoteTotal small{display:block;font-size:10px;line-height:1.4;color:#63799d}
+  .ddQuoteTotal strong{display:block;font-size:18px;line-height:1.3;font-weight:700;letter-spacing:-.4px}
+  .ddMobileQuoteCard .ddQuoteProfile,.ddMobileQuoteCard .ddQuoteSelect{display:inline-flex;align-items:center;justify-content:center;text-align:center;min-height:40px;border-radius:7px;padding:8px;font-size:11px;line-height:1.3;text-decoration:none;cursor:pointer}
+  .ddQuoteProfile{border:1px solid #91add2;background:#fff;color:#081c43;flex:0 1 88px}
+  .ddMobileQuoteCard .ddQuoteSelect{border:1px solid #ff7114;background:#ff7114;color:#081c43;font-weight:700;flex:0 1 100px}
+  .ddQuoteExpiry{display:block;color:#63799d;font-size:9px;line-height:1.5;margin-top:6px}
+  .ddQuoteNotice{font-size:12px;line-height:1.5;color:#63799d;overflow-wrap:anywhere}
+  .ddQuoteNotice a{text-decoration:underline;color:#081c43}
+  .ddQuoteNotice.error{color:#b4232c}
+  .ddMobileQuoteCard .customerRequestActions{border:0;margin:0;padding:0}
+  body.role-customer .ddMobileQuoteCard .manageRequestActions{display:flex!important;justify-content:center;gap:0!important;margin:0!important;padding:0}
+  .ddMobileQuoteCard .manageRequestActions>button{min-height:44px;border:0;border-radius:0;background:none;box-shadow:none;color:#b4232c;font-size:12px;font-weight:400;margin:0;padding:8px 12px}
+  .ddMobileQuoteCard .ddQuoteClose{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:44px;border:1px solid #466a9e;border-radius:8px;background:#fff;color:#081c43;font-size:16px;font-weight:700;cursor:pointer;margin-top:4px}
+  .ddQuoteClose>svg{width:16px;height:16px;transform:rotate(180deg)}
+  .ddMobileQuoteCard .customerDateActions{margin:10px 0}
+  .ddMobileQuoteCard .customerDateActions .actionButtons{display:flex;flex-wrap:wrap;gap:6px}
+  .ddMobileQuoteCard .customerDateActions .btn{font-size:11px;min-height:40px;border-radius:7px;padding:8px}
+  @media(max-width:359px){.ddQuoteBody{padding:13px}.ddQuoteBadges{left:12px;right:12px;gap:6px}.ddQuoteBadges>span{padding:5px 7px;font-size:10px}.ddQuoteBadges>small{font-size:9px;padding:6px}.ddQuoteOfferFooter{flex-wrap:wrap}.ddQuoteTotal{flex-basis:100%;margin:0 0 2px}.ddQuoteProfile,.ddQuoteSelect{flex:1}.ddQuoteTrust{gap:3px 6px}}
+}
