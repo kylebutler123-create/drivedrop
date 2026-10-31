@@ -34,7 +34,8 @@
  body:is(.role-customer,.role-transporter) .bookingCard:not(.isCollapsed):has(>.ddDeliveryPreview)>.bookingColumns,
  body.role-customer .bookingCard:not(.isCollapsed):has(>.ddDeliveryPreview) .expandedPayment,
  body.role-transporter .bookingCard:not(.isCollapsed):has(>.ddDeliveryPreview) .tdFourProgressHost{display:contents!important}
- /* The compact card already provides transporter delivery progress. */
+ /* Compact cards already show delivery progress; keep dated history for desktop. */
+ body.role-customer .bookingCard:has(>.ddDeliveryPreview) .expandedProgress.ddDeliveryDisclosure,
  body.role-transporter .bookingCard:has(>.ddDeliveryPreview) .tdFourProgress{display:none!important}
  body.role-customer .bookingCard .ddLegacyPaymentDetails{order:3;margin:0 16px}
  body.role-customer .bookingCard .ddLegacyPaymentDetails>h3,
