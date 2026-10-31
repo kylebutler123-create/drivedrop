@@ -40,7 +40,7 @@ export default function MobilePublicAuth({mode}:{mode:Mode}){
    router.push(result.role==='CUSTOMER'?`/customer${vehicle?'?vehicleType='+encodeURIComponent(vehicle):''}`:result.role==='TRANSPORTER'?'/transporter':'/admin');router.refresh();
   }catch(err){setError(err instanceof Error?err.message:'Connection interrupted. Please try again.')}finally{inFlight.current=false;setBusy(false)}
  }
- return <main className="mpOnly mpPage mpAuth" data-auth-mode={mode} aria-label={title}><PublicBack href={recovery?signIn:'/'} label={recovery?'Sign in':'Home'}/><div className="mpAuthHeading"><span className="mpIconTile"><PublicIcon name={recovery?'key':transporter?'truck':'user'}/></span><h1>{title}</h1><p className="mpIntro">{intro}</p></div>
+ return <main className="mpOnly mpPage mpAuth" data-auth-mode={mode} aria-label={title}><PublicBack href={recovery?signIn:'/'} label={recovery?'Sign in':'Home'}/><div className="mpAuthHeading"><h1>{title}</h1><p className="mpIntro">{intro}</p></div>
   {!recovery&&<div className="mpSwitch" aria-label="Choose account type"><Link href={`/${mode}?account=customer${vehicle?'&vehicleType='+encodeURIComponent(vehicle):''}`} aria-current={!transporter?'page':undefined}>Customer</Link><Link href={`/${mode}?account=transporter`} aria-current={transporter?'page':undefined}>Transporter</Link></div>}
   {mode==='login'&&params.get('accountClosed')==='1'&&<div className="mpNotice" role="status">Your DriveDrop account has been closed and you have been signed out.</div>}
   {mode==='login'&&emailNotice&&<div className="mpNotice" role="status">{emailNotice}</div>}
