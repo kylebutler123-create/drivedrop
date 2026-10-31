@@ -7,6 +7,7 @@ import Icon from './ApprovedIcon';
 import MessagesNavLink from './MessagesNavLink';
 import NotificationNavLink from './NotificationNavLink';
 import MobileCustomerPhoto from './MobileCustomerPhoto';
+import TransporterPhoto from './TransporterPhoto';
 
 type Role = 'CUSTOMER' | 'TRANSPORTER';
 type InstallEvent = Event & {prompt: () => Promise<void>};
@@ -65,13 +66,12 @@ export default function MobileWorkspace({role, name}: {role: Role; name: string}
       window.scrollTo({top: 0});
     }
   };
-  const initials = name.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
   return <>
     <header className={`ddMobileHeader${focusedDelivery ? ' ddDeliveryHeader' : ''}`}>
       {focusedDelivery ? <><Link className="ddHeaderBack" href="/customer?view=bookings" aria-label="Back to deliveries"><Icon name="arrow"/></Link><strong>Delivery details</strong></>
         : <Link href={root} onNavigate={() => navigateTo(root)} className="ddMobileBrand" aria-label="DriveDrop home"><img src="/orange-design-preview/assets/logo.svg" width="152" height="38" alt="DriveDrop"/></Link>}
       <div className="ddHeaderActions"><NotificationNavLink/><details ref={accountMenu} className="ddAccountMenu">
-        <summary aria-label="Open account menu"><span className="ddAvatar">{role==='CUSTOMER'?<MobileCustomerPhoto name={name}/>:initials || <Icon name="user"/>}</span></summary>
+        <summary aria-label="Open account menu"><span className="ddAvatar">{role==='CUSTOMER'?<MobileCustomerPhoto name={name}/>:<TransporterPhoto name={name}/>}</span></summary>
         <div className="ddMenuPanel"><strong>{name}</strong><small>{transporter ? 'Transporter' : 'Customer'} account</small>
           <Link href="/account"><Icon name="user"/>Manage account</Link>
           {transporter ? <><Link href="/transporter/proceeds"><Icon name="coins"/>Booked proceeds</Link><Link href="/transporter/verification"><Icon name="shield"/>Verification &amp; insurance</Link><Link href="/transporter/reviews"><Icon name="star"/>Reviews</Link></> : <Link href="/payments"><Icon name="wallet"/>Payments &amp; receipts</Link>}

@@ -2,6 +2,7 @@
 
 import {useEffect,useRef,useState} from 'react';
 import {useRouter} from 'next/navigation';
+import {useTransporterPhotoUpdate} from '@/app/components/TransporterPhoto';
 import AccountIcon from '@/app/components/TransporterAccountIcon';
 import {prepareUploadImages} from '@/lib/prepare-message-images';
 
@@ -38,6 +39,7 @@ async function createCroppedFile(source:CropState,kind:ProfileImageKind,zoom:num
 
 function MediaUpload({kind,title,description,icon,initialUrl,businessName,personName,shape}:UploadProps){
   const router=useRouter();
+  const updatePhoto=useTransporterPhotoUpdate();
   const inputRef=useRef<HTMLInputElement>(null);
   const [url,setUrl]=useState(initialUrl);
   const [busy,setBusy]=useState(false);
@@ -62,6 +64,7 @@ function MediaUpload({kind,title,description,icon,initialUrl,businessName,person
       const body=await response.json();
       if(!response.ok)throw new Error(body.error||'Could not upload image');
       setUrl(body.url);
+      if(kind==='transporter')updatePhoto?.(body.url);
       setNotice(title+' updated successfully.');
       router.refresh();
       return null;
@@ -97,6 +100,7 @@ function MediaUpload({kind,title,description,icon,initialUrl,businessName,person
       const body=await response.json();
       if(!response.ok)throw new Error(body.error||'Could not remove image');
       setUrl(null);
+      if(kind==='transporter')updatePhoto?.(null);
       setNotice(title+' removed.');
       router.refresh();
     }catch(error){setNotice(error instanceof Error?error.message:'Could not remove image');}
