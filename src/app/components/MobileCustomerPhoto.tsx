@@ -16,8 +16,7 @@ export function PhotoOrInitials({url,name}:{url:string|null;name:string}){
 }
 
 export default function MobileCustomerPhoto({name}:{name:string}){
- const mobile=useMobileViewport();
- const url=useCustomerPhoto(mobile);
+ const url=useCustomerPhoto();
  return <PhotoOrInitials url={url} name={name}/>;
 }
 

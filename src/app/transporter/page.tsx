@@ -1,4 +1,5 @@
 'use client';
+import {useSearchParams} from 'next/navigation';
 import {MobileDeliveryFacts, MobileDeliveryPayment, MobileDeliveryDisclosure, MobileDeliveryEvidence} from '@/app/components/MobileDeliveryDetails';
 
 import {MobileJobsIntro,MobileJobCard,MobileDeliverySummary} from '@/app/components/MobileTransportDesign';
@@ -23,7 +24,7 @@ import TransporterProofOfDeliveryEnhancer from '@/app/components/TransporterProo
 import TransporterProofOfCollectionEnhancer from '@/app/components/TransporterProofOfCollectionEnhancer';
 const label=(s:string)=>s.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
 const seenAvailableJobsStorageKey='drivedrop:transporter-seen-available-jobs:v1';
-export default function Transporter(){const[jobs,setJobs]=useState<any[]>([]),[bookings,setBookings]=useState<any[]>([]),[disputes,setDisputes]=useState<any[]>([]),[view,setView]=useState<'ALL'|'DELIVERIES'|'JOBS'|'COMPLETED'|'CANCELLED'|'QUOTES'>('ALL'),[submittingJobId,setSubmittingJobId]=useState<string|null>(null),[quoteMessage,setQuoteMessage]=useState<{jobId:string,type:'success'|'error',text:string}|null>(null);const[quotedJobCount,setQuotedJobCount]=useState<number|null>(null);const[deliveryNotice,setDeliveryNotice]=useState<string|null>(null);const[jobsLoaded,setJobsLoaded]=useState(false);const[bookingsLoaded,setBookingsLoaded]=useState(false);const[refreshingDeliveries,setRefreshingDeliveries]=useState(false);const[deliveryRefreshNotice,setDeliveryRefreshNotice]=useState<string|null>(null);const[refreshingJobs,setRefreshingJobs]=useState(false);const[jobsRefreshNotice,setJobsRefreshNotice]=useState<string|null>(null);
+export default function Transporter(){const mobileQuery=useSearchParams().toString();const[jobs,setJobs]=useState<any[]>([]),[bookings,setBookings]=useState<any[]>([]),[disputes,setDisputes]=useState<any[]>([]),[view,setView]=useState<'ALL'|'DELIVERIES'|'JOBS'|'COMPLETED'|'CANCELLED'|'QUOTES'>('ALL'),[submittingJobId,setSubmittingJobId]=useState<string|null>(null),[quoteMessage,setQuoteMessage]=useState<{jobId:string,type:'success'|'error',text:string}|null>(null);const[quotedJobCount,setQuotedJobCount]=useState<number|null>(null);const[deliveryNotice,setDeliveryNotice]=useState<string|null>(null);const[jobsLoaded,setJobsLoaded]=useState(false);const[bookingsLoaded,setBookingsLoaded]=useState(false);const[refreshingDeliveries,setRefreshingDeliveries]=useState(false);const[deliveryRefreshNotice,setDeliveryRefreshNotice]=useState<string|null>(null);const[refreshingJobs,setRefreshingJobs]=useState(false);const[jobsRefreshNotice,setJobsRefreshNotice]=useState<string|null>(null);
 function selectMobileDeliveryView(next:'DELIVERIES'|'COMPLETED'|'CANCELLED'){
  const url=new URL(window.location.href);
  if(url.searchParams.get('view')!==next.toLowerCase()){
@@ -39,8 +40,16 @@ useEffect(()=>{
   const next=(new URLSearchParams(window.location.search).get('view')||'jobs').toUpperCase();
   if(['DELIVERIES','COMPLETED','CANCELLED','JOBS','QUOTES'].includes(next))setView(next as 'DELIVERIES'|'COMPLETED'|'CANCELLED'|'JOBS'|'QUOTES');
  };
- window.addEventListener('popstate',sync);return()=>window.removeEventListener('popstate',sync);
-},[]);
+ sync();
+ if(window.matchMedia('(max-width:1023px)').matches){
+  const next=new URLSearchParams(mobileQuery).get('view');
+  if(next==='deliveries')void refreshActiveDeliveries();
+  else if(!next||next==='jobs')void refreshAvailableJobs();
+ }
+ const navigate=()=>{sync();void load()};
+ window.addEventListener('drivedrop:mobile-navigate',navigate);
+ return()=>window.removeEventListener('drivedrop:mobile-navigate',navigate);
+},[mobileQuery]);
 const[openJobs,setOpenJobs]=useState<Record<string,boolean>>({});
 const[mobileFiltersOpen,setMobileFiltersOpen]=useState(false);
 useEffect(()=>{window.dispatchEvent(new CustomEvent('drivedrop:mobile-view',{detail:view}))},[view]);

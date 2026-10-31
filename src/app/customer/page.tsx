@@ -1,4 +1,5 @@
 'use client';
+import {useSearchParams} from 'next/navigation';
 import {MobileDeliveryFacts, MobileDeliveryPayment, MobileDeliveryDisclosure, MobileDeliveryEvidence} from '@/app/components/MobileDeliveryDetails';
 
 import {MobileCustomerHome,MobileDeliverySummary} from '@/app/components/MobileTransportDesign';
@@ -108,7 +109,7 @@ function CustomerDeliveryLocationMap({proof}:{proof:any}){
  </section>;
 }
 
-export default function Customer(){const reviewNow=useReviewClock();const[availabilityRows,setAvailabilityRows]=useState<RequestRow[]>([]);const[jobs,setJobs]=useState<any[]>([]),[me,setMe]=useState<any>(),[bookings,setBookings]=useState<any[]>([]),[disputes,setDisputes]=useState<any[]>([]),[view,setViewState]=useState<'REQUEST'|'QUOTES'|'BOOKINGS'|'COMPLETED'|'CANCELLED'>('REQUEST'),[submitting,setSubmitting]=useState(false),[formMessage,setFormMessage]=useState<{type:'success'|'error',text:string}|null>(null),[newJobId,setNewJobId]=useState<string|null>(null),[disputeBookingId,setDisputeBookingId]=useState<string|null>(null),[disputeReason,setDisputeReason]=useState(''),[disputeDetails,setDisputeDetails]=useState(''),[disputeSubmitting,setDisputeSubmitting]=useState(false),[disputeMessage,setDisputeMessage]=useState<string|null>(null);const[requestNotice,setRequestNotice]=useState<string|null>(null);const[jobsLoaded,setJobsLoaded]=useState(false);const[bookingsLoaded,setBookingsLoaded]=useState(false);const[quoteRefreshNotice,setQuoteRefreshNotice]=useState<string|null>(null);const[refreshingQuotes,setRefreshingQuotes]=useState(false);const[refreshingBookings,setRefreshingBookings]=useState(false);
+export default function Customer(){const mobileQuery=useSearchParams().toString();const reviewNow=useReviewClock();const[availabilityRows,setAvailabilityRows]=useState<RequestRow[]>([]);const[jobs,setJobs]=useState<any[]>([]),[me,setMe]=useState<any>(),[bookings,setBookings]=useState<any[]>([]),[disputes,setDisputes]=useState<any[]>([]),[view,setViewState]=useState<'REQUEST'|'QUOTES'|'BOOKINGS'|'COMPLETED'|'CANCELLED'>('REQUEST'),[submitting,setSubmitting]=useState(false),[formMessage,setFormMessage]=useState<{type:'success'|'error',text:string}|null>(null),[newJobId,setNewJobId]=useState<string|null>(null),[disputeBookingId,setDisputeBookingId]=useState<string|null>(null),[disputeReason,setDisputeReason]=useState(''),[disputeDetails,setDisputeDetails]=useState(''),[disputeSubmitting,setDisputeSubmitting]=useState(false),[disputeMessage,setDisputeMessage]=useState<string|null>(null);const[requestNotice,setRequestNotice]=useState<string|null>(null);const[jobsLoaded,setJobsLoaded]=useState(false);const[bookingsLoaded,setBookingsLoaded]=useState(false);const[quoteRefreshNotice,setQuoteRefreshNotice]=useState<string|null>(null);const[refreshingQuotes,setRefreshingQuotes]=useState(false);const[refreshingBookings,setRefreshingBookings]=useState(false);
 const[desktopOverview,setDesktopOverview]=useState(true);
 const[mobileRoute,setMobileRoute]=useState<{collection:string;delivery:string}>();
 const[mobileBookingId,setMobileBookingId]=useState<string|null>(null);
@@ -132,8 +133,17 @@ useEffect(()=>{
   if(next==='BOOKINGS'||next==='COMPLETED'||next==='CANCELLED'||next==='QUOTES'||next==='REQUEST')setView(next);
   else{setViewState('REQUEST');setDesktopOverview(true)}
  };
- window.addEventListener('popstate',sync);return()=>window.removeEventListener('popstate',sync);
-},[]);
+ sync();
+ if(window.matchMedia('(max-width:1023px)').matches){
+  const next=new URLSearchParams(mobileQuery).get('view');
+  if(next==='bookings'&&bookingsLoaded)void refreshVisibleBookings();
+  else if(next==='quotes'&&jobsLoaded)void refreshVisibleQuotes();
+  else if(!next&&bookingsLoaded)void load();
+ }
+ const navigate=()=>{sync();void load()};
+ window.addEventListener('drivedrop:mobile-navigate',navigate);
+ return()=>window.removeEventListener('drivedrop:mobile-navigate',navigate);
+},[mobileQuery]);
 const[confirmingBookingId,setConfirmingBookingId]=useState<string|null>(null);
 const[bookingQuoteId,setBookingQuoteId]=useState<string|null>(null);
 const[selectedVehicleType,setSelectedVehicleType]=useState<string>('');

@@ -1,6 +1,7 @@
 'use client';
 
 import {useEffect, useRef, useState} from 'react';
+import Link from 'next/link';
 import Icon from './ApprovedIcon';
 import AddressAutocomplete from './AddressAutocomplete';
 import {vehiclePhotoUrl} from '@/lib/vehicle-photo';
@@ -50,16 +51,16 @@ export function MobileCustomerHome({name, jobs, bookings, jobsLoaded, bookingsLo
     <div className="ddHomeContent"><h2>Your activity</h2><div className="ddActivityGrid">
       <button type="button" onClick={() => onView('QUOTES')}><Icon name="file"/><span><strong>{jobsLoaded ? jobs.length : '—'}</strong><small>Quote requests</small></span>{quoteActivity > 0 && <i aria-label="New quote activity"/>}<span aria-hidden="true">›</span></button>
       <button type="button" onClick={() => onView('BOOKINGS')}><Icon name="truck"/><span><strong>{bookingsLoaded ? bookings.length : '—'}</strong><small>Active {bookings.length === 1 ? 'delivery' : 'deliveries'}</small></span>{deliveryActivity > 0 && <i aria-label="New delivery activity"/>}<span aria-hidden="true">›</span></button>
-    </div><div className="ddSectionTitle"><h2>Upcoming delivery</h2><a href="/customer?view=bookings">See all</a></div>
-    {!bookingsLoaded ? <p className="ddQuietState" role="status">Loading your deliveries…</p> : upcoming.length ? upcoming.map(booking => <a key={booking.id} className="ddUpcomingCard" href={`/customer?view=bookings&bookingId=${encodeURIComponent(booking.id)}`}>
+    </div><div className="ddSectionTitle"><h2>Upcoming delivery</h2><Link href="/customer?view=bookings">See all</Link></div>
+    {!bookingsLoaded ? <p className="ddQuietState" role="status">Loading your deliveries…</p> : upcoming.length ? upcoming.map(booking => <Link key={booking.id} className="ddUpcomingCard" href={`/customer?view=bookings&bookingId=${encodeURIComponent(booking.id)}`}>
       <MobileVehiclePhoto job={booking.job}/><div><div className="ddUpcomingTitle"><strong>{booking.job.vehicleMake} {booking.job.vehicleModel}</strong><span className="ddStatus">{statusLabel(booking.status)}</span></div><MobileRoute job={booking.job}/><small><Icon name="calendar"/>{mobileDate(booking.agreedCollectionDate || booking.job.collectionDate)}{windowLabel(booking.job)}</small></div><span aria-hidden="true">›</span>
-    </a>) : <div className="ddQuietState"><Icon name="truck"/><strong>Your next journey starts here.</strong><p>Get quotes to arrange your first vehicle delivery.</p></div>}
+    </Link>) : <div className="ddQuietState"><Icon name="truck"/><strong>Your next journey starts here.</strong><p>Get quotes to arrange your first vehicle delivery.</p></div>}
     </div>
   </section>;
 }
 
 export function MobileJobsIntro({view}: {view: string}) {
-  return <div className={`ddMobileOnly ddJobsIntro${['DELIVERIES','COMPLETED','CANCELLED'].includes(view)?' ddDeliveriesIntro':''}`}><p>Ready for your next move?</p><h1>{view === 'JOBS' || view === 'ALL' ? 'Available jobs' : ['DELIVERIES','COMPLETED','CANCELLED'].includes(view) ? 'Your deliveries' : view === 'QUOTES' ? 'My quotes' : view === 'CANCELLED' ? 'Cancelled deliveries' : 'Completed deliveries'}</h1>{view==='QUOTES'&&<a className="ddQuoteHistoryLink" href="/transporter/quotes">View all quote history <Icon name="arrow"/></a>}</div>;
+  return <div className={`ddMobileOnly ddJobsIntro${['DELIVERIES','COMPLETED','CANCELLED'].includes(view)?' ddDeliveriesIntro':''}`}><p>Ready for your next move?</p><h1>{view === 'JOBS' || view === 'ALL' ? 'Available jobs' : ['DELIVERIES','COMPLETED','CANCELLED'].includes(view) ? 'Your deliveries' : view === 'QUOTES' ? 'My quotes' : view === 'CANCELLED' ? 'Cancelled deliveries' : 'Completed deliveries'}</h1>{view==='QUOTES'&&<Link className="ddQuoteHistoryLink" href="/transporter/quotes">View all quote history <Icon name="arrow"/></Link>}</div>;
 }
 
 export function MobileJobCard({job, open, ownQuote, onToggle}: {job: Vehicle; open: boolean; ownQuote?: {pricePence?: number; dateNegotiationStatus?: string}; onToggle: () => void}) {
