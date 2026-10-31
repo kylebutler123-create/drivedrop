@@ -71,3 +71,7 @@ Adds persistent booking payment records, configurable deposit and commission per
 Use `prisma migrate deploy` against a staging PostgreSQL database before production.
 
 <!-- Stable transporter dashboard redeploy marker: 2026-08-30 -->
+
+## Mobile delivery maps
+
+Customer delivery cards show a street map of the collection and delivery areas. **Open in Maps** opens driving directions for the full booked addresses. To show the planned driving route inside the card, enable the Google Maps Embed API and set `NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY` before building. Restrict the key to the Maps Embed API and the DriveDrop website addresses for the deployment being configured.
