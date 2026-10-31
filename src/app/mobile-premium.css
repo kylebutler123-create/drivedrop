@@ -1,5 +1,18 @@
 /* Approved mobile app design. Desktop styles and business controls are preserved. */
 .ddMobileOnly,.ddMobileHeader,.ddBottomNav{display:none}
+/* Available jobs keep their compact summary when expanded; only new details follow. */
+@media(max-width:1023px){
+ body.role-transporter .ddTransporterWorkspace .jobOpportunity[data-has-own-quote="false"]>:is(.bookingTop,.jobQuickFacts,.routeVisual,p.muted){display:none!important}
+ body.role-transporter .ddTransporterWorkspace .jobOpportunity:not(.tdJobClosed)>.ddJobRegistration{display:flex;align-items:center;justify-content:space-between;gap:14px;border-top:1px solid #e1e9f2;padding-top:15px;font-size:13px;color:#7183a0}
+ .ddJobRegistration strong{color:#10264a;font-size:14px;overflow-wrap:anywhere;text-align:right}
+ body.role-transporter .ddTransporterWorkspace .jobOpportunity[data-has-own-quote="false"]>.jobQuoteDetails{border-top:1px solid #e1e9f2;padding-top:0}
+ .ddTransporterWorkspace .jobOpportunity[data-has-own-quote="false"] .jobQuoteToggle{display:none}
+ .ddTransporterWorkspace .ddJobQuoteHeading{margin:0;padding:15px 0 12px;color:var(--dd-ink);font-size:17px;font-weight:700;line-height:1.5}
+ .ddTransporterWorkspace .jobOpportunity[data-has-own-quote="false"] .quoteSubmitPanel{margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:transparent!important}
+ .ddTransporterWorkspace .jobOpportunity[data-has-own-quote="false"] .quoteSubmitPanel label{text-transform:none;letter-spacing:0;font-weight:600;font-size:13px}
+ .ddTransporterWorkspace .jobOpportunity[data-has-own-quote="false"] .quoteSubmitPanel :is(input,textarea){font-size:14px}
+ .ddTransporterWorkspace .jobOpportunity[data-has-own-quote="false"] .quoteSubmitBtn{font-size:15px;font-weight:700;border-radius:8px;min-height:44px}
+}
 @media(max-width:1023px){
   body:is(.role-customer,.role-transporter){--dd-ink:#081c43;--dd-muted:#63799d;--dd-orange:#ff7114;--dd-line:#e3eaf3;color:var(--dd-ink);background:#f9fbfd;font-family:DriveDropApproved,Arial,sans-serif;-webkit-font-smoothing:antialiased}
   body:is(.role-customer,.role-transporter) .ddMobileOnly{display:block}
