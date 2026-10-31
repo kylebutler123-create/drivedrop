@@ -14,7 +14,8 @@
   .ddAccountPage .accountGrid>.accountCard{display:none!important}
   .ddAccountPage[data-mobile-account-section=personal] .accountGrid>.personalAccountCard,
   .ddAccountPage[data-mobile-account-section=business] .accountGrid>:is(.businessAccountCard,.accountDocumentsCard){display:block!important}
-  .ddAccountIntro h1,.ddInboxIntro h1{font-size:32px;line-height:1.12;font-weight:750;letter-spacing:-1px;color:#071c43;margin:0 0 5px}
+  .ddAccountIntro h1{font-size:32px;line-height:1.12;font-weight:750;letter-spacing:-1px;color:#071c43;margin:0 0 5px}
+  .ddInboxIntro h1{font-size:27px;line-height:normal;font-weight:700;letter-spacing:-.7px;color:#071c43;margin:0 0 5px}
   .ddAccountIntro p,.ddInboxIntro>p{font-size:15px;line-height:1.5;color:#354f78;margin:0}
   .ddAccountIdentity{display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;isolation:isolate;background:#071c43;border-radius:13px;padding:15px 16px;margin:16px 0;color:white;min-height:100px}
   .ddAccountIdentity:before,.ddAccountIdentity:after{content:'';position:absolute;z-index:-1;width:250px;height:140px;background:#112f56;transform:rotate(33deg);right:-100px;top:-30px}
