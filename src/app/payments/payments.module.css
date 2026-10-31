@@ -110,3 +110,81 @@
 @media(min-width:1024px) and (max-width:1199px){.periodToolbar{gap:10px}.yearSelect{gap:10px}.page .yearSelect select{width:150px}.periodToolbar .dateRange{margin-left:0}.periodDates{font-size:11px}.periodToolbar .downloadActions{gap:6px}.periodToolbar .downloadActions a{font-size:11px;padding:8px}}
 @media(max-width:1023px){.periodToolbar{flex-wrap:wrap}.periodToolbar .dateRange{margin-left:0}}
 @media(max-width:600px){.periodToolbar{gap:12px}.periodDates{order:3;width:100%}.periodToolbar .downloadActions{margin-left:0;order:4}.periodToolbar .dateRange{margin-left:auto}}
+
+/* Customer app: approved payments and receipts layout. */
+.mobileHeading,.mobileTotals,.mobileStatementTitle,.mobileYearSelect,.mobilePeriodDates,.mobileSearchIcon,.mobileCards{display:none}
+@media(max-width:1023px){
+ .page{max-width:760px;width:calc(100% - 32px);padding:12px 0 calc(100px + env(safe-area-inset-bottom));color:#071c43}
+ .page .heading,.page .summary,.page .yearSelect,.page .periodDates,.page .tableScroll,.page .breakdown,.page .footer{display:none}
+ .page .mobileHeading{display:flex;align-items:center;gap:12px;min-height:36px;margin:0 0 14px}
+ .mobileTotals{display:block;position:relative;isolation:isolate;overflow:hidden;background:#071c43;border-radius:12px;color:#fff;padding:16px 20px;margin-bottom:12px}
+ .mobileTotals:before,.mobileTotals:after{content:'';position:absolute;z-index:-1;pointer-events:none;background:#18385a;transform:rotate(-35deg)}
+ .mobileTotals:before{width:100%;height:150%;left:48%;top:3%;opacity:.5}
+ .mobileTotals:after{width:75%;height:125%;left:34%;top:63%;background:#0e2c50;opacity:.75}
+ .mobileTotals>span{font-size:16px;font-weight:600;line-height:1.4}
+ .mobileTotals>strong{display:block;margin:1px 0 11px;font-size:34px;line-height:1.15;letter-spacing:-.8px;overflow-wrap:anywhere}
+ .mobileTotals dl{display:grid;grid-template-columns:1fr 1fr;margin:0;padding-top:11px;border-top:1px solid #ffffff60}
+ .mobileTotals dl>div{min-width:0;padding-right:12px}.mobileTotals dl>div+div{border-left:1px solid #ffffff60;padding:0 0 0 20px}
+ .mobileTotals dt{font-size:13px;line-height:1.4;font-weight:400}.mobileTotals dd{font-size:22px;font-weight:700;line-height:1.2;margin:0;overflow-wrap:anywhere}
+ .mobileTotals p{margin:8px 0 0;font-size:12px;line-height:1.5;color:#eaf1fb}
+ .page .periodToolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 10px;margin:0 0 18px;padding:12px;border:1px solid #dce7f3;border-radius:12px;background:#fff}
+ .page .mobileStatementTitle{display:block;grid-column:1;grid-row:1;font-size:18px;line-height:1.35;letter-spacing:-.4px;margin:0;align-self:end}
+ .page .mobileYearSelect{display:block;position:relative;grid-column:2;grid-row:1/3;align-self:start;width:86px;min-width:0}
+ .page .mobileYearSelect select{appearance:none;width:100%;min-height:36px;padding:8px 28px 8px 12px;margin:0;border:1px solid #d3e2f3;border-radius:7px;background:#fff;color:#071c43;font-size:13px;cursor:pointer}
+ .page .mobileYearSelect>svg{position:absolute;pointer-events:none;width:14px;height:14px;right:10px;top:11px}
+ .page .mobilePeriodDates{display:block;grid-column:1;grid-row:2;width:auto;white-space:normal;line-height:1.5;font-size:12px;color:#63799d;margin-top:2px}
+ .page .periodToolbar .dateRange{grid-column:1/-1;white-space:normal;margin:9px 0 8px;min-width:0}
+ .page .dateRange summary{min-height:36px;padding:7px 10px;border:1px solid #d3e2f3;border-radius:7px;gap:10px;color:#254b7e;font-size:12px;line-height:1.5}
+ .page .dateRange summary>svg{width:20px;height:20px;color:#071c43}.page .dateRange summary>span{margin-left:auto;color:#071c43;font-size:17px;line-height:1}
+ .page .dateRange form{position:static;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;width:100%;padding:12px 0 0;border:0;box-shadow:none;background:none}
+ .page .dateRange label{min-width:0;font-size:12px}.page .dateRange input{min-width:0;width:100%;max-width:100%;min-height:42px;font-size:14px;padding:8px;border:1px solid #d3e2f3;border-radius:7px}
+ .page .dateRange form>button,.page .dateRange form>p{grid-column:1/-1;margin:0}.page .dateRange form>button{min-height:44px;border-radius:7px;font-size:13px}.page .dateRange form>p{color:#a12828;font-size:12px;line-height:1.5}
+ .page .periodToolbar .downloadActions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:0;order:initial;min-width:0}
+ .page .periodToolbar .downloadActions a{height:auto;min-height:40px;padding:9px 8px;border:0;border-radius:7px;background:#ff7114;color:#fff;font-size:13px;font-weight:600;gap:8px;white-space:normal;line-height:1.4;text-align:center}
+ .page .periodToolbar .downloadActions a:last-child{background:#e6f1ff;color:#071c43}.page .downloadActions svg{width:20px;height:20px}
+ .page .columns{display:block}.page .history{padding:0;border:0;background:none;border-radius:0}
+ .page .sectionHeading{justify-content:space-between;gap:10px;margin:0 0 10px}.page .sectionHeading h2{font-size:18px;line-height:1.4;letter-spacing:-.4px}.page .sectionHeading h2>svg{display:none}.page .sectionHeading>span{font-size:12px;color:#63799d;white-space:nowrap}
+ .page .filters{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin:0 0 10px}
+ .page .mobileSearchIcon{display:block;position:absolute;top:11px;left:13px;line-height:0;color:#071c43;pointer-events:none}.page .mobileSearchIcon svg{width:20px;height:20px}
+ .page .filters input,.page .filters select{height:40px;min-height:40px;width:100%;font-size:12px;color:#071c43;line-height:1.4;border:1px solid #d3e2f3;border-radius:7px;padding:9px 10px}
+ .page .filters input{grid-column:1/-1;height:42px;min-height:42px;font-size:16px;padding-left:40px}.page .filters input::placeholder{font-size:12px;color:#63799d;opacity:1}
+ .mobileCards{display:grid;gap:10px}
+ .paymentCard{position:relative;min-width:0;padding:12px 12px 0;background:#fff;border:1px solid #dce7f3;border-radius:12px;scroll-margin-top:88px}
+ .paymentCardHeader{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:5px 12px;align-items:start;padding-bottom:10px}
+ .page .mobileVehicle{grid-column:1;grid-row:1/3;display:grid;place-items:center;width:40px;height:40px;border-radius:9px;background:#edf4fa;overflow:hidden;color:#071c43}
+ .page .mobileVehicle svg{width:25px;height:25px}.mobileVehicle img{width:100%;height:100%;object-fit:cover;display:block}
+ .paymentIdentity{grid-column:2;grid-row:1;min-width:0}.page .paymentIdentity h3{font-size:15px;line-height:1.3;letter-spacing:-.25px;margin:0;font-weight:700;color:#071c43;overflow-wrap:anywhere}
+ .paymentIdentity>span{display:block;margin-top:3px;font-size:12px;line-height:1.3;color:#63799d;overflow-wrap:anywhere}
+ .paymentAmount{grid-column:3;grid-row:1;font-size:16px;line-height:1.3;letter-spacing:-.25px;text-align:right;max-width:145px;overflow-wrap:anywhere}
+ .paymentDate{grid-column:2;grid-row:2;font-size:12px;line-height:1.4;color:#63799d}
+ .page .paymentStatus{grid-column:3;grid-row:2;justify-self:end;align-self:end;max-width:100%;font-size:11px;line-height:1.3;padding:3px 8px;border-radius:5px;font-weight:400;white-space:normal;text-align:center}
+ .page .paymentStatus.paid{background:#cdf5df;color:#087c48}.page .paymentStatus.refunded{background:#ffedb9;color:#805008}
+ .paymentRefund{grid-column:2/-1;font-size:11px;line-height:1.4;color:#63799d}.mobileTestBadge{grid-column:2/-1;justify-self:start;margin:0}
+ .page .paymentDetails{border-top:1px solid #dce7f3}
+ .page .paymentDetails>summary{display:flex;align-items:center;gap:8px;min-height:44px;padding:8px 40px 8px 0;font-size:12px;line-height:1.5;list-style:none;cursor:pointer;color:#071c43}
+ .page .paymentDetails>summary::-webkit-details-marker{display:none}.page .paymentDetails>summary>svg{width:16px;height:16px}
+ .openLabel{display:none}.paymentDetails[open] .closedLabel{display:none}.paymentDetails[open] .openLabel{display:inline}
+ .page .paymentDetails[open]>summary{padding-right:0;font-weight:700;font-size:13px;border-bottom:1px solid #dce7f3}.paymentDetails[open]>summary>svg{margin-left:auto;transform:rotate(180deg)}
+ .page .quickReceipt{position:absolute;right:6px;bottom:0;display:grid;place-items:center;width:44px;height:44px;color:#071c43;text-decoration:none}.page .quickReceipt:before{content:'';position:absolute;left:0;top:8px;bottom:8px;border-left:1px solid #d3e2f3}.page .quickReceipt svg{width:18px;height:18px}.paymentDetails[open]+.quickReceipt{display:none}
+ .paymentDetailBody{padding-bottom:12px}
+ .mobileJourney{display:grid;gap:12px;padding:12px 0 15px;margin-bottom:10px;border-bottom:1px solid #dce7f3;position:relative}
+ .mobileJourney:before{content:'';position:absolute;left:15px;top:38px;bottom:39px;border-left:2px dotted #284a70}
+ .mobileJourney>div{display:flex;align-items:flex-start;gap:13px;position:relative;min-width:0}.page .mobileJourney svg{width:20px;height:26px;margin:1px 3px 0 6px;flex-shrink:0;background:#fff}
+ .mobileJourney small{display:block;font-size:11px;line-height:1.5;color:#63799d}.mobileJourney strong{display:block;font-size:13px;line-height:1.5;font-weight:600;overflow-wrap:anywhere}
+ .paymentDetailBody h4{font-size:13px;line-height:1.5;letter-spacing:-.1px;margin:0 0 5px;color:#071c43}
+ .mobileAmounts,.mobilePaidOn{margin:0;font-size:12px;line-height:1.5;color:#071c43}.mobileAmounts>div,.mobilePaidOn>div{display:flex;justify-content:space-between;gap:12px;min-width:0;padding:2px 0}
+ .mobileAmounts dt,.mobilePaidOn dt{color:#63799d;font-weight:400}.mobileAmounts dd,.mobilePaidOn dd{text-align:right;margin:0;overflow-wrap:anywhere;min-width:0}
+ .mobilePaidOn{border-top:1px solid #dce7f3;padding-top:10px;margin:12px 0}
+ .page .mobileReceipt,.page .mobileViewBooking{display:flex;align-items:center;justify-content:center;gap:9px;min-height:38px;padding:9px;border-radius:7px;background:#ff7114;color:#fff;text-decoration:none;font-size:13px;font-weight:600;line-height:1.5;text-align:center}
+ .page .mobileViewBooking{margin-top:7px;background:#e6f1ff;color:#071c43}.page .mobileReceipt svg,.page .mobileViewBooking svg{width:18px;height:18px}
+ .receiptHelp{font-size:12px;line-height:1.5;color:#63799d;margin:0 0 10px}
+ .page .testNotice{font-size:12px;margin:0 0 12px;color:#63799d}.page .history>.footnote{font-size:11px;line-height:1.6;margin:12px 0;color:#63799d}
+ .page .archiveNote{font-size:11px;line-height:1.6;margin:14px 0 0;color:#63799d}.page .empty{background:white;border:1px solid #dce7f3;border-radius:12px;padding:30px 16px}
+ .page summary:focus-visible{outline:3px solid #ff8c3a;outline-offset:3px;border-radius:5px}
+ @media(max-width:359px){
+  .mobileTotals{padding:15px}.mobileTotals>strong{font-size:31px}.mobileTotals dd{font-size:20px}.mobileTotals dl>div+div{padding-left:14px}
+  .page .mobileStatementTitle{font-size:16px}.page .periodToolbar{padding:10px}.page .mobileYearSelect{width:76px}.page .periodDates{font-size:10px}
+  .page .periodToolbar .downloadActions a{font-size:12px;gap:6px}.paymentCard{padding-left:10px;padding-right:10px}.paymentCardHeader{grid-template-columns:34px minmax(0,1fr) auto;column-gap:8px}
+  .page .mobileVehicle{width:34px;height:36px}.page .paymentIdentity h3{font-size:13px}.paymentAmount{font-size:14px;max-width:120px}.page .paymentStatus{font-size:10px;padding:3px 6px}.paymentIdentity>span,.paymentDate{font-size:11px}
+ }
+}

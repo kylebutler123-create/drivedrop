@@ -43,7 +43,7 @@ export default function MobileWorkspace({role, name}: {role: Role; name: string}
     return () => {window.removeEventListener('beforeinstallprompt', ready); window.removeEventListener('appinstalled', installed)};
   }, []);
 
-  const active = pathname.startsWith('/account') || ['/transporter/verification','/transporter/proceeds'].includes(pathname) ? 'account' : pathname.startsWith('/messages') ? 'messages'
+  const active = pathname.startsWith('/account') || ['/transporter/verification','/transporter/proceeds','/payments'].includes(pathname) ? 'account' : pathname.startsWith('/messages') ? 'messages'
     : pathname.startsWith('/transporter/quotes') || (pathname === root && view === 'quotes') ? 'quotes'
     : pathname.startsWith('/transporter/delivered') || (pathname === root && ['bookings','deliveries','completed','cancelled'].includes(view)) ? 'deliveries'
     : pathname === root && (!view || view === 'jobs' || view === 'all') ? 'home' : '';
