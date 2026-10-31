@@ -28,7 +28,8 @@ export default function SessionBoundary({user,children}:{user:Identity;children:
    window.location.replace(href);
   };
   const signIn=()=>{
-   const account=role==='CUSTOMER'?'customer':role==='TRANSPORTER'?'transporter':pathname.startsWith('/customer')?'customer':pathname.startsWith('/transporter')?'transporter':null;
+   const customerContext=pathname.startsWith('/customer')||(pathname.startsWith('/transporter/profile/')&&new URLSearchParams(query).get('from')==='quotes');
+   const account=role==='CUSTOMER'?'customer':role==='TRANSPORTER'?'transporter':customerContext?'customer':pathname.startsWith('/transporter')?'transporter':null;
    const params=new URLSearchParams();
    if(account)params.set('account',account);
    if(id)params.set('session','expired');

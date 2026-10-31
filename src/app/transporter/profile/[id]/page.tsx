@@ -3,13 +3,14 @@ import {notFound,redirect} from 'next/navigation';
 import {currentUser} from '@/lib/auth';
 import {prisma} from '@/lib/prisma';
 import {profileImageUrl} from '@/lib/supabase-storage';
+import MobileTransporterProfile from '@/app/components/MobileTransporterProfile';
+import type {ProfilePhoto} from '@/app/components/MobileProfilePhotos';
 
 const label=(s:string)=>s.replaceAll('_',' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
 
-export default async function TransporterProfilePage({params}:{params:Promise<{id:string}>}){
-  const viewer=await currentUser();
-  if(!viewer)redirect('/login');
-  const {id}=await params;
+export default async function TransporterProfilePage({params,searchParams}:{params:Promise<{id:string}>;searchParams:Promise<{from?:string}>}){
+  const [viewer,{id},{from}]=await Promise.all([currentUser(),params,searchParams]);
+  if(!viewer)redirect(from==='quotes'?'/login?account=customer':'/login');
   const transporter=await prisma.user.findFirst({
     where:{id,role:'TRANSPORTER',accountStatus:'ACTIVE'},
     select:{
@@ -40,7 +41,13 @@ export default async function TransporterProfilePage({params}:{params:Promise<{i
   const backHref=viewer.role==='CUSTOMER'?'/customer':viewer.role==='TRANSPORTER'?'/transporter':'/admin';
   const recentDeliveries=transporter.transporterBookings.slice(0,4);
 
-  return <main className="shell dashboardShell transporterPublicProfile">
+  const fromQuotes=viewer.role==='CUSTOMER'&&from==='quotes';
+  const photos:ProfilePhoto[]=[];
+  if(truckPhotoUrl)photos.push({url:truckPhotoUrl,title:'Transport vehicle',caption:'Uploaded by the transporter',kind:'truck'});
+  if(transporterPhotoUrl)photos.push({url:transporterPhotoUrl,title:'Your transporter',caption:transporter.name,kind:'person'});
+  if(logoUrl)photos.push({url:logoUrl,title:'Business logo',caption:businessName,kind:'logo'});
+
+  return <>{viewer.role==='CUSTOMER'&&<MobileTransporterProfile name={transporter.name} businessName={businessName} createdAt={transporter.createdAt} verification={verification} reviews={transporter.reviewsReceived} deliveries={transporter.transporterBookings} averageRating={averageRating} imageUrl={imageUrl} imageKind={transporterPhotoUrl?'person':'logo'} photos={photos} backHref={fromQuotes?'/customer?view=quotes':backHref} backLabel={fromQuotes?'Back to quotes':'Back to dashboard'}/>}<main className={`shell dashboardShell transporterPublicProfile${viewer.role==='CUSTOMER'?' ddLegacyTransporterProfile':''}`}>
     <Link className="backLink" href={backHref}>← Back to dashboard</Link>
     <section className="dashboardHero transporterProfileHero">
       <div className="transporterProfileIdentity">
@@ -72,5 +79,5 @@ export default async function TransporterProfilePage({params}:{params:Promise<{i
 
       <section className="dashboardCard accountCard transporterReviewsCard"><div className="panelHeading"><div><span className="panelIcon">★</span><div><h2>Verified customer reviews</h2><p>Reviews come only from completed DriveDrop bookings.</p></div></div></div>{reviewCount>0&&<div className="profileRatingOverview"><div className="profileRatingScore"><strong>{averageRating?.toFixed(1)}</strong><span>★★★★★</span><small>{reviewCount} verified review{reviewCount===1?'':'s'}</small></div><div className="profileRatingQuality"><strong>{fiveStarPercent}%</strong><span>5-star reviews</span><small>{fiveStarCount} of {reviewCount} customer rating{reviewCount===1?'':'s'}</small></div></div>}{transporter.reviewsReceived.length===0?<div className="emptyState"><div>★</div><h3>No reviews yet</h3><p>This transporter is new to DriveDrop reviews.</p></div>:<div className="transporterProfileReviews">{transporter.reviewsReceived.map(review=><article className="transporterProfileReview" key={review.id}><div className="transporterReviewTop"><div><strong>{'★'.repeat(review.rating)}{'☆'.repeat(5-review.rating)}</strong><span className="verifiedReviewLabel">✓ Verified booking</span></div><span>{review.createdAt.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</span></div><p>{review.body||'Customer left a verified rating without a written review.'}</p><small>{review.customer.name} · {review.booking.job.vehicleMake} {review.booking.job.vehicleModel}</small>{review.transporterResponse&&<div className="transporterReviewResponse"><b>Transporter response</b><p>{review.transporterResponse}</p></div>}</article>)}</div>}</section>
     </div>
-  </main>;
+  </main></>;
 }
