@@ -129,6 +129,10 @@
  body.role-customer :is(.ddQuotePageHeading,.ddDeliveryPageHeading){display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 18px}
  body.role-customer :is(.ddQuotePageHeading,.ddDeliveryPageHeading)>.ddMobilePageTitle{margin:0}
  :is(.ddQuotePageHeading,.ddDeliveryPageHeading)>span{font-size:12px;color:var(--dd-muted)}
+ body.role-customer .ddQuotePageHeading:has(+.ddQuotePageActions){margin-bottom:12px}
+ body.role-customer .ddQuotePageActions{margin:0 0 12px}
+ body.role-customer .ddQuotePageActions>button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:36px;padding:7px 12px;border:1px solid #c6d6e8;border-radius:8px;background:#fff;color:#081c43;font-size:13px;line-height:20px;font-weight:700;cursor:pointer}
+ .ddQuotePageActions>button>svg{width:20px;height:20px;flex:none}
  body.role-customer .customerDeliverySectionHeading{display:none!important}
  /* Approved delivery-card colours; retain every existing control and handler. */
  body.role-transporter .ddDeliveryPreview .ddPrimary{background:#071c43;border-color:#071c43;color:#fff}
