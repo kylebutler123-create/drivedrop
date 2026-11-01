@@ -12,6 +12,7 @@ on:
       - 'src/components/VerificationAdmin.tsx'
       - 'src/components/VerificationDesktopReview.tsx'
       - 'src/app/api/evidence/**'
+      - 'src/app/api/bookings/*/map-areas/route.ts'
       - 'src/app/api/messages/attachments/**'
       - 'src/app/api/account/profile-image/**'
       - 'src/app/api/admin/disputes/**'

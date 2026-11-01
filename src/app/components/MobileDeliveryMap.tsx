@@ -16,7 +16,7 @@ type Props = {id: string; collection?: string; delivery?: string};
 export default function MobileDeliveryMap({id, collection = '', delivery = ''}: Props) {
   const container = useRef<HTMLElement>(null);
   const [width, setWidth] = useState(0);
-  const [visible, setVisible] = useState(false);
+  const [provider, setProvider] = useState<'google' | 'areas' | null>(null);
   const [areas, setAreas] = useState<DeliveryMapAreas | null>(null);
   const [unavailable, setUnavailable] = useState(false);
   const complete = Boolean(collection.trim() && delivery.trim());
@@ -27,14 +27,19 @@ export default function MobileDeliveryMap({id, collection = '', delivery = ''}: 
     const measure = new ResizeObserver(() => setWidth(section.clientWidth));
     measure.observe(section);
     const observer = new IntersectionObserver(entries => {
-      if (entries.some(entry => entry.isIntersecting)) {setVisible(true); observer.disconnect();}
+      if (!entries.some(entry => entry.isIntersecting && entry.boundingClientRect.width > 0)) return;
+      // The preview key is restricted to the stable Git branch hostname.
+      const hostAllowed = process.env.NEXT_PUBLIC_VERCEL_ENV !== 'preview' ||
+        window.location.hostname === process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL;
+      setProvider(embedKey && hostAllowed ? 'google' : 'areas');
+      observer.disconnect();
     });
     observer.observe(section);
     return () => {measure.disconnect(); observer.disconnect();};
   }, [complete]);
 
   useEffect(() => {
-    if (embedKey || !visible || !complete) return;
+    if (provider !== 'areas' || !complete) return;
     const controller = new AbortController();
     async function load() {
       try {
@@ -48,16 +53,16 @@ export default function MobileDeliveryMap({id, collection = '', delivery = ''}: 
     }
     void load();
     return () => controller.abort();
-  }, [visible, complete, id]);
+  }, [provider, complete, id]);
 
   if (!complete) return <section className="ddDeliveryMap"><h3>Map</h3><p className="ddMapNotice">A collection and delivery address are needed to show this map.</p></section>;
   const stops = {origin: ukAddress(collection), destination: ukAddress(delivery)};
   const directions = 'https://www.google.com/maps/dir/?' + new URLSearchParams({api: '1', ...stops, travelmode: 'driving'});
-  const embed = embedKey && 'https://www.google.com/maps/embed/v1/directions?' + new URLSearchParams({key: embedKey, ...stops, mode: 'driving', maptype: 'roadmap', units: 'imperial', region: 'gb', language: 'en'});
+  const embed = provider === 'google' && embedKey && 'https://www.google.com/maps/embed/v1/directions?' + new URLSearchParams({key: embedKey, ...stops, mode: 'driving', maptype: 'roadmap', units: 'imperial', region: 'gb', language: 'en'});
   return <section className="ddDeliveryMap" ref={container} aria-label="Delivery map">
     <h3>{embed ? 'Planned route' : 'Map'}</h3>
     <div className="ddDeliveryMapCanvas">
-      {embed && visible ? <iframe title={`Planned driving route from ${collection} to ${delivery}`} src={embed} referrerPolicy="strict-origin-when-cross-origin" loading="lazy"/> :
+      {embed ? <iframe title={`Planned driving route from ${collection} to ${delivery}`} src={embed} referrerPolicy="strict-origin-when-cross-origin" loading="lazy"/> :
         areas && width > 0 ? <DeliveryAreaMap areas={areas} width={width}/> :
           <p className="ddMapNotice" role="status">{unavailable ? 'Use Open in Maps for directions between these addresses.' : 'Loading road map…'}</p>}
     </div>

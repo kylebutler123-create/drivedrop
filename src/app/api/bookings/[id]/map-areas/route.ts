@@ -8,10 +8,14 @@ const headers = {'Cache-Control': 'private, no-store'};
 export async function GET(_request: Request, {params}: {params: Promise<{id: string}>}) {
   const user = await currentUser();
   if (!user) return NextResponse.json({}, {status: 401, headers});
-  if (user.role !== 'CUSTOMER' || user.accountStatus !== 'ACTIVE') return NextResponse.json({}, {status: 403, headers});
+  if ((user.role !== 'CUSTOMER' && user.role !== 'TRANSPORTER') || user.accountStatus !== 'ACTIVE') {
+    return NextResponse.json({}, {status: 403, headers});
+  }
   const {id} = await params;
   const booking = await prisma.booking.findFirst({
-    where: {id, customerId: user.id},
+    where: user.role === 'CUSTOMER'
+      ? {id, customerId: user.id}
+      : {id, transporterId: user.id, status: {in: ['CONFIRMED', 'COLLECTION_SCHEDULED', 'COLLECTED', 'IN_TRANSIT', 'ARRIVING_SOON']}},
     select: {job: {select: {collection: true, delivery: true}}},
   });
   if (!booking) return NextResponse.json({}, {status: 404, headers});

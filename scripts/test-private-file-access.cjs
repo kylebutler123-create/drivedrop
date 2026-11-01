@@ -77,6 +77,37 @@ function load(relative, mocks = overrides) {
     pass(`${name}: guest/other-user denial before storage, both booking parties/admin allowed, private bytes and failure handling`);
   }
 
+  const mapJob = {collection:'Birmingham B1', delivery:'Bristol BS1'};
+  let mapBookingStatus = 'IN_TRANSIT', geocodes = 0;
+  const mapApi = load('src/app/api/bookings/[id]/map-areas/route.ts', {
+    '@/lib/auth': overrides['@/lib/auth'],
+    '@/lib/prisma': {prisma:{booking:{findFirst: async ({where}) => {
+      assert.equal(where.id, 'synthetic-file');
+      if (where.customerId !== undefined && where.customerId !== booking.customerId) return null;
+      if (where.transporterId !== undefined && where.transporterId !== booking.transporterId) return null;
+      if (where.status && !where.status.in.includes(mapBookingStatus)) return null;
+      return {job:mapJob};
+    }}}},
+    '@/lib/delivery-map-areas': {deliveryMapArea: async label => {geocodes++; return {lat:52, lon:-2, label};}},
+  });
+  for (const [actor, status] of [
+    [null, 401], [own('other', 'CUSTOMER'), 404], [own('other', 'TRANSPORTER'), 404],
+    [{...own('transporter', 'TRANSPORTER'), accountStatus:'SUSPENDED'}, 403],
+    [own('admin', 'ADMIN'), 403], [own('customer', 'CUSTOMER'), 200], [own('transporter', 'TRANSPORTER'), 200],
+  ]) {
+    user = actor;
+    const before = geocodes;
+    const response = await mapApi.GET(request, context);
+    assert.equal(response.status, status);
+    assert.equal(response.headers.get('cache-control'), 'private, no-store');
+    assert.equal(geocodes - before, status === 200 ? 2 : 0);
+  }
+  for (const status of ['PENDING_PAYMENT', 'CANCELLED', 'DELIVERED']) {
+    mapBookingStatus = status;
+    assert.equal((await mapApi.GET(request, context)).status, 404);
+  }
+  pass('Delivery map areas are restricted to the booking customer or the active delivery’s assigned transporter');
+
   const storage = load('src/lib/supabase-storage.ts', {});
   for (const [validator, max] of [
     ['validateEvidenceFile', storage.MAX_EVIDENCE_FILE_SIZE],
