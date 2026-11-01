@@ -1,10 +1,12 @@
 'use client';
 import useDesktopCardActivity,{quoteActivityVersion} from './useDesktopCardActivity';
 import {useCallback,useEffect,useRef,useState} from 'react';
+import type {RequestRow} from './AvailabilityPanel';
+import {isPendingRequest} from '@/lib/availability-time';
 import QuotesDesktop from '../transporter/quotes/QuotesDesktop';
 import {dashboardQuotedJobs} from '@/lib/quote-order';
 
-export default function TransporterQuotedJobs({selected,onCountChange,onUnreadChange}:{selected:boolean;onCountChange:(count:number)=>void;onUnreadChange:(unread:boolean)=>void}){
+export default function TransporterQuotedJobs({selected,onCountChange,onUnreadChange,availabilityRows}:{availabilityRows:RequestRow[]|null;selected:boolean;onCountChange:(count:number)=>void;onUnreadChange:(unread:boolean)=>void}){
  const[quotes,setQuotes]=useState<any[]>([]),[loaded,setLoaded]=useState(false),[error,setError]=useState('');
  const activity=useDesktopCardActivity('transporter-quotes');
  const hasUnread=quotes.some(q=>activity.unread(q.id,quoteActivityVersion([q])));
@@ -24,5 +26,14 @@ export default function TransporterQuotedJobs({selected,onCountChange,onUnreadCh
  useEffect(()=>{if(selected)void refresh()},[selected,refresh]);
  function update(id:string,value:any){++sequence.current;setQuotes(rows=>rows.map(q=>q.id===id?{...q,...value}:q));void refresh()}
  function cancel(id:string){++sequence.current;setQuotes(rows=>rows.filter(q=>q.id!==id));onCountChange(Math.max(0,quotes.length-1));void refresh()}
- return selected?<section id="my-quoted-jobs" aria-label="Jobs you have quoted on"><QuotesDesktop unreadQuote={q=>activity.unread(q.id,quoteActivityVersion([q]))} onQuoteOpened={q=>activity.mark(q.id,quoteActivityVersion([q]))} embedded quotes={quotes} loading={!loaded&&!error} error={error} onUpdate={update} onCancel={cancel} onRetry={refresh}/></section>:null;
+ if(!selected)return null;
+ const mobileRequests=activity.desktop ? null : availabilityRows;
+ const pending=mobileRequests?.filter(isPendingRequest)??[];
+ const reserved=new Set(pending.map(row=>row.quoteId));
+ // An availability refresh may finish before the quote list reflects a booking or decline.
+ for(const row of mobileRequests??[])if(row.job.selectedQuoteStatus!=='PENDING')reserved.add(row.quoteId);
+ const offers=quotes.filter(q=>!reserved.has(q.id));
+ if(pending.length&&!offers.length&&!error)return null;
+ const loading=!loaded||(!activity.desktop&&availabilityRows===null);
+ return <section id="my-quoted-jobs" aria-label="Jobs you have quoted on"><QuotesDesktop unreadQuote={q=>activity.unread(q.id,quoteActivityVersion([q]))} onQuoteOpened={q=>activity.mark(q.id,quoteActivityVersion([q]))} embedded quotes={offers} loading={loading&&!error} error={error} onUpdate={update} onCancel={cancel} onRetry={refresh}/></section>;
 }

@@ -1,0 +1,31 @@
+:global(.ddTransporterWorkspace):has(.card) :global(.ddJobsIntro)>h1{margin-bottom:10px}
+:global(.availabilitySection):has(> .card){margin:4px 0 14px}
+.card{overflow:hidden;border:1px solid #d5deea;border-radius:14px;background:white;color:#102443;font:14px Arial,sans-serif}
+.card+.card{margin-top:14px}
+.hero{height:116px;position:relative;background:#e7edf4}
+.hero img{object-position:50% 54%}
+.badge{position:absolute;left:12px;top:11px;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:20px;background:#fff2e4;color:#813900;font-size:12px;font-weight:700;line-height:1.2;box-shadow:0 1px 4px #10244322}
+.badge:before{content:'';width:7px;height:7px;border-radius:50%;background:#df610d}
+.body{padding:14px}
+.first{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.first h2,.price strong{display:block;margin:0;font-size:20px;font-weight:700;letter-spacing:-.6px;line-height:24px;color:#102443}
+.first h2,.route span{min-width:0;overflow-wrap:anywhere}
+.price{text-align:right;flex:none}
+.price small{display:block;margin-top:2px;font-size:11px;color:#53647b}
+.route{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px;font-weight:600}
+.route svg,.deadline svg{width:15px;height:15px;flex:none;color:#be530d}
+.route b{color:#8191a3}
+.window{display:grid;gap:3px;margin-top:15px;padding:12px;background:#f3f6fa;border:1px solid #e1e7ef;border-radius:9px}
+.window small{font-size:12px;color:#516278}
+.window time{font-size:17px;font-weight:700}
+.window strong{font-size:13px;font-weight:600}
+.body h3{margin:14px 0 0;font-size:17px;line-height:21px;letter-spacing:-.25px}
+.body p{margin:5px 0 10px;font-size:13px;line-height:18px;color:#45586f}
+.body p[role="alert"]{color:#a52125}
+.deadline{display:flex;align-items:center;gap:7px;padding:7px 9px;background:#fff2e5;color:#803700;border-radius:7px;font-size:12px;font-weight:700}
+.check{display:flex;align-items:center;gap:8px;margin:12px 0;line-height:17px;font-size:13px;font-weight:400;color:#102443}
+.card .check input[type="checkbox"]{width:18px;min-height:0;height:18px;margin:0;flex:none;accent-color:#122b50}
+.card button.primary,.card button.secondary{width:100%;min-height:42px;border-radius:8px;font-family:inherit;font-weight:700;font-size:14px}
+.primary{background:#ff720e;color:#101d34;border:1px solid transparent}
+.secondary{margin-top:7px;background:#fff;border:1px solid #d5deea;color:#253954}
+.primary:disabled,.secondary:disabled{opacity:.55;cursor:default}

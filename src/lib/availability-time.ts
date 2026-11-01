@@ -59,3 +59,7 @@ export function paymentDeadline(date:Date|string,until:string|null,travelMinutes
 }
 export function isOfferLive(q:{status:string;expiresAt?:Date|string|null},now=new Date()){return q.status==='PENDING'&&(!q.expiresAt||+new Date(q.expiresAt)>+now);}
 export function requestExpired(r:{status:string;respondBy:Date|string;payBy?:Date|string|null},now=new Date()){return ['AWAITING_TRANSPORTER','AWAITING_AUTHORISATION'].includes(r.status)?+new Date(r.respondBy)<=+now:r.status==='AWAITING_PAYMENT'? !r.payBy||+new Date(r.payBy)<=+now:false;}
+
+export function isPendingRequest(r:Parameters<typeof requestExpired>[0]){
+ return ['AWAITING_AUTHORISATION','AWAITING_TRANSPORTER','AWAITING_PAYMENT','CAPTURING'].includes(r.status)&&!requestExpired(r);
+}
