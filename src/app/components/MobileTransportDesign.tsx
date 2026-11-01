@@ -60,8 +60,21 @@ export function MobileCustomerHome({name, jobs, bookings, jobsLoaded, bookingsLo
   </section>;
 }
 
-export function MobileJobsIntro({view}: {view: string}) {
-  return <div className={`ddMobileOnly ddJobsIntro${['DELIVERIES','COMPLETED','CANCELLED'].includes(view)?' ddDeliveriesIntro':''}`}><p>Ready for your next move?</p><h1>{view === 'JOBS' || view === 'ALL' ? 'Available jobs' : ['DELIVERIES','COMPLETED','CANCELLED'].includes(view) ? 'Your deliveries' : view === 'QUOTES' ? 'My quotes' : view === 'CANCELLED' ? 'Cancelled deliveries' : 'Completed deliveries'}</h1>{view==='QUOTES'&&<Link className="ddQuoteHistoryLink" href="/transporter/quotes">View all quote history <Icon name="arrow"/></Link>}</div>;
+export function MobileJobsIntro({view, deliveryCount}: {view: string; deliveryCount: number | null}) {
+  const isDeliveries = ['DELIVERIES', 'COMPLETED', 'CANCELLED'].includes(view);
+  const title = isDeliveries ? 'Your deliveries' : view === 'QUOTES' ? 'My quotes' : 'Available jobs';
+  return <div className={`ddMobileOnly ddJobsIntro${isDeliveries ? ' ddDeliveriesIntro' : ''}`}>
+    <p>Ready for your next move?</p>
+    <h1>{title}</h1>
+    {(view === 'DELIVERIES' || view === 'CANCELLED') && (
+      <span className="ddDeliveryHeadingCount" role="status">
+        {deliveryCount === null ? '—' : `${deliveryCount} total`}
+      </span>
+    )}
+    {/* The completed list owns its filter and renders its count into this stable slot. */}
+    <span className="ddDeliveryHeadingCount" data-completed-heading-count="" role="status" hidden={view !== 'COMPLETED'}/>
+    {view === 'QUOTES' && <Link className="ddQuoteHistoryLink" href="/transporter/quotes">View all quote history <Icon name="arrow"/></Link>}
+  </div>;
 }
 
 export function MobileJobCard({job, open, ownQuote, quoteCard=false, onToggle}: {job: Vehicle; open: boolean; ownQuote?: {pricePence?: number; dateNegotiationStatus?: string; status?: string}; quoteCard?: boolean; onToggle: () => void}) {

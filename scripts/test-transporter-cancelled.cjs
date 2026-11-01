@@ -36,6 +36,7 @@ async function testApi(){
 async function testComponent(){
  const slots=[];let cursor=0,effects=[],dirty=false,tree,props={selected:false},calls=0,count=null;
  const onCountChange=value=>{count=value};
+ const onUnreadChange=()=>{};
  const eq=(a,b)=>a&&b&&a.length===b.length&&a.every((x,i)=>Object.is(x,b[i]));
  const react={
   useState(initial){const i=cursor++;if(!(i in slots))slots[i]=initial;return[slots[i],v=>{const next=typeof v==='function'?v(slots[i]):v;if(!Object.is(slots[i],next)){slots[i]=next;dirty=true}}]},
@@ -48,11 +49,13 @@ async function testComponent(){
  const win=new EventTarget();win.matchMedia=()=>media;
  const component=moduleFrom('src/app/components/TransporterCancelledDeliveries.tsx',{
   react,
+  './MobileArchivedDeliveries':{MobileCancelledSummary:()=>null},
+  './useDesktopCardActivity':()=>({unread:()=>false,mark:()=>{}}),
   './ApprovedIcon':{default:()=>null},'./TransporterCompactRow':{default:()=>null},'@/lib/transport-types':{transportTypeDisplay:v=>v},'../transporter-cancelled.css':{}
  },{window:win,document:{querySelector:()=>({})},fetch:async()=>{calls++;if(failed)throw Error('Offline');return{ok:true,json:async()=>response}}}).default;
- async function render(next=props){props=next;for(let i=0;i<15;i++){dirty=false;cursor=0;effects=[];tree=component({...props,onCountChange});effects.forEach(effect=>effect());await new Promise(resolve=>setImmediate(resolve));if(!dirty)return}throw Error('Render did not settle')}
+ async function render(next=props){props=next;for(let i=0;i<15;i++){dirty=false;cursor=0;effects=[];tree=component({...props,onCountChange,onUnreadChange});effects.forEach(effect=>effect());await new Promise(resolve=>setImmediate(resolve));if(!dirty)return}throw Error('Render did not settle')}
  function nodes(value=tree){if(value==null||typeof value==='boolean')return[];if(Array.isArray(value))return value.flatMap(x=>nodes(x??null));if(typeof value!=='object')return[value];return[value,...nodes(value.props?.children??null)]}
- const find=className=>nodes().find(n=>n?.props?.className===className);
+ const find=className=>nodes().find(n=>n?.props?.className?.split(' ').includes(className));
  const text=()=>nodes().filter(n=>typeof n==='string'||typeof n==='number').join(' ');
  await render();assert.equal(calls,1);assert.equal(count,1);assert.equal(find('transporterCancelledList'),undefined);
  await render({selected:true});assert.equal(calls,2);assert.ok(find('transporterCancelledList'));assert.match(text(),/Birmingham/);
@@ -61,14 +64,15 @@ async function testComponent(){
  await render({selected:false});assert.equal(find('transporterCancelledList'),undefined);
  failed=true;await render({selected:true});assert.match(text(),/existing cards are still shown/);assert.match(text(),/BMW/);
  failed=false;response={bookings:[]};nodes().find(n=>n?.type==='button'&&n.props.children==='Try again').props.onClick();await new Promise(resolve=>setImmediate(resolve));await render();assert.match(text(),/No cancelled deliveries/);assert.equal(count,0);
- media.matches=false;media.dispatchEvent(new Event('change'));await render();assert.equal(find('transporterCancelledList'),undefined);
+ media.matches=false;media.dispatchEvent(new Event('change'));await render();assert.ok(find('transporterCancelledList'));assert.equal(count,0);
+ await render({selected:false});assert.equal(find('transporterCancelledList'),undefined);
  slots.forEach(slot=>slot?.cleanup?.());
  console.log('PASS component: live counter, selected list, card expansion, refresh, retained cards on error, retry, empty and mobile states');
 }
 async function main(){await testApi();await testComponent();
  const page=fs.readFileSync(path.join(root,'src/app/transporter/page.tsx'),'utf8');
  assert.match(page,/role="button" data-cancelled-summary/);assert.match(page,/onClick=\{\(\)=>toggleView\('CANCELLED'\)\}/);
- assert.match(page,/<TransporterCancelledDeliveries selected=\{view==='CANCELLED'\}/);
+ assert.match(page,/<TransporterCancelledDeliveries\b[^>]*\bselected=\{view==='CANCELLED'\}/);
  const component=fs.readFileSync(path.join(root,'src/app/components/TransporterCancelledDeliveries.tsx'),'utf8');
  assert.doesNotMatch(component,/createPortal|setTarget/);
  const button=page.match(/<button[^>]*data-cancelled-summary[^>]*>[\s\S]*?<\/button>/);
