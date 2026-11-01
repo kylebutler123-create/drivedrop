@@ -39,6 +39,9 @@ const statusLabel = (value: string) => value.replaceAll('_', ' ').toLowerCase().
 const initials = (name: string) => name.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase();
 const expired = (quote: Quote, now: number) => !!quote.expiresAt && Date.parse(quote.expiresAt) <= now;
 
+const hasAcceptedDate = (quote: Quote) => quote.dateNegotiationStatus === 'ACCEPTED' && !!quote.proposedCollectionDate;
+const transporterName = (transporter: Quote['transporter']) => transporter.businessName || transporter.personName || transporter.name;
+
 function TransporterAvatar({name, url}: {name: string; url?: string | null}) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   return <span className="ddQuoteAvatar">{url && failedUrl !== url ? <img src={url} alt="" loading="lazy" onError={() => setFailedUrl(url)}/> : initials(name)}</span>;
@@ -48,9 +51,9 @@ const collectionDay = new Intl.DateTimeFormat('en-GB', {
   weekday: 'short', day: 'numeric', month: 'long', timeZone: 'Europe/London',
 });
 
-function CollectionWindow({date, from, until}: ReturnType<typeof offeredCollection>) {
+function CollectionWindow({date, from, until, compact = false}: ReturnType<typeof offeredCollection> & {compact?: boolean}) {
   return <>
-    <time dateTime={date.slice(0, 10)}>{collectionDay.format(new Date(date))}</time>
+    <time dateTime={date.slice(0, 10)}>{compact ? mobileDate(date) : collectionDay.format(new Date(date))}</time>
     {' · '}{from && until ? `${from}–${until}` : 'Time to be arranged'}
   </>;
 }
@@ -75,6 +78,9 @@ export default function MobileCustomerQuoteCard({job, now, busyQuoteId, selectio
   const title = `${job.vehicleMake} ${job.vehicleModel}`;
   const count = job.quotes.length;
   const available = job.quotes.filter(quote => quote.status === 'PENDING' && !expired(quote, now));
+  const acceptedOffers = available.filter(quote =>
+    hasAcceptedDate(quote) && (!selectionRequest || quote.id === selectionRequest.quoteId)
+  );
   const lowest = available.length ? Math.min(...available.map(quote => quote.pricePence)) : null;
   const locked = !!job.booking || ['CANCELLED', 'COMPLETED', 'BOOKED'].includes(job.status);
   const facts = [
@@ -101,6 +107,16 @@ export default function MobileCustomerQuoteCard({job, now, busyQuoteId, selectio
       <div className="ddQuoteRoute">{[['Collection', job.collection], ['Delivery', job.delivery]].map(([label, address]) => <div key={label}><Icon name="location"/><span><small>{label}</small><strong>{address}</strong></span></div>)}</div>
       <div className="ddQuoteSchedule"><Icon name="calendar"/><span><small>Requested collection</small><strong>{mobileDate(job.collectionDate)}{job.collectionFrom && job.collectionUntil ? ` · ${job.collectionFrom}–${job.collectionUntil}` : ''}</strong></span></div>
       <div className="ddQuoteCompact" hidden={open}>
+        {acceptedOffers.length > 0 && <div className="ddQuoteCompactAccepted">
+          <Icon name="circleCheck"/>
+          <div>
+            <small>{acceptedOffers.length === 1 ? 'Accepted date for this quote' : 'Accepted dates by quote'}</small>
+            {acceptedOffers.map(quote => <div className="ddQuoteCompactWindow" key={quote.id}>
+              {count > 1 && <span>{transporterName(quote.transporter)}</span>}
+              <strong><CollectionWindow {...offeredCollection(quote, job)} compact/></strong>
+            </div>)}
+          </div>
+        </div>}
         <div className="ddQuotePriceSummary">{lowest !== null ? <><div><small>Lowest quote</small><strong>{money(lowest)}</strong></div><p>{count} quote{count === 1 ? '' : 's'}<br/>to compare</p></> : <p>{count ? 'No available quotes at the moment.' : 'Your request is open for transporter quotes.'}</p>}</div>
         <button ref={toggle} type="button" className="ddPrimary ddQuoteCompare" aria-expanded={open} aria-controls={panelId} onClick={() => setOpen(true)}>{count ? `Compare ${count} quote${count === 1 ? '' : 's'}` : 'View request details'}<Icon name="arrow"/></button>
       </div>
@@ -110,14 +126,14 @@ export default function MobileCustomerQuoteCard({job, now, busyQuoteId, selectio
           {selectionRequest && <p className="ddQuoteNotice" role="status">A confirmation request is already in progress for this vehicle. <a href="#availability-requests">View your request</a> to check its status or continue an unfinished payment.</p>}
           {!count && <p className="ddQuoteNotice">No quotes yet. Quotes from transporters will appear here.</p>}
           {sortCustomerQuotes(job.quotes, job, 'date').map(quote => {
-            const transporter = quote.transporter, name = transporter.businessName || transporter.personName || transporter.name;
+            const transporter = quote.transporter, name = transporterName(transporter);
             const schedule = quote.dateNegotiationStatus === 'COUNTERED' && quote.proposedCollectionDate ? {date: quote.proposedCollectionDate, from: quote.proposedCollectionFrom, until: quote.proposedCollectionUntil} : offeredCollection(quote, job);
             const isExpired = expired(quote, now);
             const verified = transporter.verificationStatus === 'APPROVED' || transporter.transporterVerification?.status === 'APPROVED';
             const rating = Number(transporter.averageRating), reviews = Number(transporter.reviewCount) || 0;
             const rated = transporter.averageRating != null && Number.isFinite(rating) && reviews > 0;
             const proposed = quote.dateNegotiationStatus === 'PROPOSED', countered = quote.dateNegotiationStatus === 'COUNTERED';
-            const acceptedDate = quote.dateNegotiationStatus === 'ACCEPTED' && !!quote.proposedCollectionDate;
+            const acceptedDate = hasAcceptedDate(quote);
             const disabled = locked || !!selectionRequest || busyQuoteId !== null || quote.status !== 'PENDING' || isExpired || proposed || countered;
             return <article className="ddQuoteOffer" data-quote-id={quote.id} key={quote.id}>
               <div className="ddQuoteTransporter"><TransporterAvatar name={name} url={transporter.profileImageUrl}/><div><h4>{name}</h4><div className="ddQuoteTrust"><span className={verified ? 'isVerified' : ''}>{verified && <Icon name="circleCheck"/>}{verified ? 'Verified' : 'Verification pending'}</span><span><Icon name="star"/>{rated ? `${rating.toFixed(1)} (${reviews} review${reviews === 1 ? '' : 's'})` : 'New transporter'}</span></div></div></div>

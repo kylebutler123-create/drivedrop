@@ -30,6 +30,12 @@
   .ddQuoteSchedule{display:flex;gap:12px;align-items:center;min-height:54px;padding:8px 12px;border:1px solid #d9e5f3;background:#f8fbff;border-radius:9px}
   .ddQuoteSchedule>svg{width:23px;height:23px;flex:none}
   .ddQuoteSchedule strong{display:block;font-size:13px;line-height:1.5;font-weight:400}
+  .ddQuoteCompactAccepted{display:flex;align-items:flex-start;gap:10px;margin-top:6px;padding:9px 12px;border:1px solid #d8e8df;border-radius:9px;background:#edf6f2}
+  .ddQuoteCompactAccepted>svg{width:18px;height:18px;flex:none;color:#256749}
+  .ddQuoteCompactAccepted small,.ddQuoteCompactWindow span{display:block;font-size:12px;line-height:1.4;color:#24593f}
+  .ddQuoteCompactWindow{margin-top:2px;overflow-wrap:anywhere}
+  .ddQuoteCompactWindow+.ddQuoteCompactWindow{margin-top:6px}
+  .ddQuoteCompactWindow strong{font-size:14px;line-height:1.45;color:#10284a}
   .ddQuotePriceSummary{display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid #dce6f2;margin-top:16px;padding:16px 0}
   .ddQuotePriceSummary small{display:block;font-size:12px;color:#63799d;line-height:1.5}
   .ddQuotePriceSummary strong{display:block;font-size:23px;line-height:1.3;font-weight:700;letter-spacing:-.5px}
