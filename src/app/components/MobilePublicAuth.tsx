@@ -3,6 +3,7 @@ import {useRef,useState,type FormEvent} from 'react';
 import {useRouter,useSearchParams} from 'next/navigation';
 import Link from 'next/link';
 import {vehicleTypeCategory} from '@/lib/vehicle-types';
+import {dashboardLoginTarget} from '@/lib/dashboard-login';
 import {PublicBack,PublicIcon,PublicNote} from './MobilePublicUI';
 
 type Mode='login'|'register'|'forgot'|'reset';
@@ -15,6 +16,7 @@ export default function MobilePublicAuth({mode}:{mode:Mode}){
  const transporter=params.get('account')==='transporter';
  const vehicle=vehicleTypeCategory(params.get('vehicleType'));
  const account=transporter?'transporter':'customer';
+ const target=mode==='login'?dashboardLoginTarget(params):null;
  const query=`account=${account}${vehicle?`&vehicleType=${encodeURIComponent(vehicle)}`:''}`;
  const signIn='/login?'+query;
  const [error,setError]=useState(''),[busy,setBusy]=useState(false),[done,setDone]=useState(false);
@@ -30,19 +32,21 @@ export default function MobilePublicAuth({mode}:{mode:Mode}){
   if(mode==='reset'&&fields.get('password')!==fields.get('confirm')){setError('The passwords do not match.');return}
   if(mode==='reset'&&!params.get('token')){setError('This reset link is invalid or incomplete. Please request a new one.');return}
   inFlight.current=true;setBusy(true);
-  const payload=mode==='login'?{email:fields.get('email'),password:fields.get('password')}:register?{name:fields.get('name'),email:fields.get('email'),password:fields.get('password'),...(!transporter?{phone:fields.get('phone')}:{}),role:transporter?'TRANSPORTER':'CUSTOMER'}:mode==='forgot'?{email:fields.get('email')}:{token:params.get('token'),password:fields.get('password')};
+  const payload=mode==='login'?{email:fields.get('email'),password:fields.get('password'),expectedRole:target?.role}:register?{name:fields.get('name'),email:fields.get('email'),password:fields.get('password'),...(!transporter?{phone:fields.get('phone')}:{}),role:transporter?'TRANSPORTER':'CUSTOMER'}:mode==='forgot'?{email:fields.get('email')}:{token:params.get('token'),password:fields.get('password')};
   try{
    const response=await fetch(recovery?'/api/auth/password-reset':`/api/auth/${mode}`,{method:mode==='reset'?'PATCH':'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
    const result=await response.json().catch(()=>null);
    if(!response.ok)throw new Error(typeof result?.error==='string'?result.error:'We couldn’t complete that request. Please try again.');
    if(recovery){setDone(true);requestAnimationFrame(()=>notice.current?.focus());return}
    if(!['CUSTOMER','TRANSPORTER','ADMIN'].includes(result?.role))throw new Error('We couldn’t confirm your sign-in. Please try again.');
+   if(target && result.role===target.role){window.location.replace(target.href);return}
    router.push(result.role==='CUSTOMER'?`/customer${vehicle?'?vehicleType='+encodeURIComponent(vehicle):''}`:result.role==='TRANSPORTER'?'/transporter':'/admin');router.refresh();
   }catch(err){setError(err instanceof Error?err.message:'Connection interrupted. Please try again.')}finally{inFlight.current=false;setBusy(false)}
  }
  return <main className="mpOnly mpPage mpAuth" data-auth-mode={mode} aria-label={title}><PublicBack href={recovery?signIn:'/'} label={recovery?'Sign in':'Home'}/><div className="mpAuthHeading"><h1>{title}</h1><p className="mpIntro">{intro}</p></div>
-  {!recovery&&<div className="mpSwitch" aria-label="Choose account type"><Link href={`/${mode}?account=customer${vehicle?'&vehicleType='+encodeURIComponent(vehicle):''}`} aria-current={!transporter?'page':undefined}>Customer</Link><Link href={`/${mode}?account=transporter`} aria-current={transporter?'page':undefined}>Transporter</Link></div>}
+  {!recovery&&<div className="mpSwitch" aria-label="Choose account type"><Link href={target&&!transporter?`/login?${params}`:`/${mode}?account=customer${vehicle?'&vehicleType='+encodeURIComponent(vehicle):''}`} aria-current={!transporter?'page':undefined}>Customer</Link><Link href={target&&transporter?`/login?${params}`:`/${mode}?account=transporter`} aria-current={transporter?'page':undefined}>Transporter</Link></div>}
   {mode==='login'&&params.get('session')==='expired'&&<div className="mpNotice" role="status">Your session has ended. Please sign in again.</div>}
+  {target?.notice&&<div className="mpNotice" role="status">{target.notice} <Link href="/app">Back to my account</Link></div>}
   {mode==='login'&&params.get('accountClosed')==='1'&&<div className="mpNotice" role="status">Your DriveDrop account has been closed and you have been signed out.</div>}
   {mode==='login'&&emailNotice&&<div className="mpNotice" role="status">{emailNotice}</div>}
   {done?<div className="mpSuccess" ref={notice} tabIndex={-1} role="status"><span><PublicIcon name={mode==='forgot'?'mail':'check'}/></span><h2>{mode==='forgot'?'Check your email':'Password changed'}</h2><p>{mode==='forgot'?'If an eligible account exists, we’ll email reset instructions.':'Your password has been updated successfully. Existing sessions have been signed out.'}</p>{mode==='forgot'?<small>Reset links expire after 30 minutes and can only be used once.</small>:<Link className="mpButton mpSecondary" href={signIn}>Back to sign in</Link>}</div>:<div className="mpAuthCard"><form method="post" onSubmit={submit} aria-busy={busy}><fieldset disabled={busy}>

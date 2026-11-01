@@ -2,6 +2,7 @@
 
 import {useEffect,useState,type ReactNode} from 'react';
 import {usePathname,useSearchParams} from 'next/navigation';
+import {dashboardAccount} from '@/lib/dashboard-login';
 
 type Identity={id:string;role:string}|null;
 const privateRoots=['/customer','/transporter','/admin','/account','/messages','/notifications','/payments','/bookings','/app'];
@@ -13,6 +14,8 @@ export default function SessionBoundary({user,children}:{user:Identity;children:
  const pathname=usePathname(),query=useSearchParams().toString();
  const [leaving,setLeaving]=useState(false);
  const id=user?.id,role=user?.role;
+ const pageAccount=dashboardAccount(pathname);
+ const wrongDashboard=Boolean(role && pageAccount && role.toLowerCase()!==pageAccount);
 
  useEffect(()=>{
   let active=true,redirecting=false,replay:HTMLAnchorElement|null=null,clickSequence=0;
@@ -27,13 +30,19 @@ export default function SessionBoundary({user,children}:{user:Identity;children:
    // A document navigation discards the old identity, layout and prefetched private pages together.
    window.location.replace(href);
   };
-  const signIn=()=>{
+  const signIn=(switchAccount=false)=>{
    const customerContext=pathname.startsWith('/customer')||(pathname.startsWith('/transporter/profile/')&&new URLSearchParams(query).get('from')==='quotes');
-   const account=role==='CUSTOMER'?'customer':role==='TRANSPORTER'?'transporter':customerContext?'customer':pathname.startsWith('/transporter')?'transporter':null;
+   const account=pageAccount||(role==='CUSTOMER'?'customer':role==='TRANSPORTER'?'transporter':customerContext?'customer':pathname.startsWith('/transporter')?'transporter':null);
    const params=new URLSearchParams();
    if(account)params.set('account',account);
-   if(id)params.set('session','expired');
+   if(pageAccount)params.set('returnTo',pathname+window.location.search+window.location.hash);
+   if(switchAccount)params.set('switchAccount','1');
+   else if(id)params.set('session','expired');
    replace('/login'+(params.size?'?'+params.toString():''));
+  };
+  const unavailable=()=>{
+   if(wrongDashboard)signIn(true);
+   return active&&!redirecting;
   };
   const check=():Promise<boolean>=>{
    if(!active||redirecting)return Promise.resolve(false);
@@ -45,14 +54,17 @@ export default function SessionBoundary({user,children}:{user:Identity;children:
      const response=await fetch('/api/me',{cache:'no-store',credentials:'same-origin',signal:controller!.signal});
      if(!active)return false;
      if(response.status===401){signIn();return false}
-     if(!response.ok)return true; // A temporary server/network error is not a sign-out.
+     if(!response.ok)return unavailable();
      const current=await response.json();
      if(!active)return false;
-     if(typeof current?.id==='string'&&['CUSTOMER','TRANSPORTER','ADMIN'].includes(current.role)&&(current.id!==id||current.role!==role)){
-      replace(id?dashboard(current.role):window.location.href);return false;
+     if(typeof current?.id==='string'&&['CUSTOMER','TRANSPORTER','ADMIN'].includes(current.role)){
+      if(pageAccount && current.role.toLowerCase()!==pageAccount){signIn(true);return false}
+      if(current.id!==id||current.role!==role){
+       replace(pageAccount||!id?window.location.href:dashboard(current.role));return false;
+      }
      }
      return true;
-    }catch{return active&&!redirecting}
+    }catch{return unavailable()}
     finally{window.clearTimeout(timeout);pending=null}
    })();
    return pending;
@@ -65,6 +77,11 @@ export default function SessionBoundary({user,children}:{user:Identity;children:
    const next=new URL(link.href,window.location.href);
    if(next.origin!==window.location.origin||!['http:','https:'].includes(next.protocol)||next.pathname.startsWith('/api/'))return;
    if(next.hash&&next.pathname===window.location.pathname&&next.search===window.location.search)return;
+   const nextAccount=dashboardAccount(next.pathname);
+   if(nextAccount && nextAccount!==role?.toLowerCase()){
+    // Check the destination against a fresh server session, including links from a guest or stale tab.
+    event.preventDefault();event.stopImmediatePropagation();window.location.assign(next.href);return;
+   }
    if(!id&&!isPrivate(next.pathname))return;
    // Verify before a cached Link transition can expose an outdated signed-out fallback.
    event.preventDefault();event.stopImmediatePropagation();
@@ -88,8 +105,8 @@ export default function SessionBoundary({user,children}:{user:Identity;children:
    window.removeEventListener('pageshow',resume);
    document.removeEventListener('visibilitychange',resume);
   };
- },[id,role,pathname,query]);
+ },[id,role,pathname,query,pageAccount,wrongDashboard]);
 
- // Do not render legacy private-page fallbacks when a fresh server response is already signed out.
- return leaving||(!user&&isPrivate(pathname))?null:<>{children}</>;
+ // Never mount a dashboard under another account's layout while its session is being checked.
+ return leaving||wrongDashboard||(!user&&isPrivate(pathname))?null:<>{children}</>;
 }

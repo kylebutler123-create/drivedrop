@@ -6,11 +6,13 @@ import Link from 'next/link';
 import {useRouter,useSearchParams} from 'next/navigation';
 import {useState} from 'react';
 import {vehicleTypeCategory} from '@/lib/vehicle-types';
+import {dashboardLoginTarget} from '@/lib/dashboard-login';
 
 export default function Login(){
   const router=useRouter();
   const searchParams=useSearchParams();
   const account=searchParams.get('account');
+  const target=dashboardLoginTarget(searchParams);
   const emailChange=searchParams.get('emailChange');
   const accountClosed=searchParams.get('accountClosed');
   const changedEmail=searchParams.get('email')||'';
@@ -24,7 +26,15 @@ export default function Login(){
   const isTransporter=account==='transporter';
   const emailNotice=emailChange==='confirmed'?'Your email address has been verified and updated. Sign in using your new email address.':emailChange==='taken'?'That email address is already linked to another DriveDrop account.':emailChange==='invalid'?'That email verification link is invalid or has expired. Please request a new one from your Account page.':null;
 
-  async function submit(e:any){e.preventDefault();setErr('');const f=new FormData(e.currentTarget);const res=await fetch('/api/auth/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(Object.fromEntries(f))});const d=await res.json();if(!res.ok)return setErr(d.error);router.push(d.role==='CUSTOMER'?`/customer${requestedVehicleType?`?vehicleType=${encodeURIComponent(requestedVehicleType)}`:''}`:d.role==='TRANSPORTER'?'/transporter':'/admin');router.refresh();}
+  async function submit(e:React.FormEvent<HTMLFormElement>){
+    e.preventDefault();setErr('');
+    const fields=Object.fromEntries(new FormData(e.currentTarget));
+    const res=await fetch('/api/auth/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...fields,expectedRole:target?.role})});
+    const d=await res.json();
+    if(!res.ok)return setErr(d.error);
+    if(target && d.role===target.role){window.location.replace(target.href);return}
+    router.push(d.role==='CUSTOMER'?`/customer${requestedVehicleType?`?vehicleType=${encodeURIComponent(requestedVehicleType)}`:''}`:d.role==='TRANSPORTER'?'/transporter':'/admin');router.refresh();
+  }
 
   return <><MobilePublicAuth mode="login"/><main className={`authPage loginPage ${isTransporter?'transporterLogin':'customerLogin'}`}>
     <section className="authVisual">
@@ -49,11 +59,12 @@ export default function Login(){
           <p>{intro}</p>
         </div>
         {searchParams.get('session')==='expired'&&<div className="formNotice" role="status">Your session has ended. Please sign in again.</div>}
+        {target?.notice&&<div className="formNotice" role="status">{target.notice} <Link href="/app">Back to my account</Link></div>}
         {accountClosed==='1'&&<div className="formNotice">Your DriveDrop account has been closed and you have been signed out.</div>}
         {emailNotice&&<div className={`formNotice${emailChange==='confirmed'?'':' errorNotice'}`}>{emailNotice}</div>}
         <div className="accountSwitch" aria-label="Choose account type">
-          <Link className={!isTransporter?'active':''} aria-current={!isTransporter?'page':undefined} href={`/login?account=customer${vehicleTypeQuery}`}>Customer</Link>
-          <Link className={isTransporter?'active':''} aria-current={isTransporter?'page':undefined} href="/login?account=transporter">Transporter</Link>
+          <Link className={!isTransporter?'active':''} aria-current={!isTransporter?'page':undefined} href={target&&!isTransporter?`/login?${searchParams}`:`/login?account=customer${vehicleTypeQuery}`}>Customer</Link>
+          <Link className={isTransporter?'active':''} aria-current={isTransporter?'page':undefined} href={target&&isTransporter?`/login?${searchParams}`:'/login?account=transporter'}>Transporter</Link>
         </div>
         <form method="post" onSubmit={submit}>
           <div className="field">
