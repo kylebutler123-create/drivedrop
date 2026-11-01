@@ -1,6 +1,6 @@
 'use client';
 
-import {useId, useRef, useState} from 'react';
+import {useId, useRef, useState, type ReactNode} from 'react';
 import Link from 'next/link';
 import Icon from './ApprovedIcon';
 import {MobileVehiclePhoto, mobileDate} from './MobileTransportDesign';
@@ -29,6 +29,7 @@ type Job = {
   booking?: unknown; quotes: Quote[];
 };
 type Props = {
+  declineNotice?: ReactNode;
   job: Job; now: number; busyQuoteId: string | null; selectionRequest?: ConfirmationSelection;
   notice: {quoteId: string; type: 'error' | 'success'; text: string} | null;
   onSelect: (quoteId: string) => void; onDateUpdated: (quoteId: string, update: DateUpdate) => void;
@@ -71,7 +72,7 @@ function AcceptedCollectionDates({job, schedule}: {job: Job; schedule: ReturnTyp
   </dl>;
 }
 
-export default function MobileCustomerQuoteCard({job, now, busyQuoteId, selectionRequest, notice, onSelect, onDateUpdated, onRemoved}: Props) {
+export default function MobileCustomerQuoteCard({job, declineNotice, now, busyQuoteId, selectionRequest, notice, onSelect, onDateUpdated, onRemoved}: Props) {
   const [open, setOpen] = useState(false);
   const card = useRef<HTMLElement>(null), toggle = useRef<HTMLButtonElement>(null);
   const panelId = useId(), titleId = useId();
@@ -104,6 +105,7 @@ export default function MobileCustomerQuoteCard({job, now, busyQuoteId, selectio
       <div className="ddQuoteIdentity"><h2 id={titleId}>{title}</h2>{job.registration && <p>{job.registration}</p>}</div>
     </div>
     <div className="ddQuoteBody">
+      {!selectionRequest && declineNotice}
       <div className="ddQuoteRoute">{[['Collection', job.collection], ['Delivery', job.delivery]].map(([label, address]) => <div key={label}><Icon name="location"/><span><small>{label}</small><strong>{address}</strong></span></div>)}</div>
       <div className="ddQuoteSchedule"><Icon name="calendar"/><span><small>Requested collection</small><strong>{mobileDate(job.collectionDate)}{job.collectionFrom && job.collectionUntil ? ` · ${job.collectionFrom}–${job.collectionUntil}` : ''}</strong></span></div>
       <div className="ddQuoteCompact" hidden={open}>

@@ -20,6 +20,11 @@
   .ddQuoteIdentity h2{font-size:23px;line-height:1.2;font-weight:700;letter-spacing:-.5px;margin:0;overflow-wrap:anywhere}
   .ddQuoteIdentity p{margin:4px 0 0;font-size:14px;font-weight:700;line-height:1.3}
   .ddQuoteBody{padding:16px}
+  .ddQuoteDeclineNotice{display:flex;align-items:flex-start;gap:6px;margin:0 0 16px;padding:10px 4px 10px 12px;border:1px solid #f1d2b2;border-radius:9px;background:#fff6eb;color:#754018}
+  .ddQuoteDeclineNotice>div{min-width:0;flex:1;overflow-wrap:anywhere}
+  .ddQuoteDeclineNotice strong{display:block;font-size:14px;line-height:1.4}
+  .ddQuoteDeclineNotice p{margin:3px 0 0;font-size:13px;line-height:1.45}
+  .ddQuoteDeclineNotice button{display:grid;place-items:center;flex:none;width:40px;min-height:40px;margin:-5px 0 0;padding:0;border:0;border-radius:6px;background:transparent;color:inherit;font-size:21px;cursor:pointer}
   .ddQuoteRoute{display:grid;gap:16px;margin:0 0 18px}
   .ddQuoteRoute>div{display:flex;align-items:start;gap:12px;position:relative;min-width:0}
   .ddQuoteRoute>div:first-child:after{content:'';position:absolute;left:8px;top:23px;height:calc(100% - 7px);border-left:1px dashed #b7c9df}
