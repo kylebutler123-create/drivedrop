@@ -70,6 +70,18 @@
   .ddQuoteOfferedDate strong{display:block;font-size:11px;line-height:1.5;font-weight:500}
   .ddQuoteMessage{font-size:10px;line-height:1.5;color:#63799d;margin:6px 0;white-space:pre-wrap;overflow-wrap:anywhere}
   .ddQuoteOfferFooter{display:flex;align-items:center;gap:6px;border-top:1px solid #e4ebf4;margin-top:7px;padding-top:8px}
+  .ddQuoteAcceptedDates{border:1px solid #d9e5f0;border-radius:9px;overflow:hidden;margin:11px 0;color:#0b2448}
+  .ddQuoteAcceptedDates dt{font-size:11px;line-height:1.4;font-weight:500}
+  .ddQuoteAcceptedDates dd{margin:3px 0 0;line-height:1.45;overflow-wrap:anywhere}
+  .ddQuoteOriginalWindow{padding:8px 12px 9px;background:#fff}
+  .ddQuoteOriginalWindow dt{color:#5c6c82}
+  .ddQuoteOriginalWindow dd{font-size:12px;font-weight:500;color:#415573}
+  .ddQuoteAcceptedWindow{position:relative;padding:10px 10px 11px 35px;background:#edf6f2;border-top:1px solid #d8e8df}
+  .ddQuoteAcceptedWindow dt{font-weight:600;color:#24593f}
+  .ddQuoteAcceptedWindow dt svg{position:absolute;top:10px;left:10px;width:17px;height:17px;stroke:#256749;stroke-width:1.9}
+  .ddQuoteAcceptedWindow dd{font-size:14px;font-weight:700;color:#10284a}
+  .ddQuoteOffer:has(>.ddQuoteAcceptedDates)>.ddQuoteMessage{margin-top:9px}
+  .ddQuoteAcceptedDates+.ddQuoteOfferFooter{border-top:0;margin-top:0;padding-top:0}
   .ddQuoteTotal{margin-right:auto;min-width:0}
   .ddQuoteTotal small{display:block;font-size:10px;line-height:1.4;color:#63799d}
   .ddQuoteTotal strong{display:block;font-size:18px;line-height:1.3;font-weight:700;letter-spacing:-.4px}

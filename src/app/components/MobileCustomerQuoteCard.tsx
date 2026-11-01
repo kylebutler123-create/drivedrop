@@ -44,6 +44,30 @@ function TransporterAvatar({name, url}: {name: string; url?: string | null}) {
   return <span className="ddQuoteAvatar">{url && failedUrl !== url ? <img src={url} alt="" loading="lazy" onError={() => setFailedUrl(url)}/> : initials(name)}</span>;
 }
 
+const collectionDay = new Intl.DateTimeFormat('en-GB', {
+  weekday: 'short', day: 'numeric', month: 'long', timeZone: 'Europe/London',
+});
+
+function CollectionWindow({date, from, until}: ReturnType<typeof offeredCollection>) {
+  return <>
+    <time dateTime={date.slice(0, 10)}>{collectionDay.format(new Date(date))}</time>
+    {' · '}{from && until ? `${from}–${until}` : 'Time to be arranged'}
+  </>;
+}
+
+function AcceptedCollectionDates({job, schedule}: {job: Job; schedule: ReturnType<typeof offeredCollection>}) {
+  return <dl className="ddQuoteAcceptedDates">
+    <div className="ddQuoteOriginalWindow">
+      <dt>Originally requested</dt>
+      <dd><CollectionWindow date={job.collectionDate} from={job.collectionFrom} until={job.collectionUntil}/></dd>
+    </div>
+    <div className="ddQuoteAcceptedWindow">
+      <dt><Icon name="circleCheck"/>Accepted collection date for this quote</dt>
+      <dd><CollectionWindow {...schedule}/></dd>
+    </div>
+  </dl>;
+}
+
 export default function MobileCustomerQuoteCard({job, now, busyQuoteId, selectionRequest, notice, onSelect, onDateUpdated, onRemoved}: Props) {
   const [open, setOpen] = useState(false);
   const card = useRef<HTMLElement>(null), toggle = useRef<HTMLButtonElement>(null);
@@ -93,11 +117,13 @@ export default function MobileCustomerQuoteCard({job, now, busyQuoteId, selectio
             const rating = Number(transporter.averageRating), reviews = Number(transporter.reviewCount) || 0;
             const rated = transporter.averageRating != null && Number.isFinite(rating) && reviews > 0;
             const proposed = quote.dateNegotiationStatus === 'PROPOSED', countered = quote.dateNegotiationStatus === 'COUNTERED';
+            const acceptedDate = quote.dateNegotiationStatus === 'ACCEPTED' && !!quote.proposedCollectionDate;
             const disabled = locked || !!selectionRequest || busyQuoteId !== null || quote.status !== 'PENDING' || isExpired || proposed || countered;
             return <article className="ddQuoteOffer" data-quote-id={quote.id} key={quote.id}>
               <div className="ddQuoteTransporter"><TransporterAvatar name={name} url={transporter.profileImageUrl}/><div><h4>{name}</h4><div className="ddQuoteTrust"><span className={verified ? 'isVerified' : ''}>{verified && <Icon name="circleCheck"/>}{verified ? 'Verified' : 'Verification pending'}</span><span><Icon name="star"/>{rated ? `${rating.toFixed(1)} (${reviews} review${reviews === 1 ? '' : 's'})` : 'New transporter'}</span></div></div></div>
-              <div className="ddQuoteOfferedDate"><Icon name="calendar"/><span><small>{proposed ? 'Proposed collection' : countered ? 'Awaiting date agreement' : 'Collection'}</small><strong>{mobileDate(schedule.date)}{schedule.from && schedule.until ? ` · ${schedule.from}–${schedule.until}` : ''}</strong>{(!schedule.from || !schedule.until) && <small>Time to be arranged</small>}</span></div>
+              {!acceptedDate && <div className="ddQuoteOfferedDate"><Icon name="calendar"/><span><small>{proposed ? 'Proposed collection' : countered ? 'Awaiting date agreement' : 'Collection'}</small><strong>{mobileDate(schedule.date)}{schedule.from && schedule.until ? ` · ${schedule.from}–${schedule.until}` : ''}</strong>{(!schedule.from || !schedule.until) && <small>Time to be arranged</small>}</span></div>}
               {quote.message?.trim() && <p className="ddQuoteMessage">{quote.message}</p>}
+              {acceptedDate && <AcceptedCollectionDates job={job} schedule={schedule}/>}
               {proposed && quote.proposedCollectionDate && quote.status === 'PENDING' && !isExpired && !locked && !selectionRequest && <CustomerCollectionDateActions acceptOnly quoteId={quote.id} proposedDate={quote.proposedCollectionDate} onUpdated={update => onDateUpdated(quote.id, update)}/>}
               {countered && <p className="ddQuoteNotice">Awaiting the transporter’s response to your proposed date.</p>}
               <div className="ddQuoteOfferFooter"><div className="ddQuoteTotal"><small>Total price</small><strong>{money(quote.pricePence)}</strong></div><Link className="ddQuoteProfile" href={`/transporter/profile/${encodeURIComponent(transporter.id)}?from=quotes`}>View profile</Link><button type="button" className="ddQuoteSelect" disabled={disabled} aria-busy={busyQuoteId === quote.id} onClick={() => onSelect(quote.id)}>{selectionRequest ? selectionStatusLabel(selectionRequest, quote.id) : busyQuoteId === quote.id ? 'Checking…' : isExpired ? 'Expired' : quote.status !== 'PENDING' ? statusLabel(quote.status) : 'Select quote'}</button></div>
