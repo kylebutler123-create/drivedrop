@@ -12,7 +12,9 @@ function releaseMessage(request:RequestRow){
 }
 
 export default function CustomerDeclineNotice({rows,jobId,customerId,quoteCount,ended=false,mobileCard=false}:{rows:RequestRow[];jobId:string;customerId?:string;quoteCount:number;ended?:boolean;mobileCard?:boolean}){
- const request=ended?latestConfirmationIssue(rows,jobId):latestDecline(rows,jobId);
+ const issue=latestConfirmationIssue(rows,jobId);
+ const missed=mobileCard&&issue?.transporterTimedOut&&issue.job.selectedQuoteStatus==='WITHDRAWN';
+ const request=ended||missed?issue:latestDecline(rows,jobId);
  const key=customerId&&request?declineDismissalKey(customerId,request.id):null;
  const[stored,setStored]=useState<{key:string;dismissed:boolean}|null>(null);
  useEffect(()=>{
@@ -29,10 +31,10 @@ export default function CustomerDeclineNotice({rows,jobId,customerId,quoteCount,
   const nextStep=remaining===1?'You can choose the remaining quote.':remaining>1?'You can choose another quote.':'Your request is still open for new quotes.';
   return <div className="ddQuoteDeclineNotice" role="status">
    <div>
-    <strong>{request.transporterName || 'The transporter'} couldn’t confirm collection.</strong>
+    <strong>{missed?'The transporter didn’t confirm in time.':`${request.transporterName || 'The transporter'} couldn’t confirm collection.`}</strong>
     <p>{releaseMessage(request)}{nextStep}</p>
    </div>
-   <button type="button" aria-label="Dismiss transporter decline message" onClick={dismiss}>×</button>
+   <button type="button" aria-label={missed?'Dismiss transporter timeout message':'Dismiss transporter decline message'} onClick={dismiss}>×</button>
   </div>;
  }
  return <div className="availabilityDeclinedBanner customerRequestDeclineNotice" role="status">

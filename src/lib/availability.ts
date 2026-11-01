@@ -22,8 +22,21 @@ export async function eligibleQuote(tx:Tx,id:string,now:Date){
 }
 export async function closeExpired(tx:Tx,jobId:string,now:Date){
  const rows=await tx.availabilityRequest.findMany({where:{jobId,OR:[{status:{in:['AWAITING_TRANSPORTER','AWAITING_AUTHORISATION']},respondBy:{lte:now}},{status:'AWAITING_PAYMENT',payBy:{lte:now}}]}});
- for(const r of rows)await tx.availabilityRequest.update({where:{id:r.id},data:{status:'EXPIRED',activeJobId:null,paymentState:r.paymentProvider==='STRIPE'?'RELEASE_PENDING':r.paymentProvider?'RELEASED':null}});
- return {count:rows.length};
+ const withdrawnQuoteIds:string[]=[];
+ for(const r of rows){
+  if(r.status==='AWAITING_TRANSPORTER'&&r.paymentState==='AUTHORISED'&&r.paymentIntentId){
+   await withdrawAvailabilityQuote(tx,r);
+   withdrawnQuoteIds.push(r.quoteId);
+  }
+  await tx.availabilityRequest.update({where:{id:r.id},data:{status:'EXPIRED',activeJobId:null,paymentState:r.paymentProvider==='STRIPE'?'RELEASE_PENDING':r.paymentProvider?'RELEASED':null}});
+ }
+ return {count:rows.length,withdrawnQuoteIds};
+}
+export async function withdrawAvailabilityQuote(tx:Tx,r:{quoteId:string;jobId:string;transporterId:string}){
+ await tx.quote.updateMany({where:{id:r.quoteId,jobId:r.jobId,transporterId:r.transporterId,status:'PENDING'},data:{status:'WITHDRAWN'}});
+ if(await tx.quote.count({where:{jobId:r.jobId,status:'PENDING'}})===0){
+  await tx.transportJob.updateMany({where:{id:r.jobId,status:'QUOTED'},data:{status:'OPEN'}});
+ }
 }
 export async function assertNoReservation(tx:Tx,jobId:string,now=new Date()){
  await closeExpired(tx,jobId,now);
@@ -31,12 +44,14 @@ export async function assertNoReservation(tx:Tx,jobId:string,now=new Date()){
 }
 export async function selectQuote(actor:BookingActor,quoteId:string,window?:{collectionFrom?:string;collectionUntil?:string}){
  if(actor.role!=='CUSTOMER'||actor.accountStatus==='SUSPENDED'||actor.accountStatus==='DELETED')throw new AvailabilityError('Customer login required');
- return prisma.$transaction(async tx=>{
-  const initial=await tx.quote.findUniqueOrThrow({where:{id:quoteId},select:{jobId:true}});
+ const result=await prisma.$transaction(async tx=>{
+  const initial=await tx.quote.findUniqueOrThrow({where:{id:quoteId},select:{jobId:true,job:{select:{customerId:true}}}});
+  if(initial.job.customerId!==actor.id)throw new AvailabilityError('Quote not found');
   await lockJob(tx,initial.jobId);const now=new Date();
+  const expired=await closeExpired(tx,initial.jobId,now);
+  // Commit the withdrawal even if the customer is retrying this offer at its deadline.
+  if(expired.withdrawnQuoteIds.includes(quoteId))return null;
   const q=await eligibleQuote(tx,quoteId,now);
-  if(q.job.customerId!==actor.id)throw new AvailabilityError('Quote not found');
-  await closeExpired(tx,q.jobId,now);
   const current=await tx.availabilityRequest.findFirst({where:{activeJobId:q.jobId}});
   if(current){if(current.quoteId===q.id)return {request:current,created:false};throw new AvailabilityError('You already have a confirmation request for this job. Withdraw it before choosing another quote.');}
   const prior=await tx.booking.findUnique({where:{jobId:q.jobId}});
@@ -51,6 +66,8 @@ export async function selectQuote(actor:BookingActor,quoteId:string,window?:{col
   const request=await tx.availabilityRequest.create({data:{status:'AWAITING_AUTHORISATION',paymentProvider:provider,paymentEnvironment:paymentEnvironment(),paymentState:'PENDING',authorisedAmountPence:calculateCustomerPrice(q.pricePence).customerTotalPence,jobId:q.jobId,quoteId:q.id,customerId:actor.id,transporterId:q.transporterId,activeJobId:q.jobId,pricePence:q.pricePence,collectionDate:date,collectionFrom:from,collectionUntil:until,respondBy:confirmationDeadline(date,until,now,q.expiresAt)}});
   return {request,created:true};
  });
+ if(!result)throw new AvailabilityError('The transporter didn’t confirm in time. Please review your remaining quotes.');
+ return result;
 }
 // Called only after verified capture, under the job lock. Safe for webhook/request retries.
 export async function createCapturedBooking(tx:Tx,r:any,providerReference:string,actorId:string){

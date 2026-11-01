@@ -1,6 +1,6 @@
 import {prisma} from './prisma';
 import {AvailabilityError} from './availability-error';
-import {lockJob,closeExpired,eligibleQuote,createCapturedBooking,type BookingActor} from './availability';
+import {lockJob,closeExpired,eligibleQuote,withdrawAvailabilityQuote,createCapturedBooking,type BookingActor} from './availability';
 import {confirmationDeadline,requestExpired,collectionLimit,validateCollectionWindow} from './availability-time';
 import {authorisationProvider,assertNewCheckoutAllowed,paymentEnvironment,checkoutOrigin,stripeRequest} from './booking-authorisation-provider';
 import {assertTestFinanceAllowed,stripeLivemode} from './payment-runtime';
@@ -145,10 +145,7 @@ export async function respondToRequest(actor:BookingActor,id:string,action:'CONF
    return {request:await tx.availabilityRequest.update({where:{id},data:{status:'CAPTURING',confirmedAt:now,paymentState:'CAPTURE_PENDING'}}),changed:true};
   }
   if(r.status==='BOOKED')throw new AvailabilityError('This booking is already active');
-  if(action==='DECLINE'){
-   await tx.quote.updateMany({where:{id:r.quoteId,jobId:r.jobId,transporterId:r.transporterId,status:'PENDING'},data:{status:'WITHDRAWN'}});
-   if(await tx.quote.count({where:{jobId:r.jobId,status:'PENDING'}})===0)await tx.transportJob.updateMany({where:{id:r.jobId,status:'QUOTED'},data:{status:'OPEN'}});
-  }
+  if(action==='DECLINE')await withdrawAvailabilityQuote(tx,r);
   return {request:await tx.availabilityRequest.update({where:{id},data:{status:action==='WITHDRAW'?'WITHDRAWN':'DECLINED',activeJobId:null,paymentState:r.paymentProvider==='STRIPE'?'RELEASE_PENDING':r.paymentProvider?'RELEASED':null}}),changed:true};
  });
  // Return/GET retries recover any interrupted provider operation. Never call Stripe within a DB transaction.

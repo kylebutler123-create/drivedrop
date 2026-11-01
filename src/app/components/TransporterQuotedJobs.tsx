@@ -31,7 +31,9 @@ export default function TransporterQuotedJobs({selected,onCountChange,onUnreadCh
  const pending=mobileRequests?.filter(isPendingRequest)??[];
  const reserved=new Set(pending.map(row=>row.quoteId));
  // An availability refresh may finish before the quote list reflects a booking or decline.
- for(const row of mobileRequests??[])if(row.job.selectedQuoteStatus!=='PENDING')reserved.add(row.quoteId);
+ for(const row of mobileRequests??[]){
+  if(row.job.selectedQuoteStatus!=='PENDING'||(row.status==='AWAITING_TRANSPORTER'&&row.paymentState==='AUTHORISED'))reserved.add(row.quoteId);
+ }
  const offers=quotes.filter(q=>!reserved.has(q.id));
  if(pending.length&&!offers.length&&!error)return null;
  const loading=!loaded||(!activity.desktop&&availabilityRows===null);

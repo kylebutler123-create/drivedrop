@@ -5,7 +5,9 @@ import {calculateCustomerPrice} from './finance';
 // authorised totals and the other party's price remain server-side.
 export function availabilityForAccount(r:AvailabilityRequest & {customerName?:string;transporterName?:string;job?:unknown},role:string){
  const fields=['id','quoteId','jobId','status','collectionDate','collectionFrom','collectionUntil','respondBy','payBy','confirmedAt','bookingId','customerName','transporterName','job','paymentProvider','paymentState','createdAt','updatedAt'] as const;
- return {...Object.fromEntries(fields.map(key=>[key,r[key]])),pricePence:role==='CUSTOMER'?(r.authorisedAmountPence??calculateCustomerPrice(r.pricePence).customerTotalPence):r.pricePence};
+ // The intent ID is assigned only after authorisation. Expose the reason without the provider identifier.
+ const transporterTimedOut=r.status==='EXPIRED'&&Boolean(r.paymentIntentId)&&!r.confirmedAt;
+ return {...Object.fromEntries(fields.map(key=>[key,r[key]])),transporterTimedOut,pricePence:role==='CUSTOMER'?(r.authorisedAmountPence??calculateCustomerPrice(r.pricePence).customerTotalPence):r.pricePence};
 }
 type PaymentViewSource={status:string;transportValuePence:number;paidPence:number;refundedPence:number};
 export function customerPayment(p:PaymentViewSource){

@@ -53,6 +53,14 @@ for(const status of ['EXPIRED','PAYMENT_FAILED']){
  render(issueProps).props.children[2].props.onClick();
  assert.equal(render(issueProps),null);
 }
+const missed={...row,id:'timed-out',status:'EXPIRED',transporterTimedOut:true,paymentProvider:'STRIPE',pricePence:1100,paymentState:'RELEASED',job:{...row.job,availableQuoteCount:1}};
+const missedNotice=rows=>render({...mobile,rows});
+assert.match(renderToStaticMarkup(missedNotice([missed])),/The transporter didn’t confirm in time/);
+assert.match(renderToStaticMarkup(missedNotice([missed])),/Your £11 payment authorisation was cancelled. You can choose the remaining quote/);
+assert.match(renderToStaticMarkup(missedNotice([{...missed,paymentState:'RELEASE_PENDING'}])),/is being cancelled/);
+assert.equal(missedNotice([{...missed,transporterTimedOut:false}]),null,'unpaid checkout timeout has no transporter notice');
+assert.equal(missedNotice([{...missed,job:{...missed.job,selectedQuoteStatus:'PENDING'}}]),null,'a fresh offer from the transporter is not withdrawn');
+assert.equal(missedNotice([{...missed,id:'newer',status:'AWAITING_AUTHORISATION'},missed]),null);
 const realStorage=global.localStorage;
 global.localStorage={getItem(){throw Error('blocked')},setItem(){throw Error('blocked')}};
 helper.dismissNotice('blocked-key');assert.equal(helper.isNoticeDismissed('blocked-key'),true,'dismissal survives rerenders without storage');

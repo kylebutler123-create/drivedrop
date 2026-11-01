@@ -84,6 +84,24 @@ async function fixture(){const job=await prisma.transportJob.create({data:{custo
  ok(captures===beforeRecovery);
  // Failed capture creates no booking/fine and releases the reservation.
  f=await fresh();auth=await flow.authoriseRequest(c,f.request.id);pi=completeCheckout(auth.request.checkoutSessionId);await flow.reconcileRequest(f.request.id);failure=true;const failed=await flow.respondToRequest(t,f.request.id,'CONFIRM');failure=false;ok(failed.request.status==='PAYMENT_FAILED');ok(failed.request.activeJobId===null);ok(await prisma.booking.count({where:{jobId:f.job.id}})===0);
+ // A retry at the response deadline must commit the withdrawal before returning an error.
+ f=await fresh();auth=await flow.authoriseRequest(c,f.request.id);pi=completeCheckout(auth.request.checkoutSessionId);
+ const authorised=await flow.reconcileRequest(f.request.id);clock=authorised.respondBy.toISOString();
+ await reject(()=>flow.selectQuote(c,f.q.id),/didn’t confirm in time/);
+ ok((await prisma.quote.findUniqueOrThrow({where:{id:f.q.id}})).status==='WITHDRAWN');
+ ok((await prisma.quote.findUniqueOrThrow({where:{id:f.q2.id}})).status==='PENDING');
+ ok((await prisma.availabilityRequest.findUniqueOrThrow({where:{id:f.request.id}})).paymentState==='RELEASE_PENDING');
+ const beforeTimeoutCapture=captures, beforeCancel=cancels;
+ const expired=await flow.reconcileRequest(f.request.id);await flow.reconcileRequest(f.request.id);
+ ok(expired.status==='EXPIRED'&&expired.paymentState==='RELEASED'&&expired.activeJobId===null);
+ ok(pi.status==='canceled'&&captures===beforeTimeoutCapture&&cancels===beforeCancel+1);
+ ok(await prisma.booking.count({where:{jobId:f.job.id}})===0);ok(await prisma.transporterCancellationFee.count()===0);
+ ok((await flow.selectQuote(c,f.q2.id)).request.quoteId===f.q2.id);
+ // A missed customer checkout deadline keeps the original offer available.
+ f=await fresh();auth=await flow.authoriseRequest(c,f.request.id);clock=f.request.respondBy.toISOString();
+ const unpaid=await flow.reconcileRequest(f.request.id);
+ ok(unpaid.status==='EXPIRED'&&!unpaid.paymentIntentId);
+ ok((await flow.selectQuote(c,f.q.id)).request.quoteId===f.q.id);
  // Abandoned checkout expires and cannot be used after withdrawal.
  f=await fresh();auth=await flow.authoriseRequest(c,f.request.id);await flow.respondToRequest(c,f.request.id,'WITHDRAW');ok(sessions.get(auth.request.checkoutSessionId).status==='expired');
  // Late authorisation is cancelled instead of re-opening an expired request.
