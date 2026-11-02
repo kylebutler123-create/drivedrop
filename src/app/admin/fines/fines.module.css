@@ -1,0 +1,91 @@
+.page {color:#14283e;font-variant-numeric:tabular-nums}
+.crumb {display:flex;align-items:center;gap:10px;font-size:14px;color:#506579;margin:0 0 14px}
+.crumb a,.ledgerTitle a {color:#154875;font-weight:650;text-decoration:none}
+.crumb a:hover,.ledgerTitle a:hover,.history:hover {text-decoration:underline}
+.hero {display:flex;align-items:center;justify-content:space-between;gap:24px;padding:24px 28px;border-radius:15px;background:linear-gradient(110deg,#102b48,#193c5c);color:white}
+.eyebrow,.kicker {display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
+.eyebrow {color:#d6e5f2}
+.eyebrow::before {content:'';height:3px;width:21px;border-radius:3px;background:#ffae6b}
+.hero h1 {color:white;font-size:clamp(25px,2.5vw,36px);line-height:1.15;margin:7px 0;letter-spacing:-.03em}
+.hero p,.heroTotal small {color:#d6e5f2;font-size:14px;margin:0}
+.heroTotal {border-left:1px solid #52718a;padding-left:24px;min-width:17%}
+.heroTotal strong,.heroTotal small,.owner small,.ledger small {display:block}
+.heroTotal strong {font-size:clamp(27px,3vw,40px);line-height:1.2;color:white}
+.directory {margin-top:18px;background:white;border:1px solid #dce3ea;border-radius:14px;box-shadow:0 2px 6px #17324b0d;overflow:hidden}
+.toolbar,.owner,.ledgerTitle,.after,.estimate dl>div {display:flex;align-items:center;justify-content:space-between;gap:12px}
+.toolbar {padding:16px 22px;border-bottom:1px solid #dce3ea}
+.toolbar h2 {font-size:21px;margin:0 0 4px}
+.directory :is(h2,h3) {line-height:1.2;color:#14283e}
+.directory small,.estimate p {color:#506579;font-size:13px}
+.search {display:flex;align-items:center;gap:8px;border:1px solid #dce3ea;background:#f7f9fb;border-radius:9px;padding:0 10px;width:min(300px,43%)}
+.search svg,.owner>svg,.kicker svg,.entry svg,.accountFine svg {width:19px;height:19px;flex:none}
+.search input {min-width:0;width:100%;padding:9px 0;border:0;background:transparent;color:#14283e;font:inherit}
+.owner {background:white;color:#14283e;text-decoration:none;padding:15px 22px;border-bottom:1px solid #dce3ea}
+.owner[aria-expanded=true] {background:#edf4fb}
+.owner[aria-expanded=true]>svg {transform:rotate(180deg)}
+.owner:hover .identity strong {text-decoration:underline}
+.avatar {display:grid;place-items:center;width:42px;height:42px;border-radius:11px;background:#173650;color:white;font-size:18px;font-weight:700;flex:none}
+.identity {flex:1;min-width:0;overflow-wrap:anywhere}
+.owner strong {font-size:18px}
+.balance {text-align:right;flex:none}
+.details {display:grid;grid-template-columns:minmax(0,2fr) minmax(240px,1fr);align-items:start;gap:22px;padding:20px 22px}
+.ledger {min-width:0}
+.ledgerTitle {margin-bottom:9px}
+.ledgerTitle h3 {font-size:17px;margin:0}
+.ledgerTitle span {display:inline-block;background:#f4f7f9;border:1px solid #dce3ea;border-radius:5px;font-size:12px;padding:2px 6px}
+.ledgerTitle a {font-size:13px}
+.ledger table {width:100%;border-collapse:collapse;font-size:14px}
+.ledger th,.ledger td {text-align:right;padding:10px 6px;border-bottom:1px solid #dce3ea;color:#14283e;white-space:nowrap}
+.ledger th:first-child {text-align:left;white-space:normal}
+.ledger small {font-weight:400;font-size:12px}
+.ledger thead th {background:#f7f9fb;color:#506579;font-size:12px}
+.ledger tbody tr:last-child>* {border-bottom:0}
+.estimate {background:#fff6e9;border:1px solid #ecd6b9;border-radius:12px;padding:18px}
+.kicker,.after {color:#95420b}
+.estimate h3 {margin:12px 0 2px;font-size:21px;overflow-wrap:anywhere}
+.estimate dl {margin:18px 0 12px}
+.estimate dl>div {margin:8px 0;align-items:baseline;font-size:14px}
+.estimate dd {margin:0;font-weight:650}
+.net,.after {border-top:1px solid #ecd6b9;padding-top:12px;font-weight:700}
+.net dd,.after strong {font-size:19px}
+.estimate p {line-height:1.5;margin:12px 0}
+.picker {display:grid;gap:3px;margin-top:12px;font-weight:600;font-size:12px}
+.picker select {width:100%;min-width:0;color:#14283e;background:white;border:1px solid #dac8b0;border-radius:6px;padding:5px;font:inherit}
+.empty {margin:0;padding:24px;color:#506579}
+.entry,.accountFine,.badge {display:none}
+@media(min-width:1024px){
+  .entry {display:grid;gap:6px;padding:15px 18px;margin:0 0 12px;color:#14283e;background:white;border:1px solid #dce3ea;border-radius:12px;text-decoration:none;font-variant-numeric:tabular-nums}
+  .entry:hover {border-color:#e87620}
+  .entryHead,.entryFoot,.accountHeadline,.categoryRow {display:flex;align-items:center;gap:8px}
+  .entryHead {font-weight:700}
+  .entryHead svg,.accountFine svg {color:#a54709}
+  .entryValue {font-size:29px;line-height:1.1;letter-spacing:-.03em}
+  .entry small,.accountFine small {color:#506579;font-size:12px}
+  .entryFoot {justify-content:space-between;border-top:1px solid #dce3ea;margin-top:3px;padding-top:8px;font-size:13px;font-weight:650;color:#154875}
+  .accountFine {display:block;margin-top:12px;padding:12px;border:1px solid #ecd6b9;border-radius:9px;background:#fff6e9;color:#14283e;font-variant-numeric:tabular-nums}
+  .accountHeadline {justify-content:space-between;flex-wrap:wrap}
+  .accountHeadline h4 {margin:0;font-size:15px}
+  .accountHeadline strong {font-size:21px;color:#95420b}
+  .accountFine dl {margin:8px 0}
+  .categoryRow {justify-content:space-between;border-top:1px solid #ecd6b9;padding:6px 0;font-size:13px}
+  .categoryRow dd {margin:0;font-weight:650}
+  .history {display:inline-block;font-weight:650;font-size:13px;color:#154875}
+  .badge {display:inline-block;border-radius:5px;padding:4px 7px;background:#fff1df;color:#85400b;font-size:11px;font-weight:650}
+}
+@media(max-width:900px){
+  .details {grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:600px){
+  .hero,.toolbar {align-items:stretch;flex-direction:column;gap:10px;padding:16px}
+  .heroTotal {display:flex;align-items:baseline;justify-content:space-between;border-left:0;border-top:1px solid #52718a;padding:9px 0 0}
+  .search {width:100%}
+  .search input,.picker select {font-size:16px}
+  .owner {padding:12px;gap:7px}
+  .owner strong {font-size:15px}
+  .owner small {font-size:11px}
+  .avatar {width:31px;height:34px}
+  .details {padding:12px;gap:14px}
+  .ledger table {font-size:12px}
+  .ledger th,.ledger td {padding:7px 3px}
+  .ledger thead th,.ledger small {font-size:11px}
+}

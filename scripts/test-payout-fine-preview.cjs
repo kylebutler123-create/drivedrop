@@ -5,11 +5,11 @@ const m=new Module(file);m._compile(swc.transformSync(fs.readFileSync(file,'utf8
 const {payoutFinePreview:preview}=m.exports;
 const payment={id:'p1',payoutStatus:'READY',transporterProceedsPence:22500,booking:{transporterId:'t1',status:'DELIVERED',customerConfirmedAt:'2026-10-16T12:00:00Z'}};
 const fine={transporterId:'t1',outstandingPence:5000,createdAt:'2026-10-15T12:00:00Z'};
-assert.deepEqual(preview(payment,[payment],[fine]),{outstandingPence:5000,expectedDeductionPence:5000,netPayoutPence:17500});
+assert.deepEqual(preview(payment,[payment],[fine]),{outstandingPence:5000,eligiblePence:5000,expectedDeductionPence:5000,netPayoutPence:17500});
 assert.equal(preview(payment,[payment],[]).expectedDeductionPence,0);
 assert.equal(preview(payment,[payment],[{...fine,transporterId:'other'}]).outstandingPence,0);
 assert.equal(preview({...payment,payoutStatus:'PAID'},[payment],[fine]),null);
-assert.deepEqual(preview({...payment,transporterProceedsPence:2000},[payment],[fine]),{outstandingPence:5000,expectedDeductionPence:2000,netPayoutPence:0});
+assert.deepEqual(preview({...payment,transporterProceedsPence:2000},[payment],[fine]),{outstandingPence:5000,eligiblePence:5000,expectedDeductionPence:2000,netPayoutPence:0});
 assert.equal(preview(payment,[payment],[fine,{...fine,outstandingPence:3000}]).expectedDeductionPence,8000);
 assert.equal(preview(payment,[payment],[{...fine,createdAt:'2026-10-17T12:00:00Z'}]).expectedDeductionPence,0);
 const earlier={...payment,id:'p0',payoutStatus:'HELD',booking:{...payment.booking,customerConfirmedAt:'2026-10-16T10:00:00Z'}};
@@ -17,4 +17,9 @@ assert.equal(preview(payment,[payment,earlier],[fine]).expectedDeductionPence,0)
 assert.equal(preview(payment,[payment,{...earlier,payoutStatus:'PAID'}],[fine]).expectedDeductionPence,5000);
 assert.equal(preview(payment,[payment,{...earlier,booking:{...earlier.booking,customerConfirmedAt:'2026-10-14T10:00:00Z'}}],[fine]).expectedDeductionPence,5000);
 assert.equal(preview({...payment,booking:{...payment.booking,customerConfirmedAt:null,trackingEvents:[{createdAt:'2026-10-16T12:00:00Z'}]}},[payment],[fine]).expectedDeductionPence,5000);
+for(const payoutStatus of ['PROCESSING','FAILED']){
+ assert.equal(preview(payment,[payment,{...earlier,payoutStatus}],[fine]).eligiblePence,0);
+}
+const partial={...fine,outstandingPence:1500};
+assert.deepEqual(preview(payment,[payment],[partial]),{outstandingPence:1500,eligiblePence:1500,expectedDeductionPence:1500,netPayoutPence:21000});
 console.log('PASS: £50 fines, partial deductions, multiple fines, transporter isolation, paid history, completion ordering and delivery fallback.');
