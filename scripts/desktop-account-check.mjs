@@ -48,8 +48,8 @@ const pages={
   {name:'new-request',route:'/customer?view=request'},
   {name:'quote-requests',route:'/customer?view=quotes'},
   {name:'deliveries',route:'/customer?view=bookings'},
-  {name:'completed',route:'/customer',click:'.customerDashboardSummary [role="button"]:has-text("Completed")'},
-  {name:'cancelled',route:'/customer',click:'.customerDashboardSummary [role="button"]:has-text("Cancelled")'},
+  {name:'completed',route:'/customer',deliveryTab:'Completed',expectedBooking:'ci-booking-paid'},
+  {name:'cancelled',route:'/customer',deliveryTab:'Cancelled',expectedBooking:'ci-booking-cancelled'},
   {name:'account',route:'/account'},
   {name:'messages',route:'/messages'},
   {name:'notifications',route:'/notifications'},
@@ -114,12 +114,30 @@ async function open(browser,version,role,scenario,width){
   await page.locator('main:visible').last().waitFor({state:'visible'});
   const dashboardPath=new URL(scenario.route,'http://localhost').pathname;
   if(role==='customer'&&dashboardPath==='/customer')await page.waitForFunction(()=>{const s=document.querySelectorAll('.customerDashboardSummary strong');return s.length>0&&Array.from(s).every(e=>e.textContent!=='—')},null,{timeout:10000});
-  if(role==='transporter'&&dashboardPath==='/transporter')await page.waitForFunction(()=>{const s=Array.from(document.querySelectorAll('.dashboardSummary strong')).filter(e=>e.getClientRects().length);return s.length>0&&s.every(e=>e.textContent!=='—')},null,{timeout:10000});
+  if(role==='transporter'&&dashboardPath==='/transporter'){
+   if(width>=1024)await page.waitForFunction(()=>{const s=Array.from(document.querySelectorAll('.dashboardSummary strong')).filter(e=>e.getClientRects().length);return s.length>0&&s.every(e=>e.textContent!=='—')},null,{timeout:10000});
+   if(width<1024||scenario.name==='available-jobs'){
+    const card=scenario.name==='active-deliveries'?'[data-booking-id="ci-booking-active"]':'#available-jobs [data-job-id="ci-job-open"]';
+    await page.locator(card).waitFor({state:'visible'});
+   }
+  }
   if(dashboardPath==='/messages')await page.locator('.conversationCard').first().waitFor({state:'visible'});
   if(dashboardPath==='/notifications')await page.locator('.notificationCard').first().waitFor({state:'visible'});
-  if(dashboardPath==='/transporter/verification')await page.locator('.documentRow').first().waitFor({state:'visible'});
-  if(scenario.click)await page.locator(scenario.click).first().click();
-  if(scenario.name==='available-jobs')await page.locator('#available-jobs [data-job-id="ci-job-open"]').waitFor({state:'visible'});
+  if(dashboardPath==='/transporter/verification'){
+   for(const id of ['ci-document-insurance','ci-document-driving_licence']){
+    await page.locator(`a[href="/api/verification-documents/${id}"]:visible`).waitFor();
+   }
+  }
+  if(scenario.deliveryTab){
+   if(width<1024){
+    await page.getByRole('region',{name:'Your DriveDrop overview'}).getByRole('link',{name:'See all',exact:true}).click();
+    await page.getByRole('navigation',{name:'Delivery status'}).getByRole('button',{name:scenario.deliveryTab,exact:true}).click();
+    await page.waitForURL(url=>url.pathname==='/customer'&&url.searchParams.get('view')===scenario.name);
+   }else{
+    await page.locator('.customerDashboardSummary').getByRole('button',{name:new RegExp(scenario.deliveryTab)}).click();
+   }
+   await page.locator(`[data-booking-id="${scenario.expectedBooking}"]`).waitFor({state:'visible'});
+  }
   await page.evaluate(async()=>{await document.fonts.ready;await Promise.all(Array.from(document.images,im=>{im.loading='eager';return im.decode().catch(()=>{})}));await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))});
   // A bounded presentation settling window also captures asynchronous error boundaries.
   await page.waitForTimeout(600);

@@ -8,9 +8,15 @@ From 375 to 1023 CSS pixels the test follows **Get free quotes** to `/get-quotes
 
 The mobile design and its original verification are documented in [Mobile public pages](mobile-public-pages.md) and [Signed-in mobile public pages](mobile-signed-in-home.md). The previous failing run is [41671847598](https://github.com/kylebutler123-create/drivedrop/actions/runs/41671847598).
 
-## Authenticated reference and 24 October review
+## Signed-in pages — 3 November 2026
 
-Both suites originally pinned `b54e1f827b00ebe2b0ccd7720a595940b57387c7` after the 24 October review. The authenticated suite still uses this reference with the small, frozen proceeds CSS correction described below.
+The account suite uses the same fixed 1 November source. The [previous account run](https://github.com/kylebutler123-create/drivedrop/actions/runs/41676632585) preserves the October and November screenshots. Its eight admin mobile comparisons matched exactly. Representative customer and transporter screenshots were reviewed against the [approved mobile dashboards](mobile-premium-design.md), [delivery tabs](mobile-customer-delivery-tabs.md), [account and verification screens](mobile-account-details.md) and [booked proceeds](mobile-proceeds.md).
+
+On phones and tablets the test opens completed and cancelled bookings through the delivery status tabs. It waits for the seeded vehicle card on the transporter dashboard and for both visible verification-document links. Desktop summary controls, all screenshot scenarios, image tolerances and the no-overflow checks remain covered. The November proceeds screen includes the approved responsive layout in source, so the historical October patch is no longer applied to the reference build.
+
+## Historical 24 October review
+
+Both suites originally pinned `b54e1f827b00ebe2b0ccd7720a595940b57387c7` after the 24 October review. The authenticated reference included the small, frozen proceeds CSS correction described below.
 
 The previous reference, `215f74942949572ae40f242f3e284308a2f29286` (28 September), predates subsequent requested functionality. Comparing every later release with it asserted that none of those changes existed on mobile. That assertion is no longer an appropriate regression contract. This update does **not** claim the current UI is pixel-identical to September.
 
@@ -40,7 +46,7 @@ Each suite compares against its fixed reference and retains full screenshots. A 
 
 [Account run 40130985883](https://github.com/kylebutler123-create/drivedrop/actions/runs/40130985883) exposed real horizontal overflow: 431px of content in a 390px viewport and 922px at 761px. The full screenshots show desktop fine/refund totals duplicated alongside the mobile totals. The tablet also retained the six-column summary intended for wider screens.
 
-The application correction hides the duplicate desktop totals below 1024px, permits long mobile amounts to wrap, and uses three summary columns from 761–1023px. Desktop styles and payment values are unchanged. The reference build applies the explicit, frozen `scripts/fixtures/proceeds-responsive-baseline.patch` to the pinned source so this intentional repair is represented in expected screenshots. This patch contains only those CSS rules; it must never be regenerated automatically from current source. Absolute no-overflow checks remain mandatory, and all five proceeds views remain in screenshot comparisons. Full before/after screenshots remain in the linked run and the repair run.
+The October correction hid the duplicate desktop totals below 1024px, permitted long mobile amounts to wrap, and used three summary columns from 761–1023px. That reference build applied the frozen `scripts/fixtures/proceeds-responsive-baseline.patch` to the October source. Absolute no-overflow checks remain mandatory, and all five proceeds views remain in screenshot comparisons.
 
 ### Current interactions
 

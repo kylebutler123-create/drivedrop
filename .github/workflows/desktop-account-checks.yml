@@ -6,7 +6,6 @@ on:
       - '.github/workflows/desktop-account-checks.yml'
       - 'scripts/desktop-account-*.mjs'
       - 'scripts/desktop-workspace-interactions.mjs'
-      - 'scripts/fixtures/proceeds-responsive-baseline.patch'
       - 'src/app/**'
       - 'src/components/**'
       - 'src/lib/customer-photo-storage.ts'
@@ -44,8 +43,8 @@ jobs:
       VERCEL_ENV: preview
       POSTGRES_PRISMA_URL: postgresql://ci_only:ci_only@127.0.0.1:55432/drivedrop_browser_ci
       DATABASE_URL: postgresql://ci_only:ci_only@127.0.0.1:55432/drivedrop_browser_ci
-      # Reviewed current preview; see docs/browser-regression-baseline.md.
-      BASELINE_REF: b54e1f827b00ebe2b0ccd7720a595940b57387c7
+      # Approved signed-in mobile workspaces; see docs/browser-regression-baseline.md.
+      BASELINE_REF: ee60a1f9fc09148a84a0e53008ed76b3cca69b79
     steps:
       - uses: actions/checkout@v6
         with:
@@ -72,10 +71,6 @@ jobs:
           git archive "$BASELINE_REF" | tar -x -C "$RUNNER_TEMP/drivedrop-account-baseline"
           cp -a node_modules "$RUNNER_TEMP/drivedrop-account-baseline/node_modules"
           cd "$RUNNER_TEMP/drivedrop-account-baseline"
-          # Frozen, reviewed reference correction for the two proceeds overflow bugs.
-          # Never copy current application files into the reference build.
-          git apply --check "$GITHUB_WORKSPACE/scripts/fixtures/proceeds-responsive-baseline.patch"
-          git apply "$GITHUB_WORKSPACE/scripts/fixtures/proceeds-responsive-baseline.patch"
           npm run build
       - name: Check authenticated screens and isolated workflows
         timeout-minutes: 15
