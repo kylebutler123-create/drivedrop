@@ -58,6 +58,11 @@ async function open(browser, base, route, width) {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   const response = await page.goto(base + route, {waitUntil: 'networkidle', timeout: 45000});
+  await settlePage(page);
+  return {context, page, errors, response};
+}
+
+async function settlePage(page) {
   await page.evaluate(async () => {
     await document.fonts.ready;
     // Settle lazy images as well, so an unloaded baseline image is not compared to a loaded one.
@@ -67,7 +72,6 @@ async function open(browser, base, route, width) {
     }));
   });
   await page.mouse.move(0, 0);
-  return {context, page, errors, response};
 }
 
 let browser;
@@ -79,12 +83,11 @@ try {
   for (const item of ['next', 'react', 'playwright']) versions[item] = JSON.parse(await readFile(path.join(root, 'node_modules', item, 'package.json'), 'utf8')).version;
   await writeFile(path.join(out, 'versions.json'), JSON.stringify(versions, null, 2));
 
-  // The approved redesign starts at 1024 CSS px. Include the narrow desktop /
-  // tablet range in exact baseline comparisons, not in redesigned navigation checks.
+  // The approved mobile public pages cover phones and tablets through 1023 CSS px.
   for (const width of [375, 390, 430, 760, 761, 844, 932, 1023]) {
     for (const route of oldRoutes) {
       const screenshots = {};
-      const expandedScreenshots = {};
+      const quoteScreenshots = {};
       const normalizedScreenshots = {};
       for (const name of ['baseline', 'updated']) {
         const view = await open(browser, urls[name], route, width);
@@ -102,14 +105,20 @@ try {
           normalizedScreenshots[name] = await view.page.screenshot({fullPage: true, animations: 'disabled', caret: 'hide', mask: [view.page.locator('input,select')], maskColor: '#db00ed'});
         }
         if (route === '/') {
-          await view.page.locator('.homeQuoteExpand:visible').click();
-          await view.page.locator('.homeQuoteTransport').waitFor({state: 'visible'});
-          expandedScreenshots[name] = await view.page.screenshot({fullPage: true, animations: 'disabled', caret: 'hide'});
-          await writeFile(path.join(out, `${name}-${width}-home-expanded.png`), expandedScreenshots[name]);
+          await view.page.getByRole('link', {name: 'Get free quotes', exact: true}).click();
+          await view.page.waitForURL(urls[name] + '/get-quotes');
+          const journey = view.page.getByRole('region', {name: 'Request vehicle transport'});
+          await journey.getByRole('heading', {name: '1. Collection & delivery', exact: true}).waitFor();
+          await journey.getByRole('textbox', {name: 'Collection address', exact: true}).waitFor();
+          await journey.getByRole('textbox', {name: 'Delivery address', exact: true}).waitFor();
+          await settlePage(view.page);
+          record(`${name} ${width}px homepage: Get free quotes opens the journey form`, view.errors.length === 0, view.errors.join(' | '));
+          quoteScreenshots[name] = await view.page.screenshot({fullPage: true, animations: 'disabled', caret: 'hide'});
+          await writeFile(path.join(out, `${name}-${width}-quote-journey.png`), quoteScreenshots[name]);
         }
         await view.context.close();
       }
-      if (route === '/') record(`MOBILE EXPANDED BASELINE MATCH ${width}px`, hash(expandedScreenshots.baseline) === hash(expandedScreenshots.updated));
+      if (route === '/') record(`MOBILE QUOTE JOURNEY BASELINE MATCH ${width}px`, hash(quoteScreenshots.baseline) === hash(quoteScreenshots.updated));
       record(`MOBILE BASELINE MATCH ${width}px ${route}`, hash(normalizedScreenshots.baseline || screenshots.baseline) === hash(normalizedScreenshots.updated || screenshots.updated), `${route.startsWith('/register?') ? 'Native fields masked to remove one-colour-level antialiasing noise; full screenshots retained' : 'Exact screenshot hash comparison'}; baseline ` + process.env.BASELINE_REF);
     }
   }

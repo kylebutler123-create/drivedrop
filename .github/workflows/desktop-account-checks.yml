@@ -9,6 +9,7 @@ on:
       - 'scripts/fixtures/proceeds-responsive-baseline.patch'
       - 'src/app/**'
       - 'src/components/**'
+      - 'src/lib/customer-photo-storage.ts'
       - 'src/lib/stripe-*.ts'
       - 'src/lib/booking-authorisation*.ts'
       - 'src/lib/payment-runtime.ts'

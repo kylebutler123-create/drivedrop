@@ -1,6 +1,16 @@
-# Browser regression reference — 24 October 2026
+# Browser regression references
 
-The browser suites pin `b54e1f827b00ebe2b0ccd7720a595940b57387c7`, the existing preview immediately before this test repair. The authenticated reference also includes the small, frozen proceeds CSS correction described below. Payment rules are unchanged.
+## Public pages — 3 November 2026
+
+The public suite pins `ee60a1f9fc09148a84a0e53008ed76b3cca69b79`, the 1 November preview containing the approved mobile public pages, premium homepage and role-aware sign-in. Later admin-fine and payout-notification changes did not change these public pages. The 24 October public reference predates their redesign.
+
+From 375 to 1023 CSS pixels the test follows **Get free quotes** to `/get-quotes` and checks the **Collection & delivery** step and both address fields. It compares full screenshots of the homepage and the quote form at all eight widths. The desktop homepage still has an inline quote form with its own expansion and value-retention checks.
+
+The mobile design and its original verification are documented in [Mobile public pages](mobile-public-pages.md) and [Signed-in mobile public pages](mobile-signed-in-home.md). The previous failing run is [41671847598](https://github.com/kylebutler123-create/drivedrop/actions/runs/41671847598).
+
+## Authenticated reference and 24 October review
+
+Both suites originally pinned `b54e1f827b00ebe2b0ccd7720a595940b57387c7` after the 24 October review. The authenticated suite still uses this reference with the small, frozen proceeds CSS correction described below.
 
 The previous reference, `215f74942949572ae40f242f3e284308a2f29286` (28 September), predates subsequent requested functionality. Comparing every later release with it asserted that none of those changes existed on mobile. That assertion is no longer an appropriate regression contract. This update does **not** claim the current UI is pixel-identical to September.
 
@@ -22,7 +32,7 @@ The old comparisons and errors remain in [account run 40129969709](https://githu
 | Admin messages/notifications | Role-appropriate heading/copy and revised notification presentation |
 | Customer receipt/transporter statement | Explicit UK date/time formatting, deployed and verified before this repair |
 
-Future source changes must still pass comparisons against the pinned October reference. Screenshot thresholds have not been increased, failing pages have not been excluded, and no fields have been newly masked. Existing full screenshots remain artifacts. A future intentional design change requires a reviewed reference update with its rationale; a failed comparison alone is not a reason to advance it.
+Each suite compares against its fixed reference and retains full screenshots. A future intentional design change requires a reviewed reference update with its rationale.
 
 ## Functional contracts
 

@@ -35,8 +35,8 @@ jobs:
       # This job exercises public pages and client validation only, without signing in.
       POSTGRES_PRISMA_URL: postgresql://ci_only:ci_only@127.0.0.1:55432/drivedrop_no_live_data
       DATABASE_URL: postgresql://ci_only:ci_only@127.0.0.1:55432/drivedrop_no_live_data
-      # Reviewed current preview; see docs/browser-regression-baseline.md.
-      BASELINE_REF: b54e1f827b00ebe2b0ccd7720a595940b57387c7
+      # Approved mobile public pages and role-aware sign-in; see docs/browser-regression-baseline.md.
+      BASELINE_REF: ee60a1f9fc09148a84a0e53008ed76b3cca69b79
     steps:
       - uses: actions/checkout@v6
         with:
