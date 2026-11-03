@@ -34,13 +34,14 @@ function fixture() {
     status: 'PAID', payoutStatus: 'READY', paidPence: 11000, refundedPence: 0, platformFeePence: 1000,
     transporterProceedsPence: 10000, cancellationDeductionPence: 0, events: [],
     booking: {id: 'book_test', status: 'DELIVERED', transporterId: 'transporter_test', customerConfirmedAt: at,
-      disputes: [], trackingEvents: [{createdAt: at}]}};
+      job: {vehicleMake: 'Ford', vehicleModel: 'Focus'}, disputes: [], trackingEvents: [{createdAt: at}]}};
 }
 function context(options = {}) {
  const environment = options.environment || 'preview';
-  let state = {payment: fixture(), payout: null, events: [], reservations: 0, activeRefund: null};
+  let state = {payment: fixture(), payout: null, events: [], notifications: new Map(), reservations: 0, activeRefund: null};
   const external = [], keys = [], attempts = [];
   let transactionTail = Promise.resolve(), loseCommit = !!options.loseCommit, timeoutOnce = !!options.timeoutOnce, failOnce = !!options.failOnce;
+  let failNotificationOnce = !!options.failNotificationOnce;
   const request = {id: 'request_test', bookingId: 'book_test', paymentIntentId: 'pi_test', paymentProvider: 'STRIPE', paymentEnvironment: environment, authorisedAmountPence:11000, status: 'BOOKED'};
   const intent = {id: 'pi_test', livemode: environment === 'production', capture_method:'manual', status: 'succeeded', currency: 'gbp', amount: 11000, amount_received: 11000,
     metadata: {availabilityRequestId: 'request_test', environment}, latest_charge: {id: 'ch_test', payment_intent: 'pi_test', livemode: environment === 'production', paid: true, captured: true, disputed: false, amount: 11000, amount_refunded: 0, currency: 'gbp'}};
@@ -52,6 +53,13 @@ function context(options = {}) {
   const getPayout = args => state.payout ? {...clone(state.payout), ...(args?.include ? {payment: {bookingId: 'book_test'}} : {})} : null;
   const db = {
     $queryRaw: async () => [],
+    $executeRaw: async (sql, id, userId, type, title, body, href) => {
+      assert.match(sql.join('?'), /INSERT INTO "Notification"[\s\S]+ON CONFLICT \("id"\) DO NOTHING/);
+      if (failNotificationOnce) {failNotificationOnce = false; throw Error('Notification insert interrupted');}
+      if (state.notifications.has(id)) return 0;
+      state.notifications.set(id, {userId, type, title, body, href, readAt: null});
+      return 1;
+    },
     bookingPayment: {findUniqueOrThrow: async () => clone(state.payment), update: async ({data}) => update(state.payment, data)},
     availabilityRequest: {findFirst: async () => clone(request)},
     stripeConnectAccount: {findUnique: async () => clone(account)},
@@ -112,20 +120,34 @@ if (require.main === module) (async () => {
   const release = await Promise.all([c.engine.prepareStripePayout('pay_test', 'admin'), c.engine.prepareStripePayout('pay_test', 'admin')]);
   assert.equal(release[0].id, release[1].id); assert.equal(c.state().reservations, 1);
   assert.equal(c.state().payment.payoutStatus, 'PROCESSING'); assert.equal(c.state().payment.transporterProceedsPence, 7500);
+  assert.equal(c.state().notifications.size, 0);
   await Promise.all([c.engine.reconcileStripePayout(release[0].id), c.engine.reconcileStripePayout(release[0].id)]);
   assert.equal(c.external.length, 1); assert.equal(c.external[0].amount, 7500); assert.equal(c.external[0].source_transaction, 'ch_test');
   assert.equal(c.state().payment.payoutStatus, 'PAID'); assert.equal(c.state().events.length, 1);
+  const noticeId = 'stripe-payout-released:' + release[0].id;
+  assert.deepEqual([...c.state().notifications], [[noticeId, {
+    userId: 'transporter_test', type: 'PAYMENT', title: 'Payout released',
+    body: '£75.00 was released to your Stripe balance for the Ford Focus · DD-OOK_TEST.',
+    href: '/bookings/book_test/statement', readAt: null,
+  }]]);
+  c.state().notifications.get(noticeId).readAt = at;
   await c.engine.reconcileStripePayout(release[0].id); assert.equal(c.state().events.length, 1); assert.equal(c.external.length, 1);
-  for (const failure of ['timeoutOnce', 'loseCommit', 'failOnce']) {
+  assert.equal(c.state().notifications.size, 1);
+  assert.deepEqual(c.state().notifications.get(noticeId).readAt, at);
+  for (const failure of ['timeoutOnce', 'loseCommit', 'failOnce', 'failNotificationOnce']) {
     c = context({[failure]: true}); const row = await c.engine.prepareStripePayout('pay_test', 'admin');
     await c.engine.reconcileStripePayout(row.id); assert.equal(c.state().payment.payoutStatus, 'FAILED'); assert.equal(c.state().events.length, 0);
+    assert.equal(c.state().notifications.size, 0);
     await c.engine.reconcileStripePayout(row.id); assert.equal(c.state().payment.payoutStatus, 'PAID');
+    assert.equal(c.state().notifications.size, 1);
     assert.equal(c.external.length, 1); assert.equal(c.state().reservations, 1); assert.equal(c.state().events.length, 1); assert.equal(new Set(c.keys).size, 1);
   }
   c = context({fine: 10000}); await c.engine.prepareStripePayout('pay_test', 'admin'); await c.engine.reconcileStripePayout('release_test');
   assert.equal(c.external.length, 0); assert.equal(c.state().payout.status, 'DEDUCTED'); assert.equal(c.state().events[0].amountPence, 0);
+  assert.equal(c.state().notifications.size, 0);
   c = context(); await c.engine.prepareStripePayout('pay_test', 'admin'); c.state().payment.booking.disputes.push({id: 'new', status: 'OPEN'}); await c.engine.reconcileStripePayout('release_test');
   assert.equal(c.external.length, 0); assert.equal(c.state().payment.payoutStatus, 'HELD'); assert.equal(c.state().payout.status, 'BLOCKED');
+  assert.equal(c.state().notifications.size, 0);
   c = context(); await c.engine.prepareStripePayout('pay_test', 'admin'); c.state().payout.firstAttemptAt = new Date(Date.now() - 24 * 3600000); await c.engine.reconcileStripePayout('release_test');
   assert.equal(c.attempts.length, 0); assert.equal(c.state().payout.status, 'REVIEW'); assert.equal(c.state().payout.failureCode, 'STALE_ATTEMPT');
   for (const mutate of [i => i.livemode = true, i => i.latest_charge.disputed = true, i => i.latest_charge.amount_refunded = 100, i => i.metadata.environment = 'production', i => i.amount_received--]) {
@@ -134,6 +156,19 @@ if (require.main === module) (async () => {
   c = context(); c.account.payoutsEnabled = false; await assert.rejects(() => c.engine.prepareStripePayout('pay_test', 'admin')); assert.equal(c.state().reservations, 0);
   c = context(); await c.engine.prepareStripePayout('pay_test', 'admin'); await c.engine.reconcileStripePayout('release_test'); c.external[0].amount_reversed = 7500; await c.engine.reconcileStripePayout('release_test');
   assert.equal(c.state().payout.status, 'REVERSED'); assert.equal(c.state().payment.payoutStatus, 'HELD'); assert.equal(c.state().events.length, 1); assert.equal(c.external.length, 1);
+  // The first canonical observation can arrive after the transfer was reversed or the refund workflow took ownership.
+  for (const change of [
+    c => {c.external[0].amount_reversed = 7500;},
+    c => {c.state().activeRefund = {id: 'pending_refund'};},
+    c => {c.external[0].destination = 'acct_wrong';},
+  ]) {
+    c = context({timeoutOnce: true});
+    await c.engine.prepareStripePayout('pay_test', 'admin');
+    await c.engine.reconcileStripePayout('release_test');
+    change(c);
+    await c.engine.reconcileStripePayout('release_test');
+    assert.equal(c.state().notifications.size, 0);
+  }
   // Switching new refunds off must never bypass an existing refund reservation.
   process.env.STRIPE_REFUNDS_ENABLED='false';
   c=context();c.state().activeRefund={id:'failed_refund',status:'FAILED',activePaymentId:'pay_test'};

@@ -129,13 +129,14 @@ const alternative = load('src/lib/alternative-refunds.ts'), email = load('src/li
     assert.equal(c.state().notifications.length,2);assert.equal(c.external[0].metadata.environment,'production');
     assert.equal(c.state().refunds[0].recoveryStatus,'RECOVERED');
   }
-  for(const failure of [null,'timeoutOnce','loseCommit']){
+  for(const failure of [null,'timeoutOnce','loseCommit','failNotificationOnce']){
     configured();process.env.STRIPE_CONNECT_ENABLED='true';
     const c=payoutContext({environment:'production',...(failure?{[failure]:true}:{})});
     const row=await c.engine.prepareStripePayout('pay_test','admin');process.env.STRIPE_CONNECT_ENABLED='false';
     await assert.rejects(()=>c.engine.prepareStripePayout('pay_test','admin'),/paused/);
     await c.engine.reconcileStripePayout(row.id);await c.engine.reconcileStripePayout(row.id);
     assert.equal(c.external.length,1);assert.equal(c.state().payment.payoutStatus,'PAID');
+    assert.equal(c.state().notifications.size,1);
     assert.equal(c.external[0].livemode,true);assert.equal(c.external[0].metadata.environment,'production');
     assert.equal(new Set(c.keys).size,1);assert.equal(c.state().reservations,1);
   }

@@ -1,5 +1,6 @@
 import type Stripe from 'stripe';
 import {prisma} from './prisma';
+import {createNotificationOnce} from './notifications';
 import {paymentEnvironment} from './booking-authorisation-provider';
 import {applyCancellationFeesToPayout} from './cancellation-fees';
 import {syncConnectAccount} from './stripe-connect-accounts';
@@ -86,7 +87,10 @@ async function finishPayout(tx: any, payout: any, transfer: Stripe.Transfer | nu
     status, stripeTransferId: transfer?.id || null, transferredAt: fresh.transferredAt || new Date(),
     reversedPence: reversed, leaseUntil: null, retryAfter: null, failureCode: reversed ? 'REVERSED' : null,
   }});
-  const currentPayment = await tx.bookingPayment.findUniqueOrThrow({where: {id: payout.paymentId}});
+  const currentPayment = await tx.bookingPayment.findUniqueOrThrow({
+    where: {id: payout.paymentId},
+    include: {booking: {select: {transporterId: true, job: {select: {vehicleMake: true, vehicleModel: true}}}}},
+  });
   const refundManaged = currentPayment.refundedPence > payout.refundedPence ||
     await tx.stripeRefund.findUnique({where: {activePaymentId: payout.paymentId}});
   // Refund accounting owns this payment after a refund reservation. Late transfer
@@ -98,6 +102,19 @@ async function finishPayout(tx: any, payout: any, transfer: Stripe.Transfer | nu
     amountPence: payout.amountPence, actorId: payout.actorId,
     note: transfer ? `Stripe ${payout.environment} transfer ${transfer.id}; credited to transporter Stripe balance, bank payout separate` : `Stripe ${payout.environment} payout fully offset by reserved fines; no bank transfer`,
   }});
+  if (transfer && transfer.amount > 0 && !reversed && !refundManaged) {
+    const {bookingId, booking} = currentPayment;
+    const vehicle = [booking.job.vehicleMake, booking.job.vehicleModel].filter(Boolean).join(' ') || 'vehicle';
+    const amount = new Intl.NumberFormat('en-GB', {style: 'currency', currency: 'GBP'}).format(transfer.amount / 100);
+    const reference = 'DD-' + bookingId.slice(-8).toUpperCase();
+    await createNotificationOnce(`stripe-payout-released:${payout.id}`, {
+      userId: booking.transporterId,
+      type: 'PAYMENT',
+      title: 'Payout released',
+      body: `${amount} was released to your Stripe balance for the ${vehicle} · ${reference}.`,
+      href: `/bookings/${encodeURIComponent(bookingId)}/statement`,
+    }, tx);
+  }
   return payment;
 }
 
