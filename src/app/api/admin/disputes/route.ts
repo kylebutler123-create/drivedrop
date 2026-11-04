@@ -8,7 +8,7 @@ import {currentUser} from '@/lib/auth';
 import {disputesEnabled} from '@/lib/features';
 import {sendTransactionalEmailSafely} from '@/lib/email';
 import {createNotificationSafely} from '@/lib/notifications';
-import {refundAmounts,capturedPayment,payoutApprovalMarker,adminPayoutApproved} from '@/lib/payout-policy';
+import {bookingRefundRestriction,refundAmounts,capturedPayment,payoutApprovalMarker,adminPayoutApproved} from '@/lib/payout-policy';
 import {disputeFineMarker,recordTransporterDisputeFine} from '@/lib/cancellation-fees';
 import {z} from 'zod';
 import {MAX_DISPUTE_FINE_PENCE} from '@/lib/dispute-fine-amount';
@@ -58,10 +58,11 @@ export async function PATCH(r:Request){
   const result=await prisma.$transaction(async(tx:any)=>{
    const ref=await tx.dispute.findUniqueOrThrow({where:{id:d.disputeId},select:{bookingId:true}});
    await tx.$queryRaw`SELECT id FROM "Booking" WHERE id=${ref.bookingId} FOR UPDATE`;
-   const dispute=await tx.dispute.findUniqueOrThrow({where:{id:d.disputeId},include:{booking:{include:{payment:true,job:true,customer:{select:{id:true,name:true,email:true}},transporter:{select:{id:true,name:true,email:true}}}}}});const payment=dispute.booking.payment;let refundAmountPence=0;
+   const dispute=await tx.dispute.findUniqueOrThrow({where:{id:d.disputeId},include:{booking:{include:{payment:{include:{stripePayout:{select:{transferredAt:true}},events:{where:{type:'PAYOUT_PAID'},select:{type:true}}}},job:true,customer:{select:{id:true,name:true,email:true}},transporter:{select:{id:true,name:true,email:true}}}}}});const payment=dispute.booking.payment;let refundAmountPence=0;
+   const alreadyPaid=payment?.payoutStatus==='PAID'||!!payment?.stripePayout?.transferredAt||!!payment?.events.some((event:any)=>event.type==='PAYOUT_PAID');
    if(!['OPEN','UNDER_REVIEW'].includes(dispute.status))throw Error('This dispute has already been resolved or closed. Refresh before continuing.');
    if(d.action){
-    if(d.action==='RECORD_OUTCOME'&&payment?.payoutStatus!=='PAID')throw Error('Refund/recovery outcomes can only be recorded here after transporter payout');
+    if(d.action==='RECORD_OUTCOME'&&!alreadyPaid)throw Error('Post-payout outcome notes can only be recorded after the transporter has been paid');
 
     await tx.$executeRaw`INSERT INTO "DisputeReviewNote" ("id", "disputeId", "actorId", "kind", "body") VALUES (${randomUUID()}, ${d.disputeId}, ${u.id}, ${d.action==='RECORD_OUTCOME'?'OUTCOME':'REVIEW'}, ${d.resolutionNote!.trim()})`;
     const updated=await tx.dispute.update({where:{id:d.disputeId},data:{reviewerId:u.id,reviewedAt:new Date()}});
@@ -69,16 +70,18 @@ export async function PATCH(r:Request){
    }
    if(payment?.provider==='STRIPE'&&await tx.stripeRefund.findUnique({where:{activePaymentId:payment.id}}))throw Error('A customer refund or transfer recovery needs review before changing the resolution.');
    if(payment&&['PROCESSING','FAILED'].includes(payment.payoutStatus)&&d.resolution)throw Error('Reconcile the pending Stripe payout before changing its financial resolution.');
-   if(payment?.payoutStatus==='PAID'&&d.resolution&&['RELEASE_PAYOUT','REFUND_CUSTOMER','PARTIAL_REFUND'].includes(d.resolution))throw Error('Transporter already paid. Use the separate refund/recovery outcome process; this dispute cannot move released funds.');
+   if(alreadyPaid&&d.resolution&&['RELEASE_PAYOUT','REFUND_CUSTOMER','PARTIAL_REFUND'].includes(d.resolution))throw Error('Transporter already paid. Refunds are closed; you can record an outcome note.');
    if(d.status==='CLOSED'&&payment?.payoutStatus==='HELD')throw Error('Resolve this held-payout dispute using Close without adjustment so payout eligibility is recalculated.');
    if(d.status!=='RESOLVED'&&d.resolution)throw Error('Financial resolutions require a resolved dispute status');
    if(d.resolution==='RELEASE_PAYOUT'&&(!payment||payment.payoutStatus==='CANCELLED'))throw Error('No eligible transporter payout exists for this booking');
    const otherHold=await tx.dispute.count({where:{bookingId:dispute.bookingId,id:{not:dispute.id},status:{in:['OPEN','UNDER_REVIEW']}}});
-   if(d.status==='UNDER_REVIEW'&&payment&&payment.payoutStatus!=='PAID'&&payment.payoutStatus!=='CANCELLED'&&payment.payoutStatus!=='HELD'&&payment.payoutStatus!=='PROCESSING'&&payment.payoutStatus!=='FAILED')await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:'HELD'}});
+   if(d.status==='UNDER_REVIEW'&&payment&&!alreadyPaid&&payment.payoutStatus!=='CANCELLED'&&payment.payoutStatus!=='HELD'&&payment.payoutStatus!=='PROCESSING'&&payment.payoutStatus!=='FAILED')await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:'HELD'}});
    if(d.status==='RESOLVED'&&d.resolution==='RELEASE_PAYOUT'&&payment){if(!capturedPayment(payment.status))throw new Error('Customer payment must be paid before payout can be released');if(dispute.booking.status!=='DELIVERED')throw new Error('Delivery must be completed before payout can be released');if(payment.payoutStatus==='PAID')throw new Error('Payout has already been released');await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:otherHold?'HELD':'READY'}})}
-   if(d.status==='RESOLVED'&&d.resolution==='NO_ACTION'&&payment&&payment.payoutStatus==='HELD'){const prior=await tx.dispute.findMany({where:{bookingId:dispute.bookingId}});const events=await tx.financeEvent.findMany({where:{paymentId:payment.id,type:'PAYOUT_READY'}});const eligible=capturedPayment(payment.status)&&dispute.booking.status==='DELIVERED'&&(!!dispute.booking.customerConfirmedAt||adminPayoutApproved(prior,events));await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:otherHold?'HELD':eligible?'READY':'NOT_READY'}})}
+   if(d.status==='RESOLVED'&&d.resolution==='NO_ACTION'&&payment&&!alreadyPaid&&payment.payoutStatus==='HELD'){const prior=await tx.dispute.findMany({where:{bookingId:dispute.bookingId}});const events=await tx.financeEvent.findMany({where:{paymentId:payment.id,type:'PAYOUT_READY'}});const eligible=capturedPayment(payment.status)&&dispute.booking.status==='DELIVERED'&&(!!dispute.booking.customerConfirmedAt||adminPayoutApproved(prior,events));await tx.bookingPayment.update({where:{id:payment.id},data:{payoutStatus:otherHold?'HELD':eligible?'READY':'NOT_READY'}})}
    if(d.status==='RESOLVED'&&['REFUND_CUSTOMER','PARTIAL_REFUND'].includes(d.resolution||'')){
-    if(!payment)throw new Error('No payment exists for this booking');if(payment.provider!=='TEST')throw new Error('This simulated refund endpoint cannot refund Stripe payments');if(payment.payoutStatus==='PAID')throw new Error('Cannot refund after transporter payout has been released');if(payment.paidPence<=0)throw new Error('No captured customer payment to refund');const refundable=payment.paidPence-payment.refundedPence;if(refundable<=0)throw new Error('Customer payment has already been fully refunded');
+    if(!payment)throw new Error('No payment exists for this booking');if(payment.provider!=='TEST')throw new Error('This simulated refund endpoint cannot refund Stripe payments');
+    const reason=bookingRefundRestriction(dispute.booking,payment,dispute);
+    if(reason)throw new Error(reason);if(payment.paidPence<=0)throw new Error('No captured customer payment to refund');const refundable=payment.paidPence-payment.refundedPence;if(refundable<=0)throw new Error('Customer payment has already been fully refunded');
     refundAmountPence=d.resolution==='REFUND_CUSTOMER'?refundable:(d.refundAmountPence||0);if(d.resolution==='PARTIAL_REFUND'&&refundAmountPence<=0)throw new Error('Enter a partial refund amount');if(refundAmountPence>refundable)throw new Error('Refund exceeds the remaining paid balance');if(d.resolution==='PARTIAL_REFUND'&&refundAmountPence===refundable)throw new Error('Use Refund Customer for a full remaining refund');const refunded=payment.refundedPence+refundAmountPence;const paymentStatus=refunded===payment.paidPence?'REFUNDED':'PARTIALLY_REFUNDED';const partial=d.resolution==='PARTIAL_REFUND';
     if(partial&&dispute.booking.status!=='DELIVERED')throw Error('Delivery must be completed before approving remaining transporter proceeds');
     const amounts=refundAmounts(payment,refundAmountPence);

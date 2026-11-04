@@ -9,11 +9,17 @@ on:
       - 'scripts/test-native-payment-recovery.cjs'
       - 'scripts/test-booking-authorisation.cjs'
       - 'scripts/test-production-payment-runtime.cjs'
+      - 'scripts/test-payout-policy.cjs'
+      - 'scripts/test-stripe-refunds.cjs'
+      - 'scripts/test-stripe-refund-policy.cjs'
       - 'scripts/production-database/**'
       - 'scripts/sql/production-schema-baseline.sql'
       - 'scripts/sql/rehearse-production-payment-audit.sql'
       - 'src/lib/booking-authorisation*.ts'
       - 'src/lib/payment-runtime.ts'
+      - 'src/lib/payout-policy.ts'
+      - 'src/app/api/admin/disputes/route.ts'
+      - 'src/app/api/admin/payments/refund/route.ts'
       - 'src/lib/availability*.ts'
       - 'src/lib/stripe-*.ts'
       - 'src/lib/alternative-refunds.ts'
@@ -77,6 +83,11 @@ jobs:
         run: node scripts/test-booking-authorisation.cjs
       - name: Verify production configuration and paused-operation controls
         run: node scripts/test-production-payment-runtime.cjs
+      - name: Check the dispute deadline, refund admission and existing refund recovery
+        run: |
+          node scripts/test-payout-policy.cjs
+          node scripts/test-stripe-refund-policy.cjs
+          node scripts/test-stripe-refunds.cjs
       - name: Record bounded evidence in job logs and summary
         if: ${{ always() }}
         run: |

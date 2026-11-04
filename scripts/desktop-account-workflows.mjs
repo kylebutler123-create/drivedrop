@@ -75,6 +75,35 @@ export async function checkLocalBookingWorkflow({request,base,states,record}) {
     check('Repeated payout request does not pay twice',repeat.status()===400&&await prisma.financeEvent.count({where:{paymentId:'ci-payment-awaiting',type:'PAYOUT_PAID'}})===1);
     const held=await body(await apis.admin.post('/api/admin/payments/payout',{data:{paymentId:'ci-payment-held'}}));
     check('Active dispute prevents payout',held.status===400&&/active dispute/i.test(held.data.error));
+
+    // The ready fixture was confirmed more than 24h ago and has never had a dispute.
+    const expired=await body(await apis.customer.post('/api/disputes',{data:{bookingId:'ci-booking-ready',reason:'Filed after the deadline'}}));
+    check('Customer cannot start a new claim past the deadline',expired.status===400&&/window has closed/i.test(expired.data.error));
+    const refundRequest=paymentId=>apis.admin.post('/api/admin/payments/refund',{data:{paymentId,amountPence:100,expectedRefundedPence:0}}).then(body);
+    const late=await refundRequest('ci-payment-ready');
+    check('Admin cannot refund an expired window without a timely case',late.status===400&&/window has closed/i.test(late.data.error));
+    check('Expiry by itself makes no payment',await prisma.financeEvent.count({where:{paymentId:'ci-payment-ready',type:'PAYOUT_PAID'}})===0);
+    const released=await body(await apis.admin.post('/api/admin/payments/payout',{data:{paymentId:'ci-payment-ready'}}));
+    check('After the normal 24-hour wait an admin can release the TEST payout',released.status===200&&released.data.payoutStatus==='PAID',JSON.stringify(released));
+    const afterRelease=await refundRequest('ci-payment-ready');
+    check('Released payment rejects new refunds without changing the ledger',afterRelease.status===400&&/payout has already started/i.test(afterRelease.data.error)&&await prisma.financeEvent.count({where:{paymentId:'ci-payment-ready',type:'REFUND_CREATED'}})===0);
+
+    // This separate local-only fixture starts with a customer case filed at hour 23.
+    // Existing booking timestamps are never changed to get past the release guard.
+    const hour=3_600_000,confirmedAt=new Date(Date.now()-7*24*hour);
+    const caseId=await prisma.$transaction(async tx=>{
+      const j=await tx.transportJob.create({data:{customerId:booking.customerId,collection:'CI test origin',delivery:'CI test destination',collectionDate:confirmedAt,vehicleMake:'CI',vehicleModel:'Dispute',status:'COMPLETED'}});
+      const q=await tx.quote.create({data:{jobId:j.id,transporterId:booking.transporterId,pricePence:10000,status:'ACCEPTED'}});
+      const b=await tx.booking.create({data:{jobId:j.id,quoteId:q.id,customerId:booking.customerId,transporterId:booking.transporterId,agreedPricePence:10000,status:'DELIVERED',customerConfirmedAt:confirmedAt}});
+      const p=await tx.bookingPayment.create({data:{bookingId:b.id,transportValuePence:11000,depositPence:11000,paidPence:11000,remainingBalancePence:0,platformFeePence:1000,transporterProceedsPence:10000,status:'PAID',payoutStatus:'HELD',provider:'TEST'}});
+      const d=await tx.dispute.create({data:{bookingId:b.id,raisedById:booking.customerId,status:'UNDER_REVIEW',reason:'Isolated customer case',createdAt:new Date(+confirmedAt+23*hour)}});
+      return {paymentId:p.id,disputeId:d.id};
+    });
+    const blocked=await body(await apis.admin.post('/api/admin/payments/payout',{data:{paymentId:caseId.paymentId}}));
+    check('Week-old customer case still blocks payout',blocked.status===400&&/active dispute/i.test(blocked.data.error),JSON.stringify(blocked));
+    const decision=await body(await apis.admin.patch('/api/admin/disputes',{data:{disputeId:caseId.disputeId,status:'RESOLVED',resolution:'REFUND_CUSTOMER',resolutionNote:'Customer complained at hour 23; review completed on day seven.'}}));
+    const balance=await prisma.bookingPayment.findUniqueOrThrow({where:{id:caseId.paymentId}});
+    check('Admin can refund the timely case on day seven and cancel its payout',decision.status===200&&decision.data.status==='RESOLVED'&&balance.refundedPence===11000&&balance.payoutStatus==='CANCELLED',JSON.stringify(decision));
   } finally {
     for(const api of [...Object.values(apis),guest].filter(Boolean))await api.dispose();
     await prisma.$disconnect();

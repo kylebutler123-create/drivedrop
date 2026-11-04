@@ -28,7 +28,7 @@ function context(options = {}) {
  const environment = options.environment || 'preview';
  const transferred=options.transferred!==false, fine=transferred?(options.fine??2500):0;
  let state={
-  payment:{id:'pay',bookingId:'booking',provider:'STRIPE',providerReference:'pi_test',currency:'GBP',status:'PAID',payoutStatus:transferred?'PAID':'READY',paidPence:11000,refundedPence:0,platformFeePence:1000,transporterProceedsPence:10000-fine,cancellationDeductionPence:fine,events:[],booking:{id:'booking',transporterId:'transporter',customerId:'customer',status:'DELIVERED',customerConfirmedAt:new Date(Date.now()-25*3600000),disputes:[]}},
+  payment:{id:'pay',bookingId:'booking',provider:'STRIPE',providerReference:'pi_test',currency:'GBP',status:'PAID',payoutStatus:transferred?'PAID':'READY',paidPence:11000,refundedPence:0,platformFeePence:1000,transporterProceedsPence:10000-fine,cancellationDeductionPence:fine,events:[],booking:{id:'booking',transporterId:'transporter',customerId:'customer',status:'DELIVERED',customerConfirmedAt:new Date(Date.now()-(transferred?25:1)*3600000),disputes:[]}},
   payout:transferred?{id:'release',paymentId:'pay',environment,paymentIntentId:'pi_test',sourceChargeId:'ch_test',destinationAccountId:'acct_test',status:fine===10000?'DEDUCTED':'TRANSFERRED',stripeTransferId:fine===10000?null:'tr_test',amountPence:10000-fine,finePence:fine,reversedPence:0,refundedPence:0,transferredAt:new Date()}:null,
   refunds:[], events:fine&&!options.cancellation?[{paymentId:'pay',note:'ADMIN_DISPUTE_FINE_APPLIED:dispute_fine',amountPence:fine}]:[], notifications:[],
   deductions:fine&&options.cancellation?[{id:'deduction',paymentId:'pay',feeId:'fee',amountPence:fine}]:[],
@@ -49,7 +49,7 @@ function context(options = {}) {
    findUnique:async({where,include})=>{const row=rowGet(where);return row?{...clone(row),...(include?{payment:{bookingId:'booking'}}:{})}:null},
    findUniqueOrThrow:async args=>{const row=await db.stripeRefund.findUnique(args);assert(row);return row},
    findMany:async({where={},orderBy,take}={})=>{let rows=state.refunds.filter(r=>matches(r,where));if(orderBy?.updatedAt)rows.sort((a,b)=>a.updatedAt-b.updatedAt);return clone(take?rows.slice(0,take):rows)},
-   create:async({data})=>{assert(!state.refunds.some(r=>r.paymentId===data.paymentId&&r.priorRefundedPence===data.priorRefundedPence));const row={id:'refund_'+(state.refunds.length+1),stripeRefundId:null,stripeReversalId:null,ledgerAppliedAt:null,firstAttemptAt:null,recoveryFirstAttemptAt:null,leaseUntil:null,leaseToken:null,retryAfter:null,status:'PENDING',attemptCount:0,disputeId:null,resolution:null,...data};for(const k of ['disputeId','resolution'])if(row[k]===undefined)row[k]=null;state.refunds.push(row);return clone(row)},
+   create:async({data})=>{assert(!state.refunds.some(r=>r.paymentId===data.paymentId&&r.priorRefundedPence===data.priorRefundedPence));const row={id:'refund_'+(state.refunds.length+1),createdAt:new Date(),stripeRefundId:null,stripeReversalId:null,ledgerAppliedAt:null,firstAttemptAt:null,recoveryFirstAttemptAt:null,leaseUntil:null,leaseToken:null,retryAfter:null,status:'PENDING',attemptCount:0,disputeId:null,resolution:null,...data};for(const k of ['disputeId','resolution'])if(row[k]===undefined)row[k]=null;state.refunds.push(row);return clone(row)},
    update:async({where,data})=>update(rowGet(where),data),
    updateMany:async({where,data})=>{const rows=state.refunds.filter(r=>matches(r,where));rows.forEach(r=>update(r,data));return{count:rows.length}},
   },
@@ -71,26 +71,100 @@ function context(options = {}) {
  }};
  const engine=loader({[path.join(root,'src/lib/prisma.ts')]:{prisma:db},[path.join(root,'src/lib/stripe-connect-provider.ts')]:{...provider,verifiedConnectClient:async()=>stripe}})('src/lib/stripe-refunds.ts');
  const input=(amount=11000,prior=0)=>({paymentId:'pay',amountPence:amount,expectedRefundedPence:prior,actorId:'admin'});
- return{engine,input,state:()=>state,db,stripe,intent,transfer,external,reversals,refundCalls,reversalCalls,options};
+ // Reconstruct a historical instruction that predates the refund window.
+ // All new requests in these tests still use the real prepareStripeRefund.
+ async function seedLegacyRefund(args=input(),submit=true) {
+  assert(transferred,'Legacy fixture requires an existing payout');
+  const p=state.payment,release=state.payout;
+  const plan=loader()('src/lib/stripe-refund-policy.ts').planStripeRefund(p,{...args,environment},release);
+  const row=await db.stripeRefund.create({data:{
+   paymentId:p.id,activePaymentId:p.id,environment,paymentIntentId:'pi_test',sourceChargeId:'ch_test',
+   paidPence:p.paidPence,amountPence:plan.amountPence,priorRefundedPence:plan.priorRefundedPence,
+   priorPlatformFeePence:p.platformFeePence,priorProceedsPence:p.transporterProceedsPence,
+   priorDeductionPence:p.cancellationDeductionPence,priorPayoutStatus:p.payoutStatus,
+   platformFeePence:plan.platformFeePence,transporterProceedsPence:plan.transporterProceedsPence,
+   cancellationDeductionPence:plan.cancellationDeductionPence,fineRestorePence:plan.fineRestorePence,
+   payoutId:release.id,stripeTransferId:release.stripeTransferId,
+   requiredReversedPence:plan.requiredReversedPence,baselineReversedPence:release.reversedPence,
+   recoveryAmountPence:plan.recoveryPence,recoveryStatus:plan.recoveryStatus,
+   actorId:args.actorId,disputeId:args.disputeId,resolution:args.resolution,
+   resolutionNote:args.resolutionNote
+  }});
+  state.payment.payoutStatus='HELD';
+  const dispute=state.payment.booking.disputes.find(d=>d.id===args.disputeId);
+  if(dispute)dispute.status='UNDER_REVIEW';
+  if(submit) {
+   rowGet({id:row.id}).firstAttemptAt=new Date();
+   try {
+    await stripe.refunds.create({charge:row.sourceChargeId,amount:row.amountPence,
+     metadata:{driveDropRefundId:row.id,paymentId:row.paymentId,environment}},
+     {idempotencyKey:`dd-refund-${environment}-${row.id}`});
+   } catch(error) {
+    if(!options.lostRefund)throw error;
+   }
+  }
+  return row;
+ }
+ return{engine,input,seedLegacyRefund,state:()=>state,db,stripe,intent,transfer,external,reversals,refundCalls,reversalCalls,options};
 }
 module.exports = {context, loader};
+async function checkDisputeWindow() {
+ const hour=3_600_000;
+ const pending=()=>context({transferred:false});
+ const daysLater=()=>{
+  const c=pending(),confirmed=new Date(Date.now()-7*24*hour),booking=c.state().payment.booking;
+  booking.customerConfirmedAt=confirmed;
+  booking.disputes.push({id:'timely',bookingId:'booking',status:'OPEN',raisedById:'customer',createdAt:new Date(+confirmed+23*hour)});
+  c.state().payment.payoutStatus='HELD';return c;
+ };
+ const fromCase=c=>({...c.input(),disputeId:'timely',resolution:'REFUND_CUSTOMER',resolutionNote:'Customer filed at hour 23; review finished on day seven.'});
+ let c=daysLater();
+ await assert.rejects(()=>c.engine.prepareStripeRefund(c.input()),/window has closed/);
+ const row=await c.engine.prepareStripeRefund(fromCase(c));
+ assert.equal(c.state().payment.payoutStatus,'HELD');
+ assert.equal(c.state().payment.booking.disputes[0].status,'UNDER_REVIEW');
+ await c.engine.reconcileStripeRefund(row.id);
+ assert.equal(c.state().payment.booking.disputes[0].status,'RESOLVED');
+ assert.equal(c.state().payment.refundedPence,11000);assert.equal(c.state().payment.payoutStatus,'CANCELLED');
+ assert.equal(c.refundCalls.length,1);assert.equal(c.reversalCalls.length,0);
+ for(const change of [d=>d.raisedById='transporter',d=>d.createdAt=new Date(),d=>d.status='RESOLVED']){
+  c=daysLater();change(c.state().payment.booking.disputes[0]);
+  await assert.rejects(()=>c.engine.prepareStripeRefund(fromCase(c)),/window has closed/);
+  assert.equal(c.state().refunds.length,0);assert.equal(c.refundCalls.length,0);
+ }
+ c=context();
+ await assert.rejects(()=>c.engine.prepareStripeRefund(c.input()),/payout has already started/);
+ assert.equal(c.state().refunds.length,0);
+ // A payout starts after the eligibility read but before the refund acquires the booking lock.
+ c=pending();const list=c.stripe.refunds.list;
+ c.stripe.refunds.list=async(...args)=>{c.state().payment.payoutStatus='PROCESSING';return list(...args)};
+ await assert.rejects(()=>c.engine.prepareStripeRefund(c.input()),/payout has already started/);
+ assert.equal(c.state().refunds.length,0);assert.equal(c.refundCalls.length,0);
+ // A queued pre-policy instruction without a provider refund is never submitted after release.
+ c=context();const unsent=await c.seedLegacyRefund(c.input(),false);
+ await c.engine.reconcileStripeRefund(unsent.id);await c.engine.reconcileStripeRefund(unsent.id);
+ assert.equal(c.state().refunds[0].status,'REVIEW');assert.equal(c.state().payment.refundedPence,0);
+ assert.equal(c.external.length,0);assert.equal(c.refundCalls.length,0);assert.equal(c.reversalCalls.length,0);
+ console.log('PASS: day-seven review of an hour-23 customer case, rejection after payout, payout during preparation, and an unsent historical refund.');
+}
 if (require.main === module) (async()=>{
+ await checkDisputeWindow();
  let c=context({transferred:false});let rows=await Promise.all([c.engine.prepareStripeRefund(c.input()),c.engine.prepareStripeRefund(c.input())]);assert.equal(rows[0].id,rows[1].id);assert.equal(c.state().payment.payoutStatus,'HELD');
  await Promise.all([c.engine.reconcileStripeRefund(rows[0].id),c.engine.reconcileStripeRefund(rows[0].id)]);assert.equal(c.external.length,1);assert.equal(c.refundCalls.length,1);assert.equal(c.state().payment.refundedPence,11000);assert.equal(c.state().payment.payoutStatus,'CANCELLED');assert.equal(c.state().notifications.length,2);assert.equal(c.reversalCalls.length,0);
  await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(rows[0].id);assert.equal(c.refundCalls.length,1);assert.equal(c.state().notifications.length,2);
  for(const failure of ['lostRefund','lostCommit','lostReversal','lostRecoveryCommit']){
-  c=context({[failure]:true});const row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);await c.engine.reconcileStripeRefund(row.id);
+  c=context({[failure]:true});const row=await c.seedLegacyRefund(c.input());await c.engine.reconcileStripeRefund(row.id);await c.engine.reconcileStripeRefund(row.id);
   assert.equal(c.external.length,1,failure);assert.equal(c.reversals.length,1,failure);assert.equal(c.state().payment.refundedPence,11000,failure);assert.equal(c.state().payment.payoutStatus,'CANCELLED',failure);assert.equal(c.state().notifications.length,2,failure);assert.equal(c.state().events.filter(e=>e.note.startsWith('STRIPE_REFUND_CONFIRMED:')).length,1,failure);assert.equal(c.state().events.filter(e=>e.note.startsWith('ADMIN_DISPUTE_FINE_APPLIED:')).reduce((n,e)=>n+e.amountPence,0),0,failure);
  }
- c=context();let row=await c.engine.prepareStripeRefund(c.input(5500));await c.engine.reconcileStripeRefund(row.id);assert.equal(c.reversals[0].amount,5000);assert.equal(c.state().payment.platformFeePence,500);assert.equal(c.state().payment.transporterProceedsPence,2500);assert.equal(c.state().payment.cancellationDeductionPence,2500);assert.equal(c.state().payment.payoutStatus,'PAID');
- await assert.rejects(()=>c.engine.prepareStripeRefund(c.input(6000,0)));row=await c.engine.prepareStripeRefund(c.input(5500,5500));await c.engine.reconcileStripeRefund(row.id);assert.equal(c.external.length,2);assert.equal(c.reversals[1].amount,2500);assert.equal(c.state().payment.cancellationDeductionPence,0);assert.equal(c.state().payment.refundedPence,11000);
- c=context({cancellation:true});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().deductions.length,0);assert.equal(c.state().fees[0].appliedPence,0);assert.equal(c.state().fees[0].amountPence,5000);assert.equal(c.state().fees[0].status,'PENDING');
- c=context({fine:10000});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.payoutStatus,'CANCELLED');assert.equal(c.reversals.length,0);
- c=context({pending:true});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.refundedPence,0);assert.equal(c.state().refunds[0].status,'PENDING_STRIPE');assert.equal(c.reversalCalls.length,0);c.external[0].status='succeeded';await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.refundedPence,11000);assert.equal(c.refundCalls.length,1);
- c=context({failed:true});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.refundedPence,0);assert.equal(c.state().refunds[0].status,'FAILED');assert.equal(c.reversalCalls.length,0);
+ c=context();let row=await c.seedLegacyRefund(c.input(5500));await c.engine.reconcileStripeRefund(row.id);assert.equal(c.reversals[0].amount,5000);assert.equal(c.state().payment.platformFeePence,500);assert.equal(c.state().payment.transporterProceedsPence,2500);assert.equal(c.state().payment.cancellationDeductionPence,2500);assert.equal(c.state().payment.payoutStatus,'PAID');
+ await assert.rejects(()=>c.engine.prepareStripeRefund(c.input(6000,0)));row=await c.seedLegacyRefund(c.input(5500,5500));await c.engine.reconcileStripeRefund(row.id);assert.equal(c.external.length,2);assert.equal(c.reversals[1].amount,2500);assert.equal(c.state().payment.cancellationDeductionPence,0);assert.equal(c.state().payment.refundedPence,11000);
+ c=context({cancellation:true});row=await c.seedLegacyRefund(c.input());await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().deductions.length,0);assert.equal(c.state().fees[0].appliedPence,0);assert.equal(c.state().fees[0].amountPence,5000);assert.equal(c.state().fees[0].status,'PENDING');
+ c=context({fine:10000});row=await c.seedLegacyRefund(c.input());await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.payoutStatus,'CANCELLED');assert.equal(c.reversals.length,0);
+ c=context({pending:true});row=await c.seedLegacyRefund(c.input());await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.refundedPence,0);assert.equal(c.state().refunds[0].status,'PENDING_STRIPE');assert.equal(c.reversalCalls.length,0);c.external[0].status='succeeded';await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.refundedPence,11000);assert.equal(c.refundCalls.length,1);
+ c=context({failed:true});row=await c.seedLegacyRefund(c.input());await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.refundedPence,0);assert.equal(c.state().refunds[0].status,'FAILED');assert.equal(c.reversalCalls.length,0);
  // SDK-shaped provider failure: this remains a local simulation, not a Stripe
  // sandbox reproduction or proof of Stripe's cached-error/idempotency behavior.
- c=context({insufficient:true});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);
+ c=context({insufficient:true});row=await c.seedLegacyRefund(c.input());await c.engine.reconcileStripeRefund(row.id);
  assert.equal(c.state().refunds[0].status,'SUCCEEDED');assert.equal(c.state().refunds[0].recoveryStatus,'REVIEW');
  assert.equal(c.state().refunds[0].recoveryFailureCode,'INSUFFICIENT_BALANCE');assert.equal(c.state().payment.payoutStatus,'HELD');
  assert.equal(c.state().payment.refundedPence,11000);assert.equal(c.external.length,1);assert.equal(c.reversals.length,0);
@@ -115,17 +189,17 @@ if (require.main === module) (async()=>{
  assert.deepEqual(c.state().notifications,confirmedNotices);
  // A later administrator check outside the safe create window must stop for
  // review, even if the mocked provider would now allow the reversal.
- c=context({insufficient:true});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);
+ c=context({insufficient:true});row=await c.seedLegacyRefund(c.input());await c.engine.reconcileStripeRefund(row.id);
  c.state().refunds[0].recoveryFirstAttemptAt=new Date(Date.now()-24*3600000);c.options.insufficient=false;
  await c.engine.reconcileStripeRefund(row.id);assert.equal(c.reversalCalls.length,1);assert.equal(c.refundCalls.length,1);
  assert.equal(c.state().refunds[0].recoveryStatus,'REVIEW');assert.equal(c.state().payment.payoutStatus,'HELD');
  assert.equal(c.state().payment.refundedPence,11000);assert.equal(c.reversals.length,0);
  console.log('PASS: SDK balance_insufficient preserves the confirmed refund, pauses background money retries, recovers once on administrator reconciliation, and stops after the safe retry window');
- c=context();row=await c.engine.prepareStripeRefund(c.input());c.state().refunds[0].firstAttemptAt=new Date(Date.now()-24*3600000);await c.engine.reconcileStripeRefund(row.id);assert.equal(c.refundCalls.length,0);assert.equal(c.state().refunds[0].status,'REVIEW');
- c=context();c.external.push({id:'re_external',amount:100,status:'pending'});await assert.rejects(()=>c.engine.prepareStripeRefund(c.input()));assert.equal(c.refundCalls.length,0);
- for(const mutate of [i=>i.livemode=true,i=>i.latest_charge.disputed=true,i=>i.metadata.environment='production',i=>i.amount_received--]){c=context();mutate(c.intent);await assert.rejects(()=>c.engine.prepareStripeRefund(c.input()));assert.equal(c.state().refunds.length,0)}
- c=context();c.state().payment.booking.disputes.push({id:'dispute',bookingId:'booking',status:'OPEN'});row=await c.engine.prepareStripeRefund({...c.input(5500),disputeId:'dispute',resolution:'PARTIAL_REFUND',resolutionNote:'Reviewed synthetic evidence',approvedProceedsPence:2500});assert.equal(c.state().payment.booking.disputes[0].status,'UNDER_REVIEW');await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.booking.disputes[0].status,'RESOLVED');assert.equal(c.state().payment.payoutStatus,'PAID');
- c=context();row=await c.engine.prepareStripeRefund(c.input(5500));c.transfer.amount_reversed=6000;await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().refunds[0].recoveryStatus,'REVIEW');assert.equal(c.reversalCalls.length,0);assert.equal(c.state().payment.payoutStatus,'HELD');
+ c=context({transferred:false});row=await c.engine.prepareStripeRefund(c.input());c.state().refunds[0].firstAttemptAt=new Date(Date.now()-24*3600000);await c.engine.reconcileStripeRefund(row.id);assert.equal(c.refundCalls.length,0);assert.equal(c.state().refunds[0].status,'REVIEW');
+ c=context({transferred:false});c.external.push({id:'re_external',amount:100,status:'pending'});await assert.rejects(()=>c.engine.prepareStripeRefund(c.input()));assert.equal(c.refundCalls.length,0);
+ for(const mutate of [i=>i.livemode=true,i=>i.latest_charge.disputed=true,i=>i.metadata.environment='production',i=>i.amount_received--]){c=context({transferred:false});mutate(c.intent);await assert.rejects(()=>c.engine.prepareStripeRefund(c.input()));assert.equal(c.state().refunds.length,0)}
+ c=context();c.state().payment.booking.disputes.push({id:'dispute',bookingId:'booking',status:'OPEN'});row=await c.seedLegacyRefund({...c.input(5500),disputeId:'dispute',resolution:'PARTIAL_REFUND',resolutionNote:'Reviewed synthetic evidence',approvedProceedsPence:2500});assert.equal(c.state().payment.booking.disputes[0].status,'UNDER_REVIEW');await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().payment.booking.disputes[0].status,'RESOLVED');assert.equal(c.state().payment.payoutStatus,'PAID');
+ c=context();row=await c.seedLegacyRefund(c.input(5500));c.transfer.amount_reversed=6000;await c.engine.reconcileStripeRefund(row.id);assert.equal(c.state().refunds[0].recoveryStatus,'REVIEW');assert.equal(c.reversalCalls.length,0);assert.equal(c.state().payment.payoutStatus,'HELD');
 
  // Real sandbox regression: charge.dispute.created was delivered with HTTP 200
  // while refunds were off, but the booking remained NOT_READY instead of HELD.
@@ -166,8 +240,8 @@ if (require.main === module) (async()=>{
  process.env.STRIPE_REFUNDS_ENABLED='true';await assert.rejects(()=>c.engine.prepareStripeRefund(c.input(100,0)));
 
  // A failed earlier partial refund cannot erase a later successful refund.
- c=context();const first=await c.engine.prepareStripeRefund(c.input(5500));await c.engine.reconcileStripeRefund(first.id);
- const later=await c.engine.prepareStripeRefund(c.input(5500,5500));await c.engine.reconcileStripeRefund(later.id);
+ c=context();const first=await c.seedLegacyRefund(c.input(5500));await c.engine.reconcileStripeRefund(first.id);
+ const later=await c.seedLegacyRefund(c.input(5500,5500));await c.engine.reconcileStripeRefund(later.id);
  const fineHistory=clone(c.state().events.filter(e=>e.note?.includes('FINE'))),recoveryHistory=clone(c.reversals);
  c.external[0].status='failed';await c.engine.handleStripeRefundEvent(failedEvent());
  assert.equal(c.state().payment.refundedPence,5500);assert.equal(c.state().payment.platformFeePence,500);assert.equal(c.state().payment.transporterProceedsPence,5000);assert.equal(c.state().payment.cancellationDeductionPence,0);assert.equal(c.state().refunds[1].status,'SUCCEEDED');assert.equal(c.state().payment.payoutStatus,'HELD');
@@ -176,7 +250,7 @@ if (require.main === module) (async()=>{
  assert.equal(c.state().payment.refundedPence,0);assert.equal(c.state().payment.platformFeePence,1000);assert.equal(c.state().payment.transporterProceedsPence,10000);assert.equal(c.state().refunds.filter(r=>r.activePaymentId).length,1);assert.equal(correctionEvents(c).length,2);
 
  // Existing restored cancellation fines may already be applied to another job.
- c=context({cancellation:true});row=await c.engine.prepareStripeRefund(c.input());await c.engine.reconcileStripeRefund(row.id);
+ c=context({cancellation:true});row=await c.seedLegacyRefund(c.input());await c.engine.reconcileStripeRefund(row.id);
  c.state().fees[0].appliedPence=5000;c.state().fees[0].status='APPLIED';const feesBefore=clone(c.state().fees);
  c.external[0].status='failed';await c.engine.reconcileStripeRefundFailure(row.id);
  assert.deepEqual(c.state().fees,feesBefore);assert.equal(c.state().deductions.length,0);assert.equal(c.state().payment.cancellationDeductionPence,0);assert.equal(c.reversalCalls.length,1);

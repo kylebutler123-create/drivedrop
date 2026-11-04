@@ -1,5 +1,7 @@
 # DriveDrop production rollout preparation — 29 October 2026
 
+Preview policy update, 4 November: see [Booking refunds and the delivery review window](refund-dispute-window.md) for new refund eligibility and its effect on historical recovery cases.
+
 The monitoring safeguards now pass focused native PostgreSQL checks after a
 blocked-query timeout fix. Production is still unchanged and monitoring is off.
 This document updates the historical 21 October plan; it does not authorize a

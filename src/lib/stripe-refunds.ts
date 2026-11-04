@@ -9,7 +9,7 @@ import {assertCapturedSource, assertTransferMatches} from './stripe-payout-polic
 import {planStripeRefund, assertStripeRefundMatches, refundCreateRetrySafe, refundIdempotencyKey} from './stripe-refund-policy';
 import {restoreRefundFines} from './stripe-refund-fines';
 import {failedRefundAmounts, LATE_REFUND_FAILED, LATE_REFUND_REVIEW} from './stripe-refund-failure-policy';
-import {adminPayoutApproved, payoutApprovalMarker} from './payout-policy';
+import {adminPayoutApproved, bookingRefundRestriction, payoutApprovalMarker, payoutCommitted} from './payout-policy';
 import {stripeRefundedTotal} from './alternative-refund-policy';
 
 export const refundSummarySelect = {id: true, status: true, recoveryStatus: true, amountPence: true,
@@ -20,7 +20,7 @@ export function stripeRefundRecoveryEnabled() {return paymentEnvironment() === '
 function requireEnabled() {if (!stripeRefundsEnabled()) throw new ConnectError('New Stripe refunds are temporarily paused.', 'REFUNDS_DISABLED');}
 function requireRecovery() {if (!stripeRefundRecoveryEnabled()) throw new ConnectError('Stripe refund recovery is not enabled.', 'REFUNDS_DISABLED');}
 const done = (r: StripeRefund) => r.status === 'SUCCEEDED' && ['NOT_REQUIRED', 'RECOVERED'].includes(r.recoveryStatus);
-const paymentInclude = {stripePayout: true, alternativeRefund: {select: {amountPence: true, stripeRefundedPence: true}}, booking: {include: {disputes: true}}, events: {where: {type: 'PAYOUT_READY' as const}}};
+const paymentInclude = {stripePayout: true, alternativeRefund: {select: {amountPence: true, stripeRefundedPence: true}}, booking: {include: {disputes: true}}, events: {where: {OR: [{type: 'PAYOUT_READY' as const}, {type: 'PAYOUT_PAID' as const}]}}};
 type Payment = Prisma.BookingPaymentGetPayload<{include: typeof paymentInclude}>;
 type RefundInput = {paymentId: string; amountPence: number; expectedRefundedPence: number; actorId: string;
   disputeId?: string; resolution?: 'REFUND_CUSTOMER' | 'PARTIAL_REFUND'; resolutionNote?: string; approvedProceedsPence?: number};
@@ -162,6 +162,12 @@ function sameRequest(row: StripeRefund, input: RefundInput) {
   return row;
 }
 
+function checkNewRefund(payment: Payment, disputeId?: string) {
+  const dispute = disputeId ? payment.booking.disputes.find(d => d.id === disputeId) : undefined;
+  const reason = bookingRefundRestriction(payment.booking, payment, dispute);
+  if (reason) throw new ConnectError(reason, 'REFUND_CONFLICT');
+}
+
 export async function prepareStripeRefund(input: RefundInput) {
   requireEnabled();
   const previous = await prisma.stripeRefund.findUnique({where: {paymentId_priorRefundedPence: {paymentId: input.paymentId, priorRefundedPence: input.expectedRefundedPence}}});
@@ -169,23 +175,19 @@ export async function prepareStripeRefund(input: RefundInput) {
     if (previous.environment !== paymentEnvironment()) return review('Refund environment mismatch.');
     return sameRequest(previous, input);
   }
-  const stripe = await verifiedConnectClient();
   const payment = await prisma.bookingPayment.findUniqueOrThrow({where: {id: input.paymentId}, include: paymentInclude});
+  checkNewRefund(payment, input.disputeId);
+  const stripe = await verifiedConnectClient();
   const source = await sourceState(stripe, payment);
-  if (payment.stripePayout?.stripeTransferId) {
-    const transfer = await stripe.transfers.retrieve(payment.stripePayout.stripeTransferId);
-    assertTransferMatches(transfer, payment.stripePayout);
-    if (transfer.amount_reversed !== payment.stripePayout.reversedPence) return review('Reconcile the transfer before requesting a refund.');
-  }
   return prisma.$transaction(async tx => {
     await tx.$queryRaw`SELECT id FROM "Booking" WHERE id=${payment.bookingId} FOR UPDATE`;
     const prior = await tx.stripeRefund.findUnique({where: {paymentId_priorRefundedPence: {paymentId: input.paymentId, priorRefundedPence: input.expectedRefundedPence}}});
     if (prior) return sameRequest(prior, input);
     if (await tx.stripeRefund.findUnique({where: {activePaymentId: input.paymentId}})) return review('Finish or review the existing refund first.');
     const fresh = await tx.bookingPayment.findUniqueOrThrow({where: {id: input.paymentId}, include: paymentInclude});
-    if (fresh.paidPence !== payment.paidPence || fresh.providerReference !== source.intentId || fresh.refundedPence !== payment.refundedPence ||
-        fresh.stripePayout?.reversedPence !== payment.stripePayout?.reversedPence) return review('Payment changed during refund preparation.');
-    const plan = planStripeRefund(fresh, {...input, environment: paymentEnvironment()}, fresh.stripePayout);
+    checkNewRefund(fresh, input.disputeId);
+    if (fresh.paidPence !== payment.paidPence || fresh.providerReference !== source.intentId || fresh.refundedPence !== payment.refundedPence) return review('Payment changed during refund preparation.');
+    const plan = planStripeRefund(fresh, {...input, environment: paymentEnvironment()});
     if (input.disputeId) {
       const dispute = fresh.booking.disputes.find(d => d.id === input.disputeId);
       if (!dispute || !['OPEN', 'UNDER_REVIEW'].includes(dispute.status) || !input.resolutionNote?.trim()) return review('An open dispute and review reason are required.');
@@ -199,8 +201,8 @@ export async function prepareStripeRefund(input: RefundInput) {
       paidPence: fresh.paidPence, amountPence: plan.amountPence, priorRefundedPence: plan.priorRefundedPence,
       priorPlatformFeePence: fresh.platformFeePence, priorProceedsPence: fresh.transporterProceedsPence, priorDeductionPence: fresh.cancellationDeductionPence, priorPayoutStatus: fresh.payoutStatus,
       platformFeePence: plan.platformFeePence, transporterProceedsPence: plan.transporterProceedsPence, cancellationDeductionPence: plan.cancellationDeductionPence,
-      fineRestorePence: plan.fineRestorePence, payoutId: fresh.stripePayout?.id, stripeTransferId: fresh.stripePayout?.stripeTransferId,
-      requiredReversedPence: plan.requiredReversedPence, baselineReversedPence: fresh.stripePayout?.reversedPence || 0,
+      fineRestorePence: plan.fineRestorePence,
+      requiredReversedPence: plan.requiredReversedPence, baselineReversedPence: 0,
       recoveryAmountPence: plan.recoveryPence, recoveryStatus: plan.recoveryStatus,
       actorId: input.actorId, disputeId: input.disputeId, resolution: input.resolution, resolutionNote: input.resolutionNote?.trim(),
     }});
@@ -334,6 +336,8 @@ export async function reconcileStripeRefund(id: string) {
       if (row.leaseToken !== token || lateFailure(row) || row.failureCode === 'PRIOR_REFUND_FAILED' || row.recoveryFailureCode === 'PRIOR_REFUND_FAILED') return;
       if (source.refund) {await finishRefund(tx, row, source.refund); return;}
       const fresh = await tx.bookingPayment.findUniqueOrThrow({where: {id: row.paymentId}, include: paymentInclude});
+      // Reconcile an existing provider refund above, but never create one after payout.
+      if (payoutCommitted(fresh) || row.payoutId || row.stripeTransferId) return review('Refund creation is closed after payout.');
       assertLedgerUnchanged(fresh, row);
       if (!refundCreateRetrySafe(row.firstAttemptAt)) return review('Refund retry expired.');
       const refund = await stripe.refunds.create({charge: row.sourceChargeId, amount: row.amountPence,

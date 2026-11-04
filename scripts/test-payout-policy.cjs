@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const root=path.join(__dirname,'..'),file=path.join(root,'src/lib/payout-policy.ts');
 const swc=require(path.join(root,'node_modules/next/dist/build/swc'));
 const m=new Module(file);m._compile(swc.transformSync(fs.readFileSync(file,'utf8'),{filename:file,jsc:{parser:{syntax:'typescript'},target:'es2020'},module:{type:'commonjs'}}).code,file);
-const {refundAmounts,completedPayoutStatus,adminPayoutApproved,payoutApprovalMarker,customerCanDispute,payoutWindowOpen,disputeDeadline,DISPUTE_WINDOW_MS,reviewDateLabel}=m.exports;
+const {refundAmounts,completedPayoutStatus,adminPayoutApproved,payoutApprovalMarker,customerCanDispute,payoutWindowOpen,disputeDeadline,DISPUTE_WINDOW_MS,reviewDateLabel,bookingRefundRestriction}=m.exports;
 const legacy={paidPence:50000,refundedPence:0,platformFeePence:2500};
 const first=refundAmounts(legacy,25000);assert.deepEqual(first,{refundedPence:25000,platformFeePence:1250,transporterProceedsPence:23750});
 const second=refundAmounts({...legacy,...first},10000);assert.equal(second.platformFeePence,750);assert.equal(second.transporterProceedsPence,14250);
@@ -42,6 +42,27 @@ assert.equal(customerCanDispute({...booking,payment:{payoutStatus:'PAID'}},deadl
 assert.equal(completedPayoutStatus({...approved,payment:{payoutStatus:'PAID'}},true,deadline-1),'PAID');
 assert.equal(payoutWindowOpen({...booking,customerConfirmedAt:null},[],deadline),false);
 assert.equal(payoutWindowOpen({...booking,customerConfirmedAt:'invalid'},[],deadline),false);
+const delivered={...booking,customerId:'customer'},unpaid={payoutStatus:'READY'};
+const timely={status:'OPEN',raisedById:'customer',createdAt:new Date(deadline-1)};
+const reviewLater=deadline+7*DISPUTE_WINDOW_MS;
+assert.match(bookingRefundRestriction({...delivered,customerConfirmedAt:null},unpaid),/confirms delivery/);
+assert.equal(bookingRefundRestriction(delivered,unpaid,undefined,deadline-1),null);
+assert.match(bookingRefundRestriction(delivered,unpaid,undefined,deadline),/window has closed/);
+for(const status of ['OPEN','UNDER_REVIEW']){
+ const customerCase={...timely,status};
+ assert.equal(bookingRefundRestriction(delivered,{payoutStatus:'HELD'},customerCase,reviewLater),null);
+ assert.equal(payoutWindowOpen({...delivered,disputes:[customerCase]},[],reviewLater),false);
+}
+for(const invalid of [undefined,{...timely,createdAt:new Date(deadline)},{...timely,createdAt:'invalid'},
+ {...timely,raisedById:'transporter'},{...timely,status:'CLOSED'},{...timely,status:'RESOLVED'}]){
+ assert.match(bookingRefundRestriction(delivered,{payoutStatus:'HELD'},invalid,reviewLater),/window has closed/);
+}
+for(const committed of [{payoutStatus:'PAID'},{payoutStatus:'PROCESSING'},{payoutStatus:'FAILED'},
+ {payoutStatus:'HELD',events:[{type:'PAYOUT_PAID'}]},{payoutStatus:'HELD',stripePayout:{id:'issued'}}]){
+ assert.match(bookingRefundRestriction(delivered,committed,timely,deadline-1),/payout has already started/);
+ assert.match(bookingRefundRestriction(delivered,committed,timely,reviewLater),/payout has already started/);
+}
+console.log('PASS: neither the payment date nor a generic hold extends refunds; a customer case filed before the deadline remains refundable during review, until payout starts.');
 assert.match(reviewDateLabel(Date.parse('2026-10-15T12:00:00Z')),/13:00/);
 assert.match(reviewDateLabel(Date.parse('2026-10-26T12:00:00Z')),/12:00/);
 console.log('PASS refund accounting, exact 24-hour boundary, early approval, missing bank details, other disputes, paid status and UK clock changes');

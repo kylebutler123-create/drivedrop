@@ -41,6 +41,28 @@ export function customerCanDispute(booking:ReviewBooking,now=Date.now()){
  const deadline=disputeDeadline(booking.customerConfirmedAt);
  return !booking.customerConfirmedAt||(deadline!==null&&now<deadline);
 }
+type RefundBooking = {status: string; customerId?: string; customerConfirmedAt?: unknown};
+type RefundPayment = {payoutStatus: string; stripePayout?: unknown; events?: {type?: string}[]};
+type RefundDispute = {status: string; raisedById: string; createdAt: Date | string};
+
+export function payoutCommitted(payment: RefundPayment) {
+ return !!payment.stripePayout || ['PROCESSING', 'FAILED', 'PAID'].includes(payment.payoutStatus)
+   || !!payment.events?.some(event => event.type === 'PAYOUT_PAID');
+}
+
+// The deadline applies to opening the customer's case. Its resolution can come later.
+export function bookingRefundRestriction(booking: RefundBooking, payment: RefundPayment, dispute?: RefundDispute, now = Date.now()): string | null {
+ if (payoutCommitted(payment)) return 'Refunds are closed because the transporter payout has already started.';
+ if (payment.payoutStatus === 'CANCELLED') return 'This payout is already cancelled.';
+ const deadline = disputeDeadline(booking.customerConfirmedAt);
+ if (booking.status !== 'DELIVERED' || deadline === null || now < deadline - DISPUTE_WINDOW_MS) {
+  return 'The 24-hour refund window starts when the customer confirms delivery.';
+ }
+ if (now < deadline) return null;
+ if (dispute && booking.customerId && ['OPEN', 'UNDER_REVIEW'].includes(dispute.status) && dispute.raisedById === booking.customerId
+     && new Date(dispute.createdAt).getTime() < deadline) return null;
+ return 'The 24-hour refund window has closed. Only a customer dispute opened before the deadline can still be resolved with a refund.';
+}
 export function payoutWindowOpen(booking:ReviewBooking,events:{note?:string|null}[]=booking.payment?.events||[],now=Date.now()){
  if(booking.disputes?.some(d=>['OPEN','UNDER_REVIEW'].includes(d.status)))return false;
  if(adminPayoutApproved(booking.disputes||[],events))return true;

@@ -120,7 +120,7 @@ const alternative = load('src/lib/alternative-refunds.ts'), email = load('src/li
   for(const failure of [null,'lostRefund','lostCommit','lostReversal','lostRecoveryCommit']){
     configured();process.env.STRIPE_CONNECT_ENABLED='true';process.env.STRIPE_REFUNDS_ENABLED='true';
     const c=refundContext({environment:'production',...(failure?{[failure]:true}:{})});
-    const row=await c.engine.prepareStripeRefund(c.input());
+    const row=await c.seedLegacyRefund();
     process.env.STRIPE_CONNECT_ENABLED='false';process.env.STRIPE_REFUNDS_ENABLED='false';
     await assert.rejects(()=>c.engine.prepareStripeRefund(c.input(100,0)),/paused/);
     await c.engine.reconcileStripeRefund(row.id);await c.engine.reconcileStripeRefund(row.id);
