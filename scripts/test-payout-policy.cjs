@@ -50,6 +50,8 @@ assert.equal(bookingRefundRestriction(delivered,unpaid,undefined,deadline-1),nul
 assert.match(bookingRefundRestriction(delivered,unpaid,undefined,deadline),/window has closed/);
 for(const status of ['OPEN','UNDER_REVIEW']){
  const customerCase={...timely,status};
+ assert.match(bookingRefundRestriction({...delivered,disputes:[customerCase]},{payoutStatus:'HELD'},undefined,deadline-1),/Resolve the open dispute/);
+ assert.equal(bookingRefundRestriction({...delivered,disputes:[customerCase]},{payoutStatus:'HELD'},customerCase,deadline-1),null);
  assert.equal(bookingRefundRestriction(delivered,{payoutStatus:'HELD'},customerCase,reviewLater),null);
  assert.equal(payoutWindowOpen({...delivered,disputes:[customerCase]},[],reviewLater),false);
 }

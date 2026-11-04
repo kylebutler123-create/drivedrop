@@ -66,6 +66,8 @@ export async function checkLocalBookingWorkflow({request,base,states,record}) {
     // No clock override, modified confirmation time or early-release bypass.
     const dispute=await body(await apis.customer.post('/api/disputes',{data:{bookingId:'ci-booking-awaiting',reason:'Isolated CI review',details:'Synthetic local case for the admin resolution exception'}}));
     check('Customer can dispute within the new 24-hour window',dispute.status===201&&Boolean(dispute.data.id),JSON.stringify(dispute));
+    const bypass=await body(await apis.admin.post('/api/admin/payments/refund',{data:{paymentId:'ci-payment-awaiting',amountPence:100,expectedRefundedPence:0}}));
+    check('An open case requires an admin dispute decision even before the clock expires',bypass.status===400&&/resolve the open dispute/i.test(bypass.data.error));
     const resolved=await body(await apis.admin.patch('/api/admin/disputes',{data:{disputeId:dispute.data.id,status:'RESOLVED',resolution:'RELEASE_PAYOUT',resolutionNote:'Isolated TEST fixture reviewed; approve release through the existing exception.'}}));
     check('Admin explicitly resolves the local dispute for release',resolved.status===200&&resolved.data.status==='RESOLVED',JSON.stringify(resolved));
     const payout=await body(await apis.admin.post('/api/admin/payments/payout',{data:{paymentId:'ci-payment-awaiting'}}));

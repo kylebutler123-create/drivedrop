@@ -41,7 +41,7 @@ export function customerCanDispute(booking:ReviewBooking,now=Date.now()){
  const deadline=disputeDeadline(booking.customerConfirmedAt);
  return !booking.customerConfirmedAt||(deadline!==null&&now<deadline);
 }
-type RefundBooking = {status: string; customerId?: string; customerConfirmedAt?: unknown};
+type RefundBooking = {status: string; customerId?: string; customerConfirmedAt?: unknown; disputes?: {status: string}[]};
 type RefundPayment = {payoutStatus: string; stripePayout?: unknown; events?: {type?: string}[]};
 type RefundDispute = {status: string; raisedById: string; createdAt: Date | string};
 
@@ -58,7 +58,12 @@ export function bookingRefundRestriction(booking: RefundBooking, payment: Refund
  if (booking.status !== 'DELIVERED' || deadline === null || now < deadline - DISPUTE_WINDOW_MS) {
   return 'The 24-hour refund window starts when the customer confirms delivery.';
  }
- if (now < deadline) return null;
+ if (now < deadline) {
+  if (!dispute && booking.disputes?.some(d => ['OPEN', 'UNDER_REVIEW'].includes(d.status))) {
+   return 'Resolve the open dispute to refund this booking. The payout remains held.';
+  }
+  return null;
+ }
  if (dispute && booking.customerId && ['OPEN', 'UNDER_REVIEW'].includes(dispute.status) && dispute.raisedById === booking.customerId
      && new Date(dispute.createdAt).getTime() < deadline) return null;
  return 'The 24-hour refund window has closed. Only a customer dispute opened before the deadline can still be resolved with a refund.';
