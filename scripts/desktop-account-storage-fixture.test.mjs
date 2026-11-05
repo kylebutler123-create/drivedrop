@@ -52,6 +52,21 @@ try {
   actor = {id: 'ci-customer', role: 'CUSTOMER'};
   delete routeEnv.SUPABASE_URL;
   assert.equal((await GET()).status, 503, 'Missing real storage configuration must remain an error');
+  const baseline = await startCustomerPhotoStorageFixture(isolated, 'baseline');
+  try {
+    const readPath = (server, path) => {
+      const key = server.env.SUPABASE_SERVICE_ROLE_KEY;
+      return fetch(server.env.SUPABASE_URL + '/storage/v1/object/authenticated/' + path,
+        {headers: {apikey: key, Authorization: 'Bearer ' + key}});
+    };
+    const privatePath = 'customer-avatars/preview/ci-customer/avatar';
+    const legacyPath = 'transporter-profiles/' + privatePath;
+    assert.equal((await readPath(baseline, legacyPath)).status, 404);
+    assert.equal((await readPath(baseline, privatePath)).status, 500);
+    assert.equal((await readPath(fixture, legacyPath)).status, 500, 'Updated builds must reject the legacy bucket');
+  } finally {
+    await baseline.close();
+  }
   console.log('PASS isolated storage guard, actual empty-avatar response, caller denials and unexpected request failures');
 } finally {
   await fixture.close();

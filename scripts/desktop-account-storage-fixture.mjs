@@ -2,7 +2,7 @@ import {createServer} from 'node:http';
 
 // Only the absent optional avatar is simulated. No upload or financial endpoint
 // is mocked, and this fixture is never imported by the application.
-export async function startCustomerPhotoStorageFixture(env) {
+export async function startCustomerPhotoStorageFixture(env, version = 'updated') {
   const database = new URL(env.POSTGRES_PRISMA_URL || '');
   if (env.CI !== 'true' || env.DRIVEDROP_ISOLATED_BROWSER_TEST !== 'true' ||
       !['127.0.0.1', 'localhost'].includes(database.hostname) ||
@@ -11,7 +11,12 @@ export async function startCustomerPhotoStorageFixture(env) {
     throw new Error('Storage fixture requires isolated local CI without hosted storage configuration');
   }
   const key = 'ci-empty-customer-avatar-fixture';
-  const expectedPath = '/storage/v1/object/authenticated/customer-avatars/preview/ci-customer/avatar';
+  if (!['baseline', 'updated'].includes(version)) throw new Error('Unknown account build');
+  // The frozen comparison build still reads its original location.
+  const objectPath = version === 'baseline'
+    ? 'transporter-profiles/customer-avatars/preview/ci-customer/avatar'
+    : 'customer-avatars/preview/ci-customer/avatar';
+  const expectedPath = '/storage/v1/object/authenticated/' + objectPath;
   const observations = {missingAvatarReads: 0, unexpectedRequests: 0};
   const server = createServer((request, response) => {
     const expected = request.method === 'GET' && request.url === expectedPath &&
