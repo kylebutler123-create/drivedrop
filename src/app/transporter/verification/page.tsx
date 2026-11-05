@@ -75,7 +75,7 @@ export default function Verification() {
     event.preventDefault(); setMessage('');
     const form = new FormData(event.currentTarget);
     const data: any = Object.fromEntries(form);
-    if (data.yearsOperating) data.yearsOperating = Number(data.yearsOperating);
+    data.yearsOperating = data.yearsOperating === '' ? undefined : Number(data.yearsOperating);
     const response = await fetch('/api/transporter/verification', { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) });
     setMessage(response.ok ? 'Business details saved' : (await response.json()).error);
     if (response.ok) setVerification(await response.json()); else await load();
