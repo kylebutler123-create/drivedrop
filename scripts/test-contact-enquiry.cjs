@@ -21,7 +21,7 @@ function load(relative, stubs = {}) {
 }
 
 async function main() {
-  const envNames = ['RESEND_API_KEY', 'VERCEL_ENV', 'TRANSACTIONAL_EMAILS_ENABLED', 'TRANSACTIONAL_EMAILS_SENDER_VERIFIED', 'NEXT_PUBLIC_APP_URL'];
+  const envNames = ['RESEND_API_KEY', 'VERCEL_ENV', 'TRANSACTIONAL_EMAILS_ENABLED', 'TRANSACTIONAL_EMAILS_SENDER_VERIFIED', 'NEXT_PUBLIC_APP_URL', 'DRIVEDROP_CONTACT_EMAIL_TEST'];
   const savedEnv = Object.fromEntries(envNames.map(key => [key, process.env[key]]));
   const originalFetch = global.fetch;
   const originalError = console.error;
@@ -94,6 +94,34 @@ async function main() {
     process.env.VERCEL_ENV = 'production';
     assert.equal((await route.POST(request())).status, 503, 'Existing production email guards must remain closed');
     assert.equal(requests.length, beforeRejected);
+    const testId = randomUUID();
+    const config = {id: testId, startsAt: new Date(Date.now() - 1000).toISOString(), expiresAt: new Date(Date.now() + 60_000).toISOString()};
+    const probe = {...data, name: 'DriveDrop email check', email: details.SUPPORT_CONTACT.email,
+      subject: `DriveDrop production email check ${testId}`,
+      message: 'This is the authorised DriveDrop production contact-form delivery test. No booking or payment is involved.'};
+    process.env.DRIVEDROP_CONTACT_EMAIL_TEST = JSON.stringify(config);
+    assert.equal((await route.POST(request(probe))).status, 503, 'Sender must be verified');
+    process.env.TRANSACTIONAL_EMAILS_SENDER_VERIFIED = 'true';
+    assert.equal(mail.transactionalNotificationsEnabled(), false, 'General notifications remain disabled');
+    assert.equal((await route.POST(request(probe))).status, 200);
+    const firstProbe = requests.at(-1);
+    assert.equal(firstProbe.headers['Idempotency-Key'], `contact-production-test/${testId}`);
+    assert.equal((await route.POST(request({...probe, requestId: randomUUID()}))).status, 200);
+    assert.deepEqual(requests.at(-1), firstProbe, 'A new browser form must still deduplicate the same check');
+    const probeCount = requests.length;
+    for (const changed of [{email:'outsider@example.test'}, {name:'Someone'}, {subject:'Other'}, {message:'Other'}, {bookingReference:'booking'}, {enquiry:'Feedback'}]) {
+      assert.equal((await route.POST(request({...probe, ...changed}))).status, 503);
+    }
+    for (const invalid of ['', '{bad', JSON.stringify({...config,id:'not-a-uuid'}),
+      JSON.stringify({...config,expiresAt:new Date(Date.now()-1).toISOString()}),
+      JSON.stringify({...config,startsAt:new Date(Date.now()+10_000).toISOString()}),
+      JSON.stringify({...config,expiresAt:new Date(Date.now()+3_600_001).toISOString()}),
+      JSON.stringify({...config,expiresAt:'invalid'})]) {
+      process.env.DRIVEDROP_CONTACT_EMAIL_TEST = invalid;
+      assert.equal((await route.POST(request(probe))).status, 503, 'Invalid or inactive test configuration must not send');
+    }
+    assert.equal(requests.length, probeCount, 'Rejected probes never contact Resend');
+    delete process.env.DRIVEDROP_CONTACT_EMAIL_TEST;
     process.env.VERCEL_ENV = 'preview';
 
     providerFailure = true;
@@ -116,7 +144,7 @@ async function main() {
     assert.equal(requests.length, beforeLimited);
 
     const React = require('react');
-    const Contact = load('src/app/components/ContactDesktop.tsx', {'@/lib/support-contact': details}).default;
+    const Contact = load('src/app/components/ContactDesktop.tsx', {'@/lib/support-contact': details, './MobilePublicUI': load('src/app/components/MobilePublicUI.tsx')}).default;
     const html = require('react-dom/server').renderToStaticMarkup(React.createElement(Contact));
     assert.ok(html.includes('mailto:support@drive-drop.com'));
     assert.ok(html.includes('tel:+447438285027'));
