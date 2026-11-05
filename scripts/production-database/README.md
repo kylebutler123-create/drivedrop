@@ -17,6 +17,10 @@ Unmodified source migration SHA-256 values:
 | `20261020220726_stripe_refund_late_failure/migration.sql` | `787bd9b8e38829529441f30d0b05e9f657d497295f0376ec53e267996044e054` |
 | `20261021125850_alternative_refund/migration.sql` | `ed6a74bf9cdbe5f746417d37d790437c902d8ce34a7e6c2f68a8a62dc0987983` |
 
+## Customer avatar storage
+
+For a Production rollout, the migration above must run against its original five-bucket baseline. After its postflight passes and before enabling customer uploads, provision a private `customer-avatars` bucket in the separate Production project through the Supabase Storage API or Dashboard. Set a 2 MiB object limit, allow only `image/jpeg`, `image/png` and `image/webp`, and grant no client object policies. Test that a direct public URL cannot retrieve a customer photo. Preview photos belong in Preview.
+
 ## Reproduce the local rehearsal
 
 Use an empty, disposable PostgreSQL **17.11** cluster with a local administrator role and `psql` on PATH. The script accepts only a localhost URL with an explicit port and database name starting `drivedrop_rehearsal_`; connection overrides are rejected. It creates minimal local Auth/Storage/role stubs and leaves the migrated schema for inspection. Synthetic financial fixtures roll back. It must not run against a shared local cluster because it creates cluster roles if absent.

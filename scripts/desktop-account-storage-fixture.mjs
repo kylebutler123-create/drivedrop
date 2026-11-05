@@ -11,7 +11,7 @@ export async function startCustomerPhotoStorageFixture(env) {
     throw new Error('Storage fixture requires isolated local CI without hosted storage configuration');
   }
   const key = 'ci-empty-customer-avatar-fixture';
-  const expectedPath = '/storage/v1/object/authenticated/transporter-profiles/customer-avatars/preview/ci-customer/avatar';
+  const expectedPath = '/storage/v1/object/authenticated/customer-avatars/preview/ci-customer/avatar';
   const observations = {missingAvatarReads: 0, unexpectedRequests: 0};
   const server = createServer((request, response) => {
     const expected = request.method === 'GET' && request.url === expectedPath &&

@@ -63,7 +63,9 @@ jobs:
       - name: Check dispute fine validation and deductions
         run: node scripts/test-dispute-fines.cjs
       - name: Check the isolated optional-avatar storage fixture
-        run: node scripts/desktop-account-storage-fixture.test.mjs
+        run: |
+          node scripts/test-customer-photo.cjs
+          node scripts/desktop-account-storage-fixture.test.mjs
       - name: Build updated and baseline applications
         run: |
           npm run build

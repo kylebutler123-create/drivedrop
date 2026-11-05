@@ -29,11 +29,10 @@ try {
     }, {filename: source});
     return exports;
   }
-  const bucket = {PROFILE_BUCKET: 'transporter-profiles'};
-  const storage = load('src/lib/customer-photo-storage.ts', {'./supabase-storage': bucket});
+  const storage = load('src/lib/customer-photo-storage.ts', {});
   const {GET} = load('src/app/api/account/customer-photo/route.ts', {
     '@/lib/auth': {currentUser: async () => actor},
-    '@/lib/supabase-storage': bucket,
+    '@/lib/supabase-storage': {},
     '@/lib/customer-photo-storage': storage,
   });
   const empty = await GET();
@@ -48,7 +47,7 @@ try {
   actor = {id: 'unexpected-customer', role: 'CUSTOMER'};
   assert.equal((await GET()).status, 502, 'The fixture must not hide an unexpected user/path as an absent photo');
   assert.equal(fixture.observations.unexpectedRequests, 1);
-  const unknown = await fetch(fixture.env.SUPABASE_URL + '/storage/v1/object/transporter-profiles', {method: 'POST', body: 'unexpected'});
+  const unknown = await fetch(fixture.env.SUPABASE_URL + '/storage/v1/object/customer-avatars', {method: 'POST', body: 'unexpected'});
   assert.equal(unknown.status, 500, 'Uploads are outside this fixture and must fail');
   actor = {id: 'ci-customer', role: 'CUSTOMER'};
   delete routeEnv.SUPABASE_URL;

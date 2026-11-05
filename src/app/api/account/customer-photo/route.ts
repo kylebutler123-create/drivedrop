@@ -1,7 +1,7 @@
 import {NextResponse} from 'next/server';
 import {currentUser} from '@/lib/auth';
-import {PROFILE_BUCKET,validateProfileImage} from '@/lib/supabase-storage';
-import {customerPhotoConfig as config,customerPhotoHeaders as noCache,readCustomerPhoto} from '@/lib/customer-photo-storage';
+import {validateProfileImage} from '@/lib/supabase-storage';
+import {CUSTOMER_PHOTO_BUCKET,customerPhotoConfig as config,customerPhotoHeaders as noCache,readCustomerPhoto} from '@/lib/customer-photo-storage';
 export const runtime='nodejs';
 export const dynamic='force-dynamic';
 export async function GET(){
@@ -20,7 +20,11 @@ export async function POST(request:Request){
  const valid=await validateProfileImage(file);
  if(!valid.ok)return NextResponse.json({error:valid.error},{status:400});
  const {url,path,headers}=config(user.id);
- const response=await fetch(`${url}/storage/v1/object/${PROFILE_BUCKET}/${path}`,{method:'POST',headers:{...headers,'Content-Type':file.type,'x-upsert':'true','Cache-Control':'no-cache'},body:await file.arrayBuffer()});
+ const bucketResponse=await fetch(`${url}/storage/v1/bucket/${CUSTOMER_PHOTO_BUCKET}`,{headers,cache:'no-store'});
+ if(!bucketResponse.ok)throw new Error('Customer photo storage unavailable');
+ const bucket=await bucketResponse.json();
+ if(bucket.id!==CUSTOMER_PHOTO_BUCKET||bucket.public!==false)throw new Error('Customer photo storage must be private');
+ const response=await fetch(`${url}/storage/v1/object/${CUSTOMER_PHOTO_BUCKET}/${path}`,{method:'POST',headers:{...headers,'Content-Type':file.type,'x-upsert':'true','Cache-Control':'private, no-store, max-age=0'},body:await file.arrayBuffer()});
  if(!response.ok)throw new Error('Storage write failed');
  return NextResponse.json({ok:true},{headers:noCache});
  }catch{return NextResponse.json({error:'Could not save your photo. Please try again.'},{status:500})}
@@ -31,7 +35,7 @@ export async function DELETE(request:Request){
  if(request.headers.get('origin')!==new URL(request.url).origin)return NextResponse.json({error:'Invalid request origin'},{status:403});
  try{
  const {url,path,headers}=config(user.id);
- const response=await fetch(`${url}/storage/v1/object/${PROFILE_BUCKET}`,{method:'DELETE',headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify({prefixes:[path]})});
+ const response=await fetch(`${url}/storage/v1/object/${CUSTOMER_PHOTO_BUCKET}`,{method:'DELETE',headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify({prefixes:[path]})});
  if(!response.ok)throw new Error('Storage delete failed');
  return NextResponse.json({ok:true},{headers:noCache});
  }catch{return NextResponse.json({error:'Could not remove your photo. Please try again.'},{status:500})}

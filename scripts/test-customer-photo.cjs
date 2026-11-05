@@ -6,8 +6,16 @@ async function run(){
  process.env.SUPABASE_URL='https://storage.example.test';process.env.SUPABASE_SERVICE_ROLE_KEY='local-test-only';process.env.VERCEL_ENV='preview';
  let user={id:'assigned',role:'TRANSPORTER',accountStatus:'ACTIVE'},status='CONFIRMED',customerState='ACTIVE',storageStatus=200,type='image/png',queries=[],reads=[];
  const bytes=Buffer.from([137,80,78,71]);
- global.fetch=async(url,options)=>{reads.push({url,options});return new Response(storageStatus===200?bytes:'not found',{status:storageStatus,headers:{'content-type':type}})};
- const storage=load('src/lib/customer-photo-storage.ts',{'./supabase-storage':{PROFILE_BUCKET:'profiles'}});
+ const bucketUrl='https://storage.example.test/storage/v1/bucket/customer-avatars';
+ const objectUrl='https://storage.example.test/storage/v1/object/customer-avatars';
+ const readUrl='https://storage.example.test/storage/v1/object/authenticated/customer-avatars';
+ let bucketPublic=false, bucketStatus=200;
+ global.fetch=async(url,options)=>{
+  reads.push({url,options});
+  if(url===bucketUrl)return Response.json({id:'customer-avatars',public:bucketPublic},{status:bucketStatus});
+  return new Response(storageStatus===200?bytes:'not found',{status:storageStatus,headers:{'content-type':type}});
+ };
+ const storage=load('src/lib/customer-photo-storage.ts',{});
  const prisma={booking:{findFirst:async({where,select})=>{
   queries.push({where,select});
   return where.id==='booking-one'&&where.transporterId==='assigned'&&where.status?.in?.includes(status)&&where.customer?.accountStatus===customerState?{customerId:'customer-owner'}:null;
@@ -27,24 +35,34 @@ async function run(){
   for(const value of ['CONFIRMED','COLLECTION_SCHEDULED','COLLECTED','IN_TRANSIT','ARRIVING_SOON']){
    status=value;const response=await GET(request('bookingId=booking-one&customerId=unrelated-customer'));
    assert.equal(response.status,200);assert.equal(response.headers.get('content-type'),'image/png');assert.match(response.headers.get('cache-control'),/private, no-store/);assert.equal(response.headers.get('vary'),'Cookie');assert.equal(response.headers.get('authorization'),null);
-   assert.deepEqual(Buffer.from(await response.arrayBuffer()),bytes);assert.match(reads.at(-1).url,/customer-avatars\/preview\/customer-owner\/avatar$/);assert.equal(reads.at(-1).options.cache,'no-store');
+   assert.deepEqual(Buffer.from(await response.arrayBuffer()),bytes);assert.equal(reads.at(-1).url,readUrl+'/preview/customer-owner/avatar');assert.equal(reads.at(-1).options.cache,'no-store');
   }
   assert.deepEqual(queries.at(-1).select,{customerId:true});
   storageStatus=404;assert.equal((await GET(request())).status,204);
   storageStatus=400;assert.equal((await GET(request())).status,204);
   storageStatus=500;assert.equal((await GET(request())).status,502);
   storageStatus=200;type='text/html';assert.equal((await GET(request())).status,502);type='image/png';
-  process.env.VERCEL_ENV='production';await GET(request());assert.match(reads.at(-1).url,/customer-avatars\/production\/customer-owner\/avatar$/);
+  process.env.VERCEL_ENV='production';await GET(request());assert.equal(reads.at(-1).url,readUrl+'/production/customer-owner/avatar');
   delete process.env.SUPABASE_SERVICE_ROLE_KEY;assert.equal((await GET(request())).status,503);process.env.SUPABASE_SERVICE_ROLE_KEY='local-test-only';
-  const account=load('src/app/api/account/customer-photo/route.ts',{'@/lib/auth':{currentUser:async()=>user},'@/lib/customer-photo-storage':storage,'@/lib/supabase-storage':{PROFILE_BUCKET:'profiles',validateProfileImage:async()=>({ok:true})}});
+  const account=load('src/app/api/account/customer-photo/route.ts',{'@/lib/auth':{currentUser:async()=>user},'@/lib/customer-photo-storage':storage,'@/lib/supabase-storage':{validateProfileImage:async()=>({ok:true})}});
   user={id:'customer-owner',role:'CUSTOMER',accountStatus:'ACTIVE'};assert.equal((await account.GET()).status,200);
   const upload=()=>{const form=new FormData();form.append('file',new File([bytes],'avatar.png',{type:'image/png'}));return new Request('https://app.example.test/api/account/customer-photo',{method:'POST',headers:{origin:'https://app.example.test'},body:form})};
   const before=reads.length;assert.equal((await account.POST(upload())).status,200);assert.equal((await account.POST(upload())).status,200);
-  assert.equal(reads.length,before+2);assert.equal(reads.at(-1).url,reads.at(-2).url);assert.equal(reads.at(-1).options.headers['x-upsert'],'true');
+  assert.deepEqual(reads.slice(before).map(r=>r.url),[bucketUrl,objectUrl+'/production/customer-owner/avatar',bucketUrl,objectUrl+'/production/customer-owner/avatar']);
+  assert.equal(reads.at(-1).options.headers['x-upsert'],'true');
+  for(const [isPublic,statusCode] of [[true,200],[false,404]]){
+   bucketPublic=isPublic;bucketStatus=statusCode;
+   const start=reads.length;
+   assert.equal((await account.POST(upload())).status,500);
+   assert.deepEqual(reads.slice(start).map(r=>r.url),[bucketUrl],'a public or missing bucket must never receive the photo');
+  }
+  bucketPublic=false;bucketStatus=200;
   assert.equal((await account.DELETE(new Request('https://app.example.test/api/account/customer-photo',{method:'DELETE',headers:{origin:'https://app.example.test'}}))).status,200);
-  assert.deepEqual(JSON.parse(reads.at(-1).options.body),{prefixes:['customer-avatars/production/customer-owner/avatar']});
+  assert.equal(reads.at(-1).url,objectUrl);
+  assert.deepEqual(JSON.parse(reads.at(-1).options.body),{prefixes:['production/customer-owner/avatar']});
   const count=reads.length;assert.equal((await account.DELETE(new Request('https://app.example.test/api/account/customer-photo',{method:'DELETE',headers:{origin:'https://unrelated.example.test'}}))).status,403);assert.equal(reads.length,count);
-  console.log('PASS: assigned active-booking access, role/account restrictions, no unrelated customer override, missing/error fallback, private headers, environment separation, replacement at one path and owner removal. Database and storage mocked.');
+  assert.equal(reads.some(r=>r.url.includes('transporter-profiles')||r.url.includes('/object/public/')),false);
+  console.log('PASS: private bucket only, public/missing bucket upload refusal, assigned-booking and owner access, caller denials, environment separation, replacement and removal. Database and storage mocked.');
  }finally{
   global.fetch=originalFetch;
   for(const [key,value] of [['SUPABASE_URL',originalEnv.url],['SUPABASE_SERVICE_ROLE_KEY',originalEnv.key],['VERCEL_ENV',originalEnv.scope]])if(value===undefined)delete process.env[key];else process.env[key]=value;
