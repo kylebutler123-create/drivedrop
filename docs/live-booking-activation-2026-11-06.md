@@ -1,5 +1,16 @@
 # DriveDrop Stage 1 activation record and booking plan — 6 November 2026
 
+## Live recovery monitoring check — 6 November, 05:58–05:59 UTC
+
+Kye approved a read-only review of the existing monitoring after the dispute-fix release and merge. The public Production alias still points to `dpl_9jSs8g6U4h3PTb6GTZL4drzSyahT`. The exact deployed `vercel.json` retains the minute booking-authorisation recovery schedule and the existing three daily schedules; no schedule was changed.
+
+At 05:58:06 UTC, the Production operational log showed **30 runs in the previous 30 minutes, all succeeded**, zero failed/interrupted runs, zero failed items and no stale unfinished run. The latest five completed at approximately 05:54:04, 05:55:03, 05:56:03, 05:57:03 and 05:58:03 UTC. The largest interval between run starts was 60.64 seconds. All three recovery queues (authorisations, transfers and refunds) had zero pending/review/reserved items and zero expired leases. These are healthy empty-queue observations, not financial-flow acceptance.
+
+The existing Healthchecks project, “DriveDrop production operations,” was inspected through its normal signed-in UI. “DriveDrop production payment recovery” displayed **Up**, a recent successful ping, a one-minute period and four-minute grace. Its event history showed consecutive OK heartbeats matching the minute worker runs through 05:58 UTC. Notification Methods showed the existing “DriveDrop operations email” integration ON; Integrations showed the owner's existing email destination and **Ready to deliver**, with its earlier delivery result retained. No test heartbeat, test email, alert change or financial operation was triggered. The deployment-scoped error/fatal log scan for 05:29:10–05:59:10 UTC returned no matching records.
+
+The external monitor status review is now complete. This is an observed status check, not an assistant-run future watch or a new 30-minute live-booking observation. Checkout remains off and genuine onboarding/payment acceptance remains outstanding. The monitor's descriptive paragraph still contains the older statement that payouts/refunds are disabled; that prose is stale relative to Stage 1 and is not evidence of the effective application switches. It was left unchanged during this read-only review; the current activation controls above/below are authoritative. No private ping URL, check token or authentication data is included here.
+
+
 ## Admin dispute refresh fix — 6 November, 05:21 UTC
 
 The approved stale-warning fix is implemented in [PR #7](https://github.com/kylebutler123-create/drivedrop/pull/7), commit `2a7e408462a33bc0f57b0e0661bbe29998caa7a5`, branch `fix/admin-dispute-refresh-warning`. It adds success-only error clearing in `AdminDisputeManagement.load()`. One source line changed; authorization, financial operations, database and feature flags are unchanged. This fixes the stale UI warning; the cause of the initial authorization failure remains unproven.
