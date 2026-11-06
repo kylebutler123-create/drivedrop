@@ -1,5 +1,17 @@
 # DriveDrop Stage 1 activation record and booking plan — 6 November 2026
 
+## Genuine account-status event delivery verified — 6 November, 22:49 UTC
+
+The live account-status destination at `https://drive-drop.com/api/stripe/connect/events` displayed nine deliveries and zero failures: eight genuine account updates from 22:39:48 through 22:44:41 UTC, plus the historical 01:41:52 ping. Every listed delivery returned HTTP 200. The genuine updates include recipient capability-status and requirements changes.
+
+The final requirements-update delivery was inspected in detail: automatic source, live mode, related-object account matching the canonical Production transporter mapping, Delivered at 22:44:41 UTC, HTTP 200 with `received: true`. Event ID: `evt_65ViJpZMfRcaOPefLwt16VbS9E66E9SNtcKATxYl19kDBg`. Its creation timestamp was 22:44:40.568 UTC.
+
+The current Production source verifies the signature before awaiting the account-notification handler. For a matching canonical account, that handler retrieves current Stripe account state and validates ownership, environment, live mode, UK/GBP and the required account configuration before persisting readiness. Production still points to `dpl_9jSs8g6U4h3PTb6GTZL4drzSyahT`. At 22:49:57 UTC, the canonical account remained READY with both capabilities true, no requirements due and lastCheckedAt 22:44:44.374 UTC, consistent with those final deliveries. The scoped production error/fatal log query from 22:38:00 to 22:46:30 returned no matching logs.
+
+This completes the observed genuine account-status delivery and matching readiness check. It does not establish that a particular webhook was the sole writer of lastCheckedAt, since the normal account-status page also refreshes state. No event was resent and no new ping, financial transaction, deployment or feature-flag change was performed.
+
+The next step is preparation and validation of the exact protected Stage 2 Checkout candidate, followed by a separate opening decision that acknowledges access for all eligible users and operator coverage. The platform financial-event and bank-payout snapshot paths still require ordinary genuine-business evidence; this account-status check does not mark those paths passed.
+
 ## Genuine transporter payout readiness confirmed — 6 November, 22:46 UTC
 
 Kye asked whether onboarding was complete and clarified that the transporter has no website. A fresh Production database check at 22:46:21 UTC showed the same canonical live account as READY, transfersEnabled=true, payoutsEnabled=true and requirementsDue=false, last checked at 22:44:44 UTC. The transporter remains ACTIVE and APPROVED.
