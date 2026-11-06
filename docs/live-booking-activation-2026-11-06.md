@@ -1,6 +1,6 @@
 # DriveDrop live-booking activation plan — 6 November 2026
 
-Status: two protected Production candidates built and checked on 6 November 2026; neither promoted. Public Production and canonical Preview remain unchanged. Release acceptance is incomplete. No live financial account, payment, transfer or refund was created.
+Status: scoped read-only staging checks are complete on 6 November 2026. Both protected Production candidates remain unpromoted; public Production and canonical Preview are unchanged. Stage 1 activation is awaiting a concrete approval. Live onboarding, financial processing and signed snapshot-event acceptance are not established by these checks. No live financial account, payment, transfer or refund was created.
 
 ## Verified baseline
 
@@ -57,7 +57,7 @@ The sender-verification flag is an operator attestation. It does not itself veri
 
 A staged production build may contain active capabilities even before promotion. Keep it protected, do not perform onboarding/payment/email actions during preparation, and verify the single current scheduler remains on the current Production deployment. Do not call a candidate tested merely because its build is READY.
 
-The candidates below have now been created, and the fresh recovery package has been verified. The remaining acceptance items must be completed before requesting activation. No promotion is authorised by this staging work.
+The candidates below have been created, the fresh recovery package verified, and the scoped read-only role checks completed. Review the recorded limitations and exact Stage 1 scope before deciding on activation. No promotion is authorised by this staging work.
 
 ## Staging evidence — 6 November 2026
 
@@ -97,11 +97,11 @@ Read-only digest inspection found zero eligible recipients even before insurance
 ### Acceptance limits and next work
 
 - Fresh portable recovery package captured and verified on 6 November at 02:27:28 UTC; details below. The older 5 November pre-migration archive remains preserved. Recheck for material changes before actual activation; this is a dated recovery point, not continuous backup.
-- Signed-in administrator and existing-transporter read paths have been checked on both candidates. Their effective Connect creation flags and setup buttons show the intended difference: fallback off, Stage 1 on. Customer-specific staged access remains the outstanding role check. Empty queues do not establish financial-action or dispute-filing behaviour. Prior accepted role/private-upload evidence remains useful but is not a full financial-workflow pass.
+- Scoped role reads are complete: administrator and existing-transporter paths on both candidates, and customer dashboard/payment/dispute/access-boundary checks on Stage 1. Effective Connect creation flags and setup buttons show fallback off and Stage 1 on. Customer login was not separately repeated on the fallback; its matching source and dispute flag, together with its exercised administrator/transporter routes, are the available equivalence evidence. Empty queues do not establish financial-action or dispute-filing behaviour.
 - New-operation gates are recorded from the pre-build configuration snapshots and reviewed source. No payment, payout, refund, account-creation or email-send action was performed to test them.
 - No staged signed Stripe event was delivered. The existing live thin ping evidence remains limited to signature parsing/delivery. Platform and bank-payout signed snapshot paths remain unverified.
 - Ordinary email delivery was not retested. The earlier authenticated delivery evidence and unresolved Hotmail Junk case remain unchanged.
-- These candidates are available for the remaining acceptance work. READY status and the checks above do not authorise promotion or opening Checkout.
+- The scoped read-only results support reviewing the exact Stage 1 activation below. They do not authorise promotion or opening Checkout, and the unexercised financial/onboarding/event paths remain explicit limitations.
 
 ### Signed-in Stage 1 admin checks — 6 November, completed by 02:48 UTC
 
@@ -170,6 +170,31 @@ A read-only Production query at 03:10:08 UTC found zero authorisation records, b
 
 Administrator and transporter read checks are now complete on both candidates. Customer-specific staged access is the outstanding role check; the existing active test customer's normal Stage 1 login is prepared. No customer account is being created or restored. Full financial processing, real onboarding, dispute filing and signed snapshot processing remain outside these read-only results. Both candidates remain unpromoted and Checkout remains false.
 
+### Stage 1 customer checks — 6 November, completed by 03:18 UTC
+
+Kye signed in normally using the existing active synthetic customer. The dashboard displayed the customer role and zero quote requests, deliveries, completed and cancelled bookings. The Payments page rendered the current-year statement controls, zero payment records and £0.00 paid/refunded/net totals. No statement download or payment submission was performed.
+
+Authenticated read checks returned:
+- `GET /api/disputes`: `[]`.
+- `GET /api/admin/disputes`: “Admin access required.”
+- `GET /api/account/stripe-connect`: “Transporter access required.”
+
+These observations establish the exercised customer read paths and role separation on Stage 1. No eligible booking exists, so customer dispute filing, checkout, receipt contents and refund processing were not exercised. The customer login was not separately repeated on the fallback candidate; do not label it a second-host customer workflow pass.
+
+Browser console inspection returned no captured warnings/errors. The Stage 1 error/fatal runtime scan for 03:07:14–03:17:14 UTC returned no matching logs. Both deployment metadata records still show READY, source `232a0d14a72ed02a2806947bf5aab75f14c6a924`, Production target and no assigned aliases.
+
+### Concrete Stage 1 activation awaiting approval
+
+Proposed action: promote only `dpl_92CyExarmSj7ompfZAihWKWMLSRR`, map the existing public Production aliases to it, and align Production project defaults with its Stage 1 column so a subsequent deployment does not unexpectedly revert those capabilities. The current defaults were re-read without decrypting secrets: Connect, refunds, disputes and transactional emails remain false; Checkout and alternative refunds remain false; the payment master, recovery monitor and sender-verification flag remain true.
+
+The approved activation would set only those four Production defaults (Connect, refunds, disputes, normal transactional emails) to true and promote the already-built candidate. Checkout and alternative refunds remain false. Preserve every Preview target/value/alias, existing credentials and origins, deployment protection, backup and the single Production recovery schedule.
+
+This enables genuine transporter onboarding, customer/admin dispute features and normal transactional/contact email. It also permits new eligible admin payout and refund instructions; Connect is not an onboarding-only switch. Recorded financial/account queues are zero. No Stripe account creation, onboarding submission, payout/refund execution or email test is part of the activation action.
+
+Known limits to acknowledge: Hotmail Junk placement remains unresolved; the two signed snapshot-event paths remain unverified; no genuine transporter is ready; the initial Stage 1 dispute-panel warning cleared but its cause is not established and the stale-error UI follow-up is not fixed. Scoped role reads are not a full financial-flow pass. Keep Checkout closed while the remaining genuine onboarding/payment-readiness work is completed.
+
+Immediately before any approved promotion, recheck aliases, source/configuration, queues, digest eligibility and recovery freshness; stop on unexplained changes. After promotion, verify exact public deployment routing and effective controls, preserve canonical Preview, and confirm only the intended current Production worker runs. Retain `dpl_9Xcgq9KcPi5pyA4S3gYwUVYdRZHJ` as the compatible pause/support candidate. No promotion, merge or environment edit has been performed during this review.
+
 ## Fresh recovery package — 6 November 2026
 
 Private artifact: `DriveDrop-Production-backup-2026-11-06.zip`, 1,071,304 bytes, SHA-256 `9693e8abaf5482d0ed081bc21c53c0b1abeff0d1c0e24ab6fb79c83bbeae75b2`. Saved privately outside Git; the archive contains user information, password/session hashes and uploaded files and must not be committed here.
@@ -187,13 +212,13 @@ Verification passed:
 
 This is a portable application/data/file recovery check. No hosted project or Storage restore was performed, no credential was retrieved, and no live data was changed. Managed platform services, extension binaries, role passwords, Vercel configuration and external payment/email credentials require their existing secure recovery arrangements. Storage object metadata is archived as evidence; the SQL deliberately restores bucket configuration without inserting file metadata in place of uploading bytes through the supported API.
 
-Kye completed the normal administrator logins on both candidates, and their read-only results are recorded above. Both transporter status checks are complete; the next login is the existing active test customer on Stage 1 for the remaining customer-role check. The two candidate hosts have separate browser cookies. The current application login implementation replaces the account's previous sessions globally, so finish each candidate's checks sequentially; do not assume an earlier host stays signed in after the next login. No session was copied from the backup or fabricated. Both candidates remain unpromoted, and Checkout remains false.
+Kye completed the normal administrator logins on both candidates, and their read-only results are recorded above. Both transporter status checks and the Stage 1 customer-role checks are complete. No further login is pending for this scoped read-only review. The two candidate hosts have separate browser cookies. The current application login implementation replaces the account's previous sessions globally, so finish each candidate's checks sequentially; do not assume an earlier host stays signed in after the next login. No session was copied from the backup or fabricated. Both candidates remain unpromoted, and Checkout remains false.
 
 ## Stage 1 — activate onboarding and support; Checkout remains off
 
 After approval of the concrete Stage 1 candidate and its side effects:
 
-1. Promote that exact tested Production build and map `drive-drop.com` and the existing Production alias to it. Verify the canonical Preview alias remains unchanged.
+1. Recheck the recorded preconditions, align only the four Production defaults identified above with Stage 1, then promote that exact checked build and map `drive-drop.com` and the existing Production alias to it. Verify canonical Preview and unrelated/Preview configuration remain unchanged.
 2. Confirm the deployed flags, all three active Stripe destinations, scheduler ownership, durable worker completion and monitor health.
 3. Allow a genuine transporter to complete Stripe-hosted onboarding. The transporter supplies their real identity/bank information and completes required financial-account steps. Do not approve synthetic verification documents or convert the existing upload-test account into a real provider.
 4. Verify canonical account ownership, UK/GBP configuration, transfer and payout capability readiness and requirements. Production currently has no connected accounts, so there is no live transporter ready yet.
@@ -247,7 +272,7 @@ Use the staged pause/support build, or a reviewed fix with the same controls, to
 
 Today's recovery-only deployment is not the full post-launch fallback because its dispute and normal email switches are off. The old August application and Preview deployment are also unsuitable fallbacks.
 
-An environment edit alone does not pause an immutable deployment. Promote the exact pause candidate, explicitly reconcile Production aliases, and verify its effective controls and current worker. Pause settings do not revoke already-issued Stripe Checkout sessions or cancel already-claimed instructions. Inventory in-flight authorisations and use their existing canonical release/cancellation workflow where required; never create a replacement instruction merely because a response was lost.
+An environment edit alone does not pause an immutable deployment. Promote the exact pause candidate, explicitly reconcile Production aliases, and verify its effective controls and current worker. Align Production project defaults with the pause/support column as part of the approved incident action so a later deployment cannot silently reopen creation. Pause settings do not revoke already-issued Stripe Checkout sessions or cancel already-claimed instructions. Inventory in-flight authorisations and use their existing canonical release/cancellation workflow where required; never create a replacement instruction merely because a response was lost.
 
 Pause and investigate on incorrect account/amount/currency, duplicate or unexplained financial instructions, unreconciled signed-event errors, unresolved REVIEW records, failed/stale recovery, or inability to file an eligible dispute. Existing worker thresholds are a recent success within five minutes, no stale active lease beyond four minutes, no REVIEW/old expired leases, and no pending work older than fifteen minutes. Treat those as monitor thresholds, not permission to ignore an immediate correctness problem.
 
@@ -266,7 +291,7 @@ A full processing stop, disabling webhook delivery, restoring a database snapsho
 | Normal transactional email | Off; authenticated delivery tested, Hotmail Junk issue unresolved |
 | Role registration and private document replacement checks | Previously completed 5 November; retain that evidence and keep synthetic documents unapproved |
 | Compatible pause/support deployment | READY and protected; administrator and transporter read checks completed; Connect creation disabled in effective status/UI; financial/dispute-filing acceptance not exercised |
-| Stage 1 candidate | READY and protected; admin/transporter read paths checked; setup creation enabled in effective status/UI; initial admin error remains recorded; customer/full financial acceptance incomplete; not promoted; Checkout false |
+| Stage 1 candidate | READY and protected; admin/transporter/customer read checks completed within the recorded scope; setup creation enabled; initial admin error recorded; live financial/onboarding acceptance unverified; not promoted; Checkout false |
 | Fresh activation backup and observation window | Fresh package verified at 02:27:28 UTC on 6 November; observation window still to be agreed |
 | Historical QA | QA23 COMPLETE; QA25 COMPLETE/PASS; QA24 CLOSED/INCONCLUSIVE |
 
