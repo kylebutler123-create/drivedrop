@@ -1,6 +1,7 @@
+import {publicPageMetadata} from '@/lib/seo';
 import DesktopInformationPage from '@/app/components/DesktopInformationPage';
 
-export const metadata = {title: 'About DriveDrop | DriveDrop'};
+export const metadata = publicPageMetadata('/about');
 
 export default function Page() {
   return <DesktopInformationPage page="about" />;
