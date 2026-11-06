@@ -1,5 +1,13 @@
 # DriveDrop Stage 1 activation record and booking plan — 6 November 2026
 
+## Genuine transporter payout readiness confirmed — 6 November, 22:46 UTC
+
+Kye asked whether onboarding was complete and clarified that the transporter has no website. A fresh Production database check at 22:46:21 UTC showed the same canonical live account as READY, transfersEnabled=true, payoutsEnabled=true and requirementsDue=false, last checked at 22:44:44 UTC. The transporter remains ACTIVE and APPROVED.
+
+A fresh read of the live Stripe dashboard confirmed Enabled, Payouts active, and active Payouts/Transfers capabilities. Stripe displays terms accepted at 22:44 UTC, no outstanding actions, and Website: None. The earlier website task is therefore no longer blocking this specific account; no website or workaround was supplied by the assistant. This observation does not establish a universal exemption for other connected accounts.
+
+The earlier pending-state entry below is historical and superseded by this readiness result. Live onboarding and matching persisted payout-readiness state are now confirmed. The exact signed-event delivery responsible for the state transition has not been independently traced, so webhook-path acceptance is not claimed from the matching state alone. No transfer, payout, charge, refund, account edit, message, or Checkout activation was performed. Stage 2 remains a separate decision.
+
 ## First genuine transporter onboarding — 6 November, 22:43–22:44 UTC
 
 Kye reported that a genuine transporter had registered and been verified. Production confirms that the new account is ACTIVE, work is permitted and transporter verification is APPROVED. A canonical production Stripe connected-account mapping now exists. The live platform dashboard was inspected because the Stripe connector currently exposes only the separate sandbox.
