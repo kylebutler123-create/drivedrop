@@ -97,7 +97,7 @@ Read-only digest inspection found zero eligible recipients even before insurance
 ### Acceptance limits and next work
 
 - Fresh portable recovery package captured and verified on 6 November at 02:27:28 UTC; details below. The older 5 November pre-migration archive remains preserved. Recheck for material changes before actual activation; this is a dated recovery point, not continuous backup.
-- Signed-in Stage 1 administrator read paths were checked after Kye's normal login; results and the initial dispute-panel anomaly are recorded below. Pause/support administrator access, customer/transporter paths and Connect status still need signed-in acceptance. Empty queues do not establish financial-action or dispute-filing behaviour. Prior accepted role/private-upload evidence remains useful but is not a full workflow pass on these hosts.
+- Signed-in administrator read paths have now been checked on both staged candidates after Kye's normal logins; results and the initial Stage 1 dispute-panel anomaly are recorded below. Customer/transporter paths and Connect status still need signed-in acceptance. Empty queues do not establish financial-action or dispute-filing behaviour. Prior accepted role/private-upload evidence remains useful but is not a full workflow pass on these hosts.
 - New-operation gates are recorded from the pre-build configuration snapshots and reviewed source. No payment, payout, refund, account-creation or email-send action was performed to test them.
 - No staged signed Stripe event was delivered. The existing live thin ping evidence remains limited to signature parsing/delivery. Platform and bank-payout signed snapshot paths remain unverified.
 - Ordinary email delivery was not retested. The earlier authenticated delivery evidence and unresolved Hotmail Junk case remain unchanged.
@@ -121,6 +121,18 @@ The post-reopen browser console inspection returned no captured warnings/errors.
 
 No payment, transfer, refund, connected account, dispute, fine or email was created. No verification decision or public deployment change was made. Full release acceptance remains incomplete.
 
+### Signed-in pause/support admin checks — 6 November, completed by 02:57 UTC
+
+Kye completed the normal administrator login on `dpl_9Xcgq9KcPi5pyA4S3gYwUVYdRZHJ`. The Control Centre displayed the existing four-user, zero-booking/payment baseline. Dispute management loaded without the initial access warning seen on Stage 1. Refresh and all three status filters displayed their expected empty states; direct authenticated `GET /api/admin/disputes` displayed `[]`.
+
+The payout page showed all eight categories at zero. Ready and Held views displayed their expected empty states, with CSV export disabled when empty. The signed-in contact page displayed its form, normal support destination and contact details; no message was submitted.
+
+Deployment metadata still identifies the pinned source `232a0d14a72ed02a2806947bf5aab75f14c6a924`, Production target, READY state and no assigned aliases. Fresh alias lookups confirmed both public Production aliases still point to `dpl_6PkTy3XLvpbofCZczZAoBNV15G7A` and canonical Preview to `dpl_47cB9DM89ubLxoeAGdEAVexZm2p7`. The browser console had no captured warnings/errors, and the fallback error/fatal runtime scan for 02:45:52–02:55:52 UTC returned no matching logs.
+
+These are administrator read/render checks. The recorded pause configuration keeps Checkout, Connect creation/new payout instructions, refunds and alternative refunds off, while disputes, normal support email and recovery remain enabled. That configuration evidence comes from the captured build settings and reviewed source; no financial creation request was used to re-prove those gates, and empty payout lists expose no financial-action buttons to test.
+
+The next signed-in check is the existing synthetic transporter's payout-setup status, starting on the fallback host. Source review confirms that when no connected-account row exists, its status GET returns `creationEnabled` and `NOT_STARTED` without creating or retrieving a Stripe account. No onboarding button, financial-account creation or verification approval is authorised by this read-only check.
+
 ## Fresh recovery package — 6 November 2026
 
 Private artifact: `DriveDrop-Production-backup-2026-11-06.zip`, 1,071,304 bytes, SHA-256 `9693e8abaf5482d0ed081bc21c53c0b1abeff0d1c0e24ab6fb79c83bbeae75b2`. Saved privately outside Git; the archive contains user information, password/session hashes and uploaded files and must not be committed here.
@@ -138,7 +150,7 @@ Verification passed:
 
 This is a portable application/data/file recovery check. No hosted project or Storage restore was performed, no credential was retrieved, and no live data was changed. Managed platform services, extension binaries, role passwords, Vercel configuration and external payment/email credentials require their existing secure recovery arrangements. Storage object metadata is archived as evidence; the SQL deliberately restores bucket configuration without inserting file metadata in place of uploading bytes through the supported API.
 
-Kye completed the normal Stage 1 administrator login, and the read-only results are recorded above. The pause/support `/admin` page now presents its normal DriveDrop login form and is ready for Kye to sign in using the same existing administrator account. The two candidate hosts have separate browser cookies. The current application login implementation replaces the account's previous sessions globally, so finish each candidate's checks sequentially; do not assume an earlier host stays signed in after the next login. No session was copied from the backup or fabricated. Both candidates remain unpromoted, and Checkout remains false.
+Kye completed the normal administrator logins on both candidates, and their read-only results are recorded above. The next login is the existing synthetic transporter on the fallback host for the payout-setup status check. The two candidate hosts have separate browser cookies. The current application login implementation replaces the account's previous sessions globally, so finish each candidate's checks sequentially; do not assume an earlier host stays signed in after the next login. No session was copied from the backup or fabricated. Both candidates remain unpromoted, and Checkout remains false.
 
 ## Stage 1 — activate onboarding and support; Checkout remains off
 
@@ -216,7 +228,7 @@ A full processing stop, disabling webhook delivery, restoring a database snapsho
 | New booking, payout, refund and dispute controls | Off; no activation in this task |
 | Normal transactional email | Off; authenticated delivery tested, Hotmail Junk issue unresolved |
 | Role registration and private document replacement checks | Previously completed 5 November; retain that evidence and keep synthetic documents unapproved |
-| Compatible pause/support deployment | READY and protected; read-only checks passed; full acceptance incomplete |
+| Compatible pause/support deployment | READY and protected; signed-in administrator read paths checked; transporter/Connect and full acceptance incomplete |
 | Stage 1 candidate | READY and protected; signed-in admin read paths checked with an initial recoverable dispute-panel error recorded; full acceptance incomplete; not promoted; Checkout false |
 | Fresh activation backup and observation window | Fresh package verified at 02:27:28 UTC on 6 November; observation window still to be agreed |
 | Historical QA | QA23 COMPLETE; QA25 COMPLETE/PASS; QA24 CLOSED/INCONCLUSIVE |
