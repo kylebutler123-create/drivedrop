@@ -1,6 +1,6 @@
 # DriveDrop live-booking activation plan — 6 November 2026
 
-Status: prepared for review. This document does not activate any setting, deploy a release, create a Stripe account or move money.
+Status: two protected Production candidates built and checked on 6 November 2026; neither promoted. Public Production and canonical Preview remain unchanged. Release acceptance is incomplete. No live financial account, payment, transfer or refund was created.
 
 ## Verified baseline
 
@@ -17,7 +17,7 @@ The [activation evidence in PR5](https://github.com/kylebutler123-create/drivedr
 
 ## Exact Production configuration
 
-All boolean entries below are literal strings `true` or `false`. The pause build is a proposed new compatible fallback, not today's recovery-only deployment.
+All boolean entries below are literal strings `true` or `false`. The pause/support and Stage 1 columns were captured in the new staged builds. The Current column describes the unchanged live recovery-only deployment, not the latest project defaults.
 
 | Setting | Current | Pause/support build | Stage 1: onboarding/support | Stage 2: bookings |
 | --- | --- | --- | --- | --- |
@@ -30,7 +30,7 @@ All boolean entries below are literal strings `true` or `false`. The pause build
 | DISPUTES_ENABLED | false | true | true | true |
 | TRANSACTIONAL_EMAILS_ENABLED | absent; effectively false | true | true | true |
 | TRANSACTIONAL_EMAILS_SENDER_VERIFIED | true | true | true | true |
-| DRIVEDROP_CONTACT_EMAIL_TEST | configured, time bounded | remove | remove | remove |
+| DRIVEDROP_CONTACT_EMAIL_TEST | configured, time bounded | empty; disabled | empty; disabled | empty; disabled |
 
 Retain `NEXT_PUBLIC_APP_URL` and `STRIPE_CHECKOUT_ORIGIN` as `https://drive-drop.com`, the live platform ID `acct_1US4BsLo6y2NJoQw`, all existing Production secrets and the four current schedules. No schema migration, dependency change or application-code change is proposed.
 
@@ -57,7 +57,51 @@ The sender-verification flag is an operator attestation. It does not itself veri
 
 A staged production build may contain active capabilities even before promotion. Keep it protected, do not perform onboarding/payment/email actions during preparation, and verify the single current scheduler remains on the current Production deployment. Do not call a candidate tested merely because its build is READY.
 
-The pause and Stage 1 candidates have not been created by this planning task. Their IDs, fresh backup reference and acceptance evidence must be filled into the release record before a request to activate Stage 1.
+The candidates below have now been created. A fresh recovery package and the remaining acceptance items must be completed before requesting activation. No promotion is authorised by this staging work.
+
+## Staging evidence — 6 November 2026
+
+Both builds use source `232a0d14a72ed02a2806947bf5aab75f14c6a924`, target Production, and the exact respective configuration columns above. Vercel shows them as staged with custom-domain assignment skipped; authentication protection remains enabled for deployment URLs.
+
+| Candidate | Immutable deployment | Status |
+| --- | --- | --- |
+| Pause/support | [dpl_9Xcgq9KcPi5pyA4S3gYwUVYdRZHJ](https://vercel.com/future-9f39/drivedrop/9Xcgq9KcPi5pyA4S3gYwUVYdRZHJ) — https://drivedrop-lmgzpy0fq-future-9f39.vercel.app | READY |
+| Stage 1 onboarding/support | [dpl_92CyExarmSj7ompfZAihWKWMLSRR](https://vercel.com/future-9f39/drivedrop/92CyExarmSj7ompfZAihWKWMLSRR) — https://drivedrop-m84z0drj7-future-9f39.vercel.app | READY; 61-second build |
+
+Project Production defaults were restored after build capture: Connect, refunds, disputes and normal transactional emails are all explicitly false; Checkout and alternative refunds remain false; master payments, sender verification and the recovery monitor remain true. `DRIVEDROP_CONTACT_EMAIL_TEST` was cleared to an empty encrypted configuration, disabling the completed test. It was not deleted. Existing deployment snapshots are immutable, so this restoration does not alter either candidate or the public deployment. Other environment values/targets and all Preview values were compared with the pre-staging baseline and remained unchanged. Secrets were neither decrypted nor printed.
+
+### Checks actually completed
+
+At 02:12 UTC, both candidate hosts returned:
+
+| Read-only check | Result | Evidence limit |
+| --- | --- | --- |
+| `GET /api/health` | HTTP 200, `ok:true`, version `232a0d14a72e` | Database connectivity and expected source |
+| `GET /api/availability/authorise` | HTTP 200, `provider:STRIPE`, `testMode:false` | Production configuration guard passed; does not exercise Checkout creation or Stripe key permissions |
+| `GET /api/disputes` | HTTP 403, customer/transporter login required | Dispute feature is on and authentication is enforced; filing was not performed |
+| `GET /api/admin/disputes` | HTTP 403, admin access required | Unauthenticated access denied; signed-in admin workflow not repeated |
+| `GET /api/account/stripe-connect` | HTTP 403, transporter access required | Unauthenticated access denied; no account or onboarding link created |
+| `GET /api/cron/booking-authorisations?health=1`, without cron credentials | HTTP 403, forbidden | Worker endpoint remains protected; no manual dispatch or heartbeat sent |
+| `GET /contact` | HTTP 200; contact heading and form present | Page rendering only; no email submitted |
+
+The candidate-scoped error/fatal runtime scans for 01:58:38–02:13:38 UTC returned no matching logs. Stage 1 build warnings concern npm's unknown `cache-dir` config and Prisma install-script allow-list notices; Prisma Client generation and the build both completed. No dependency policy or package version was changed.
+
+Alias lookups after staging confirmed `drive-drop.com` and `drivedrop-pink.vercel.app` still resolve to `dpl_6PkTy3XLvpbofCZczZAoBNV15G7A`; canonical Preview still resolves to `dpl_47cB9DM89ubLxoeAGdEAVexZm2p7`. The branch domain displayed on a candidate dashboard is not evidence that the alias moved.
+
+The existing four cron entries remain active with their original schedules. Request logs at 02:13–02:15 UTC show Production minute dispatches (HTTP 202) reaching `drivedrop-hbyytingb-future-9f39.vercel.app`; the existing separate Preview requests also remain. Neither staged candidate is receiving scheduled dispatches in the inspected period; their only worker requests were the deliberate unauthenticated HTTP 403 checks.
+
+Production database evidence at 02:13:12 UTC: authorisations=0, payouts=0, refunds=0, connected accounts=0; application users=3 and storage objects=9. The five latest durable Production runs (02:09–02:13 UTC) all succeeded with checked=0 and failed=0, and the last ten minutes contained no non-success runs. This proves empty-queue worker completion, not financial processing.
+
+Read-only digest inspection found zero eligible recipients even before insurance filtering, zero transport jobs and zero pending digest batches. The synthetic transporter has daily job emails disabled. Recheck eligibility at the actual release window.
+
+### Acceptance limits and next work
+
+- The existing 5 November archive was inspected and its ZIP integrity verified. Its snapshot was captured at 01:15:41 UTC on 5 November, before the payment migration, and contains no application users or storage objects. It is not a current recovery point for today's 3 users, 9 objects and later schema. Capture and verify a fresh consistent package before activation; preserve the old archive.
+- Signed-in dispute/admin/Connect and blocked-new-operation behaviour on these immutable hosts has not been exercised. Prior accepted role/private-upload evidence and unchanged source remain useful but do not turn the unauthenticated checks above into a full workflow pass.
+- New-operation gates are recorded from the pre-build configuration snapshots and reviewed source. No payment, payout, refund, account-creation or email-send action was performed to test them.
+- No staged signed Stripe event was delivered. The existing live thin ping evidence remains limited to signature parsing/delivery. Platform and bank-payout signed snapshot paths remain unverified.
+- Ordinary email delivery was not retested. The earlier authenticated delivery evidence and unresolved Hotmail Junk case remain unchanged.
+- These candidates are available for the remaining acceptance work. READY status and the checks above do not authorise promotion or opening Checkout.
 
 ## Stage 1 — activate onboarding and support; Checkout remains off
 
@@ -135,8 +179,9 @@ A full processing stop, disabling webhook delivery, restoring a database snapsho
 | New booking, payout, refund and dispute controls | Off; no activation in this task |
 | Normal transactional email | Off; authenticated delivery tested, Hotmail Junk issue unresolved |
 | Role registration and private document replacement checks | Previously completed 5 November; retain that evidence and keep synthetic documents unapproved |
-| Compatible pause/support deployment | Exact configuration prepared; build/acceptance outstanding |
-| Fresh activation backup and observation window | Must be recorded for the actual release window |
+| Compatible pause/support deployment | READY and protected; read-only checks passed; full acceptance incomplete |
+| Stage 1 candidate | READY and protected; not promoted; Checkout false |
+| Fresh activation backup and observation window | Still required for the actual release window; old backup is stale |
 | Historical QA | QA23 COMPLETE; QA25 COMPLETE/PASS; QA24 CLOSED/INCONCLUSIVE |
 
 The old insufficient-balance reversal test is not the next launch task for the supported booking-refund flow. It remains historically unverified, not passed. The approved policy prevents new booking refunds after transporter payout starts. Existing issued refunds and card-issuer disputes remain separate reconciliation concerns.
