@@ -57,7 +57,7 @@ The sender-verification flag is an operator attestation. It does not itself veri
 
 A staged production build may contain active capabilities even before promotion. Keep it protected, do not perform onboarding/payment/email actions during preparation, and verify the single current scheduler remains on the current Production deployment. Do not call a candidate tested merely because its build is READY.
 
-The candidates below have now been created. A fresh recovery package and the remaining acceptance items must be completed before requesting activation. No promotion is authorised by this staging work.
+The candidates below have now been created, and the fresh recovery package has been verified. The remaining acceptance items must be completed before requesting activation. No promotion is authorised by this staging work.
 
 ## Staging evidence — 6 November 2026
 
@@ -97,11 +97,29 @@ Read-only digest inspection found zero eligible recipients even before insurance
 ### Acceptance limits and next work
 
 - Fresh portable recovery package captured and verified on 6 November at 02:27:28 UTC; details below. The older 5 November pre-migration archive remains preserved. Recheck for material changes before actual activation; this is a dated recovery point, not continuous backup.
-- Signed-in dispute/admin/Connect and blocked-new-operation behaviour on these immutable hosts has not been exercised. Prior accepted role/private-upload evidence and unchanged source remain useful but do not turn the unauthenticated checks above into a full workflow pass.
+- Signed-in Stage 1 administrator read paths were checked after Kye's normal login; results and the initial dispute-panel anomaly are recorded below. Pause/support administrator access, customer/transporter paths and Connect status still need signed-in acceptance. Empty queues do not establish financial-action or dispute-filing behaviour. Prior accepted role/private-upload evidence remains useful but is not a full workflow pass on these hosts.
 - New-operation gates are recorded from the pre-build configuration snapshots and reviewed source. No payment, payout, refund, account-creation or email-send action was performed to test them.
 - No staged signed Stripe event was delivered. The existing live thin ping evidence remains limited to signature parsing/delivery. Platform and bank-payout signed snapshot paths remain unverified.
 - Ordinary email delivery was not retested. The earlier authenticated delivery evidence and unresolved Hotmail Junk case remain unchanged.
 - These candidates are available for the remaining acceptance work. READY status and the checks above do not authorise promotion or opening Checkout.
+
+### Signed-in Stage 1 admin checks — 6 November, completed by 02:48 UTC
+
+Kye signed in through the normal protected Stage 1 page using the existing active administrator account. Browser observations on `dpl_92CyExarmSj7ompfZAihWKWMLSRR`:
+
+| Page/check | Observed result | Limit |
+| --- | --- | --- |
+| Control Centre | Administrator navigation; four registered users; zero jobs, quotes, completed deliveries and payments | Read-only dashboard, not operational processing |
+| Dispute management | Authenticated direct `GET /api/admin/disputes` displayed `[]`; after reopening, Open, Under Review and Resolved filters each displayed zero; Refresh and later navigation back rendered without the initial error | No dispute exists; no filing, resolution or refund tested |
+| Transporter payouts | All eight categories showed zero; Ready and Held views displayed their expected empty states; export disabled when empty | No release, refund or provider call was triggered by an operator action |
+| Outstanding fines | £0.00 owed, zero transporters/open fines and “No outstanding fines” | No fine created or adjusted |
+| Transporter verification | Synthetic account remained pending review, with two new uploads and two previous rejected versions; combined approval disabled while document review is outstanding | No document approved/rejected, account changed or upload repeated |
+
+Initial anomaly: the dispute panel first displayed “Admin access required” while the admin shell was visible, and its initial Refresh left that message visible. Direct authenticated navigation to the API then returned `[]`. A full navigation back cleared the error; Refresh, all status filters and a later return from verification loaded correctly. The cause of the initial denial is not established. Source review found that `AdminDisputeManagement.load()` does not clear a previously stored error after a successful GET, which can retain a stale warning. This is a recorded UI follow-up, not a claimed authentication fix or proof that the first request succeeded. No application code or candidate was changed.
+
+The post-reopen browser console inspection returned no captured warnings/errors. A Stage 1 error/fatal runtime scan for 02:27:01–02:47:01 UTC returned no matching logs. A text-filtered runtime-log query returned no dispute records; runtime output is not a complete HTTP request trace, so this does not identify the initial request's cause.
+
+No payment, transfer, refund, connected account, dispute, fine or email was created. No verification decision or public deployment change was made. Full release acceptance remains incomplete.
 
 ## Fresh recovery package — 6 November 2026
 
@@ -120,7 +138,7 @@ Verification passed:
 
 This is a portable application/data/file recovery check. No hosted project or Storage restore was performed, no credential was retrieved, and no live data was changed. Managed platform services, extension binaries, role passwords, Vercel configuration and external payment/email credentials require their existing secure recovery arrangements. Storage object metadata is archived as evidence; the SQL deliberately restores bucket configuration without inserting file metadata in place of uploading bytes through the supported API.
 
-The Stage 1 admin page was opened for signed-in acceptance. It currently presents the normal DriveDrop login form; Kye must enter the existing admin password in that protected staged page. No session was copied from the backup and no account/session was fabricated. Stage 1 remains unpromoted, and Checkout remains false.
+Kye completed the normal Stage 1 administrator login, and the read-only results are recorded above. The pause/support `/admin` page now presents its normal DriveDrop login form and is ready for Kye to sign in using the same existing administrator account. The two candidate hosts have separate browser cookies. The current application login implementation replaces the account's previous sessions globally, so finish each candidate's checks sequentially; do not assume an earlier host stays signed in after the next login. No session was copied from the backup or fabricated. Both candidates remain unpromoted, and Checkout remains false.
 
 ## Stage 1 — activate onboarding and support; Checkout remains off
 
@@ -199,7 +217,7 @@ A full processing stop, disabling webhook delivery, restoring a database snapsho
 | Normal transactional email | Off; authenticated delivery tested, Hotmail Junk issue unresolved |
 | Role registration and private document replacement checks | Previously completed 5 November; retain that evidence and keep synthetic documents unapproved |
 | Compatible pause/support deployment | READY and protected; read-only checks passed; full acceptance incomplete |
-| Stage 1 candidate | READY and protected; not promoted; Checkout false |
+| Stage 1 candidate | READY and protected; signed-in admin read paths checked with an initial recoverable dispute-panel error recorded; full acceptance incomplete; not promoted; Checkout false |
 | Fresh activation backup and observation window | Fresh package verified at 02:27:28 UTC on 6 November; observation window still to be agreed |
 | Historical QA | QA23 COMPLETE; QA25 COMPLETE/PASS; QA24 CLOSED/INCONCLUSIVE |
 
