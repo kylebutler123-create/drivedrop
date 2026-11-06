@@ -96,12 +96,31 @@ Read-only digest inspection found zero eligible recipients even before insurance
 
 ### Acceptance limits and next work
 
-- The existing 5 November archive was inspected and its ZIP integrity verified. Its snapshot was captured at 01:15:41 UTC on 5 November, before the payment migration, and contains no application users or storage objects. It is not a current recovery point for today's 3 users, 9 objects and later schema. Capture and verify a fresh consistent package before activation; preserve the old archive.
+- Fresh portable recovery package captured and verified on 6 November at 02:27:28 UTC; details below. The older 5 November pre-migration archive remains preserved. Recheck for material changes before actual activation; this is a dated recovery point, not continuous backup.
 - Signed-in dispute/admin/Connect and blocked-new-operation behaviour on these immutable hosts has not been exercised. Prior accepted role/private-upload evidence and unchanged source remain useful but do not turn the unauthenticated checks above into a full workflow pass.
 - New-operation gates are recorded from the pre-build configuration snapshots and reviewed source. No payment, payout, refund, account-creation or email-send action was performed to test them.
 - No staged signed Stripe event was delivered. The existing live thin ping evidence remains limited to signature parsing/delivery. Platform and bank-payout signed snapshot paths remain unverified.
 - Ordinary email delivery was not retested. The earlier authenticated delivery evidence and unresolved Hotmail Junk case remain unchanged.
 - These candidates are available for the remaining acceptance work. READY status and the checks above do not authorise promotion or opening Checkout.
+
+## Fresh recovery package — 6 November 2026
+
+Private artifact: `DriveDrop-Production-backup-2026-11-06.zip`, 1,071,304 bytes, SHA-256 `9693e8abaf5482d0ed081bc21c53c0b1abeff0d1c0e24ab6fb79c83bbeae75b2`. Saved privately outside Git; the archive contains user information, password/session hashes and uploaded files and must not be committed here.
+
+The single-statement database snapshot at 02:27:28 UTC includes 31 application tables plus the private recovery table, 383 columns, 145 constraints, 123 indexes, four functions and four triggers. It contains four application users (one new customer registered at 02:22 UTC), two sessions, four notifications, one transporter-verification record, four verification documents and 73 recovery-run records. Supabase Auth users/identities and all four financial/account queues remain empty. No account was created by this backup task.
+
+All six bucket configurations and nine objects (including the zero-byte placeholder) are included, totalling 1,043,887 file bytes. Three public profile images were freshly downloaded. The private avatar and four synthetic PDFs use retained original upload bytes whose size and MD5 match current Production Storage metadata; no fresh private-file download is claimed. Every archived file has an independent SHA-256. Remote bucket/object metadata and all application table rows were unchanged at the 02:36:11 UTC recheck; only routine recovery-run history advanced.
+
+Verification passed:
+- An isolated in-memory PostgreSQL 17.5 restore from the PostgreSQL 17.11 source matched the captured application schema/data, bucket records, migration history and expanded/default grants.
+- All 32 application/ops tables retained RLS and denied direct anonymous/authenticated access.
+- The database script refused both an unspecified restore target and an occupied target; occupied-target refusal preserved the data.
+- An isolated filesystem restoration recovered all nine files with matching SHA-256 readback and refused an existing destination.
+- The final ZIP passed CRC and all member-checksum verification.
+
+This is a portable application/data/file recovery check. No hosted project or Storage restore was performed, no credential was retrieved, and no live data was changed. Managed platform services, extension binaries, role passwords, Vercel configuration and external payment/email credentials require their existing secure recovery arrangements. Storage object metadata is archived as evidence; the SQL deliberately restores bucket configuration without inserting file metadata in place of uploading bytes through the supported API.
+
+The Stage 1 admin page was opened for signed-in acceptance. It currently presents the normal DriveDrop login form; Kye must enter the existing admin password in that protected staged page. No session was copied from the backup and no account/session was fabricated. Stage 1 remains unpromoted, and Checkout remains false.
 
 ## Stage 1 — activate onboarding and support; Checkout remains off
 
@@ -181,7 +200,7 @@ A full processing stop, disabling webhook delivery, restoring a database snapsho
 | Role registration and private document replacement checks | Previously completed 5 November; retain that evidence and keep synthetic documents unapproved |
 | Compatible pause/support deployment | READY and protected; read-only checks passed; full acceptance incomplete |
 | Stage 1 candidate | READY and protected; not promoted; Checkout false |
-| Fresh activation backup and observation window | Still required for the actual release window; old backup is stale |
+| Fresh activation backup and observation window | Fresh package verified at 02:27:28 UTC on 6 November; observation window still to be agreed |
 | Historical QA | QA23 COMPLETE; QA25 COMPLETE/PASS; QA24 CLOSED/INCONCLUSIVE |
 
 The old insufficient-balance reversal test is not the next launch task for the supported booking-refund flow. It remains historically unverified, not passed. The approved policy prevents new booking refunds after transporter payout starts. Existing issued refunds and card-issuer disputes remain separate reconciliation concerns.
