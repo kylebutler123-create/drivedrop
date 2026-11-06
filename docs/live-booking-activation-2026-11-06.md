@@ -1,5 +1,14 @@
 # DriveDrop Stage 1 activation record and booking plan — 6 November 2026
 
+## Admin dispute refresh fix — 6 November, 05:21 UTC
+
+The approved stale-warning fix is implemented in [PR #7](https://github.com/kylebutler123-create/drivedrop/pull/7), commit `2a7e408462a33bc0f57b0e0661bbe29998caa7a5`, branch `fix/admin-dispute-refresh-warning`. It adds success-only error clearing in `AdminDisputeManagement.load()`. One source line changed; authorization, financial operations, database and feature flags are unchanged. This fixes the stale UI warning; the cause of the initial authorization failure remains unproven.
+
+A temporary React/JSDOM component check reproduced the original failure and verified successful refresh recovery, warning retention during pending/repeated failed requests, network failure, fallback error and a second successful recovery. Vercel Preview deployment `dpl_7mhBBrecc1JBwR4tbXHDmHzRQbuv` is READY.
+
+Production publication is **not complete**. A rebuild of that exact source with current Production settings was requested; the Vercel dialog confirmed that custom-domain auto-assignment is disabled. Vercel then required fresh email identity verification before proceeding. The verification form is open for Kye. No promotion or PR merge has been performed. Production remains Stage 1 with Checkout disabled; the canonical Preview and compatible pause/support build are preserved. After verification, inspect the created candidate, confirm its source and effective settings, validate the admin read/refresh path and promote only this fix. Do not reopen financial QA or enable Checkout for this UI correction.
+
+
 Status: Kye approved Stage 1 and it was promoted at approximately 03:26 UTC on 6 November 2026. Onboarding, disputes, normal transactional/contact email and eligible admin payout/refund instructions are enabled. Checkout and alternative refunds remain off. Public Production aliases now point to the approved Stage 1 build; canonical Preview is unchanged. Post-release checks through 03:32 UTC passed within the recorded scope. Genuine onboarding, financial processing and the two signed snapshot-event paths remain unverified; no financial account or transaction was created by this activation.
 
 ## Approved activation — completed 6 November 2026
