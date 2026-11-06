@@ -1,5 +1,33 @@
 # DriveDrop Stage 1 activation record and booking plan — 6 November 2026
 
+## Stage 2 candidate built; private-file backup permission pending — 6 November, 23:14 UTC
+
+Kye completed Vercel email verification. The previously pending action created `dpl_Gm5vepunbkMv375JArKH7L7qD2Po` (`drivedrop-ohyyefmh1-future-9f39.vercel.app`) after the Checkout project default had been restored false; that intermediate build is not the Stage 2 release candidate.
+
+The actual Stage 2 candidate is **`dpl_7txmQ5oXX15FiuYvUBodmifwThSy`**, [Vercel review](https://vercel.com/future-9f39/drivedrop/7txmQ5oXX15FiuYvUBodmifwThSy), `https://drivedrop-421x4tsza-future-9f39.vercel.app`. It is READY, Production-target, source `2a7e408462a33bc0f57b0e0661bbe29998caa7a5`, with custom-domain assignment explicitly skipped and Standard Protection retained. The UI showed a 59-second build completed at 23:03:40 UTC; logs report Build Completed and Deployment completed.
+
+Only the Production `STRIPE_CHECKOUT_ENABLED` project default was temporarily changed to true for the actual candidate capture. The candidate was observed BUILDING before that default was restored false. A complete comparison of stored environment values, targets, branch scopes and types matched the pre-staging baseline afterward. No credentials were decrypted, no source/schema/dependency was changed, and Preview configuration was unchanged. The Checkout flag evidence is this captured configuration timeline and reviewed guard implementation; no financial POST was made to exercise the enabled gate.
+
+Read-only candidate checks:
+- `GET /api/health`: 200, ok true, expected source `2a7e408462a3`.
+- `GET /api/availability/authorise`: 200, provider STRIPE, testMode false. This checks production configuration; it does not itself test Checkout creation.
+- `GET /api/disputes` and `GET /api/admin/disputes`: expected 403 role/authentication denials.
+- Unauthenticated worker health request: 403 Forbidden.
+- `GET /contact`: 200 with the support/contact form; no form submission.
+- Candidate-scoped error/fatal log scan 22:50:53–23:10:53 UTC: no matching logs.
+
+At 23:11:22 UTC there were zero authorisations, jobs, bookings, payments, payouts and refunds; one opted-in verified transporter; five recovery runs in five minutes, latest success 23:11:04, no recent non-success or stale run. This is consistent with the existing minute scheduler and empty queues, not financial-flow acceptance or a complete per-host dispatch trace. The compatible pause/support deployment `dpl_9Xcgq9KcPi5pyA4S3gYwUVYdRZHJ` remains READY. Fresh alias checks confirmed both public Production aliases still use `dpl_9jSs8g6U4h3PTb6GTZL4drzSyahT`; canonical Preview still uses `dpl_47cB9DM89ubLxoeAGdEAVexZm2p7`. Public checkout remains OFF.
+
+### Fresh database-only recovery checkpoint
+
+A consistent database snapshot at **23:03:55 UTC** captured all 32 application/ops tables, six users, one connected account, six bucket configurations and metadata for twelve storage objects. An isolated PostgreSQL 17.5 restore passed exact schema/data/grant comparison against the 17.11 source, RLS/access checks for all 32 tables, and unspecified/occupied-target refusal checks. No hosted restore was performed.
+
+Private archive `DriveDrop-Production-database-backup-2026-11-06-2303.zip` was saved outside Git: 240,561 bytes; SHA-256 `d93b7d9f1f1a1b6bf587ab821e3b987d463619514a0a93ae5b4136708d985228`. ZIP CRC and all nine member checksums passed. **This archive contains database/schema/grants and file metadata, but no uploaded file bytes.** The earlier archive retains the nine earlier files.
+
+Three new private verification images remain in Production. A normal administrator document-download attempt timed out; an attempted image asset inventory was then explicitly rejected by automatic approval review because Kye had not explicitly authorised copying sensitive third-party verification documents. No alternative retrieval path was attempted after that rejection. Their bytes have not been archived. The remaining request is explicit permission to copy those three images into the private DriveDrop recovery archive, followed by checksum and file-restore verification. The database-only checkpoint must not be called a complete database-and-file recovery package.
+
+No new booking, charge, payout, refund, provider account, document decision or operational email was created. Opening Checkout remains a separate decision after the outstanding backup step, with all-eligible-user scope, real-booking observation, and the still-unverified financial/bank-payout snapshot paths explicitly acknowledged.
+
 ## Stage 2 preparation paused for Vercel identity verification — 6 November, 22:59 UTC
 
 Kye approved preparing the checkout release for review after the distinction between sandbox testing and genuine live bookings was clarified. This does not authorise opening customer Checkout or a fabricated live transaction.
