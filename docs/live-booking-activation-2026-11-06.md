@@ -97,7 +97,7 @@ Read-only digest inspection found zero eligible recipients even before insurance
 ### Acceptance limits and next work
 
 - Fresh portable recovery package captured and verified on 6 November at 02:27:28 UTC; details below. The older 5 November pre-migration archive remains preserved. Recheck for material changes before actual activation; this is a dated recovery point, not continuous backup.
-- Signed-in administrator read paths have now been checked on both staged candidates after Kye's normal logins; results and the initial Stage 1 dispute-panel anomaly are recorded below. Customer/transporter paths and Connect status still need signed-in acceptance. Empty queues do not establish financial-action or dispute-filing behaviour. Prior accepted role/private-upload evidence remains useful but is not a full workflow pass on these hosts.
+- Signed-in administrator read paths have been checked on both candidates. The fallback's existing transporter also passed the paused payout-setup status and dispute-read/access-separation checks below. Stage 1 transporter/Connect status and customer-specific paths remain pending. Empty queues do not establish financial-action or dispute-filing behaviour. Prior accepted role/private-upload evidence remains useful but is not a full workflow pass on these hosts.
 - New-operation gates are recorded from the pre-build configuration snapshots and reviewed source. No payment, payout, refund, account-creation or email-send action was performed to test them.
 - No staged signed Stripe event was delivered. The existing live thin ping evidence remains limited to signature parsing/delivery. Platform and bank-payout signed snapshot paths remain unverified.
 - Ordinary email delivery was not retested. The earlier authenticated delivery evidence and unresolved Hotmail Junk case remain unchanged.
@@ -131,7 +131,21 @@ Deployment metadata still identifies the pinned source `232a0d14a72ed02a2806947b
 
 These are administrator read/render checks. The recorded pause configuration keeps Checkout, Connect creation/new payout instructions, refunds and alternative refunds off, while disputes, normal support email and recovery remain enabled. That configuration evidence comes from the captured build settings and reviewed source; no financial creation request was used to re-prove those gates, and empty payout lists expose no financial-action buttons to test.
 
-The next signed-in check is the existing synthetic transporter's payout-setup status, starting on the fallback host. Source review confirms that when no connected-account row exists, its status GET returns `creationEnabled` and `NOT_STARTED` without creating or retrieving a Stripe account. No onboarding button, financial-account creation or verification approval is authorised by this read-only check.
+The subsequent signed-in check used the existing synthetic transporter's payout-setup status on the fallback host, as recorded below. Source review confirms that when no connected-account row exists, its status GET returns `creationEnabled` and `NOT_STARTED` without creating or retrieving a Stripe account. No onboarding button, financial-account creation or verification approval is authorised by this read-only check.
+
+### Fallback transporter pause-status check — 6 November, completed by 03:01 UTC
+
+Kye signed in normally as the existing synthetic transporter on the pause/support candidate. The account page showed “New payout setup is temporarily paused” and the `Set up payouts` button was disabled. Direct authenticated `GET /api/account/stripe-connect` returned:
+
+```json
+{"enabled":true,"creationEnabled":false,"status":"NOT_STARTED","ready":false}
+```
+
+Here `enabled:true` denotes the reconciliation/status feature; `creationEnabled:false` is the separate new-account gate. This verifies the candidate's effective creation flag and disabled UI for this not-started transporter. No setup/dashboard POST, onboarding link, Stripe account, payment, payout or refund was created. It does not establish behaviour for an already-connected account or prove the payout/refund creation gates through a financial request.
+
+The transporter dispute-list GET returned `[]`. The admin dispute-list GET using that same transporter session returned “Admin access required,” confirming the administrator read path remained unavailable to that role. No dispute was filed. Verification remained pending, new-job email preferences remained Off, and no preference or verification decision was changed.
+
+The fallback error/fatal runtime scan for 02:51:08–03:01:08 UTC returned no matching logs. The next read-only check is this same existing transporter's Stage 1 status: confirm new setup is available there while avoiding the setup button. Its separate host requires a normal login.
 
 ## Fresh recovery package — 6 November 2026
 
@@ -150,7 +164,7 @@ Verification passed:
 
 This is a portable application/data/file recovery check. No hosted project or Storage restore was performed, no credential was retrieved, and no live data was changed. Managed platform services, extension binaries, role passwords, Vercel configuration and external payment/email credentials require their existing secure recovery arrangements. Storage object metadata is archived as evidence; the SQL deliberately restores bucket configuration without inserting file metadata in place of uploading bytes through the supported API.
 
-Kye completed the normal administrator logins on both candidates, and their read-only results are recorded above. The next login is the existing synthetic transporter on the fallback host for the payout-setup status check. The two candidate hosts have separate browser cookies. The current application login implementation replaces the account's previous sessions globally, so finish each candidate's checks sequentially; do not assume an earlier host stays signed in after the next login. No session was copied from the backup or fabricated. Both candidates remain unpromoted, and Checkout remains false.
+Kye completed the normal administrator logins on both candidates, and their read-only results are recorded above. The fallback transporter status check is complete; the next login is that same existing transporter on Stage 1 for the corresponding status check. The two candidate hosts have separate browser cookies. The current application login implementation replaces the account's previous sessions globally, so finish each candidate's checks sequentially; do not assume an earlier host stays signed in after the next login. No session was copied from the backup or fabricated. Both candidates remain unpromoted, and Checkout remains false.
 
 ## Stage 1 — activate onboarding and support; Checkout remains off
 
@@ -228,7 +242,7 @@ A full processing stop, disabling webhook delivery, restoring a database snapsho
 | New booking, payout, refund and dispute controls | Off; no activation in this task |
 | Normal transactional email | Off; authenticated delivery tested, Hotmail Junk issue unresolved |
 | Role registration and private document replacement checks | Previously completed 5 November; retain that evidence and keep synthetic documents unapproved |
-| Compatible pause/support deployment | READY and protected; signed-in administrator read paths checked; transporter/Connect and full acceptance incomplete |
+| Compatible pause/support deployment | READY and protected; administrator and transporter read checks completed; Connect creation disabled in effective status/UI; financial/dispute-filing acceptance not exercised |
 | Stage 1 candidate | READY and protected; signed-in admin read paths checked with an initial recoverable dispute-panel error recorded; full acceptance incomplete; not promoted; Checkout false |
 | Fresh activation backup and observation window | Fresh package verified at 02:27:28 UTC on 6 November; observation window still to be agreed |
 | Historical QA | QA23 COMPLETE; QA25 COMPLETE/PASS; QA24 CLOSED/INCONCLUSIVE |
