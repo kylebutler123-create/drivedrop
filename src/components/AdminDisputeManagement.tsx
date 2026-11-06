@@ -20,7 +20,7 @@ function ProofGroup({type,evidence}:{type:'COLLECTION'|'DELIVERY';evidence:any[]
 export default function AdminDisputeManagement({actionOnly=false}:{actionOnly?:boolean}){
  const reviewNow=useReviewClock();
  const router=useRouter();const[items,setItems]=useState<any[]>([]),[loading,setLoading]=useState(true),[busy,setBusy]=useState<string|null>(null),[expanded,setExpanded]=useState<string|null>(null),[error,setError]=useState(''),[message,setMessage]=useState(''),[filter,setFilter]=useState<Filter>('OPEN'),[notes,setNotes]=useState<Record<string,string>>({}),[fineAmounts,setFineAmounts]=useState<Record<string,string>>({});
- async function load(initial=false){if(initial)setLoading(true);try{const r=await fetch('/api/admin/disputes',{cache:'no-store'}),d=await r.json().catch(()=>null);if(!r.ok)throw Error(d?.error||'Unable to load disputes');setItems(Array.isArray(d)?d:[])}catch(e){setError(e instanceof Error?e.message:'Unable to load disputes')}finally{setLoading(false)}}
+ async function load(initial=false){if(initial)setLoading(true);try{const r=await fetch('/api/admin/disputes',{cache:'no-store'}),d=await r.json().catch(()=>null);if(!r.ok)throw Error(d?.error||'Unable to load disputes');setItems(Array.isArray(d)?d:[]);setError('')}catch(e){setError(e instanceof Error?e.message:'Unable to load disputes')}finally{setLoading(false)}}
  useEffect(()=>{load(true)},[]);
  const counts=(key:Filter)=>items.filter(d=>key==='RESOLVED'?['RESOLVED','CLOSED'].includes(d.status):d.status===key).length;
  const visible=items.filter(d=>filter==='RESOLVED'?['RESOLVED','CLOSED'].includes(d.status):d.status===filter);
