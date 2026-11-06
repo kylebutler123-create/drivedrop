@@ -1,5 +1,31 @@
 # DriveDrop activation record and booking plan — 6 November 2026
 
+## Stage 2 live checkout opened — 6 November, approximately 23:25 UTC
+
+Kye explicitly approved publishing the prepared release to all eligible customers and confirmed availability for the first 30 minutes. The exact approved Production-target deployment **`dpl_7txmQ5oXX15FiuYvUBodmifwThSy`** was promoted without rebuilding, source `2a7e408462a33bc0f57b0e0661bbe29998caa7a5`. [Live site](https://drive-drop.com) · [Deployment record](https://vercel.com/future-9f39/drivedrop/7txmQ5oXX15FiuYvUBodmifwThSy).
+
+Only the Production `STRIPE_CHECKOUT_ENABLED` project default changed from false to true. The post-change comparison of stored environment values/types/targets/branch scopes found exactly that change and no removed variables. Checkout, Connect, standard refunds, disputes, transactional email and recovery are enabled; alternative refunds remain disabled. No source, database schema, secret, public-page content or Preview setting changed.
+
+Promotion verification:
+- `drive-drop.com` and `drivedrop-pink.vercel.app` both resolve to the approved deployment.
+- All three promote-alias mappings completed, including `drivedrop-future-9f39.vercel.app`.
+- The refreshed Vercel UI shows the deployment as Current and Ready with the public domain. The original build record's “Assigning Custom Domains: Skipped” refers to staging, not the later successful promotion.
+- Canonical Preview remains `dpl_47cB9DM89ubLxoeAGdEAVexZm2p7`.
+- Live `GET /api/health` returned 200, ok true, version `2a7e408462a3`; live `GET /api/availability/authorise` returned 200, provider STRIPE, testMode false. This GET proves the production provider configuration, not Checkout creation or a completed payment.
+- The enabled Checkout flag is supported by the staged build's captured configuration, exact promotion and aligned Production defaults. No financial POST or dummy transaction was used to exercise it.
+
+Initial operational observation through **23:28:34 UTC**:
+- Four successful minute-worker completions since 23:25, latest 23:28:03; zero unsuccessful finished runs, failed items or stale unfinished runs.
+- A worker observed still running at 23:26:04 completed successfully at 23:26:05; it was not an incident.
+- The genuine production transporter account remains READY with transfers and payouts enabled and no requirements due.
+- Healthchecks showed Up, recent consecutive successful heartbeats, one-minute period, four-minute grace and the existing operations email notification ON. Its stale description was corrected to describe the now-live Checkout/Connect/refund controls; schedule, notification destination and test monitor were not changed. No test ping or email was sent.
+- Candidate-scoped error/fatal log review from 23:24:00 through 23:28:33 returned no matching records.
+- Authorisations, bookings, payments, payouts and refunds remained zero.
+
+The 30-minute operator-coverage window runs approximately **23:25–23:55 UTC**. Kye confirmed availability; the observations above cover only the initial minutes and do not claim the whole window complete or promise assistant monitoring after this turn. Existing automated monitoring remains active. The next financial evidence must come from a genuine booking and its ordinary payment, delivery, release and bank-payout milestones; those financial/bank-payout paths are not marked accepted yet.
+
+The complete pre-opening database/file backup and compatible pause/support deployment `dpl_9Xcgq9KcPi5pyA4S3gYwUVYdRZHJ` remain retained. No booking, charge, transfer, payout, refund or operational message was created by this activation.
+
 ## Stage 2 recovery backup complete; opening decision pending — 6 November, 23:23 UTC
 
 Kye explicitly approved copying the three new transporter verification images into the private DriveDrop recovery backup. The normal admin document route returned authorised short-lived downloads; all three original JPEGs were saved and matched the sizes and MD5 eTags in the 23:03:55 UTC database snapshot. No signed download URLs, document contents or personal identifiers are included in this Git record. The earlier permission-pending entry below is historical and superseded.
