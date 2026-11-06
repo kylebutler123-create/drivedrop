@@ -247,7 +247,7 @@ Technical activation is complete. The following distinguishes completed release 
 4. Verify canonical account ownership, UK/GBP configuration, transfer and payout capability readiness and requirements. Production currently has no connected accounts, so there is no live transporter ready yet.
 5. Inspect actual account-status events and account-state synchronisation. The successful thin ping only proves delivery/signature parsing, not account reconciliation.
 6. Resend's existing deliverability case was reviewed on 6 November; the substantive reply is recorded below. Normal mail remains enabled. Check actual receipt during authorised ordinary use when genuine users join; do not repeat the exhausted Healthchecks test-email cycle.
-7. Inspect actual restricted-key scope and platform readiness without printing or widening credentials. Resolve errors before opening Checkout; empty recovery scans and a thin ping do not prove all payment/Connect API permissions.
+7. Completed at configuration level: both live restricted-key permission summaries, relevant resource descriptions, webhook subscriptions/scopes and deployment metadata were reviewed on 6 November. No confirmed missing permission was identified. Actual use of those keys and genuine onboarding/payment processing remain unverified; empty request logs and a thin ping do not establish operational acceptance.
 
 The email tests authenticated and delivered, but Hotmail placed the branded messages in Junk. Resend has now provided a substantive reply: it reports correct sending configuration and attributes the filtering to Microsoft domain-reputation/content signals. Natural inbox placement remains unverified. Record whether that known limitation is accepted for the intended opening or requires remediation first.
 
@@ -265,7 +265,57 @@ The linked [Resend Outlook guide](https://resend.com/guides/email/deliverability
 
 Preparation decision: retain the existing authenticated sending configuration and corrected branded-link setup; do not change DNS, switch domains or repeat test messages solely because of this reply. Continue observing real, requested transactional mail when users join. Any recipient moving mail out of Junk or adding a safe sender must be distinguished from natural inbox placement.
 
-No reply was sent, no additional test email was sent and no provider, mailbox or production setting was changed during this review. Inbox placement remains an open acceptance limitation. The next available technical review is Stripe permissions and webhook configuration; actual onboarding and financial event processing remain separate evidence requirements.
+No reply was sent, no additional test email was sent and no provider, mailbox or production setting was changed during this review. Inbox placement remains an open acceptance limitation. The subsequent Stripe permissions/webhook review is recorded below; actual onboarding and financial event processing remain separate evidence requirements.
+
+## Live Stripe permissions and webhook review — 6 November 2026
+
+Scope: read-only preparation before recruiting transporters. The Stripe connector exposes only the separate sandbox, so the existing signed-in live dashboard for `acct_1US4BsLo6y2NJoQw` was used. No sandbox financial tests were repeated. The live public alias still resolves to `dpl_92CyExarmSj7ompfZAihWKWMLSRR`, READY, source `232a0d14a72ed02a2806947bf5aab75f14c6a924`. Eleven payment/provider/handler/package files were checked against that exact GitHub source; their local blob hashes matched.
+
+### Restricted-key configuration
+
+Both named live keys are active and restricted. Permission summaries were opened without changing or saving them; no key value was revealed or copied.
+
+| Key | Resource | In your account | In connected accounts |
+| --- | --- | --- | --- |
+| DriveDrop Checkout | Accounts | Read | None |
+| DriveDrop Checkout | Charges and Refunds | Write | None |
+| DriveDrop Checkout | Checkout Sessions | Write | None |
+| DriveDrop Checkout | Payment Intents | Write | None |
+| DriveDrop Connect | Account Links | Write | None |
+| DriveDrop Connect | Accounts | Read | None |
+| DriveDrop Connect | Accounts v2 | Read | Read |
+| DriveDrop Connect | Charges and Refunds | Write | None |
+| DriveDrop Connect | Login Links | Write | None |
+| DriveDrop Connect | Payment Intents | Read | None |
+| DriveDrop Connect | Payouts | None | Read |
+| DriveDrop Connect | Recipient Configuration | Write | Write |
+| DriveDrop Connect | Transfers | Write | None |
+
+The deployed Checkout provider reads the current platform account and uses Checkout Sessions, PaymentIntents/capture/cancel and refund creation. The Connect provider reads the platform account, creates/reads recipient-configured v2 accounts, creates onboarding/login links, reads PaymentIntents/charges, creates/reconciles transfers/refunds/reversals and retrieves bank payouts in connected-account context. The displayed configuration covers these operation families; no confirmed missing resource permission was found.
+
+The current dashboard's Accounts v2 resource offers None/Read, with recipient changes controlled separately by Recipient Configuration. Its connected-account selections are linked/disabled in the editor. Do not infer a missing generic Accounts v2 Write setting from the summary or widen unrelated customer/merchant permissions. Account Links has Write; its resource description lists the v1 path, so this read-only inspection alone is not proof of v2 account-link execution.
+
+Both keys' individual View logs pages returned “No results found” in the displayed view, and Last used was blank in the key list. This does not establish successful live API operations or prove there have never been requests outside the available view. Production secrets are stored as sensitive environment entries and were not decrypted; their exact bytes were not matched against dashboard keys in this review. No access policy is assigned to either key. No key was replaced, rotated or broadened.
+
+### Webhook configuration and observed delivery
+
+| Destination | URL path | Scope / format | Events | Observed delivery |
+| --- | --- | --- | --- | --- |
+| Platform, `we_1UYbCoLo6y2NJoQw24WRFfXP` | `/api/stripe/webhook` | Your account / Snapshot, API `2026-09-30.endive` | 17 subscribed; all 16 event types explicitly handled by the current route are present | This-week overview: 0 deliveries, 0 failures |
+| Bank payouts, `we_1UYbHkLo6y2NJoQwxxTllbZ5` | `/api/stripe/connect/webhook` | Connected accounts / Snapshot, API `2026-09-30.endive` | payout.created, payout.updated, payout.paid, payout.failed, payout.canceled | This-week overview: 0 deliveries, 0 failures |
+| Account status, `ed_61VhzH1HHYM4VGpy516VbS9E66E9SNtcKATxYl19k3IO` | `/api/stripe/connect/events` | Your account / Thin | account.closed; recipient capability_status_updated; requirements.updated; future_requirements.updated (all v2.core.account events) | One earlier live ping, 01:41:52 UTC, Delivered / HTTP 200 |
+
+All three destinations are Active and use `https://drive-drop.com`. The platform subscription includes one additional `transfer.canceled` event that the current route acknowledges without a dedicated branch; it does not omit any currently handled event. The account-status scope is consistent with platform-owned Accounts v2 resources. Older descriptive text on destinations still mentions staging/disabled payments; the Active status and deployed flags are the authoritative configuration observations.
+
+The thin delivery re-read at 05:06 UTC is the same historical `v2.core.event_destination.ping`, not a new account update. The handler deliberately ignores that ping after signature validation. No resend, new ping, fake financial event or replay was performed. Snapshot signature acceptance and representative live business reconciliation remain unverified.
+
+Checkout API requests still explicitly use `2024-06-20`; the Connect package remains Stripe Node `23.0.0`. No SDK, API version, webhook subscription or route changed. The already-recorded snapshot-version/business-event compatibility limit remains open.
+
+### Configuration controls and outcome
+
+Production metadata still shows Checkout=false, alternative refunds=false, master payments=true, Connect=true, refunds=true and recovery monitoring=true, with the expected live platform ID and canonical origin. Both API keys and all three webhook-secret entries are sensitive Production variables. Values were not decrypted or logged. No environment edit, deployment, source change, database mutation, financial-account creation or money operation was performed.
+
+Result: the requested configuration review is complete, with no confirmed missing event subscription or restricted-key permission found. This is not a live financial-flow pass. Preserve Checkout off, the current authentication/reconciliation controls and completed QA. Genuine onboarding, actual key use, canonical account synchronisation and signed financial-event processing remain evidence to collect when a real transporter/customer is available. The next independently actionable preparation item is the recorded stale admin dispute-panel warning.
 
 ## Stage 2 — open genuine bookings
 
@@ -324,6 +374,7 @@ A full processing stop, disabling webhook delivery, restoring a database snapsho
 | Account-status signed ping | Passed at 01:41:52 UTC, HTTP 200 |
 | Platform and bank-payout signed events | No deliveries; unverified |
 | Canonical live transporter readiness | No Production connected accounts yet |
+| Live key permissions and webhook subscriptions | Read-only review completed 6 November; no confirmed configuration gap found; actual key execution and two snapshot paths remain unverified |
 | New-operation and dispute controls | Checkout and alternative refunds OFF; Connect, eligible admin payout/refund instructions and disputes ON |
 | Normal transactional email | ON; support reply reviewed 6 November: configuration/authentication reported correct, Microsoft reputation/content filtering identified at a general level; natural Hotmail inbox placement still unresolved; no new email test |
 | Role registration and private document replacement checks | Previously completed 5 November; retain that evidence and keep synthetic documents unapproved |
