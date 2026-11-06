@@ -97,7 +97,7 @@ Read-only digest inspection found zero eligible recipients even before insurance
 ### Acceptance limits and next work
 
 - Fresh portable recovery package captured and verified on 6 November at 02:27:28 UTC; details below. The older 5 November pre-migration archive remains preserved. Recheck for material changes before actual activation; this is a dated recovery point, not continuous backup.
-- Signed-in administrator read paths have been checked on both candidates. The fallback's existing transporter also passed the paused payout-setup status and dispute-read/access-separation checks below. Stage 1 transporter/Connect status and customer-specific paths remain pending. Empty queues do not establish financial-action or dispute-filing behaviour. Prior accepted role/private-upload evidence remains useful but is not a full workflow pass on these hosts.
+- Signed-in administrator and existing-transporter read paths have been checked on both candidates. Their effective Connect creation flags and setup buttons show the intended difference: fallback off, Stage 1 on. Customer-specific staged access remains the outstanding role check. Empty queues do not establish financial-action or dispute-filing behaviour. Prior accepted role/private-upload evidence remains useful but is not a full financial-workflow pass.
 - New-operation gates are recorded from the pre-build configuration snapshots and reviewed source. No payment, payout, refund, account-creation or email-send action was performed to test them.
 - No staged signed Stripe event was delivered. The existing live thin ping evidence remains limited to signature parsing/delivery. Platform and bank-payout signed snapshot paths remain unverified.
 - Ordinary email delivery was not retested. The earlier authenticated delivery evidence and unresolved Hotmail Junk case remain unchanged.
@@ -145,7 +145,30 @@ Here `enabled:true` denotes the reconciliation/status feature; `creationEnabled:
 
 The transporter dispute-list GET returned `[]`. The admin dispute-list GET using that same transporter session returned “Admin access required,” confirming the administrator read path remained unavailable to that role. No dispute was filed. Verification remained pending, new-job email preferences remained Off, and no preference or verification decision was changed.
 
-The fallback error/fatal runtime scan for 02:51:08–03:01:08 UTC returned no matching logs. The next read-only check is this same existing transporter's Stage 1 status: confirm new setup is available there while avoiding the setup button. Its separate host requires a normal login.
+The fallback error/fatal runtime scan for 02:51:08–03:01:08 UTC returned no matching logs. The corresponding Stage 1 comparison was then completed through a normal login, as recorded below.
+
+### Stage 1 transporter comparison — 6 November, completed by 03:10 UTC
+
+Kye completed the existing synthetic transporter's normal Stage 1 login. The account page displayed “Connect your payout account”; `Set up payouts` was enabled and the pause notice was absent. Direct authenticated `GET /api/account/stripe-connect` returned:
+
+```json
+{"enabled":true,"creationEnabled":true,"status":"NOT_STARTED","ready":false}
+```
+
+| Existing transporter status | Pause/support | Stage 1 |
+| --- | --- | --- |
+| Status/reconciliation feature | Enabled | Enabled |
+| Effective account-creation flag | false | true |
+| Set up payouts button | Disabled | Enabled |
+| Account state | NOT_STARTED; not ready | NOT_STARTED; not ready |
+
+The setup button was not pressed. These observations verify configuration and the not-started account UI, not Stripe account creation, restricted-key scopes, capability readiness or a bank payout. Verification remains pending and new-job email preferences remain Off.
+
+The Stage 1 transporter dispute-list GET displayed `[]`; the admin dispute-list GET denied that same transporter session with “Admin access required.” No dispute was filed. Browser console inspection returned no captured warnings/errors; the Stage 1 error/fatal runtime scan for 02:59:49–03:09:49 UTC returned no matching logs.
+
+A read-only Production query at 03:10:08 UTC found zero authorisation records, booking payments, payouts, refunds, connected accounts, jobs, bookings and disputes; active opted-in transporter digest recipients were also zero. The latest five recovery runs (03:06–03:10 UTC) succeeded with checked=0 and failed=0, with no recent unsuccessful or stale active run. This remains empty-queue recovery evidence. Fresh alias lookups still resolve public Production to `dpl_6PkTy3XLvpbofCZczZAoBNV15G7A` and canonical Preview to `dpl_47cB9DM89ubLxoeAGdEAVexZm2p7`.
+
+Administrator and transporter read checks are now complete on both candidates. Customer-specific staged access is the outstanding role check; the existing active test customer's normal Stage 1 login is prepared. No customer account is being created or restored. Full financial processing, real onboarding, dispute filing and signed snapshot processing remain outside these read-only results. Both candidates remain unpromoted and Checkout remains false.
 
 ## Fresh recovery package — 6 November 2026
 
@@ -164,7 +187,7 @@ Verification passed:
 
 This is a portable application/data/file recovery check. No hosted project or Storage restore was performed, no credential was retrieved, and no live data was changed. Managed platform services, extension binaries, role passwords, Vercel configuration and external payment/email credentials require their existing secure recovery arrangements. Storage object metadata is archived as evidence; the SQL deliberately restores bucket configuration without inserting file metadata in place of uploading bytes through the supported API.
 
-Kye completed the normal administrator logins on both candidates, and their read-only results are recorded above. The fallback transporter status check is complete; the next login is that same existing transporter on Stage 1 for the corresponding status check. The two candidate hosts have separate browser cookies. The current application login implementation replaces the account's previous sessions globally, so finish each candidate's checks sequentially; do not assume an earlier host stays signed in after the next login. No session was copied from the backup or fabricated. Both candidates remain unpromoted, and Checkout remains false.
+Kye completed the normal administrator logins on both candidates, and their read-only results are recorded above. Both transporter status checks are complete; the next login is the existing active test customer on Stage 1 for the remaining customer-role check. The two candidate hosts have separate browser cookies. The current application login implementation replaces the account's previous sessions globally, so finish each candidate's checks sequentially; do not assume an earlier host stays signed in after the next login. No session was copied from the backup or fabricated. Both candidates remain unpromoted, and Checkout remains false.
 
 ## Stage 1 — activate onboarding and support; Checkout remains off
 
@@ -243,7 +266,7 @@ A full processing stop, disabling webhook delivery, restoring a database snapsho
 | Normal transactional email | Off; authenticated delivery tested, Hotmail Junk issue unresolved |
 | Role registration and private document replacement checks | Previously completed 5 November; retain that evidence and keep synthetic documents unapproved |
 | Compatible pause/support deployment | READY and protected; administrator and transporter read checks completed; Connect creation disabled in effective status/UI; financial/dispute-filing acceptance not exercised |
-| Stage 1 candidate | READY and protected; signed-in admin read paths checked with an initial recoverable dispute-panel error recorded; full acceptance incomplete; not promoted; Checkout false |
+| Stage 1 candidate | READY and protected; admin/transporter read paths checked; setup creation enabled in effective status/UI; initial admin error remains recorded; customer/full financial acceptance incomplete; not promoted; Checkout false |
 | Fresh activation backup and observation window | Fresh package verified at 02:27:28 UTC on 6 November; observation window still to be agreed |
 | Historical QA | QA23 COMPLETE; QA25 COMPLETE/PASS; QA24 CLOSED/INCONCLUSIVE |
 
