@@ -1,4 +1,20 @@
-# DriveDrop Stage 1 activation record and booking plan — 6 November 2026
+# DriveDrop activation record and booking plan — 6 November 2026
+
+## Stage 2 recovery backup complete; opening decision pending — 6 November, 23:23 UTC
+
+Kye explicitly approved copying the three new transporter verification images into the private DriveDrop recovery backup. The normal admin document route returned authorised short-lived downloads; all three original JPEGs were saved and matched the sizes and MD5 eTags in the 23:03:55 UTC database snapshot. No signed download URLs, document contents or personal identifiers are included in this Git record. The earlier permission-pending entry below is historical and superseded.
+
+The complete private recovery archive is `DriveDrop-Production-backup-2026-11-06-2303.zip`, 5,440,407 bytes, SHA-256 `4384825c45d53fe93bf2dd64d82cf01c7361045e3417ebc82a3147441b8c3e85`. It was saved privately outside Git. It contains the existing consistent database snapshot and all twelve captured uploaded objects, including the zero-byte object, totalling 5,262,665 object bytes. Nine retained copies matched the current captured metadata; three were newly downloaded with permission. The earlier database-only archive is retained separately.
+
+Verification:
+- Existing isolated database restore evidence remains PASS: 32 tables, exact application schema/data/grants, RLS/access checks and unsafe-target refusal. No hosted restore.
+- Offline file restore at 23:20:55 UTC: all twelve objects restored with exact SHA-256 readback; existing destination refused and existing files unchanged; no network calls.
+- Final ZIP: 24 members; CRC and every listed member SHA-256 matched.
+- Fresh Production read at 23:22:12 UTC: six users, one connected account, twelve objects with unchanged sizes/MD5 values relative to the snapshot; zero jobs, bookings, authorisations, payments, payouts and refunds. This is a point-in-time recovery package, not a claim that ongoing session/worker history stayed frozen.
+
+The exact Stage 2 candidate remains READY: **`dpl_7txmQ5oXX15FiuYvUBodmifwThSy`**, [Vercel review](https://vercel.com/future-9f39/drivedrop/7txmQ5oXX15FiuYvUBodmifwThSy), source `2a7e408462a33bc0f57b0e0661bbe29998caa7a5`. It remains unpromoted. The fresh control check confirmed `drive-drop.com` still points to `dpl_9jSs8g6U4h3PTb6GTZL4drzSyahT`, canonical Preview still points to `dpl_47cB9DM89ubLxoeAGdEAVexZm2p7`, and the Production Checkout project default remains false. Public checkout is OFF.
+
+Preparation is complete. The remaining decision is explicit approval to promote this exact candidate and open live Checkout to **all eligible customers**, with Kye available for the first 30 minutes and the compatible pause/support candidate retained. This is not a private one-account test switch. Genuine payment and bank-payout snapshot delivery paths remain unverified until ordinary genuine-business activity supplies evidence; the configuration checks above do not mark those flows passed. No practice live charge, payout, refund, booking, document decision, or operational message was created. No assistant-run future monitoring is promised.
 
 ## Stage 2 candidate built; private-file backup permission pending — 6 November, 23:14 UTC
 
