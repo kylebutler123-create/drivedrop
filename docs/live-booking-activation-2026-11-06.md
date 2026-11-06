@@ -246,12 +246,26 @@ Technical activation is complete. The following distinguishes completed release 
 3. Allow a genuine transporter to complete Stripe-hosted onboarding. The transporter supplies their real identity/bank information and completes required financial-account steps. Do not approve synthetic verification documents or convert the existing upload-test account into a real provider.
 4. Verify canonical account ownership, UK/GBP configuration, transfer and payout capability readiness and requirements. Production currently has no connected accounts, so there is no live transporter ready yet.
 5. Inspect actual account-status events and account-state synchronisation. The successful thin ping only proves delivery/signature parsing, not account reconciliation.
-6. Review Resend's existing deliverability case. Record normal-mail activation explicitly and check actual receipt during authorised ordinary use. Do not repeat the exhausted Healthchecks test-email cycle.
+6. Resend's existing deliverability case was reviewed on 6 November; the substantive reply is recorded below. Normal mail remains enabled. Check actual receipt during authorised ordinary use when genuine users join; do not repeat the exhausted Healthchecks test-email cycle.
 7. Inspect actual restricted-key scope and platform readiness without printing or widening credentials. Resolve errors before opening Checkout; empty recovery scans and a thin ping do not prove all payment/Connect API permissions.
 
-The email tests authenticated and delivered, but Hotmail placed the branded messages in Junk. The support ticket was acknowledged; no resolution is established in this plan. Record whether that known limitation is accepted for the intended opening or requires remediation first.
+The email tests authenticated and delivered, but Hotmail placed the branded messages in Junk. Resend has now provided a substantive reply: it reports correct sending configuration and attributes the filtering to Microsoft domain-reputation/content signals. Natural inbox placement remains unverified. Record whether that known limitation is accepted for the intended opening or requires remediation first.
 
 Stage 1 now enables eligible admin payout/refund actions as well as onboarding. Financial queues were rechecked immediately before and after activation and remained zero. No financial transaction was included in the preparation, activation or technical validation.
+
+## Pre-recruitment email-support review — 6 November 2026
+
+Kye clarified that the site is being prepared before recruiting transporters. Genuine transporter onboarding is therefore deferred until a real provider joins; Checkout remains off. Technical readiness work can continue without creating a synthetic live financial account.
+
+Read-only review of the existing [Resend support case](https://resend.com/help/th_01M6Q3Z8KWXV29TETCQF2NSGVT) found a substantive support reply in addition to the acknowledgement. Resend says Microsoft accepted the example messages and subsequently filtered them to Junk. It reports that `contact.drive-drop.com` is verified, sending records are in place and SPF, DKIM and DMARC pass. Its assessment is that no sending-configuration fault explains the placement; it attributes the outcome to Microsoft's domain-reputation and content signals.
+
+This supports reputation as a plausible factor, including limited sending history, but does not identify the domain's age as the sole cause or prove that every template is unaffected. Resend's statement that it monitors sending IPs is not a case-specific infrastructure audit. The reply provides no remediation completion, guaranteed inbox placement or resolution date.
+
+The linked [Resend Outlook guide](https://resend.com/guides/email/deliverability/avoid-outlook-spam-folder) recommends simple content, aligned links and genuine recipient engagement. It cautions that repeatedly mailing one owned test inbox adds little evidence and that low-volume reputation can take weeks to develop. Waiting alone does not establish delivery, and no artificial daily mail schedule is proposed.
+
+Preparation decision: retain the existing authenticated sending configuration and corrected branded-link setup; do not change DNS, switch domains or repeat test messages solely because of this reply. Continue observing real, requested transactional mail when users join. Any recipient moving mail out of Junk or adding a safe sender must be distinguished from natural inbox placement.
+
+No reply was sent, no additional test email was sent and no provider, mailbox or production setting was changed during this review. Inbox placement remains an open acceptance limitation. The next available technical review is Stripe permissions and webhook configuration; actual onboarding and financial event processing remain separate evidence requirements.
 
 ## Stage 2 — open genuine bookings
 
@@ -311,7 +325,7 @@ A full processing stop, disabling webhook delivery, restoring a database snapsho
 | Platform and bank-payout signed events | No deliveries; unverified |
 | Canonical live transporter readiness | No Production connected accounts yet |
 | New-operation and dispute controls | Checkout and alternative refunds OFF; Connect, eligible admin payout/refund instructions and disputes ON |
-| Normal transactional email | ON; prior authenticated delivery evidence retained, Hotmail Junk issue unresolved; no new email test |
+| Normal transactional email | ON; support reply reviewed 6 November: configuration/authentication reported correct, Microsoft reputation/content filtering identified at a general level; natural Hotmail inbox placement still unresolved; no new email test |
 | Role registration and private document replacement checks | Previously completed 5 November; retain that evidence and keep synthetic documents unapproved |
 | Compatible pause/support deployment | READY and protected; administrator and transporter read checks completed; Connect creation disabled in effective status/UI; financial/dispute-filing acceptance not exercised |
 | Stage 1 deployment | LIVE on both public Production aliases; admin/transporter/customer staged read checks completed within the recorded scope; setup creation enabled; initial admin error recorded; live financial/onboarding acceptance unverified; Checkout false |
