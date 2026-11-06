@@ -1,5 +1,18 @@
 # DriveDrop Stage 1 activation record and booking plan — 6 November 2026
 
+## First genuine transporter onboarding — 6 November, 22:43–22:44 UTC
+
+Kye reported that a genuine transporter had registered and been verified. Production confirms that the new account is ACTIVE, work is permitted and transporter verification is APPROVED. A canonical production Stripe connected-account mapping now exists. The live platform dashboard was inspected because the Stripe connector currently exposes only the separate sandbox.
+
+The live Stripe account is a United Kingdom recipient account with GBP as its default currency and a bank payout destination present. Its displayed status is Restricted, with transfers and payouts paused. Stripe lists two outstanding actions: **Provide a business website** and **Accept terms of service**. These are the requirements shown at this observation; the transporter must complete any further requirements Stripe presents.
+
+At 22:44:18 UTC, DriveDrop's stored account status was PENDING, with transfersEnabled=false, payoutsEnabled=false and requirementsDue=true; its last check was 22:43:37 UTC. That state agrees with the live Stripe screen. Account creation and persisted account linkage are now observed in production, but completed onboarding, payout readiness and signed-event-driven status transition are not yet accepted. No account-status event was resent or independently replayed.
+
+The next step belongs to the transporter: sign in to DriveDrop, open Account → Stripe payout account → Continue Stripe setup, provide their own accurate business information and review/accept Stripe's terms themselves, then return and select Refresh status. Recheck actual requirements, transfer/payout readiness and account-status synchronization after completion. Do not create a replacement connected account.
+
+This check did not change feature flags, approve documents, submit identity or bank information, accept terms, send messages, or move money. Checkout remains outside this onboarding step; opening genuine bookings still requires the separate Stage 2 decision. The synthetic test transporter remains pending and is not the onboarding candidate. No personal identifiers, contact details, bank details or onboarding URLs are included in this record.
+
+
 ## Live recovery monitoring check — 6 November, 05:58–05:59 UTC
 
 Kye approved a read-only review of the existing monitoring after the dispute-fix release and merge. The public Production alias still points to `dpl_9jSs8g6U4h3PTb6GTZL4drzSyahT`. The exact deployed `vercel.json` retains the minute booking-authorisation recovery schedule and the existing three daily schedules; no schedule was changed.
