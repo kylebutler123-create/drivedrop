@@ -1,5 +1,17 @@
 # DriveDrop Stage 1 activation record and booking plan — 6 November 2026
 
+## Stage 2 preparation paused for Vercel identity verification — 6 November, 22:59 UTC
+
+Kye approved preparing the checkout release for review after the distinction between sandbox testing and genuine live bookings was clarified. This does not authorise opening customer Checkout or a fabricated live transaction.
+
+Pre-staging evidence at 22:59:23 UTC showed zero jobs, bookings, payments, payouts and refunds; one ready production connected account; a successful worker completion at 22:59:03 UTC; and no recent unsuccessful or stale worker runs. Production configuration matched Stage 1. The exact candidate source is the unchanged current live commit `2a7e408462a33bc0f57b0e0661bbe29998caa7a5` (same tree as feature branch merge `384ef663e5a523331e24f5e8566d5909ce299231`).
+
+Vercel's Production redeploy dialog explicitly stated that custom domains would not be assigned because auto-assignment is disabled. The checkout project default was briefly set true to capture the candidate, but the redeploy action was blocked by Vercel's email identity-verification challenge before a new deployment was observed. The default was immediately restored to false. Other variables were not changed, and no candidate is claimed created or validated.
+
+Vercel sent a security code to the existing owner's email and the normal verification page was left open for Kye. No OTP was retrieved or entered by the assistant. The pending redeploy action may continue when verification completes; because the project default has been restored to false, inspect any resulting deployment before treating it as a Stage 2 candidate. Re-establish and verify the exact intended configuration for the actual candidate, and restore safe defaults after capture.
+
+Fresh alias checks still identify `drive-drop.com` as `dpl_9jSs8g6U4h3PTb6GTZL4drzSyahT` and canonical Preview as `dpl_47cB9DM89ubLxoeAGdEAVexZm2p7`. Public checkout remains off. The existing recovery package was reviewed as a dated 02:27 UTC recovery point; it predates the new genuine transporter and is not a fresh pre-Stage-2 snapshot.
+
 ## Genuine account-status event delivery verified — 6 November, 22:49 UTC
 
 The live account-status destination at `https://drive-drop.com/api/stripe/connect/events` displayed nine deliveries and zero failures: eight genuine account updates from 22:39:48 through 22:44:41 UTC, plus the historical 01:41:52 ping. Every listed delivery returned HTTP 200. The genuine updates include recipient capability-status and requirements changes.
