@@ -107,5 +107,5 @@
 }
 .tdCompactIdentity .desktopVehicleRegistration{display:none}
 @media(min-width:1024px){
- body.approvedDesktop.role-transporter .tdCompactIdentity>strong>.desktopVehicleRegistration{display:inline;font:500 13px/1.4 DriveDropApproved,Arial,sans-serif;color:#52658e;white-space:nowrap;margin-left:4px}
+ body.approvedDesktop.role-transporter .tdCompactIdentity>strong>.desktopVehicleRegistration{display:inline;font:500 13px/1.4 MoveAMotorApproved,Arial,sans-serif;color:#52658e;white-space:nowrap;margin-left:4px}
 }

@@ -11,12 +11,12 @@ export async function notifyAvailability(id:string){
  const href=customer?(r.status==='BOOKED'?'/customer?view=bookings':'/customer?view=quotes'):'/transporter?view=quotes';
  const notificationId=(userId:string)=>`availability:${r.id}:${r.status}:${userId}`;
  const created=await createNotificationOnceSafely(notificationId(user.id),{userId:user.id,type:r.status==='BOOKED'?'BOOKING':'QUOTE',title,body,href});
- if(created)await sendTransactionalEmailSafely({to:user.email,subject:`DriveDrop — ${title}`,heading:title,body,ctaLabel:r.status==='BOOKED'?'View booking':'View request',ctaPath:href});
+ if(created)await sendTransactionalEmailSafely({to:user.email,subject:`MoveAMotor — ${title}`,heading:title,body,ctaLabel:r.status==='BOOKED'?'View booking':'View request',ctaPath:href});
  if(r.status==='BOOKED'){
   const transporterCreated=await createNotificationOnceSafely(notificationId(r.transporterId),{userId:r.transporterId,type:'PAYMENT',title:'Customer payment secured',body:'The authorised customer payment was captured when you confirmed. Contact the customer to arrange collection within the agreed window.',href:'/transporter?view=deliveries'});
   if(transporterCreated){
    const transporter=await prisma.user.findUnique({where:{id:r.transporterId}});
-   if(transporter)await sendTransactionalEmailSafely({to:transporter.email,subject:'DriveDrop booking confirmed',heading:'Payment secured',body:'Your confirmed transport has been paid. Contact the customer to arrange collection within the agreed window.',ctaLabel:'View delivery',ctaPath:'/transporter?view=deliveries'});
+   if(transporter)await sendTransactionalEmailSafely({to:transporter.email,subject:'MoveAMotor booking confirmed',heading:'Payment secured',body:'Your confirmed transport has been paid. Contact the customer to arrange collection within the agreed window.',ctaLabel:'View delivery',ctaPath:'/transporter?view=deliveries'});
   }
  }
 }

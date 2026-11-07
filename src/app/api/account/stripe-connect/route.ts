@@ -1,3 +1,4 @@
+import {connectRequestOriginAllowed} from '@/lib/stripe-connect-provider';
 import {NextResponse} from 'next/server';
 import {currentUser} from '@/lib/auth';
 import {connectAccountLink, connectAccountStatus, connectDashboardLink} from '@/lib/stripe-connect-accounts';
@@ -17,7 +18,7 @@ export async function POST(request: Request) {
   const user = await currentUser();
   if (!user || user.role !== 'TRANSPORTER' || user.accountStatus !== 'ACTIVE') return NextResponse.json({error: 'Transporter access required'}, {status: 403, headers});
   try {
-    if (request.headers.get('origin') && request.headers.get('origin') !== connectOrigin()) return NextResponse.json({error: 'Invalid request origin'}, {status: 403, headers});
+    if (request.headers.get('origin') && !connectRequestOriginAllowed(request.headers.get('origin'))) return NextResponse.json({error: 'Invalid request origin'}, {status: 403, headers});
     const body = await request.json().catch(() => null);
     if (!['onboard', 'dashboard'].includes(body?.action)) return NextResponse.json({error: 'Invalid account action'}, {status: 400, headers});
     const url = body.action === 'dashboard' ? await connectDashboardLink(user.id) : await connectAccountLink(user);

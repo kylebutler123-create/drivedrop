@@ -70,7 +70,7 @@ function warningStage(status:TransporterInsuranceStatus):WarningStage|null{
 
 function notificationCopy(stage:WarningStage,expiresAt:Date|null,replacementPending=false){
  const date=expiresAt?.toLocaleDateString('en-GB',{timeZone:'UTC'});
- const pending=replacementPending?' Your uploaded replacement is awaiting DriveDrop approval.':'';
+ const pending=replacementPending?' Your uploaded replacement is awaiting MoveAMotor approval.':'';
  if(stage==='missing')return {
   title:'Replacement insurance required',
   body:`There is no valid approved insurance on your account.${pending} New quote submissions are blocked until replacement insurance is approved. Active deliveries are unaffected.`,

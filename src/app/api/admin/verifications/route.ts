@@ -8,9 +8,9 @@ const VerificationReview=z.object({verificationId:z.string(),status:z.enum(['APP
 const DocumentReview=z.object({documentId:z.string(),documentStatus:z.enum(['APPROVED','REJECTED']),reviewNote:z.string().max(1000).optional()});
 const S=z.union([VerificationReview,DocumentReview]);
 const notificationCopy={
- APPROVED:{title:'Verification approved',body:'DriveDrop has approved your transporter verification. Your verified status is now active.'},
- REJECTED:{title:'Verification requires changes',body:'DriveDrop has reviewed your transporter verification and changes are required. Review the Admin note before updating your details or documents.'},
- SUSPENDED:{title:'Verification suspended',body:'DriveDrop has suspended your transporter verification.'}
+ APPROVED:{title:'Verification approved',body:'MoveAMotor has approved your transporter verification. Your verified status is now active.'},
+ REJECTED:{title:'Verification requires changes',body:'MoveAMotor has reviewed your transporter verification and changes are required. Review the Admin note before updating your details or documents.'},
+ SUSPENDED:{title:'Verification suspended',body:'MoveAMotor has suspended your transporter verification.'}
 } as const;
 
 export async function GET(){
@@ -54,7 +54,7 @@ export async function PATCH(r:Request){
   });
   const verificationApproved=result.verificationStatusChanged==='APPROVED';
   const verificationRejected=result.verificationStatusChanged==='REJECTED';
-  await createNotificationSafely({userId:document.verification.transporterId,type:'VERIFICATION',title:verificationApproved?'Verification approved':documentReview.documentStatus==='APPROVED'?'Verification document approved':'Verification document requires changes',body:verificationApproved?'DriveDrop has approved your transporter verification. Your verified status is now active.':documentReview.documentStatus==='APPROVED'?`DriveDrop approved your new ${documentLabel} document.`:`DriveDrop reviewed your new ${documentLabel} document and changes are required.${verificationRejected?' Your transporter verification is no longer approved. Upload a replacement document and submit it for review.':''}${documentReview.reviewNote?` Admin note: ${documentReview.reviewNote}`:''}`,href:'/transporter/verification'});
+  await createNotificationSafely({userId:document.verification.transporterId,type:'VERIFICATION',title:verificationApproved?'Verification approved':documentReview.documentStatus==='APPROVED'?'Verification document approved':'Verification document requires changes',body:verificationApproved?'MoveAMotor has approved your transporter verification. Your verified status is now active.':documentReview.documentStatus==='APPROVED'?`MoveAMotor approved your new ${documentLabel} document.`:`MoveAMotor reviewed your new ${documentLabel} document and changes are required.${verificationRejected?' Your transporter verification is no longer approved. Upload a replacement document and submit it for review.':''}${documentReview.reviewNote?` Admin note: ${documentReview.reviewNote}`:''}`,href:'/transporter/verification'});
   return NextResponse.json({...result.updated,verificationStatusChanged:result.verificationStatusChanged});
  }
  const review=VerificationReview.parse(x.data);

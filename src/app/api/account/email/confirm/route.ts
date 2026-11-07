@@ -11,10 +11,10 @@ export async function GET(request:Request){
 
   await sendTransactionalEmailSafely({
     to:result.oldEmail,
-    subject:'Your DriveDrop email address was changed',
+    subject:'Your MoveAMotor email address was changed',
     heading:'Your account email has changed',
-    body:`The login email for your DriveDrop account has been changed to ${result.newEmail}. If you did not make this change, contact DriveDrop support immediately.`,
-    preheader:'DriveDrop account email changed'
+    body:`The login email for your MoveAMotor account has been changed to ${result.newEmail}. If you did not make this change, contact MoveAMotor support immediately.`,
+    preheader:'MoveAMotor account email changed'
   });
   return NextResponse.redirect(new URL(`/login?emailChange=confirmed&email=${encodeURIComponent(result.newEmail)}`,url.origin));
 }

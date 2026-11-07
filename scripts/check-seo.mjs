@@ -1,12 +1,12 @@
 // Read-only HTTP checks. No accounts, bookings or financial requests are created.
-// Usage: node scripts/check-seo.mjs http://127.0.0.1:3107 drive-drop.com
+// Usage: node scripts/check-seo.mjs http://127.0.0.1:3107 moveamotor.co.uk
 import assert from 'node:assert/strict';
 import {request as httpRequest} from 'node:http';
 import {request as httpsRequest} from 'node:https';
 
-const base = process.argv[2] || 'https://drive-drop.com';
+const base = process.argv[2] || 'https://moveamotor.co.uk';
 const host = process.argv[3];
-const origin = 'https://drive-drop.com';
+const origin = 'https://moveamotor.co.uk';
 const pages = ['/', '/get-quotes', '/for-customers', '/for-transporters', '/how-it-works', '/about', '/help', '/contact', '/terms', '/privacy'];
 const privatePages = ['/login', '/register', '/forgot-password', '/reset-password', '/account', '/customer', '/transporter', '/admin', '/messages', '/payments', '/notifications'];
 const decode = value => value.replace(/&amp;/g, '&').replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"');
@@ -52,7 +52,7 @@ for (const path of pages) {
   const metas = tags(html, 'meta');
   const title = decode(html.match(/<title>([^<]+)<\/title>/)?.[1] || '');
   const description = metas.find(m => m.name === 'description')?.content;
-  assert(title.includes('DriveDrop') && !titles.has(title), `${path}: descriptive, unique title`);
+  assert(title.includes('MoveAMotor') && !titles.has(title), `${path}: descriptive, unique title`);
   assert(description?.length > 80 && !descriptions.has(description), `${path}: unique description`);
   titles.add(title); descriptions.add(description);
   assert.equal(tags(html, 'link').filter(l => l.rel === 'canonical').length, 1, path);
@@ -66,7 +66,7 @@ for (const path of pages) {
     assert(metas.some(m => m.name === 'google-site-verification' && m.content), 'Google ownership tag');
     const graph = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)?.[1] || '{}');
     assert.equal(graph['@context'], 'https://schema.org');
-    assert(graph['@graph']?.some(n => n['@type'] === 'WebSite' && n.url === origin && n.name === 'DriveDrop'));
+    assert(graph['@graph']?.some(n => n['@type'] === 'WebSite' && n.url === origin && n.name === 'MoveAMotor'));
     assert(graph['@graph']?.some(n => n['@type'] === 'Organization' && n.url === origin));
     assert(!JSON.stringify(graph).match(/aggregateRating|reviewCount|ratingValue/), 'No invented review schema');
   }

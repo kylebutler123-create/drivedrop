@@ -68,7 +68,7 @@
 
   /* Keep all existing role-specific navigation controls and listeners. */
   .desktopRedesign>.top:not(.guestTop){background:#fff!important;color:#10274b!important;border-bottom:1px solid #e4ebf3;box-shadow:none}
-  .desktopRedesign>.top .headerLogo{background:url('/drivedrop-desktop-brand.svg') left center/contain no-repeat;width:235px;height:58px}
+  .desktopRedesign>.top .headerLogo{background:url('/moveamotor-logo-dark.svg') left center/contain no-repeat;width:235px;height:58px}
   .desktopRedesign>.top .headerLogo>*{visibility:hidden}
   .desktopRedesign>.top :is(.customerDashboardBtn,.transporterDashboardBtn,.messagesHeaderLink,.notificationsHeaderLink,.accountNavBtn,.adminHeaderLink,.adminSignOutButton,.customerPrimaryNav form .btn,.transporterPrimaryNav form .btn){color:#23405f!important}
   .desktopRedesign>.top :is(.accountNavBtn,.customerPrimaryNav form .btn,.transporterPrimaryNav form .btn){border-color:#dfe6ef;background:#f4f7fa}

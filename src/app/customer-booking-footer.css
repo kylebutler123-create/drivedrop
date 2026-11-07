@@ -4,7 +4,7 @@
 @media(min-width:1024px){
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed)>.activeVehicleDetails{display:none!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .expandedBookingActions{display:flex!important;flex-wrap:wrap;gap:14px;width:100%;box-sizing:border-box}
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .customerBookingFooter{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,480px);align-items:center;gap:22px;flex:1 1 100%;width:100%;min-width:0;font:400 13px/1.5 DriveDropApproved,Arial,sans-serif;color:#52658e}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .customerBookingFooter{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,480px);align-items:center;gap:22px;flex:1 1 100%;width:100%;min-width:0;font:400 13px/1.5 MoveAMotorApproved,Arial,sans-serif;color:#52658e}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .customerBookingFooter:has(>.customerDisputeButton){grid-template-columns:170px minmax(0,1fr) minmax(0,480px)}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) :is(.customerFooterReference,.customerFooterTransporter){display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;min-width:0}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .customerFooterTransporter{justify-content:space-between}
@@ -16,8 +16,8 @@
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .customerDisputeButton svg{width:16px;height:16px;stroke:currentColor}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .customerDisputeButton:hover{background:#ffe4e4!important;border-color:#db9999!important}
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .customerDisputeButton:focus-visible{outline:2px solid #b4232c;outline-offset:3px}
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .customerOriginalCollection{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 14px;margin-top:16px;color:#52658e;font:400 13px/1.5 DriveDropApproved,Arial,sans-serif}
- body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .customerOriginalCollection b{font:400 13px/1.5 DriveDropApproved,Arial,sans-serif;color:#091650}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .customerOriginalCollection{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 14px;margin-top:16px;color:#52658e;font:400 13px/1.5 MoveAMotorApproved,Arial,sans-serif}
+ body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .customerOriginalCollection b{font:400 13px/1.5 MoveAMotorApproved,Arial,sans-serif;color:#091650}
 }
 @media(min-width:1024px) and (max-width:1240px){
  body.approvedDesktop .customerLiveWorkspace.customerActivityLayout .bookingCard[data-four-column-details]:not(.isCollapsed) .customerBookingFooter{gap:14px;grid-template-columns:minmax(0,1fr) minmax(0,380px)}

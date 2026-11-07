@@ -28,7 +28,7 @@ export async function PATCH(r:Request,{params}:{params:Promise<{id:string}>}){
    userId:id,
    type:'ACCOUNT',
    title:'New work access restricted',
-   body:'DriveDrop has restricted your transporter account from accepting new transport work. You can continue managing existing deliveries. Contact DriveDrop Support if you need help.',
+   body:'MoveAMotor has restricted your transporter account from accepting new transport work. You can continue managing existing deliveries. Contact MoveAMotor Support if you need help.',
    href:await supportConversationHref(id)
   });
  }
@@ -38,7 +38,7 @@ export async function PATCH(r:Request,{params}:{params:Promise<{id:string}>}){
    userId:id,
    type:'ACCOUNT',
    title:'New work access restored',
-   body:'DriveDrop has restored your transporter work access. You can now view available jobs and submit quotes again. Contact DriveDrop Support if you need help.',
+   body:'MoveAMotor has restored your transporter work access. You can now view available jobs and submit quotes again. Contact MoveAMotor Support if you need help.',
    href:await supportConversationHref(id)
   });
  }

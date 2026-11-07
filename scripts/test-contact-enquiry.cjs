@@ -64,7 +64,7 @@ async function main() {
     assert.equal(result.headers.get('cache-control'), 'no-store');
     assert.deepEqual(requests[0].body.to, ['support@drive-drop.com']);
     assert.equal(requests[0].body.reply_to, data.email);
-    assert.equal(requests[0].body.from, 'DriveDrop contact form <account@contact.drive-drop.com>');
+    assert.equal(requests[0].body.from, 'MoveAMotor contact form <account@contact.drive-drop.com>');
     assert.equal(requests[0].body.html, undefined);
     assert.ok(requests[0].body.text.includes(data.message));
     assert.ok(requests[0].body.text.includes('Booking reference: Not supplied'));

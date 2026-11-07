@@ -38,7 +38,7 @@ export async function PATCH(req:Request){
   return NextResponse.json({ok:true});
  }
  const current=await prisma.$queryRaw<any[]>`SELECT "moderationStatus" FROM "Review" WHERE id=${x.reviewId} AND "transporterId"=${u.id} LIMIT 1`;
- if(current[0]?.moderationStatus==='UNDER_REVIEW')return NextResponse.json({error:'This review is already under DriveDrop review'},{status:409});
+ if(current[0]?.moderationStatus==='UNDER_REVIEW')return NextResponse.json({error:'This review is already under MoveAMotor review'},{status:409});
  await prisma.$executeRaw`UPDATE "Review" SET "moderationStatus"='UNDER_REVIEW',"disputeReason"=${x.reason},"disputeDetails"=${x.details||null},"disputedAt"=NOW(),"moderationNote"=NULL,"moderatedAt"=NULL WHERE id=${x.reviewId} AND "transporterId"=${u.id}`;
  return NextResponse.json({ok:true});
 }

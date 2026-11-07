@@ -13,13 +13,13 @@ export async function proceedsPdf(rows:ProceedsBooking[],transporterName:string,
  const [regularBytes,boldBytes]=await fonts;
  const [normal,bold]=await Promise.all([doc.embedFont(regularBytes),doc.embedFont(boldBytes)]);
  const navy=rgb(.03,.12,.24),muted=rgb(.32,.42,.55),orange=rgb(1,.4,.1);
- doc.setTitle('DriveDrop proceeds statement');
- doc.setAuthor('DriveDrop');
+ doc.setTitle('MoveAMotor proceeds statement');
+ doc.setAuthor('MoveAMotor');
  let page=doc.addPage([595.28,841.89]),y=780,pageNumber=1;
  // Preserve unsupported characters as explicit Unicode codes rather than losing data.
  const characterSet=new Set(normal.getCharacterSet());
  const safe=(text:string)=>Array.from(text).map(c=>c==='\n'||characterSet.has(c.codePointAt(0)!)?c:`[U+${c.codePointAt(0)!.toString(16).toUpperCase()}]`).join('');
- const newPage=()=>{page.drawText(`DriveDrop | Page ${pageNumber++}`,{x:42,y:28,size:9,font:normal,color:muted});page=doc.addPage([595.28,841.89]);y=780;};
+ const newPage=()=>{page.drawText(`MoveAMotor | Page ${pageNumber++}`,{x:42,y:28,size:9,font:normal,color:muted});page=doc.addPage([595.28,841.89]);y=780;};
  const line=(text:string,size=11,strong=false)=>{
   const font=strong?bold:normal;let buffer='';
   const flush=()=>{if(y<60)newPage();page.drawText(buffer.trimEnd(),{x:44,y,size,font,color:strong?navy:muted});y-=size+6;buffer='';};
@@ -33,7 +33,7 @@ export async function proceedsPdf(rows:ProceedsBooking[],transporterName:string,
  };
  const rule=()=>{if(y<70)newPage();page.drawLine({start:{x:44,y:y+2},end:{x:551,y:y+2},thickness:.6,color:rgb(.8,.86,.92)});y-=17;};
  page.drawRectangle({x:0,y:823,width:595.28,height:19,color:orange});
- line('DriveDrop',23,true);line('Proceeds statement',19,true);
+ line('MoveAMotor',23,true);line('Proceeds statement',19,true);
  line('Transporter: '+transporterName);line('Period: '+periodDescription(period));
  line('Issued: '+londonDate(new Date()));
  line('Period is based on booking date (Europe/London). Payout statuses are current at download time.',9);
@@ -62,7 +62,7 @@ export async function proceedsPdf(rows:ProceedsBooking[],transporterName:string,
   line('Delivery status: '+row.status.replaceAll('_',' ')+' | Payout status: '+p.payoutStatus);
   line('Paid on: '+(p.events[0]?londonDate(p.events[0].createdAt):'Not recorded'));rule();
  }
- line('This statement records proceeds held by DriveDrop. It is not a VAT invoice.',9);
- page.drawText(`DriveDrop | Page ${pageNumber}`,{x:42,y:28,size:9,font:normal,color:muted});
+ line('This statement records proceeds held by MoveAMotor. It is not a VAT invoice.',9);
+ page.drawText(`MoveAMotor | Page ${pageNumber}`,{x:42,y:28,size:9,font:normal,color:muted});
  return doc.save();
 }

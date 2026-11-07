@@ -43,7 +43,7 @@ export function MobileCustomerHome({name, jobs, bookings, jobsLoaded, bookingsLo
   onRequest: (route: {collection: string; delivery: string}) => void; onView: (view: 'QUOTES' | 'BOOKINGS') => void; quoteActivity: number; deliveryActivity: number;
 }) {
   const upcoming = [...bookings].sort((a,b) => Date.parse(a.agreedCollectionDate || a.job.collectionDate || '9999-12-31') - Date.parse(b.agreedCollectionDate || b.job.collectionDate || '9999-12-31')).slice(0, 2);
-  return <section className="ddMobileOnly ddCustomerHome" aria-label="Your DriveDrop overview">
+  return <section className="ddMobileOnly ddCustomerHome" aria-label="Your MoveAMotor overview">
     <div className="ddCustomerHero"><img src="/mobile-app/transport-hero.webp" alt="" fetchPriority="high"/><div><p>Welcome back{name ? `, ${name.trim().split(/\s+/)[0]}` : ''}</p><h1>Your next move,<br/>simplified.</h1></div></div>
     <form className="ddRouteCard" noValidate onSubmit={event => {event.preventDefault(); const data = new FormData(event.currentTarget); onRequest({collection: String(data.get('collection') || ''), delivery: String(data.get('delivery') || '')})}}>
       <div className="ddRouteFields"><AddressAutocomplete name="collection" label="Collect from"/><AddressAutocomplete name="delivery" label="Deliver to"/></div>

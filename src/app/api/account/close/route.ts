@@ -40,7 +40,7 @@ export async function POST(request:Request){
     prisma.user.update({where:{id:user.id},data:{accountStatus:'DELETED',workRestricted:true}}),
     prisma.session.deleteMany({where:{userId:user.id}})
   ]);
-  await sendTransactionalEmailSafely({to:fresh.email,subject:'Your DriveDrop account has been closed',heading:'Account closed',body:'Your DriveDrop account has been closed and can no longer be used to sign in. If you did not request this, please contact DriveDrop support.'});
+  await sendTransactionalEmailSafely({to:fresh.email,subject:'Your MoveAMotor account has been closed',heading:'Account closed',body:'Your MoveAMotor account has been closed and can no longer be used to sign in. If you did not request this, please contact MoveAMotor support.'});
   await clearSession();
   return NextResponse.json({ok:true});
 }

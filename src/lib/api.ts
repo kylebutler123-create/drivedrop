@@ -10,7 +10,7 @@ export function apiError(error: unknown, fallback='Request failed') {
   if (error instanceof ZodError) return jsonWithRequestId({error:'Invalid request',issues:error.issues.map(i=>({path:i.path.join('.'),message:i.message})),requestId:id},422,id)
   const message=error instanceof Error ? error.message : fallback
   const status=message==='Forbidden'?403:message==='Not found'?404:400
-  console.error('DriveDrop API error',{requestId:id,status,errorName:error instanceof Error?error.name:'UnknownError',message,errorStack:error instanceof Error?error.stack:undefined})
+  console.error('MoveAMotor API error',{requestId:id,status,errorName:error instanceof Error?error.name:'UnknownError',message,errorStack:error instanceof Error?error.stack:undefined})
   const publicMessage=process.env.NODE_ENV==='production'&&status===400&&!(error instanceof AvailabilityError)?fallback:message
   return jsonWithRequestId({error:publicMessage,requestId:id},status,id)
 }

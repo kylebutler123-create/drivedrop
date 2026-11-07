@@ -1,3 +1,4 @@
+import {connectRequestOriginAllowed} from '@/lib/stripe-connect-provider';
 import {after,NextResponse} from 'next/server';
 import {prepareStripePayout,reconcileStripePayout} from '@/lib/stripe-payouts';
 import {connectErrorMessage,connectFailureCode,connectOrigin,connectReconciliationEnabled} from '@/lib/stripe-connect-provider';
@@ -29,7 +30,7 @@ export async function POST(r:Request){
  const provider=await prisma.bookingPayment.findUnique({where:{id:paymentId},select:{provider:true}});
  if(provider?.provider==='STRIPE'){
   try{
-   if((paymentEnvironment()==='production'||r.headers.get('origin'))&&r.headers.get('origin')!==connectOrigin())return NextResponse.json({error:'Invalid request origin'},{status:403});
+   if((paymentEnvironment()==='production'||r.headers.get('origin'))&&!connectRequestOriginAllowed(r.headers.get('origin')))return NextResponse.json({error:'Invalid request origin'},{status:403});
    const payout=await prepareStripePayout(paymentId,u.id);
    if(!['TRANSFERRED','DEDUCTED','REVERSED'].includes(payout.status))after(()=>reconcileStripePayout(payout.id));
    return NextResponse.json({accepted:true,payoutStatus:['TRANSFERRED','DEDUCTED'].includes(payout.status)?'PAID':payout.status==='REVERSED'?'HELD':'PROCESSING',payoutId:payout.id},{status:202});
@@ -89,7 +90,7 @@ export async function POST(r:Request){
    userId:result.transporterId,
    type:'PAYMENT',
    title:'Payout released',
-   body:result.cancellationDeductionPence>0?`DriveDrop released your test payout of ${money(result.payment.transporterProceedsPence)} for the ${vehicle}${reference} delivery after automatically deducting a ${money(result.cancellationDeductionPence)} fine.`:`DriveDrop released your test payout of ${money(result.payment.transporterProceedsPence)} for the ${vehicle}${reference} delivery.`,
+   body:result.cancellationDeductionPence>0?`MoveAMotor released your test payout of ${money(result.payment.transporterProceedsPence)} for the ${vehicle}${reference} delivery after automatically deducting a ${money(result.cancellationDeductionPence)} fine.`:`MoveAMotor released your test payout of ${money(result.payment.transporterProceedsPence)} for the ${vehicle}${reference} delivery.`,
    href:`/transporter?view=completed&bookingId=${encodeURIComponent(result.bookingId)}`
   });
   return NextResponse.json(result.payment);
@@ -105,7 +106,7 @@ export async function PATCH(request:Request){
  if(!user||user.role!=='ADMIN'||user.accountStatus!=='ACTIVE')return NextResponse.json({error:'Admin required'},{status:403});
  if(!connectReconciliationEnabled())return NextResponse.json({error:'Stripe recovery is disabled'},{status:403});
  try{
-  if((paymentEnvironment()==='production'||request.headers.get('origin'))&&request.headers.get('origin')!==connectOrigin())return NextResponse.json({error:'Invalid request origin'},{status:403});
+  if((paymentEnvironment()==='production'||request.headers.get('origin'))&&!connectRequestOriginAllowed(request.headers.get('origin')))return NextResponse.json({error:'Invalid request origin'},{status:403});
   const parsed=z.object({payoutId:z.string().min(1)}).safeParse(await request.json().catch(()=>null));
   if(!parsed.success)return NextResponse.json({error:'Invalid payout record'},{status:400});
   const row=await prisma.stripePayout.findFirst({where:{id:parsed.data.payoutId,environment:paymentEnvironment()},select:{id:true}});

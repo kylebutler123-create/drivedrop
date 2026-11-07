@@ -35,7 +35,7 @@ export async function PATCH(req:Request){
  const changed=await prisma.$executeRaw`UPDATE "Review" SET "moderationStatus"=${status},"moderationNote"=${x.data.note},"moderatedAt"=NOW() WHERE id=${x.data.reviewId} AND "moderationStatus"='UNDER_REVIEW'`;
  if(!changed)return NextResponse.json({error:'Review dispute not found or already resolved'},{status:404});
  const vehicle=`${review.booking.job.vehicleMake} ${review.booking.job.vehicleModel}`.trim()||'vehicle';
- const outcome=x.data.action==='HIDE'?'DriveDrop has hidden this review from your public rating.':x.data.action==='REJECT'?'DriveDrop has rejected your review dispute and the review remains visible.':'DriveDrop has kept the review visible after moderation.';
- await createNotificationSafely({userId:review.transporter.id,type:'REVIEW',title:'Review moderation completed',body:`${vehicle}: ${outcome} DriveDrop note: ${x.data.note}`,href:'/transporter/reviews'});
+ const outcome=x.data.action==='HIDE'?'MoveAMotor has hidden this review from your public rating.':x.data.action==='REJECT'?'MoveAMotor has rejected your review dispute and the review remains visible.':'MoveAMotor has kept the review visible after moderation.';
+ await createNotificationSafely({userId:review.transporter.id,type:'REVIEW',title:'Review moderation completed',body:`${vehicle}: ${outcome} MoveAMotor note: ${x.data.note}`,href:'/transporter/reviews'});
  return NextResponse.json({ok:true,status});
 }

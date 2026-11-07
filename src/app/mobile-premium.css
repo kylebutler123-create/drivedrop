@@ -14,7 +14,7 @@
  .ddTransporterWorkspace .jobOpportunity[data-has-own-quote="false"] .quoteSubmitBtn{font-size:15px;font-weight:700;border-radius:8px;min-height:44px}
 }
 @media(max-width:1023px){
-  body:is(.role-customer,.role-transporter){--dd-ink:#081c43;--dd-muted:#63799d;--dd-orange:#ff7114;--dd-line:#e3eaf3;color:var(--dd-ink);background:#f9fbfd;font-family:DriveDropApproved,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  body:is(.role-customer,.role-transporter){--dd-ink:#081c43;--dd-muted:#63799d;--dd-orange:#ff7114;--dd-line:#e3eaf3;color:var(--dd-ink);background:#f9fbfd;font-family:MoveAMotorApproved,Arial,sans-serif;-webkit-font-smoothing:antialiased}
   body:is(.role-customer,.role-transporter) .ddMobileOnly{display:block}
   body:is(.role-customer,.role-transporter)>.top{display:none!important}
   body:is(.role-customer,.role-transporter)>main.shell{max-width:760px;margin:0 auto;padding:20px 16px calc(100px + env(safe-area-inset-bottom))!important}

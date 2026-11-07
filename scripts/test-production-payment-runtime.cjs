@@ -86,6 +86,14 @@ const alternative = load('src/lib/alternative-refunds.ts'), email = load('src/li
   process.env.STRIPE_CHECKOUT_ENABLED='true'; checkout.assertNewCheckoutAllowed();
   assert.equal(load('src/lib/features.ts').disputesEnabled(),false);
   process.env.DISPUTES_ENABLED='true'; assert.equal(load('src/lib/features.ts').disputesEnabled(),true);
+  configured();
+  Object.assign(process.env,{NEXT_PUBLIC_APP_URL:'https://moveamotor.co.uk',STRIPE_CHECKOUT_ORIGIN:'https://moveamotor.co.uk'});
+  assert.equal(connect.connectRequestOriginAllowed('https://moveamotor.co.uk'),true);
+  assert.equal(connect.connectRequestOriginAllowed('https://drive-drop.com'),true);
+  for(const untrusted of [null,'null','http://moveamotor.co.uk','https://moveamotor.co.uk.attacker.example','https://unrelated.example']) {
+    assert.equal(connect.connectRequestOriginAllowed(untrusted),false);
+  }
+  configured(); assert.equal(connect.connectRequestOriginAllowed('https://drive-drop.com'),false);
   console.log('PASS: fail-closed production configuration, database/account/origin binding, TEST denial and independent creation/recovery controls');
 
   let accountId='acct_wrong', requests=[];

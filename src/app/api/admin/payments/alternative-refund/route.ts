@@ -1,3 +1,4 @@
+import {connectRequestOriginAllowed} from '@/lib/stripe-connect-provider';
 import {NextResponse} from 'next/server';
 import {currentUser} from '@/lib/auth';
 import {alternativeRefundsEnabled, recordAlternativeRefund} from '@/lib/alternative-refunds';
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
   if (!user || user.role !== 'ADMIN' || user.accountStatus !== 'ACTIVE') return NextResponse.json({error: 'Active administrator access required.'}, {status: 403});
   try {
     // Strict Origin is required even for multipart uploads (CSRF simple requests).
-    if (request.headers.get('origin') !== connectOrigin()) return NextResponse.json({error: 'Invalid request origin.'}, {status: 403});
+    if (!connectRequestOriginAllowed(request.headers.get('origin'))) return NextResponse.json({error: 'Invalid request origin.'}, {status: 403});
     const form = await boundedForm(request), value = form.get('details'), file = form.get('evidence');
     if (typeof value !== 'string' || !(file instanceof File) || form.getAll('evidence').length !== 1 || form.getAll('details').length !== 1) {
       return NextResponse.json({error: 'Repayment details and one evidence file are required.'}, {status: 400});

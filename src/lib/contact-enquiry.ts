@@ -54,13 +54,13 @@ export async function sendContactEnquiry(enquiry: ContactEnquiry) {
     },
     signal: AbortSignal.timeout(15000),
     body: JSON.stringify({
-      from: 'DriveDrop contact form <account@contact.drive-drop.com>',
+      from: 'MoveAMotor contact form <account@contact.drive-drop.com>',
       to: [SUPPORT_CONTACT.email],
       reply_to: enquiry.email,
-      subject: `[DriveDrop enquiry] ${enquiry.enquiry}: ${enquiry.subject}`,
+      subject: `[MoveAMotor enquiry] ${enquiry.enquiry}: ${enquiry.subject}`,
       // Plain text keeps visitor-provided markup out of the email's HTML.
       text: [
-        'New enquiry from the DriveDrop contact form',
+        'New enquiry from the MoveAMotor contact form',
         '',
         `Name: ${enquiry.name}`,
         `Email: ${enquiry.email}`,

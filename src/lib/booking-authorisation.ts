@@ -45,7 +45,7 @@ export async function authoriseRequest(actor:BookingActor,id:string){
    'payment_intent_data[metadata][environment]':r.paymentEnvironment!,
    'metadata[availabilityRequestId]':r.id,'client_reference_id':r.id,
    'line_items[0][price_data][currency]':'gbp','line_items[0][price_data][unit_amount]':String(r.authorisedAmountPence),
-   'line_items[0][price_data][product_data][name]':'DriveDrop vehicle transport — subject to transporter confirmation','line_items[0][quantity]':'1',
+   'line_items[0][price_data][product_data][name]':'MoveAMotor vehicle transport — subject to transporter confirmation','line_items[0][quantity]':'1',
    'custom_text[submit][message]':'Authorise payment now. Your card will only be charged when the transporter confirms. If declined or expired, the hold is cancelled.',
    success_url:`${origin}/customer?view=quotes&authorisation=returned`,cancel_url:`${origin}/customer?view=quotes&authorisation=cancelled`,
   },`availability-checkout-${r.id}`);

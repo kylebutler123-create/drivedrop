@@ -22,9 +22,9 @@ export default function Login(){
   const [showPassword,setShowPassword]=useState(false);
 
   const heading=account==='transporter'?'Transporter login':account==='customer'?'Customer login':'Welcome back';
-  const intro=account==='transporter'?'Sign in to manage your transporter profile, verification and delivery work.':account==='customer'?'Sign in to manage your vehicle transport requests and quotes.':'Customers and transporters use the same secure DriveDrop sign-in.';
+  const intro=account==='transporter'?'Sign in to manage your transporter profile, verification and delivery work.':account==='customer'?'Sign in to manage your vehicle transport requests and quotes.':'Customers and transporters use the same secure MoveAMotor sign-in.';
   const isTransporter=account==='transporter';
-  const emailNotice=emailChange==='confirmed'?'Your email address has been verified and updated. Sign in using your new email address.':emailChange==='taken'?'That email address is already linked to another DriveDrop account.':emailChange==='invalid'?'That email verification link is invalid or has expired. Please request a new one from your Account page.':null;
+  const emailNotice=emailChange==='confirmed'?'Your email address has been verified and updated. Sign in using your new email address.':emailChange==='taken'?'That email address is already linked to another MoveAMotor account.':emailChange==='invalid'?'That email verification link is invalid or has expired. Please request a new one from your Account page.':null;
 
   async function submit(e:React.FormEvent<HTMLFormElement>){
     e.preventDefault();setErr('');
@@ -52,7 +52,7 @@ export default function Login(){
     </section>
     <section className="authPanel">
       <div className="authCard">
-        <Link className="backLink" href="/">← Back to DriveDrop</Link>
+        <Link className="backLink" href="/">← Back to MoveAMotor</Link>
         <div className="authHeading">
           <span className="dashboardEyebrow dark">Secure account access</span>
           <h2>{heading}</h2>
@@ -60,7 +60,7 @@ export default function Login(){
         </div>
         {searchParams.get('session')==='expired'&&<div className="formNotice" role="status">Your session has ended. Please sign in again.</div>}
         {target?.notice&&<div className="formNotice" role="status">{target.notice} <Link href="/app">Back to my account</Link></div>}
-        {accountClosed==='1'&&<div className="formNotice">Your DriveDrop account has been closed and you have been signed out.</div>}
+        {accountClosed==='1'&&<div className="formNotice">Your MoveAMotor account has been closed and you have been signed out.</div>}
         {emailNotice&&<div className={`formNotice${emailChange==='confirmed'?'':' errorNotice'}`}>{emailNotice}</div>}
         <div className="accountSwitch" aria-label="Choose account type">
           <Link className={!isTransporter?'active':''} aria-current={!isTransporter?'page':undefined} href={target&&!isTransporter?`/login?${searchParams}`:`/login?account=customer${vehicleTypeQuery}`}>Customer</Link>
@@ -84,9 +84,9 @@ export default function Login(){
           {err&&<div className="formNotice errorNotice">{err}</div>}
           <button className="btn orange authSubmit">Sign in securely</button>
         </form>
-        <div className="authDivider"><span>New to DriveDrop?</span></div>
+        <div className="authDivider"><span>New to MoveAMotor?</span></div>
         <Link className="authSecondary" href={isTransporter?'/register?account=transporter':`/register?account=customer${vehicleTypeQuery}`}>{isTransporter?'Create transporter account':'Create customer account'} →</Link>
-        <p className="authFootnote">Your account credentials are handled securely by DriveDrop.</p>
+        <p className="authFootnote">Your account credentials are handled securely by MoveAMotor.</p>
       </div>
     </section>
   </main></>;

@@ -21,7 +21,7 @@ export async function GET(request:Request){
   const records=await customerPayments(user.id,bookingId);
   if(bookingId&&(!records.length||records[0].paidPence<=0))return Response.json({error:'Receipt not found.'},{status:404,headers:privateHeaders});
   const rows=bookingId?records:filterPayments(records.filter(row=>!period||inProceedsPeriod({createdAt:row.paidAt||row.createdAt},period)),{q,month,status});
-  const name=bookingId?`DriveDrop-receipt-${rows[0].reference}.pdf`:`DriveDrop-payment-statement-${period?.start}-to-${period?.end}.${format}`;
+  const name=bookingId?`MoveAMotor-receipt-${rows[0].reference}.pdf`:`MoveAMotor-payment-statement-${period?.start}-to-${period?.end}.${format}`;
   const headers={...privateHeaders,'Content-Disposition':`attachment; filename="${name}"`,'Content-Type':format==='pdf'?'application/pdf':'text/csv; charset=utf-8'};
   if(format==='csv')return new Response(paymentCsv(rows),{headers});
   const filters=bookingId?'Booking payment record':`Period: ${period?periodDescription(period):'All dates'} (payment date; unpaid records use creation date). Refunds reflect current records. Filters: ${month||'All dates'} / ${status?paymentLabel(status):'All statuses'}${q?' / Search: '+q:''}`;

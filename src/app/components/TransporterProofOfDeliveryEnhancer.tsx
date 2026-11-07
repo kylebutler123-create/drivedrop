@@ -32,10 +32,10 @@ function PodForm({booking,onDone}:{booking:any,onDone:()=>void|Promise<void>}){
 
  function captureLocation(){
   if(locationBusy||busy)return;
-  if(!window.isSecureContext){setLocationMessage('Location needs a secure HTTPS page. Open DriveDrop directly in Safari. [LOCATION_HTTPS]');return}
+  if(!window.isSecureContext){setLocationMessage('Location needs a secure HTTPS page. Open MoveAMotor directly in Safari. [LOCATION_HTTPS]');return}
   const policyDocument=document as Document&{permissionsPolicy?:{allowsFeature:(feature:string)=>boolean};featurePolicy?:{allowsFeature:(feature:string)=>boolean}};
   const policy=policyDocument.permissionsPolicy||policyDocument.featurePolicy;
-  if(policy&&!policy.allowsFeature('geolocation')){setLocationMessage('This page is blocking location access. Please send DriveDrop this code: LOCATION_POLICY. You can still submit without location.');return}
+  if(policy&&!policy.allowsFeature('geolocation')){setLocationMessage('This page is blocking location access. Please send MoveAMotor this code: LOCATION_POLICY. You can still submit without location.');return}
   if(!('geolocation' in navigator)){setLocationMessage('Location is not available on this device. You can still submit proof of delivery. [LOCATION_UNAVAILABLE]');return}
   const request=++locationRequest.current;
   setLocationBusy(true);setLocationMessage(null);
@@ -61,7 +61,7 @@ function PodForm({booking,onDone}:{booking:any,onDone:()=>void|Promise<void>}){
     setLocationMessage('GPS is unavailable. Trying the device’s standard location service…');
     navigator.geolocation.getCurrentPosition(success,failure,{enableHighAccuracy:false,timeout:15000,maximumAge:0});
    },{enableHighAccuracy:true,timeout:15000,maximumAge:0});
-  }catch{setLocationBusy(false);setLocationMessage('The browser could not start location capture. Open DriveDrop directly in Safari and retry. [LOCATION_START]')}
+  }catch{setLocationBusy(false);setLocationMessage('The browser could not start location capture. Open MoveAMotor directly in Safari and retry. [LOCATION_START]')}
  }
 
  async function submit(e:React.FormEvent){

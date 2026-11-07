@@ -24,7 +24,7 @@ export async function POST(request: Request) {
   }
   if (user.accountStatus !== 'ACTIVE') {
     const error = user.accountStatus === 'SUSPENDED'
-      ? 'This account has been suspended. Please contact DriveDrop support.'
+      ? 'This account has been suspended. Please contact MoveAMotor support.'
       : 'This account is no longer active.';
     return NextResponse.json({error}, {status:403});
   }

@@ -3,8 +3,8 @@ import type {MetadataRoute} from 'next';
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: '/app',
-    name: 'DriveDrop',
-    short_name: 'DriveDrop',
+    name: 'MoveAMotor',
+    short_name: 'MoveAMotor',
     description: 'Your vehicle transport, all in one place.',
     start_url: '/app',
     scope: '/',

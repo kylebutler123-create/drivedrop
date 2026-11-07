@@ -42,6 +42,14 @@ export function connectOrigin() {
   return origin;
 }
 
+// During the domain move, existing sessions on the original, controlled site
+// may finish their work. New onboarding/checkout links use the canonical origin.
+export function connectRequestOriginAllowed(origin: string | null) {
+  const canonical = connectOrigin();
+  return origin === canonical || (paymentEnvironment() === 'production' &&
+    canonical === 'https://moveamotor.co.uk' && origin === 'https://drive-drop.com');
+}
+
 export function connectErrorMessage(error: unknown) {
   return error instanceof ConnectError ? error.message : 'Stripe could not complete this request. Please refresh the status and try again.';
 }

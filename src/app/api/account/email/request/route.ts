@@ -28,12 +28,12 @@ export async function POST(request:Request){
   const {token}=await createEmailChangeToken(user.id,newEmail);
   const sent=await sendTransactionalEmailSafely({
     to:newEmail,
-    subject:'Confirm your new DriveDrop email address',
+    subject:'Confirm your new MoveAMotor email address',
     heading:'Confirm your new email address',
-    body:`A request was made to change the login email on your DriveDrop account to ${newEmail}. Your current email remains active until you confirm this change. This link expires in 1 hour.`,
+    body:`A request was made to change the login email on your MoveAMotor account to ${newEmail}. Your current email remains active until you confirm this change. This link expires in 1 hour.`,
     ctaLabel:'Confirm new email',
     ctaPath:`/api/account/email/confirm?token=${encodeURIComponent(token)}`,
-    preheader:'Confirm your new DriveDrop login email'
+    preheader:'Confirm your new MoveAMotor login email'
   });
   if(!sent.sent){
     await cancelEmailChangeTokens(user.id);

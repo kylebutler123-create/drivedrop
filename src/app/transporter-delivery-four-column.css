@@ -1,29 +1,29 @@
 /* Approved customer-style expanded delivery layout. Compact, mobile and tablet stay unchanged. */
 .tdFourProof,.tdFourHeaderTools,.tdFourMessages{display:none}
 @media screen and (min-width:1024px){
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourPayment .tdHeldReason{margin-top:12px;padding:12px;background:#fff5e8;border:1px solid #f3d0a3;border-radius:5px;color:#a75100;font:13px/1.5 DriveDropApproved,Arial,sans-serif;overflow-wrap:anywhere}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourPayment .tdHeldReason{margin-top:12px;padding:12px;background:#fff5e8;border:1px solid #f3d0a3;border-radius:5px;color:#a75100;font:13px/1.5 MoveAMotorApproved,Arial,sans-serif;overflow-wrap:anywhere}
  body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason>strong{display:flex;gap:7px;align-items:center;font-size:13px;font-weight:700}
  body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason>strong .deliveryDesignIcon{display:inline-block!important;width:16px;height:16px;flex:none}
  body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason small{display:block;margin-top:10px;font-size:12px;color:#52658e}
- body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason p{margin:3px 0 9px;color:#091650;font:13px/1.5 DriveDropApproved,Arial,sans-serif;white-space:pre-wrap}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason p{margin:3px 0 9px;color:#091650;font:13px/1.5 MoveAMotorApproved,Arial,sans-serif;white-space:pre-wrap}
  body.approvedDesktop.role-transporter main.dashboardShell .tdHeldReason>span{font-size:12px;display:block}
  /* Active headers share their compact layout in both states; retain the divider. */
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdActiveHeader:after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:#cfe5fe;pointer-events:none}
  /* The completed header uses the same compact rules in both states. */
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.transporterCompletedSummary{box-shadow:inset 0 -1px 0 #cfe5fe!important}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourHeaderTools{display:flex;position:static;order:2;margin:14px 20px 0 24px}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourContacts>a{display:flex;width:auto;height:auto;min-height:34px;padding:8px 12px;gap:7px;font:12px/1.45 DriveDropApproved,Arial,sans-serif;text-decoration:none}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded .tdFourContacts>a{display:flex;width:auto;height:auto;min-height:34px;padding:8px 12px;gap:7px;font:12px/1.45 MoveAMotorApproved,Arial,sans-serif;text-decoration:none}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedContact>a[href^="/messages?"]{display:none!important}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdActiveReference{display:none!important}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner{display:flex!important;background:#e5f5ff!important;color:#0075ff!important;border:0!important;border-radius:5px!important;padding:9px 12px!important;margin:0 20px 16px 24px!important;font:13px/1.45 DriveDropApproved,Arial,sans-serif!important;box-shadow:none!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner{display:flex!important;background:#e5f5ff!important;color:#0075ff!important;border:0!important;border-radius:5px!important;padding:9px 12px!important;margin:0 20px 16px 24px!important;font:13px/1.45 MoveAMotorApproved,Arial,sans-serif!important;box-shadow:none!important}
  body.approvedDesktop.role-transporter .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner :is(strong,small){font:inherit!important;color:inherit!important}
  body.approvedDesktop.role-transporter .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner>div{display:flex;align-items:center;gap:8px}
  body.approvedDesktop.role-transporter .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner strong{display:none!important}
  body.approvedDesktop.role-transporter .transporterBooking:not(.isCollapsed)>.paymentSecuredBanner small{display:block!important;margin:0!important}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdFourColumns,
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourCompletedBody>.tdFourColumns{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:0!important;margin:0 20px 0 24px!important;padding:5px 0 16px!important;border:0!important;background:none!important;font:14px/1.45 DriveDropApproved,Arial,sans-serif}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourCompletedBody>.tdFourColumns{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:0!important;margin:0 20px 0 24px!important;padding:5px 0 16px!important;border:0!important;background:none!important;font:14px/1.45 MoveAMotorApproved,Arial,sans-serif}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourCompletedBody>.tdFourColumns{margin:0!important}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard>.tdFourCompletedBody{border:0!important;padding:5px 20px 0 24px!important;margin:0!important;font-family:DriveDropApproved,Arial,sans-serif}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard>.tdFourCompletedBody{border:0!important;padding:5px 20px 0 24px!important;margin:0!important;font-family:MoveAMotorApproved,Arial,sans-serif}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns>.tdFourProgressHost,
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel,
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdCollectionNext,
@@ -34,15 +34,15 @@
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourPayment{grid-column:2}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourCollection{grid-column:3}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourDelivery{grid-column:4;padding-right:0!important}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns h3{font:700 18px/1.35 DriveDropApproved,Arial,sans-serif!important;letter-spacing:-.35px!important;color:#081344!important;margin:0 0 12px!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns h3{font:700 18px/1.35 MoveAMotorApproved,Arial,sans-serif!important;letter-spacing:-.35px!important;color:#081344!important;margin:0 0 12px!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .infoPanel:not(form){padding:0!important;border:0!important;border-radius:0!important;background:none!important;margin:0!important;box-shadow:none!important}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.infoRow,.tdPayRow){display:flex!important;justify-content:space-between;align-items:baseline;gap:10px;padding:4px 0!important;margin:0!important;border:0!important;font:13px/1.5 DriveDropApproved,Arial,sans-serif!important;color:#405f95}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.infoRow,.tdPayRow) b{font:400 13px/1.5 DriveDropApproved,Arial,sans-serif!important;color:#081344;text-align:right;overflow-wrap:anywhere}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourText,.tdPayoutNote){font:12px/1.5 DriveDropApproved,Arial,sans-serif!important;color:#405f95!important;margin:7px 0 12px!important;overflow-wrap:anywhere}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourProofRow{display:flex;gap:8px;align-items:start;padding:4px 0;font:12px/1.5 DriveDropApproved,Arial,sans-serif;color:#405f95}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.infoRow,.tdPayRow){display:flex!important;justify-content:space-between;align-items:baseline;gap:10px;padding:4px 0!important;margin:0!important;border:0!important;font:13px/1.5 MoveAMotorApproved,Arial,sans-serif!important;color:#405f95}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.infoRow,.tdPayRow) b{font:400 13px/1.5 MoveAMotorApproved,Arial,sans-serif!important;color:#081344;text-align:right;overflow-wrap:anywhere}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourText,.tdPayoutNote){font:12px/1.5 MoveAMotorApproved,Arial,sans-serif!important;color:#405f95!important;margin:7px 0 12px!important;overflow-wrap:anywhere}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourProofRow{display:flex;gap:8px;align-items:start;padding:4px 0;font:12px/1.5 MoveAMotorApproved,Arial,sans-serif;color:#405f95}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourProofRow>span{flex:0 0 40%}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourProofRow>b{flex:1;min-width:0;color:#081344;font-weight:400;overflow-wrap:anywhere}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourEvidence,.tdFourPhotos>summary,.tdFourUploads button){display:flex!important;align-items:center;justify-content:center;gap:12px;box-sizing:border-box;width:100%!important;min-height:34px!important;height:auto!important;padding:6px 8px!important;border:1px solid #8197bb!important;border-radius:5px!important;background:#fff!important;color:#081344!important;font:12px/1.4 DriveDropApproved,Arial,sans-serif!important;text-decoration:none;margin:7px 0 0!important;box-shadow:none!important;cursor:pointer;list-style:none;white-space:normal}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourEvidence,.tdFourPhotos>summary,.tdFourUploads button){display:flex!important;align-items:center;justify-content:center;gap:12px;box-sizing:border-box;width:100%!important;min-height:34px!important;height:auto!important;padding:6px 8px!important;border:1px solid #8197bb!important;border-radius:5px!important;background:#fff!important;color:#081344!important;font:12px/1.4 MoveAMotorApproved,Arial,sans-serif!important;text-decoration:none;margin:7px 0 0!important;box-shadow:none!important;cursor:pointer;list-style:none;white-space:normal}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourPhotos{margin:0}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourPhotos>summary::-webkit-details-marker{display:none}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdFourEvidence,.tdFourPhotos>summary) u{color:#0075ff}
@@ -50,17 +50,17 @@
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourUploads>span{display:block!important;width:100%;margin:0!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourUploads .tdEvidenceUploadButton .deliveryDesignIcon{display:inline-block!important;width:17px!important;height:17px!important;flex:none}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourUploads .tdEvidenceLabel{display:flex!important;align-items:center;gap:12px}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourComplete{display:inline-flex;align-items:center;justify-content:center;gap:7px;max-width:100%;min-height:38px;padding:10px 14px;margin-top:10px;border:0;border-radius:6px;background:#ff681b;color:#fff;font:13px/1.4 DriveDropApproved,Arial,sans-serif;cursor:pointer}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourComplete{display:inline-flex;align-items:center;justify-content:center;gap:7px;max-width:100%;min-height:38px;padding:10px 14px;margin-top:10px;border:0;border-radius:6px;background:#ff681b;color:#fff;font:13px/1.4 MoveAMotorApproved,Arial,sans-serif;cursor:pointer}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgress{display:block!important;margin:8px 0 14px 9px!important;border-left:2px solid #007aff}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep{position:relative;padding:0 0 14px 21px!important;font:13px/1.45 DriveDropApproved,Arial,sans-serif;color:#647799}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep{position:relative;padding:0 0 14px 21px!important;font:13px/1.45 MoveAMotorApproved,Arial,sans-serif;color:#647799}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep:last-child{padding-bottom:0!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep:after{display:none!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep:before{left:-10px;top:2px;width:17px;height:17px;background:#e3edf8;border:1px solid #bed3e9}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep.isReached{color:#091650}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep.isReached:before{content:'✓';background:#007aff;border:0;color:#fff;text-align:center;font:11px/17px Arial,sans-serif}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep b{font-weight:600}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep small{display:block;font:12px/1.45 DriveDropApproved,Arial,sans-serif;color:#405f95;margin-top:3px}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdStatusNotes,.tdFourStatusNotes){font:12px/1.5 DriveDropApproved,Arial,sans-serif;color:#405f95;margin:12px 0}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdProgressStep small{display:block;font:12px/1.45 MoveAMotorApproved,Arial,sans-serif;color:#405f95;margin-top:3px}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(.tdStatusNotes,.tdFourStatusNotes){font:12px/1.5 MoveAMotorApproved,Arial,sans-serif;color:#405f95;margin:12px 0}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourTimeline{margin:8px 0 14px 9px;border-left:2px solid #007aff}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourEvent{position:relative;padding:0 0 14px 21px;font-size:13px}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .tdFourEvent:last-child{padding-bottom:0}
@@ -73,24 +73,24 @@
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking .tdFourColumns :is([data-poc],[data-pod-mount])>button.btn.orange.fullBtn{display:none!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>.actionButtons{grid-column:1;grid-row:2;display:flex;flex-wrap:wrap;gap:7px;align-self:start;margin:0 20px 0 0!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>.actionButtons:empty{display:none}
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>.actionButtons>.btn{width:100%;font:12px/1.4 DriveDropApproved,Arial,sans-serif!important;padding:6px 8px!important;min-height:34px!important;border:1px solid #8197bb!important;background:#fff!important;color:#081344!important;border-radius:5px!important}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>.actionButtons>.btn{width:100%;font:12px/1.4 MoveAMotorApproved,Arial,sans-serif!important;padding:6px 8px!important;min-height:34px!important;border:1px solid #8197bb!important;background:#fff!important;color:#081344!important;border-radius:5px!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns :is(form,.formNotice){grid-column:1/-1;margin-top:16px!important;min-width:0}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourColumns .actionPanel>[data-pod-mount]{display:contents!important}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdFourLegacyEvidence{display:none!important}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdFourMessages{display:block!important;margin:12px 20px 16px 24px!important;color:#405f95;font:12px/1.5 DriveDropApproved,Arial,sans-serif}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdFourMessages{display:block!important;margin:12px 20px 16px 24px!important;color:#405f95;font:12px/1.5 MoveAMotorApproved,Arial,sans-serif}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourMessages summary{cursor:pointer}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourLegacyEvidence>section+section{display:none!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourLegacyEvidence h3{font-size:13px!important;margin:0 0 6px!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourLegacyEvidence .muted{margin:4px 0!important;font-size:12px!important}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterBooking:not(.isCollapsed)>.tdActiveFooter,
- body.approvedDesktop.role-transporter main.dashboardShell .tdFourFooter{display:flex!important;align-items:center;flex-wrap:wrap;gap:12px 22px;margin:0 20px 16px 24px!important;padding:13px 0 0!important;border-top:1px solid #d2e3f3;font:13px/1.5 DriveDropApproved,Arial,sans-serif;color:#52658e}
+ body.approvedDesktop.role-transporter main.dashboardShell .tdFourFooter{display:flex!important;align-items:center;flex-wrap:wrap;gap:12px 22px;margin:0 20px 16px 24px!important;padding:13px 0 0!important;border-top:1px solid #d2e3f3;font:13px/1.5 MoveAMotorApproved,Arial,sans-serif;color:#52658e}
  body.approvedDesktop.role-transporter main.dashboardShell .tdFourFooter{margin:0!important;justify-content:space-between}
  body.approvedDesktop.role-transporter main.dashboardShell :is(.tdFourFooter,.tdActiveFooter) b{font-weight:600;color:#091650}
  body.approvedDesktop.role-transporter main.dashboardShell .tdActiveFooter .tdFourCustomer{margin-left:auto}
  body.approvedDesktop.role-transporter main.dashboardShell .tdActiveFooter [data-desktop-cancel-slot]{display:block!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdActiveFooter .tdCancellationWarning{flex:1 1 100%;order:2;max-width:none;font-size:12px!important}
  body.approvedDesktop.role-transporter main.dashboardShell .tdActiveFooter [data-cancel-delivery]{padding:7px 12px!important;min-height:34px!important;background:#fff0f0!important;border-color:#efb8b8!important;color:#b4232c!important}
- body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.reviewWindowNotice{order:0;margin:0 20px 16px 24px!important;background:#e5f5ff!important;color:#0075ff!important;padding:9px 12px!important;border:0!important;border-radius:5px!important;font:13px/1.45 DriveDropApproved,Arial,sans-serif}
+ body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.reviewWindowNotice{order:0;margin:0 20px 16px 24px!important;background:#e5f5ff!important;color:#0075ff!important;padding:9px 12px!important;border:0!important;border-radius:5px!important;font:13px/1.45 MoveAMotorApproved,Arial,sans-serif}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.reviewWindowNotice strong{font-weight:400}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.reviewWindowNotice small{display:none}
  body.approvedDesktop.role-transporter main.dashboardShell .transporterCompletedCard.isExpanded>.transporterCompletedContact{margin:0 20px 16px 24px!important;padding-top:12px!important;border:0!important}

@@ -71,7 +71,7 @@ export default function MobileWorkspace({role, name}: {role: Role; name: string}
   return <>
     <header className={`ddMobileHeader${focusedDelivery ? ' ddDeliveryHeader' : ''}`}>
       {focusedDelivery ? <><Link className="ddHeaderBack" href="/customer?view=bookings" aria-label="Back to deliveries"><Icon name="arrow"/></Link><strong>Delivery details</strong></>
-        : <Link href={root} onNavigate={() => navigateTo(root)} className="ddMobileBrand" aria-label="DriveDrop home"><img src="/orange-design-preview/assets/logo.svg" width="152" height="38" alt="DriveDrop"/></Link>}
+        : <Link href={root} onNavigate={() => navigateTo(root)} className="ddMobileBrand" aria-label="MoveAMotor home"><img src="/moveamotor-logo-dark.svg" width="152" height="38" alt="MoveAMotor"/></Link>}
       <div className="ddHeaderActions"><NotificationNavLink/><details ref={accountMenu} className="ddAccountMenu">
         <summary aria-label="Open account menu"><span className="ddAvatar">{role==='CUSTOMER'?<MobileCustomerPhoto name={name}/>:<TransporterPhoto name={name}/>}</span></summary>
         <div className="ddMenuPanel"><strong>{name}</strong><small>{transporter ? 'Transporter' : 'Customer'} account</small>
@@ -80,8 +80,8 @@ export default function MobileWorkspace({role, name}: {role: Role; name: string}
           <Link href={`${root}?view=completed`}><Icon name="circleCheck"/>Completed deliveries</Link>
           <Link href={`${root}?view=cancelled`}><Icon name="ban"/>Cancelled deliveries</Link>
           <Link href="/help"><Icon name="help"/>Help &amp; support</Link>
-          {install ? <button type="button" onClick={async () => {await install.prompt(); setInstall(null)}}><Icon name="grid"/>Install DriveDrop</button>
-            : <details className="ddInstallHelp"><summary>Add DriveDrop to your home screen</summary><p>On iPhone, open DriveDrop in Safari, tap Share, then Add to Home Screen. On Android, use your browser’s Install app or Add to Home screen option.</p></details>}
+          {install ? <button type="button" onClick={async () => {await install.prompt(); setInstall(null)}}><Icon name="grid"/>Install MoveAMotor</button>
+            : <details className="ddInstallHelp"><summary>Add MoveAMotor to your home screen</summary><p>On iPhone, open MoveAMotor in Safari, tap Share, then Add to Home Screen. On Android, use your browser’s Install app or Add to Home screen option.</p></details>}
           <form action="/api/auth/logout" method="post"><button type="submit"><Icon name="out"/>Sign out</button></form>
         </div>
       </details></div>

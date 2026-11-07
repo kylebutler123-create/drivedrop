@@ -13,7 +13,7 @@ function refreshQuoteSummary(card:HTMLElement,summary:HTMLElement){
   if(!data||['name','message','price','date','status'].some(key=>typeof data[key as keyof QuoteSummary]!=='string'))return;
   const values:Record<string,string>={
     '.quoteCompareIdentity b':data.name,
-    '.quoteCompareIdentity small':data.verified?'✓ DriveDrop Verified':'Transporter quote',
+    '.quoteCompareIdentity small':data.verified?'✓ MoveAMotor Verified':'Transporter quote',
     '[data-compare-price]':data.price,
     '[data-compare-date]':data.date,
     '[data-compare-status]':data.status,

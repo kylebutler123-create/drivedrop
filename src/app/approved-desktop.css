@@ -1,11 +1,11 @@
 /* Approved orange design. Existing markup and handlers remain authoritative.
    Every visual override is desktop-only; no mobile/tablet rules are replaced. */
-@font-face{font-family:DriveDropApproved;src:url('/orange-design-preview/assets/drivedrop-sans-regular.woff') format('woff');font-weight:400;font-display:swap}
-@font-face{font-family:DriveDropApproved;src:url('/orange-design-preview/assets/drivedrop-sans-bold.woff') format('woff');font-weight:600 900;font-display:swap}
+@font-face{font-family:MoveAMotorApproved;src:url('/orange-design-preview/assets/drivedrop-sans-regular.woff') format('woff');font-weight:400;font-display:swap}
+@font-face{font-family:MoveAMotorApproved;src:url('/orange-design-preview/assets/drivedrop-sans-bold.woff') format('woff');font-weight:600 900;font-display:swap}
 .approvedHomeSections,.approvedWorkspaceNav,.approvedPublicContent,.approvedLegalRail,.approvedLegalPhoto,.approvedWizard,.approvedQuoteSummary{display:none}
 .approvedIcon{width:22px;height:22px;flex-shrink:0;vertical-align:middle}
 @media screen and (min-width:1024px){
- body.approvedDesktop{--navy:#071c43;--navy2:#082440;--ink:#102749;--muted:#647799;--orange:#ff6315;--orange2:#ff7f22;--line:#e3eaf3;background:#f4f8fd;color:var(--ink);font-family:DriveDropApproved,Arial,sans-serif;font-size:15px;line-height:1.45}
+ body.approvedDesktop{--navy:#071c43;--navy2:#082440;--ink:#102749;--muted:#647799;--orange:#ff6315;--orange2:#ff7f22;--line:#e3eaf3;background:#f4f8fd;color:var(--ink);font-family:MoveAMotorApproved,Arial,sans-serif;font-size:15px;line-height:1.45}
  body.approvedDesktop :is(button,input,textarea,select){font-family:inherit}
  body.approvedDesktop :is(h1,h2,h3,h4){color:var(--navy);letter-spacing:-.4px}
  body.approvedDesktop .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:6px;padding:12px 21px;font-size:14px;font-weight:700;min-height:44px;line-height:1.35;box-shadow:none;text-decoration:none}
@@ -411,10 +411,10 @@
 }
 
 /* Approved homepage reference: desktop only; quote and account forms stay intact. */
-@font-face{font-family:DriveDropScript;src:url('/orange-design-preview/assets/caveat.ttf') format('truetype');font-style:normal;font-weight:400 700;font-display:swap}
+@font-face{font-family:MoveAMotorScript;src:url('/orange-design-preview/assets/caveat.ttf') format('truetype');font-style:normal;font-weight:400 700;font-display:swap}
 .desktopHeroSlogan{display:none}
 @media screen and (min-width:1024px){
- .homePage:not(.desktopQuotePage) .desktopHeroSlogan{display:block;position:absolute;right:35px;top:22px;z-index:2;font:500 43px/.95 DriveDropScript,cursive;color:#092344;transform:rotate(-9deg);text-align:center;pointer-events:none}
+ .homePage:not(.desktopQuotePage) .desktopHeroSlogan{display:block;position:absolute;right:35px;top:22px;z-index:2;font:500 43px/.95 MoveAMotorScript,cursive;color:#092344;transform:rotate(-9deg);text-align:center;pointer-events:none}
  .desktopHeroSlogan span{display:block}.desktopHeroSlogan:after{content:'';display:block;height:5px;background:#ff681b;border-radius:100% 20%;margin:12px 0 0;transform:rotate(-5deg)}
  body.approvedDesktop .approvedReferenceHome{padding-top:46px;background:#fbfcfe}
  .referenceStats{display:flex;justify-content:center;text-align:center;margin:0 auto 28px;gap:0}
@@ -433,7 +433,7 @@
  .referenceReviewControls{display:flex;gap:8px}.referenceReviewControls button{border:1px solid #e4eaf1;background:#fff;color:#10294a;border-radius:50%;width:27px;height:27px;cursor:pointer;font-size:23px;line-height:20px;display:grid;place-items:center}
  .referenceReviewCard{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:12px;background:white;border:1px solid #e3e8ef;padding:12px 13px;border-radius:8px;min-height:191px}
  .referenceQuote{font-size:42px;line-height:25px;color:#ff681b;font-weight:bold}.referenceReviewCard p{font-size:12px;line-height:1.45;color:#43516a;margin:0 0 8px;min-height:86px}.referenceReviewCard strong,.referenceReviewCard small{display:block;font-size:12px}.referenceReviewCard small{color:#647799;margin-top:2px}
- .referenceReviewCard figure{margin:5px 0 0;padding:6px 6px 10px;align-self:center;transform:rotate(-6deg);background:#fff;box-shadow:0 3px 13px #09223d12}.referenceReviewCard img{display:block;width:100%;height:100px;object-fit:cover;border-radius:3px}.referenceReviewCard figcaption{font:500 18px DriveDropScript,cursive;text-align:center;color:#10294a;white-space:nowrap}.referenceReviewCard figcaption:after{content:'';height:2px;background:#ff681b;display:block;width:50%;margin-left:auto}
+ .referenceReviewCard figure{margin:5px 0 0;padding:6px 6px 10px;align-self:center;transform:rotate(-6deg);background:#fff;box-shadow:0 3px 13px #09223d12}.referenceReviewCard img{display:block;width:100%;height:100px;object-fit:cover;border-radius:3px}.referenceReviewCard figcaption{font:500 18px MoveAMotorScript,cursive;text-align:center;color:#10294a;white-space:nowrap}.referenceReviewCard figcaption:after{content:'';height:2px;background:#ff681b;display:block;width:50%;margin-left:auto}
  .referenceSampleNote{text-align:center;color:#748092;font-size:10px;margin:9px 0 12px}
 
  .referenceFooter{position:relative;overflow:hidden;background:#081f3e;color:#dfe8f3;padding:25px 0 20px}
@@ -685,7 +685,7 @@
 }
 @media (prefers-reduced-motion:reduce){.transporterFaqChevron .approvedIcon{transition:none!important}}
 
-/* Approved desktop About DriveDrop page. */
+/* Approved desktop About MoveAMotor page. */
 @media screen and (min-width:1024px){
  body.approvedDesktop .aboutDesktop{background:#fff}
  body.approvedDesktop .aboutDesktop .aboutPageHero{min-height:300px;padding:42px 0;background-image:linear-gradient(90deg,#081f3eea 0%,#081f3ebb 30%,#081f3e22 58%,transparent 75%),url('/orange-design-preview/assets/hero-about-countryside-v2.webp');background-color:#081f3e;background-size:cover,96% auto;background-position:center,right 65%;background-repeat:no-repeat}

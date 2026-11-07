@@ -13,7 +13,7 @@ export async function GET(){
     response.headers.set('Cache-Control','no-store')
     return response
   }catch(error){
-    console.error('DriveDrop health check failed',{requestId,timestamp,error})
+    console.error('MoveAMotor health check failed',{requestId,timestamp,error})
     const response=NextResponse.json({ok:false,timestamp,version,requestId},{status:503})
     response.headers.set('X-Request-ID',requestId)
     response.headers.set('Cache-Control','no-store')

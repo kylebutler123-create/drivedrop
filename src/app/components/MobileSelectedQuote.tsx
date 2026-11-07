@@ -44,7 +44,7 @@ export default function MobileSelectedQuote({request:r,busy,error,checked,onChec
         <button type="button" className={s.secondary} onClick={onRefresh}>Check payment status</button>
       </> : <>
         <h3>Can you still collect this vehicle?</h3>
-        <p>The customer has authorised payment. DriveDrop collects it when you confirm the booking.</p>
+        <p>The customer has authorised payment. MoveAMotor collects it when you confirm the booking.</p>
         <div className={s.deadline}><Icon name="clock"/><span>Respond by <time dateTime={r.respondBy}>{deadline.format(new Date(r.respondBy))} UK time</time></span></div>
         <label className={s.check}><input type="checkbox" checked={checked} disabled={busy} onChange={e=>onCheck(e.target.checked)}/>I can collect within the agreed window.</label>
         {error && <p className="availabilityError" role="alert">{error}</p>}

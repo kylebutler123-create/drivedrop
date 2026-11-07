@@ -53,7 +53,7 @@ export default function PayoutDashboard({rows,initialBlockedOnly=false}:{rows:an
  },[liveRows,category,query,reviewNow]);
  const exportVisible=()=>{
   if(!displayed.length)return;
-  const headings=['Delivery reference','Payout status','Status date','Vehicle','Registration','Transporter','Transporter email','Customer','Customer email','Collection','Delivery','Total paid GBP','DriveDrop fee GBP','Transporter proceeds GBP'];
+  const headings=['Delivery reference','Payout status','Status date','Vehicle','Registration','Transporter','Transporter email','Customer','Customer email','Collection','Delivery','Total paid GBP','MoveAMotor fee GBP','Transporter proceeds GBP'];
   const data=displayed.map(payment=>{
    const booking=payment.booking||{},job=booking.job||{},transporter=booking.transporter||{},customer=booking.customer||{},timestamp=eventDate(payment,category);
    return [bookingReference(booking.id),category,timestamp?new Date(timestamp).toISOString():'',[job.vehicleMake,job.vehicleModel].filter(Boolean).join(' '),job.registration||'',transporter.name||'',transporter.email||'',customer.name||'',customer.email||'',job.collection||'',job.delivery||'',((payment.paidPence||0)/100).toFixed(2),((payment.platformFeePence||0)/100).toFixed(2),((payment.transporterProceedsPence||0)/100).toFixed(2)];

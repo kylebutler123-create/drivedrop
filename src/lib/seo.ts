@@ -1,50 +1,50 @@
 import type {Metadata} from 'next';
 
 // Use the public domain, never a preview URL or a request-supplied host.
-export const SITE_URL = 'https://drive-drop.com';
-export const SITE_NAME = 'DriveDrop';
+export const SITE_URL = 'https://moveamotor.co.uk';
+export const SITE_NAME = 'MoveAMotor';
 const logo = `${SITE_URL}/mobile-app/icon-512.png`;
 
 export const publicPages = {
   '/': {
-    title: 'Car & Vehicle Transport Quotes UK | DriveDrop',
-    description: 'Compare UK vehicle transport quotes from independent transporters. Request car delivery, review profiles and arrange your vehicle move with DriveDrop.',
+    title: 'Car & Vehicle Transport Quotes UK | MoveAMotor',
+    description: 'Compare UK vehicle transport quotes from independent transporters. Request car delivery, review profiles and arrange your vehicle move with MoveAMotor.',
   },
   '/get-quotes': {
-    title: 'Get Vehicle Transport Quotes Across the UK | DriveDrop',
+    title: 'Get Vehicle Transport Quotes Across the UK | MoveAMotor',
     description: 'Request free, no-obligation vehicle transport quotes. Add your collection, delivery and vehicle details to compare offers from UK transporters.',
   },
   '/for-customers': {
-    title: 'Compare UK Car Delivery & Vehicle Transport | DriveDrop',
+    title: 'Compare UK Car Delivery & Vehicle Transport | MoveAMotor',
     description: 'Buying, selling or moving a vehicle? Compare UK transporter quotes, profiles and verification information, then manage your vehicle delivery in one place.',
   },
   '/for-transporters': {
-    title: 'UK Vehicle Transport Jobs for Transporters | DriveDrop',
-    description: 'Join DriveDrop as an independent vehicle transporter. Complete verification, quote for suitable UK transport jobs and manage your deliveries and proceeds.',
+    title: 'UK Vehicle Transport Jobs for Transporters | MoveAMotor',
+    description: 'Join MoveAMotor as an independent vehicle transporter. Complete verification, quote for suitable UK transport jobs and manage your deliveries and proceeds.',
   },
   '/how-it-works': {
-    title: 'How Vehicle Transport Booking Works | DriveDrop',
+    title: 'How Vehicle Transport Booking Works | MoveAMotor',
     description: 'Learn how to request vehicle transport quotes, compare independent transporters and manage your booking from collection through to delivery.',
   },
   '/about': {
-    title: 'About Our UK Vehicle Transport Marketplace | DriveDrop',
-    description: 'DriveDrop connects customers with independent vehicle transporters across the UK, bringing transport quotes, profiles and delivery records together.',
+    title: 'About Our UK Vehicle Transport Marketplace | MoveAMotor',
+    description: 'MoveAMotor connects customers with independent vehicle transporters across the UK, bringing transport quotes, profiles and delivery records together.',
   },
   '/help': {
-    title: 'Vehicle Transport Help & FAQs | DriveDrop',
-    description: 'Find answers about DriveDrop vehicle transport quotes, bookings, transporter verification, collection, delivery and getting help with your journey.',
+    title: 'Vehicle Transport Help & FAQs | MoveAMotor',
+    description: 'Find answers about MoveAMotor vehicle transport quotes, bookings, transporter verification, collection, delivery and getting help with your journey.',
   },
   '/contact': {
-    title: 'Contact DriveDrop | Vehicle Transport Support',
-    description: 'Contact DriveDrop for help with your account or vehicle transport booking. Find support for customers and transporters using the UK marketplace.',
+    title: 'Contact MoveAMotor | Vehicle Transport Support',
+    description: 'Contact MoveAMotor for help with your account or vehicle transport booking. Find support for customers and transporters using the UK marketplace.',
   },
   '/terms': {
-    title: 'Terms & Conditions | DriveDrop',
-    description: 'Read the terms for using the DriveDrop UK vehicle transport marketplace, including customer and transporter responsibilities, bookings and payments.',
+    title: 'Terms & Conditions | MoveAMotor',
+    description: 'Read the terms for using the MoveAMotor UK vehicle transport marketplace, including customer and transporter responsibilities, bookings and payments.',
   },
   '/privacy': {
-    title: 'Privacy Policy | DriveDrop',
-    description: 'Read how DriveDrop handles personal information when you use its UK vehicle transport marketplace, including account, booking and communication data.',
+    title: 'Privacy Policy | MoveAMotor',
+    description: 'Read how MoveAMotor handles personal information when you use its UK vehicle transport marketplace, including account, booking and communication data.',
   },
 } as const;
 
@@ -76,11 +76,11 @@ export function publicPageMetadata(path: PublicPage): Metadata {
     openGraph: {
       type: 'website', locale: 'en_GB', siteName: SITE_NAME,
       title, description, url,
-      images: [{url: logo, width: 512, height: 512, alt: 'DriveDrop logo'}],
+      images: [{url: logo, width: 512, height: 512, alt: 'MoveAMotor logo'}],
     },
     twitter: {
       card: 'summary', title, description,
-      images: [{url: logo, alt: 'DriveDrop logo'}],
+      images: [{url: logo, alt: 'MoveAMotor logo'}],
     },
   };
 }

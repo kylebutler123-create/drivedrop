@@ -25,7 +25,7 @@ export default function MobilePublicAuth({mode}:{mode:Mode}){
  const title=mode==='login'?'Welcome back':register?(transporter?'Join as a transporter':'Create your account'):mode==='forgot'?'Forgot your password?':'Set a new password';
  const intro=mode==='login'?(transporter?'Your jobs, deliveries and proceeds in one place.':'Sign in to manage your vehicle delivery.'):register?(transporter?'Find work and manage your deliveries.':'Get quotes and manage your vehicle delivery.'):mode==='forgot'?'Enter the email address linked to your account.':'Choose a password with at least 8 characters.';
  const emailChange=params.get('emailChange');
- const emailNotice=emailChange==='confirmed'?'Your email address has been verified and updated. Sign in using your new email address.':emailChange==='taken'?'That email address is already linked to another DriveDrop account.':emailChange==='invalid'?'That email verification link is invalid or has expired. Please request a new one from your Account page.':null;
+ const emailNotice=emailChange==='confirmed'?'Your email address has been verified and updated. Sign in using your new email address.':emailChange==='taken'?'That email address is already linked to another MoveAMotor account.':emailChange==='invalid'?'That email verification link is invalid or has expired. Please request a new one from your Account page.':null;
  async function submit(event:FormEvent<HTMLFormElement>){
   event.preventDefault();if(inFlight.current)return;
   const fields=new FormData(event.currentTarget);setError('');
@@ -47,7 +47,7 @@ export default function MobilePublicAuth({mode}:{mode:Mode}){
   {!recovery&&<div className="mpSwitch" aria-label="Choose account type"><Link href={target&&!transporter?`/login?${params}`:`/${mode}?account=customer${vehicle?'&vehicleType='+encodeURIComponent(vehicle):''}`} aria-current={!transporter?'page':undefined}>Customer</Link><Link href={target&&transporter?`/login?${params}`:`/${mode}?account=transporter`} aria-current={transporter?'page':undefined}>Transporter</Link></div>}
   {mode==='login'&&params.get('session')==='expired'&&<div className="mpNotice" role="status">Your session has ended. Please sign in again.</div>}
   {target?.notice&&<div className="mpNotice" role="status">{target.notice} <Link href="/app">Back to my account</Link></div>}
-  {mode==='login'&&params.get('accountClosed')==='1'&&<div className="mpNotice" role="status">Your DriveDrop account has been closed and you have been signed out.</div>}
+  {mode==='login'&&params.get('accountClosed')==='1'&&<div className="mpNotice" role="status">Your MoveAMotor account has been closed and you have been signed out.</div>}
   {mode==='login'&&emailNotice&&<div className="mpNotice" role="status">{emailNotice}</div>}
   {done?<div className="mpSuccess" ref={notice} tabIndex={-1} role="status"><span><PublicIcon name={mode==='forgot'?'mail':'check'}/></span><h2>{mode==='forgot'?'Check your email':'Password changed'}</h2><p>{mode==='forgot'?'If an eligible account exists, we’ll email reset instructions.':'Your password has been updated successfully. Existing sessions have been signed out.'}</p>{mode==='forgot'?<small>Reset links expire after 30 minutes and can only be used once.</small>:<Link className="mpButton mpSecondary" href={signIn}>Back to sign in</Link>}</div>:<div className="mpAuthCard"><form method="post" onSubmit={submit} aria-busy={busy}><fieldset disabled={busy}>
    {register&&<label className="mpField">{transporter?'Name / business name':'Your name'}<input name="name" autoComplete="name" placeholder={transporter?'Your name or business name':'Your name'} required minLength={2}/></label>}
@@ -61,7 +61,7 @@ export default function MobilePublicAuth({mode}:{mode:Mode}){
    {error&&<p className="mpError" role="alert">{error}{mode==='reset'&&<Link href={'/forgot-password?'+query}>Request a new reset link</Link>}</p>}
    <button className="mpButton" type="submit" disabled={busy}>{busy?'Please wait…':mode==='login'?'Sign in':register?`Create ${account} account`:mode==='forgot'?'Send reset link':'Change password'}</button>
   </fieldset></form>
-  {mode==='login'&&<><div className="mpDivider">New to DriveDrop?</div><Link className="mpOutline" href={'/register?'+query}>Create {account} account</Link></>}
+  {mode==='login'&&<><div className="mpDivider">New to MoveAMotor?</div><Link className="mpOutline" href={'/register?'+query}>Create {account} account</Link></>}
   {register&&<p className="mpLegalConsent">By creating an account, you agree to the <Link href="/terms">Terms & Conditions</Link>. Read our <Link href="/privacy">Privacy Policy</Link>.</p>}
   {mode==='forgot'&&<PublicNote icon="mail" title="">If an eligible account exists, we’ll email reset instructions.</PublicNote>}
   {mode==='reset'&&<PublicNote title="">You’ll sign in again after changing your password.</PublicNote>}

@@ -83,7 +83,7 @@ export async function POST(r:Request){
   try{await prisma.transportJob.update({where:{id:booking.jobId},data:{status:'COMPLETED'}})}catch(e){console.error('Transport job completion sync failed',e)}
   const vehicle=[(booking.job as any).vehicleYear,booking.job.vehicleMake,booking.job.vehicleModel].filter(Boolean).join(' ').replace(/\s+/g,' ').trim()||'vehicle';
   await createNotificationSafely({userId:booking.customerId,type:'DELIVERY',title:'Vehicle delivered',body:`${vehicle}: proof of delivery has been submitted and the delivery is complete.`,href:'/customer'});
-  await sendTransactionalEmailSafely({to:booking.customer.email,subject:`Your ${vehicle} has been delivered`,heading:'Vehicle delivered',preheader:'Proof of delivery is now available in your DriveDrop account.',body:`Hi ${booking.customer.name?.trim()||'there'},\n\nYour transporter has completed the delivery of your ${vehicle}. Proof of delivery, including the recipient signature and delivery photos, is securely stored with the booking.`,ctaLabel:'View delivery',ctaPath:'/customer'});
+  await sendTransactionalEmailSafely({to:booking.customer.email,subject:`Your ${vehicle} has been delivered`,heading:'Vehicle delivered',preheader:'Proof of delivery is now available in your MoveAMotor account.',body:`Hi ${booking.customer.name?.trim()||'there'},\n\nYour transporter has completed the delivery of your ${vehicle}. Proof of delivery, including the recipient signature and delivery photos, is securely stored with the booking.`,ctaLabel:'View delivery',ctaPath:'/customer'});
   return NextResponse.json({ok:true,submittedAt});
  }catch(e){console.error('Proof of delivery submission failed',e);return NextResponse.json({error:'Unable to submit proof of delivery right now'},{status:500})}
 }

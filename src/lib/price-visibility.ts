@@ -21,7 +21,7 @@ export function transporterRefund(base:number,p:{refundedPence:number;transporte
 }
 export function notificationForAccount<T extends {type:string;title:string;body:string}>(n:T,role:string):T{
  let body=n.body;
- if(role==='CUSTOMER'&&n.type==='QUOTE')body=body.replace(/ including the DriveDrop fee/g,'');
+ if(role==='CUSTOMER'&&n.type==='QUOTE')body=body.replace(/ including the MoveAMotor fee/g,'');
  if(role==='TRANSPORTER'){
   if(n.type==='BOOKING'&&n.title==='New confirmed booking')body=body.replace(/has paid £[\d,.]+ and confirmed/,'has paid and confirmed');
   if(n.type==='PAYMENT'&&n.title==='Customer payment secured')body=body.replace(/Payment of £[\d,.]+ is secured/,'Payment is secured');

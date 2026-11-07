@@ -12,7 +12,7 @@ const json = (body: object, status = 200) => Response.json(body, {
 
 export async function POST(request: Request) {
   if (request.headers.get('origin') !== new URL(request.url).origin) {
-    return json({error: 'Please send your message from the DriveDrop contact page.'}, 403);
+    return json({error: 'Please send your message from the MoveAMotor contact page.'}, 403);
   }
   if (request.headers.get('content-type')?.split(';')[0].trim().toLowerCase() !== 'application/json') {
     return json({error: 'Invalid message format.'}, 415);
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
     return json({sent: true});
   } catch {
     // Never log the visitor's message, contact details or provider credentials.
-    console.error('DriveDrop contact enquiry email could not be confirmed');
+    console.error('MoveAMotor contact enquiry email could not be confirmed');
     return json({error: `We could not confirm your message was sent. Please try again, or email ${SUPPORT_CONTACT.email}.`}, 502);
   }
 }

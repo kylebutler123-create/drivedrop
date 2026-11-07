@@ -1,4 +1,4 @@
-/* Shared legal page layout, aligned with the public DriveDrop header. */
+/* Shared legal page layout, aligned with the public MoveAMotor header. */
 body:has(.legalPage) > .guestTop{
   display:block;
   min-height:82px;

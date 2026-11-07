@@ -208,7 +208,7 @@ function enhance(card:HTMLElement){
  const btn=document.createElement('button');
  btn.type='button';btn.className='customerCardToggle';btn.setAttribute('aria-expanded','false');
  const status=text(card.querySelector('.statusPill'));
- const title=text(card.querySelector('.bookingTop h2, .panelHeading h2'))||'DriveDrop card';
+ const title=text(card.querySelector('.bookingTop h2, .panelHeading h2'))||'MoveAMotor card';
  const partner=text(card.querySelector('.bookingPartner, .panelHeading p'));
  const route=card.querySelector('.routeVisual');
  const routeStops=route?Array.from(route.querySelectorAll('b')).map(x=>text(x)).filter(Boolean):[];

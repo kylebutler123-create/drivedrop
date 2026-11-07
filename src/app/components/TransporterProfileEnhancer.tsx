@@ -32,7 +32,7 @@ export default function TransporterProfileEnhancer(){
         const years=transporter.yearsOperating===null||transporter.yearsOperating===undefined?'New business':`${transporter.yearsOperating} year${transporter.yearsOperating===1?'':'s'} operating`;
         const verified=transporter.verificationStatus==='APPROVED';
         const rating=transporter.averageRating!==null&&transporter.averageRating!==undefined?`★ ${Number(transporter.averageRating).toFixed(1)} · ${transporter.reviewCount} review${transporter.reviewCount===1?'':'s'}`:'★ New transporter';
-        meta.innerHTML=`<div class="transporterTrustRow"><span>${verified?'✓ DriveDrop Verified':'Verification pending'}</span><span>${rating}</span><span>${years}</span></div><a class="btn light transporterProfileLink" href="/transporter/profile/${encodeURIComponent(transporter.id)}">View profile</a>`;
+        meta.innerHTML=`<div class="transporterTrustRow"><span>${verified?'✓ MoveAMotor Verified':'Verification pending'}</span><span>${rating}</span><span>${years}</span></div><a class="btn light transporterProfileLink" href="/transporter/profile/${encodeURIComponent(transporter.id)}">View profile</a>`;
         holder.appendChild(meta);
       });
     }

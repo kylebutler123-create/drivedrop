@@ -26,7 +26,7 @@ export default function MobileTransporterProfile({name,businessName,createdAt,ve
     <Link href={backHref} className="ddPublicProfileBack"><Icon name="arrow"/>{backLabel}</Link>
     <h1>Transporter profile</h1>
     <section className="ddPublicProfileIdentity" aria-label="Transporter summary">
-      <div className="ddPublicProfilePerson"><ProfileImage url={imageUrl} alt={`${businessName} profile`} initials={initials} kind={imageKind}/><div><h2>{businessName}</h2><p>{name}</p><span className={`ddPublicProfileVerified${verified?' isVerified':''}`}>{verified&&<Icon name="circleCheck"/>}{verified?'DriveDrop verified':label(verification?.status||'NOT_STARTED')}</span></div></div>
+      <div className="ddPublicProfilePerson"><ProfileImage url={imageUrl} alt={`${businessName} profile`} initials={initials} kind={imageKind}/><div><h2>{businessName}</h2><p>{name}</p><span className={`ddPublicProfileVerified${verified?' isVerified':''}`}>{verified&&<Icon name="circleCheck"/>}{verified?'MoveAMotor verified':label(verification?.status||'NOT_STARTED')}</span></div></div>
       <dl className="ddPublicProfileStats">
         <div><dt>{reviews.length?`${reviews.length} review${reviews.length===1?'':'s'}`:'No reviews yet'}</dt><dd>{averageRating===null?'New':<>{averageRating.toFixed(1)}<Icon name="star"/></>}</dd></div>
         <div><dt>Completed deliveries</dt><dd>{deliveries.length}</dd></div>
@@ -51,13 +51,13 @@ export default function MobileTransporterProfile({name,businessName,createdAt,ve
     <MobileProfilePhotos photos={photos}/>
 
     <section className="ddPublicProfileReviews" aria-labelledby="profile-reviews-heading">
-      <h2 id="profile-reviews-heading">Verified customer reviews</h2><p className="ddPublicProfileSubtitle">From completed DriveDrop bookings</p>
+      <h2 id="profile-reviews-heading">Verified customer reviews</h2><p className="ddPublicProfileSubtitle">From completed MoveAMotor bookings</p>
       {reviews.length?<div className="ddPublicProfileReviewList">{reviews.map(review=><article className="ddPublicProfileReview" key={review.id}>
         <div className="ddPublicProfileReviewTop"><span className="ddPublicProfileStars" role="img" aria-label={`${review.rating} out of 5 stars`}>{Array.from({length:5},(_,index)=><span key={index} className={index<review.rating?'isFilled':''}><Icon name="star"/></span>)}</span><time dateTime={review.createdAt.toISOString()}>{date(review.createdAt)}</time></div>
         <p>{review.body||'Customer left a verified rating without a written review.'}</p>
         <div className="ddPublicProfileReviewer"><div><strong>{review.customer.name}</strong><span>{review.booking.job.vehicleMake} {review.booking.job.vehicleModel}</span></div><small><Icon name="circleCheck"/>Verified booking</small></div>
         {review.transporterResponse&&<div className="ddPublicProfileResponse"><strong>Transporter response</strong><p>{review.transporterResponse}</p></div>}
-      </article>)}</div>:<p className="ddPublicProfileEmpty">No reviews yet. Reviews will appear after completed DriveDrop bookings.</p>}
+      </article>)}</div>:<p className="ddPublicProfileEmpty">No reviews yet. Reviews will appear after completed MoveAMotor bookings.</p>}
     </section>
 
     <section className="ddPublicProfileDeliveries" aria-labelledby="profile-deliveries-heading">

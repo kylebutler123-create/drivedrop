@@ -38,10 +38,10 @@ export async function POST(r:Request){
   return created;
  });
  if(user.role==='ADMIN'){
-  await createNotificationSafely({userId:conversation.userId,type:'MESSAGE',title:'New message from DriveDrop Support',body:'DriveDrop Support sent you a private message.',href:`/messages?bookingId=${encodeURIComponent(`support:${conversation.id}`)}`});
+  await createNotificationSafely({userId:conversation.userId,type:'MESSAGE',title:'New message from MoveAMotor Support',body:'MoveAMotor Support sent you a private message.',href:`/messages?bookingId=${encodeURIComponent(`support:${conversation.id}`)}`});
  }else{
   const admins=await prisma.user.findMany({where:{role:'ADMIN',accountStatus:'ACTIVE'},select:{id:true}});
-  await Promise.all(admins.map(admin=>createNotificationSafely({userId:admin.id,type:'MESSAGE',title:'New support reply',body:`${conversation.user.name} replied to DriveDrop Support.`,href:`/messages?bookingId=${encodeURIComponent(`support:${conversation.id}`)}`})));
+  await Promise.all(admins.map(admin=>createNotificationSafely({userId:admin.id,type:'MESSAGE',title:'New support reply',body:`${conversation.user.name} replied to MoveAMotor Support.`,href:`/messages?bookingId=${encodeURIComponent(`support:${conversation.id}`)}`})));
  }
  return NextResponse.json(message,{status:201,headers:{'Cache-Control':'no-store, max-age=0'}});
 }

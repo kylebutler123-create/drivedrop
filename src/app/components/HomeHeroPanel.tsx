@@ -170,7 +170,7 @@ function LoginPanel({account,active,error,submitting,showPassword,onBack,onSwitc
       <button type="submit" className="btn orange homeLoginSubmit" disabled={submitting}>{submitting?'Signing in…':'Sign in securely'}</button>
     </form>
     <div className="homeLoginCreate">
-      <span>New to DriveDrop?</span>
+      <span>New to MoveAMotor?</span>
       <button type="button" onClick={onCreate}>{transporter?'Create transporter account':'Create customer account'} →</button>
     </div>
   </section>;

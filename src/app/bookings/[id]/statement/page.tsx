@@ -45,7 +45,7 @@ export default async function DeliveryStatement({params}:{params:Promise<{id:str
   <div className={styles.toolbar}><Link className="btn light" href={backHref}>← Back to Completed</Link><StatementPrintButton/></div>
   <article className={styles.statement}>
    <header className={styles.header}>
-    <div><span className={styles.brand}>DriveDrop</span><h1>{customerView?'Delivery receipt':'Transporter payment statement'}</h1><p>Completed vehicle transport record</p></div>
+    <div><span className={styles.brand}>MoveAMotor</span><h1>{customerView?'Delivery receipt':'Transporter payment statement'}</h1><p>Completed vehicle transport record</p></div>
     <div className={styles.reference}><small>Delivery reference</small><strong>{bookingReference(booking.id)}</strong><span>Issued {dateOnly(new Date())}</span></div>
    </header>
    <section className={styles.summary}>
@@ -74,7 +74,7 @@ export default async function DeliveryStatement({params}:{params:Promise<{id:str
    <section className={styles.section}><h2>{customerView?'Payment record':'Payout record'}</h2><div className={styles.payment}>
     {customerView?<><div><span>Total paid</span><strong>{money(totalPaid)}</strong></div>{refunded>0&&<><div><span>Refunded</span><strong>{money(refunded)}</strong></div><div><span>Net paid</span><strong>{money(Math.max(0,totalPaid-refunded))}</strong></div></>}<div><span>Payment status</span><strong>{booking.payment?label(booking.payment.status):'Not recorded'}</strong></div></>:<>{cancellationDeduction>0&&<><div><span>Proceeds before fine</span><strong>{money(proceeds+cancellationDeduction)}</strong></div><div><span>Fine deduction</span><strong>−{money(cancellationDeduction)}</strong></div></>}<div><span>{cancellationDeduction>0?'Net transporter payout':'Transporter proceeds'}</span><strong>{money(proceeds)}</strong></div><div><span>Payout status</span><strong>{booking.payment?label(booking.payment.payoutStatus):'Not recorded'}</strong></div>{payoutReleasedAt&&<div><span>Paid on</span><strong>{dateTime(payoutReleasedAt)}</strong></div>}</>}
    </div></section>
-   <footer className={styles.footer}>This statement records activity held by DriveDrop for delivery {bookingReference(booking.id)}.</footer>
+   <footer className={styles.footer}>This statement records activity held by MoveAMotor for delivery {bookingReference(booking.id)}.</footer>
   </article>
  </main>;
 }
