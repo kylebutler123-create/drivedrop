@@ -25,7 +25,7 @@ Production build and TypeScript passed. Production-payment-runtime tests passed,
 
 Previous known live production deployment: dpl_8nu6W3UFF11EtNtXDDcu17ZtpQMR, source 7999ad725562c927a0561015ae1fbbd84cba5a17, URL drivedrop-du8v9u83p-future-9f39.vercel.app. Reassign affected aliases to that deployment if rollback is needed. Before a subsequent old-source rebuild, restore both production URL variables to https://drive-drop.com. Existing deployment environments are immutable. Preserve the new domain registrations and email DNS.
 
-Final production deployment ID and live verification results will be appended after publication.
+Final publication and verification are recorded below.
 
 ## First live verification and artwork follow-up
 
@@ -34,3 +34,11 @@ Source 9e006f12d0d5160dffc880955f337c4e9717b2fd deployed READY as dpl_GiQyJ5izc2
 A visual inspection found old text baked into the desktop home/about truck photos and mobile transporter jacket. Built-in image editing replaced only those wordmarks with MoveAMotor, preserving each scene. Project assets: public/moveamotor-westminster-hero.webp, public/moveamotor-countryside-hero.webp, public/moveamotor-transporter.webp. Original files remain for rollback. Prompts requested exact MoveAMotor text, matching original lettering/perspective and preserving framing, scenery, people and colors. Assets were converted to optimized WebP.
 
 The connected browser timed out while switching viewport for mobile validation and opening Search Console; responsive screenshot and Google account migration were not completed in that browser. Public HTTP checks and independent desktop-browser checks continued.
+
+## Final publication
+
+Final application source: 00521ce078b2704428935b98cc14a2a20b1c5142. Production deployment: dpl_eTwgdj9ASZZLro4SYKTXSzYMdt9u (READY), drivedrop-j7s1671na-future-9f39.vercel.app. Both moveamotor.co.uk and drive-drop.com were explicitly assigned to it. The three edited images were fetched publicly and byte-compared with repository assets. Final homepage screenshot showed both header and truck wordmarks correctly. Customer/transporter login navigation was checked in a separate public browser; no sign-in credentials, bookings, payments or emails were submitted.
+
+Live old-domain verification: /, /about and /get-quotes?vehicle=car returned 308 to the matching MoveAMotor path/query; /login returned 200; both Stripe webhook routes returned 405 to GET with no redirect. These are routing checks, not live payment-flow tests. The existing genuine live booking validation remains a separate task.
+
+Remaining rebrand work: new domain email and mailbox verification, Stripe business/support profile and descriptor review, Search Console ownership/sitemap/change-of-address submission, and responsive visual verification after the connected browser is available. Current sender/support addresses and original payment webhook endpoints remain active.
