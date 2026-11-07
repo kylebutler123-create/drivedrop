@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "DriveDrop",
+    "slug": "drivedrop",
+    "version": "0.1.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "scheme": "drivedrop",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.drivedrop.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Take vehicle condition and delivery photos for your DriveDrop booking.",
+        "NSPhotoLibraryUsageDescription": "Choose vehicle and verification photos to upload to DriveDrop.",
+        "NSLocationWhenInUseUsageDescription": "Record your location when you submit proof of delivery."
+      }
+    },
+    "android": {
+      "package": "com.drivedrop.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "CAMERA",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_MEDIA_VIDEO"
+      ],
+      "predictiveBackGestureEnabled": true
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-web-browser"
+    ]
+  }
+}
