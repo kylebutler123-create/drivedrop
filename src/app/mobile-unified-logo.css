@@ -11,7 +11,7 @@
     width: 128px;
     height: 34px;
     flex: 0 0 128px;
-    background: url('/moveamotor-logo.svg') left center / contain no-repeat;
+    background: url('/moveamotor-mobile-logo.svg') left center / contain no-repeat;
   }
   .customerTop .customerPrimaryNav .headerLogo .mobileBrandLogo,
   .transporterTop .transporterPrimaryNav .headerLogo .mobileBrandLogo {
@@ -30,7 +30,7 @@
     height: 34px;
     transform: scale(1.06);
     transform-origin: left top;
-    background: url('/moveamotor-logo.svg') left center / contain no-repeat;
+    background: url('/moveamotor-mobile-logo.svg') left center / contain no-repeat;
   }
 }
 

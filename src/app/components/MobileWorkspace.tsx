@@ -71,7 +71,7 @@ export default function MobileWorkspace({role, name}: {role: Role; name: string}
   return <>
     <header className={`ddMobileHeader${focusedDelivery ? ' ddDeliveryHeader' : ''}`}>
       {focusedDelivery ? <><Link className="ddHeaderBack" href="/customer?view=bookings" aria-label="Back to deliveries"><Icon name="arrow"/></Link><strong>Delivery details</strong></>
-        : <Link href={root} onNavigate={() => navigateTo(root)} className="ddMobileBrand" aria-label="MoveAMotor home"><img src="/moveamotor-logo-dark.svg" width="152" height="38" alt="MoveAMotor"/></Link>}
+        : <Link href={root} onNavigate={() => navigateTo(root)} className="ddMobileBrand" aria-label="MoveAmotor home"><img src="/moveamotor-logo-dark.svg" width="152" height="38" alt="MoveAmotor"/></Link>}
       <div className="ddHeaderActions"><NotificationNavLink/><details ref={accountMenu} className="ddAccountMenu">
         <summary aria-label="Open account menu"><span className="ddAvatar">{role==='CUSTOMER'?<MobileCustomerPhoto name={name}/>:<TransporterPhoto name={name}/>}</span></summary>
         <div className="ddMenuPanel"><strong>{name}</strong><small>{transporter ? 'Transporter' : 'Customer'} account</small>

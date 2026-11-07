@@ -18,7 +18,7 @@
     width: 205px;
     height: 48px;
     font-size: 0;
-    background: url('/moveamotor-logo.svg') left center / contain no-repeat;
+    background: url('/moveamotor-mobile-logo.svg') left center / contain no-repeat;
   }
 
   .homePage .footerLogo span { display: none; }

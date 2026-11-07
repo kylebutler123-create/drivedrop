@@ -42,3 +42,7 @@ Final application source: 00521ce078b2704428935b98cc14a2a20b1c5142. Production d
 Live old-domain verification: /, /about and /get-quotes?vehicle=car returned 308 to the matching MoveAMotor path/query; /login returned 200; both Stripe webhook routes returned 405 to GET with no redirect. These are routing checks, not live payment-flow tests. The existing genuine live booking validation remains a separate task.
 
 Remaining rebrand work: new domain email and mailbox verification, Stripe business/support profile and descriptor review, Search Console ownership/sitemap/change-of-address submission, and responsive visual verification after the connected browser is available. Current sender/support addresses and original payment webhook endpoints remain active.
+
+## Original logo style restored
+
+The owner requested the original logo with only DriveDrop replaced by MoveAmotor. The full orange pin, upright navy/white lettering and original outlined tagline were restored for the desktop/public logos. The wordmark uses the original Nimbus Sans Bold font, size, baseline and spacing; reconstructing DriveDrop reproduced the original outline exactly. Each original mobile and fallback variant was retained in its existing context, with the same icon and colours and only the name replaced. The wider name extends each SVG canvas without stretching the artwork. Domain, email, payment and photo settings are unchanged by this correction.
