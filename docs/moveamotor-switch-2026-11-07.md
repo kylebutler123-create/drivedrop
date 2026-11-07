@@ -26,3 +26,11 @@ Production build and TypeScript passed. Production-payment-runtime tests passed,
 Previous known live production deployment: dpl_8nu6W3UFF11EtNtXDDcu17ZtpQMR, source 7999ad725562c927a0561015ae1fbbd84cba5a17, URL drivedrop-du8v9u83p-future-9f39.vercel.app. Reassign affected aliases to that deployment if rollback is needed. Before a subsequent old-source rebuild, restore both production URL variables to https://drive-drop.com. Existing deployment environments are immutable. Preserve the new domain registrations and email DNS.
 
 Final production deployment ID and live verification results will be appended after publication.
+
+## First live verification and artwork follow-up
+
+Source 9e006f12d0d5160dffc880955f337c4e9717b2fd deployed READY as dpl_GiQyJ5izc2KDCUioMv5MpWUCjWfE. moveamotor.co.uk was explicitly assigned to this production deployment. Live read-only SEO suite passed all 10 public pages, 11 private routes, canonicals, sitemap and headers. www/.uk redirects preserved paths and query strings. Manifest returned MoveAMotor; anonymous /api/me returned 401. Desktop rendered with the new wordmark and no browser console errors.
+
+A visual inspection found old text baked into the desktop home/about truck photos and mobile transporter jacket. Built-in image editing replaced only those wordmarks with MoveAMotor, preserving each scene. Project assets: public/moveamotor-westminster-hero.webp, public/moveamotor-countryside-hero.webp, public/moveamotor-transporter.webp. Original files remain for rollback. Prompts requested exact MoveAMotor text, matching original lettering/perspective and preserving framing, scenery, people and colors. Assets were converted to optimized WebP.
+
+The connected browser timed out while switching viewport for mobile validation and opening Search Console; responsive screenshot and Google account migration were not completed in that browser. Public HTTP checks and independent desktop-browser checks continued.
