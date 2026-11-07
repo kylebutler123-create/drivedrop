@@ -46,3 +46,5 @@ Remaining rebrand work: new domain email and mailbox verification, Stripe busine
 ## Original logo style restored
 
 The owner requested the original logo with only DriveDrop replaced by MoveAmotor. The full orange pin, upright navy/white lettering and original outlined tagline were restored for the desktop/public logos. The wordmark uses the original Nimbus Sans Bold font, size, baseline and spacing; reconstructing DriveDrop reproduced the original outline exactly. Each original mobile and fallback variant was retained in its existing context, with the same icon and colours and only the name replaced. The wider name extends each SVG canvas without stretching the artwork. Domain, email, payment and photo settings are unchanged by this correction.
+
+The owner subsequently clarified the required capitalisation as **MoveAMotor**. All five vector logo variants and their accessible labels now use that exact spelling; only the lowercase m was replaced by an uppercase M, preserving the restored artwork.

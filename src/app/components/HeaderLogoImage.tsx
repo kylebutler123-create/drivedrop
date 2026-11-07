@@ -4,7 +4,7 @@ export default function HeaderLogoImage(){
   return <>
     <picture>
       <source media="(min-width: 761px)" srcSet="/moveamotor-mobile-logo.svg"/>
-      <img src="/moveamotor-mobile-logo.svg" alt="MoveAmotor"/>
+      <img src="/moveamotor-mobile-logo.svg" alt="MoveAMotor"/>
     </picture>
     <MobileBrandLogo/>
   </>;
