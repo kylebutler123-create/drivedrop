@@ -33,4 +33,4 @@ Keep this record to retain Search Console ownership verification.
 
 No application code, deployments, redirects, account data, Stripe settings or payment flows were changed during this Google setup. Existing public redirects and retained private/API routes remain as recorded in the domain-switch notes.
 
-The Google ownership, sitemap and change-of-address tasks are complete. Separate remaining work: Microsoft mailbox DKIM activation and delivery retest (already authorised), Stripe business/support profile and statement-descriptor review, and responsive visual verification. See the email-switch notes for the current Microsoft recognition delay.
+The Google ownership, sitemap and change-of-address tasks are complete. Stripe branding and profile updates were subsequently completed; see `moveamotor-stripe-branding-2026-11-08.md`. Separate remaining work: Microsoft mailbox DKIM activation and delivery retest (already authorised), and responsive visual verification. See the email-switch notes for the current Microsoft recognition delay.

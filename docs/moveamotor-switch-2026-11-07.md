@@ -53,4 +53,6 @@ The owner subsequently clarified the required capitalisation as **MoveAMotor**. 
 
 The mailbox and application sender switch is recorded in `moveamotor-email-switch-2026-11-08.md`; both real email deliveries succeeded but landed in Junk, and Microsoft DKIM activation is still awaiting provider recognition.
 
-Google Search Console ownership, sitemap submission and the old-to-new change of address are complete. The sitemap reports Success with 10 discovered pages; the new homepage is indexed and passes Google's live test. Details are in `moveamotor-google-migration-2026-11-08.md`. Stripe business/support profile and descriptor review, responsive visual verification, and the separate genuine live booking validation remain outstanding.
+Google Search Console ownership, sitemap submission and the old-to-new change of address are complete. The sitemap reports Success with 10 discovered pages; the new homepage is indexed and passes Google's live test. Details are in `moveamotor-google-migration-2026-11-08.md`.
+
+Stripe business/support details, statement descriptor, dashboard account label, Connect branding name and profile display details now use MoveAMotor. The existing Stripe profile handle/link is retained. Stripe reports no active account tasks and active Payments/Payouts. See `moveamotor-stripe-branding-2026-11-08.md`. Responsive visual verification, Microsoft mailbox DKIM/delivery follow-up, and the separate genuine live booking validation remain outstanding.
