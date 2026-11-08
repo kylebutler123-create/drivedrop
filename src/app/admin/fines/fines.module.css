@@ -73,3 +73,48 @@
   .ledger th,.ledger td {padding:7px 3px}
   .ledger thead th,.ledger small {font-size:11px}
 }
+
+/* The approved mobile admin design exposes the same fines ledger and balances. */
+@media(max-width:1023px){
+ .page{color:#081c43}
+ .hero{display:block;padding:0;background:none;border-radius:0;color:#081c43}
+ .hero h1{color:#081c43;font-size:27px;margin:0 0 9px}
+ .hero p{color:#63799d;font-size:13px;line-height:1.55}
+ .eyebrow{font-size:10px;color:#63799d;margin-bottom:10px}
+ .eyebrow:before{display:none}
+ .heroTotal{display:grid;gap:7px;margin-top:20px;padding:19px;border:0;border-radius:12px;background:#081c43;color:#fff}
+ .heroTotal strong{font-size:32px;color:#fff}
+ .heroTotal small{font-size:12px;color:#c0cee2}
+ .crumb{font-size:12px;min-height:32px;flex-wrap:wrap}
+ .directory{border-color:#e3eaf3;border-radius:13px;box-shadow:none}
+ .toolbar{align-items:stretch;flex-direction:column;padding:16px}
+ .toolbar h2{font-size:18px}
+ .search{width:100%;background:#fff;border-color:#e3eaf3;border-radius:8px}
+ .search input{min-height:44px;font-size:16px}
+ .owner{padding:16px 12px;gap:9px;min-height:76px;border-color:#e3eaf3}
+ .owner strong{font-size:14px}
+ .owner small{font-size:11px;line-height:1.5}
+ .owner[aria-expanded=true]{background:#f5f8fc}
+ .avatar{width:36px;height:38px;border-radius:10px;background:#edf2f8;color:#081c43;font-size:14px}
+ .balance strong{font-size:18px}
+ .ledger{padding:15px 12px;overflow-x:auto}
+ .ledgerTitle{flex-wrap:wrap}
+ .ledgerTitle a{min-height:44px;display:flex;align-items:center}
+ .ledger table{font-size:12px}
+ .ledger th,.ledger td{padding:10px 5px}
+ .entry{display:grid;gap:7px;padding:16px;border:1px solid #e3eaf3;border-radius:13px;background:#fff;color:#081c43;text-decoration:none}
+ .entryHead,.entryFoot,.accountHeadline,.categoryRow{display:flex;align-items:center;gap:8px}
+ .entryHead{font-size:13px;font-weight:700}
+ .entryHead svg{color:#9b571d}
+ .entryValue{font-size:26px;letter-spacing:-.6px;line-height:1.3}
+ .entry small,.accountFine small{font-size:11px;line-height:1.5;color:#63799d}
+ .entryFoot{justify-content:space-between;border-top:1px solid #e3eaf3;padding-top:10px;margin-top:4px;font-size:12px;color:#426286}
+ .accountFine{display:block;padding:13px;margin-top:14px;border:1px solid #f4ddbd;border-radius:9px;background:#fff7ec;color:#081c43}
+ .accountHeadline{justify-content:space-between;flex-wrap:wrap}
+ .accountHeadline h4{font-size:13px;margin:0}
+ .accountHeadline strong{font-size:21px;color:#985210}
+ .accountFine dl{margin:8px 0}
+ .categoryRow{justify-content:space-between;border-top:1px solid #f4ddbd;padding:8px 0;font-size:12px}
+ .categoryRow dd{margin:0;font-weight:700}
+ .history{display:flex;align-items:center;min-height:44px;font-size:12px;font-weight:700;color:#426286}
+}
