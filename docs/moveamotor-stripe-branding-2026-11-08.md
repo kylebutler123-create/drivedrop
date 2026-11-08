@@ -38,6 +38,6 @@ No payment was made, refunded or released. No legal entity, representative, bank
 
 ## Remaining rebrand follow-up
 
-- Microsoft mailbox DKIM enablement and the already-authorised delivery retest remain pending; see `moveamotor-email-switch-2026-11-08.md`.
-- Responsive visual verification remains outstanding. The separate genuine live booking validation is not completed by these settings checks.
+- Microsoft mailbox DKIM was subsequently enabled, and retest MM-1108-B passed SPF/DKIM/DMARC. Both emails still reached Junk; see `moveamotor-email-switch-2026-11-08.md`.
+- Public mobile visual checks subsequently passed; see `moveamotor-mobile-checks-2026-11-08.md`. The separate genuine live booking validation is not completed by these settings checks.
 - Google ownership, sitemap and change of address are complete; see `moveamotor-google-migration-2026-11-08.md`.

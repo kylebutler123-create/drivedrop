@@ -10,6 +10,7 @@
 - Microsoft sign-in user ID remains `support@drive-drop.com`; admin sign-in is unchanged.
 - Resend sending domain `contact.moveamotor.co.uk` verified in Ireland (`eu-west-1`), domain ID `8efaf369-a164-4976-84d6-3144faa4082f`. Receiving remains disabled there.
 - Porkbun existing web A/CNAME records preserved.
+- Microsoft DKIM for `moveamotor.co.uk` is now **Valid / Enabled**, with signed delivery independently confirmed by the receiving mailbox in retest MM-1108-B below. Both retest messages still landed in Junk despite passing authentication.
 
 ## DNS added at Porkbun
 
@@ -65,4 +66,21 @@ Tested through the user's connected Google Chrome on 8 November 2026. Times are 
 - Initial enable attempt reported that Microsoft could not yet see the CNAME records. Signing is pending DNS recognition; do not treat the DNS save alone as enabled signing.
 - Follow-up retry on 8 November: Google Public DNS returned both exact CNAME targets successfully, and both Microsoft targets returned TXT public keys. The domain's public NS records point to Porkbun. The saved configuration is publicly resolvable; Microsoft Defender nevertheless still reports `CnameMissing` / Disabled and rejects enablement. No DNS records were changed during this retry.
 - The user approved proceeding with enabling signing and repeating delivery checks. No additional messages were sent while Microsoft signing remains blocked. That approval remains available for the next contact-form/reply test pair once signing is enabled.
-- Next: enable Microsoft DKIM once recognised, then repeat delivery/authentication checks. Passing authentication alone does not establish Inbox placement; the contact-form test already passed authentication and still landed in Junk.
+- The pending activation described above was resolved later on 8 November; see the completed retest below. Passing authentication alone does not establish Inbox placement.
+
+## DKIM enabled and real delivery retest MM-1108-B
+
+Microsoft accepted the enable action after the subsequent mobile checks. The domain row then showed **Valid / Enabled**. The existing old-domain DKIM setting was not altered.
+
+Exactly one additional live contact-form message and one support-mailbox reply were sent under the user's renewed approval. Times are UK/UTC on 8 November 2026.
+
+| Direction | Result | Receiving authentication |
+| --- | --- | --- |
+| Live `/contact` form → `support@moveamotor.co.uk` | Sent 01:13:02; received in business Outlook **Junk** at 01:13 | SPF pass, DKIM pass for `contact.moveamotor.co.uk` and Amazon SES, DMARC pass, composite authentication pass, SCL 5 |
+| Support reply → approved owner Hotmail address | Sent 01:15:55; received in Hotmail **Junk** at 01:16 | SPF pass, **DKIM pass for `moveamotor.co.uk`**, DMARC pass, composite authentication pass, SCL 5 |
+
+- The contact form confirmed that the message was sent. Reply-to selected the approved Hotmail recipient correctly.
+- Moved only the received contact test to Inbox to enable Reply; explicitly unchecked the option to trust future sender messages. No sender allowlist or spam-filter bypass was added.
+- Outlook displayed the reply as sent. Receiving headers establish that Microsoft DKIM signing is working, not just enabled in settings.
+- Full raw headers and private inbox screenshots were not saved; only the authentication summary above is retained.
+- **Remaining issue:** both Outlook destinations still classify these messages as spam. The test does not establish the reason for that classification. Authentication is fixed; reliable Inbox placement is not yet verified. The two authorised retest sends are now used; further real test messages need a clear continued request.

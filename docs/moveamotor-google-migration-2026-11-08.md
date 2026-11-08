@@ -33,4 +33,4 @@ Keep this record to retain Search Console ownership verification.
 
 No application code, deployments, redirects, account data, Stripe settings or payment flows were changed during this Google setup. Existing public redirects and retained private/API routes remain as recorded in the domain-switch notes.
 
-The Google ownership, sitemap and change-of-address tasks are complete. Stripe branding and profile updates were subsequently completed; see `moveamotor-stripe-branding-2026-11-08.md`. Separate remaining work: Microsoft mailbox DKIM activation and delivery retest (already authorised), and responsive visual verification. See the email-switch notes for the current Microsoft recognition delay.
+The Google ownership, sitemap and change-of-address tasks are complete. Stripe branding/profile updates, public mobile visual checks and Microsoft DKIM activation were subsequently completed; see their respective MoveAMotor notes dated 8 November. The email retest passed authentication in both directions but still reached Junk. Outlook spam classification and the separate genuine live booking validation remain unresolved.
