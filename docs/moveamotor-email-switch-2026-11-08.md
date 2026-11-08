@@ -2,7 +2,7 @@
 
 ## Verified email infrastructure
 
-- Microsoft 365 accepted ownership and completed Exchange DNS setup for `moveamotor.co.uk`.
+- Microsoft 365 reports the domain Healthy after completing ownership and Exchange DNS setup for `moveamotor.co.uk`.
 - Existing Exchange Online Plan 1 mailbox retained; no additional license or mailbox purchased.
 - Display name: `MoveAMotor Support`.
 - Primary SMTP address: `support@moveamotor.co.uk` (confirmed saved in Exchange admin center).
@@ -36,7 +36,8 @@
 - PASS: `node scripts/test-contact-enquiry.cjs` (provider mocked).
 - PASS: `node scripts/test-job-digest.cjs` (provider and database mocked).
 - PASS: production `npm run build`, including TypeScript, with inert localhost database URL.
-- Resend production key metadata verified as sending-only and currently restricted to the old domain. Its edit is prepared to change only the name and restricted sending domain; save during live alias cutover, never grant all-domain or full access.
-- Production deployment and key-domain cutover pending at this source checkpoint.
+- Resend production key retained and renamed `MoveAMotor Production`; sending-only access now restricted to `contact.moveamotor.co.uk`. No key value was exposed or replaced. Preview key already supports the new domain; its permissions were unchanged.
+- Production deployment `dpl_DuB9rpr6HiSLi7NMAKzGRXjw1a2K` from commit `c123e88584fa62743f4a81ac8008e040afbd2632` reached READY. Both `moveamotor.co.uk` and `drive-drop.com` aliases assigned to it immediately after saving the Resend restriction.
+- Live `/contact` checked in Chrome: public email link and form destination show `support@moveamotor.co.uk`.
 - Real delivery/send-receive verification remains pending; no test email was sent in this setup session.
 - Rollback requires restoring the old production key domain together with the previous deployment (`dpl_EidYUUXgu5gtkTErVYeFS1zX8z7h`). Both old domain DNS and mailbox alias are retained.
