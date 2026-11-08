@@ -54,7 +54,7 @@ export async function sendContactEnquiry(enquiry: ContactEnquiry) {
     },
     signal: AbortSignal.timeout(15000),
     body: JSON.stringify({
-      from: 'MoveAMotor contact form <account@contact.drive-drop.com>',
+      from: 'MoveAMotor contact form <account@contact.moveamotor.co.uk>',
       to: [SUPPORT_CONTACT.email],
       reply_to: enquiry.email,
       subject: `[MoveAMotor enquiry] ${enquiry.enquiry}: ${enquiry.subject}`,

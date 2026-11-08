@@ -62,9 +62,9 @@ async function main() {
     assert.equal(result.status, 200);
     assert.deepEqual(await result.json(), {sent: true});
     assert.equal(result.headers.get('cache-control'), 'no-store');
-    assert.deepEqual(requests[0].body.to, ['support@drive-drop.com']);
+    assert.deepEqual(requests[0].body.to, ['support@moveamotor.co.uk']);
     assert.equal(requests[0].body.reply_to, data.email);
-    assert.equal(requests[0].body.from, 'MoveAMotor contact form <account@contact.drive-drop.com>');
+    assert.equal(requests[0].body.from, 'MoveAMotor contact form <account@contact.moveamotor.co.uk>');
     assert.equal(requests[0].body.html, undefined);
     assert.ok(requests[0].body.text.includes(data.message));
     assert.ok(requests[0].body.text.includes('Booking reference: Not supplied'));
@@ -146,7 +146,7 @@ async function main() {
     const React = require('react');
     const Contact = load('src/app/components/ContactDesktop.tsx', {'@/lib/support-contact': details, './MobilePublicUI': load('src/app/components/MobilePublicUI.tsx')}).default;
     const html = require('react-dom/server').renderToStaticMarkup(React.createElement(Contact));
-    assert.ok(html.includes('mailto:support@drive-drop.com'));
+    assert.ok(html.includes('mailto:support@moveamotor.co.uk'));
     assert.ok(html.includes('tel:+447438285027'));
     for (const line of details.SUPPORT_CONTACT.address) assert.ok(html.includes(line));
     assert.ok(!html.includes('Opening hours'), 'Do not invent support hours');

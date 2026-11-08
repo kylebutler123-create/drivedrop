@@ -1,7 +1,7 @@
 import {paymentEnvironment,productionAppOrigin} from './payment-runtime';
 export type SendEmailInput={to:string;subject:string;heading:string;body:string;ctaLabel?:string;ctaPath?:string;preheader?:string;preferencesPath?:string};
 
-const EMAIL_FROM='MoveAMotor <account@contact.drive-drop.com>';
+const EMAIL_FROM='MoveAMotor <account@contact.moveamotor.co.uk>';
 const RESEND_BATCH_SIZE=100;
 
 function appOrigin(){
