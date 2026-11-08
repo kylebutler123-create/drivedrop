@@ -84,3 +84,29 @@ Exactly one additional live contact-form message and one support-mailbox reply w
 - Outlook displayed the reply as sent. Receiving headers establish that Microsoft DKIM signing is working, not just enabled in settings.
 - Full raw headers and private inbox screenshots were not saved; only the authentication summary above is retained.
 - **Remaining issue:** both Outlook destinations still classify these messages as spam. The test does not establish the reason for that classification. Authentication is fixed; reliable Inbox placement is not yet verified. The two authorised retest sends are now used; further real test messages need a clear continued request.
+
+## Junk classification investigation — 8 November 2026
+
+Read the existing MM-1108-B messages and provider diagnostics; no additional test messages sent.
+
+- Resend email ID: `01a1b8b7-4863-7823-9c68-5718af0fe112`. Its email detail confirms sent/delivered at 01:13; Deliverability Insights reports “Doing great,” with no failing configuration or content checks displayed.
+- Incoming contact test: Microsoft `SCL:5`, `SFV:SPM`, `CAT:SPM`, `BCL:0`, with no `X-CustomSpam` header. SPF, both DKIM signatures, DMARC and composite authentication pass. This points to ordinary spam classification, rather than a demonstrated authentication or bulk-mail failure.
+- Support reply: Hotmail assigns `SCL:5`, `BCL:0` despite passing authentication. The sender-side Microsoft scan recorded `SCL:1`, `SFV:NSPM`, `CAT:NONE`, `DIR:OUT`; the receiving Hotmail verdict differs from that outbound scan.
+- Neither message's sampled headers identify an explicit blocked-sender or custom transport-rule cause. This is not a complete tenant-policy audit. Proprietary classifier codes were not interpreted as a definitive cause.
+- New-domain reputation or message content remain possible explanations, not proven findings. No DNS, DMARC policy, email template, allowlist or filtering settings were changed without evidence.
+
+### Prepared next action, not submitted
+
+- Microsoft Defender Submissions opened successfully. Prepared the **contact test MM-1108-B** using its existing network message ID, recipient `support@moveamotor.co.uk`, and “I've confirmed it's clean.”
+- Reached the final page with **Submit enabled** and **Allow this message unchecked**. The form is waiting in Chrome. No report has been sent and no allow entry has been created.
+- The Submissions landing page displays an auditing prompt. Auditing was not changed; it did not prevent preparing the form. Submission success remains unverified until an authorised submit is attempted.
+- The matching **support reply MM-1108-B** is selected in the owner's Hotmail Junk folder, where the **Not junk** action is available. That action has not been taken during this investigation.
+- Request explicit approval to report these two known test messages to Microsoft, including their bodies, email addresses and technical headers. The business contact message uses Defender analysis; the reply uses Outlook.com's Not junk reporting. Preserve existing filters and do not add safe-sender or tenant allow entries.
+- Reporting is a diagnostic/remediation step, not proof that future messages will reach Inbox. Await Microsoft's result and use subsequent genuine wanted mail to assess delivery; avoid repeated self-addressed tests as a reputation strategy.
+
+### Reference guidance
+
+- [Microsoft anti-spam troubleshooting](https://learn.microsoft.com/en-us/defender-office-365/anti-spam-policies-troubleshooting): interpret spam headers and submit false positives for analysis.
+- [Microsoft admin submissions](https://learn.microsoft.com/en-us/defender-office-365/submissions-admin): submit good email, run authentication/policy checks and request grader analysis; an allow entry is optional.
+- [Outlook.com mail in Junk by mistake](https://support.microsoft.com/en-gb/outlook/mail-goes-to-the-junk-folder-by-mistake): mark the specific legitimate message Not junk.
+- [Resend Outlook delivery guidance](https://resend.com/guides/email/deliverability/avoid-outlook-spam-folder): authentication does not guarantee Inbox placement; inspect provider diagnostics and distinguish low-volume new-domain history from high-volume warmup advice.
